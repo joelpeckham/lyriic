@@ -3,6 +3,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
   type ClipboardEvent,
   type KeyboardEvent,
 } from "react";
@@ -34,6 +35,7 @@ type TextCanvasProps = {
 const WRAP_LEADING = 1.35;
 /** Extra space between hard-newline poetic lines. */
 const LINE_GAP_CLASS = "gap-4";
+const LIVE_COUNT_DEBOUNCE_MS = 500;
 
 function splitLines(value: string): string[] {
   return value.split("\n");
@@ -55,6 +57,25 @@ function overridesKey(overrides: Record<string, number>): string {
     .join("|");
 }
 
+function meterLiveLabel(
+  total: number,
+  target: number | null,
+  status: string,
+  lineHasText: boolean,
+): string {
+  if (!lineHasText && total === 0) return "Empty line";
+  if (target === null) return `${total} syllables`;
+  const phrase =
+    status === "exact"
+      ? ", on meter"
+      : status === "over"
+        ? ", over target"
+        : status === "under"
+          ? ", under target"
+          : "";
+  return `${total} of ${target} syllables${phrase}`;
+}
+
 export function TextCanvas({
   value,
   onChange,
@@ -73,8 +94,16 @@ export function TextCanvas({
   const dirtyLinesRef = useRef<Set<number> | "all">("all");
   const containerRef = useRef<HTMLDivElement>(null);
   const prevDocumentKeyForSizeRef = useRef(documentKey);
+  const [activeLineIndex, setActiveLineIndex] = useState(0);
+  const [liveCountText, setLiveCountText] = useState("");
+  /** Whole-poem selection (Cmd/Ctrl+A); native select-all is per-textarea. */
+  const [selectAll, setSelectAll] = useState(false);
+  const selectAllRef = useRef(false);
+  selectAllRef.current = selectAll;
+  const linesRef = useRef<string[]>([]);
 
   const lines = useMemo(() => splitLines(value), [value]);
+  linesRef.current = lines;
   const overrideRevision = useMemo(
     () => overridesKey(overrides),
     [overrides],
@@ -154,10 +183,49 @@ export function TextCanvas({
     pendingFocus.current = null;
     const el = lineRefs.current[pending.index];
     if (!el) return;
+    setActiveLineIndex(pending.index);
     el.focus();
     const offset = Math.min(pending.offset, el.value.length);
     el.setSelectionRange(offset, offset);
   }, [value]);
+
+  // Focus the poem on first paint and after switching drafts (no autoFocus attr).
+  useEffect(() => {
+    setSelectAll(false);
+    setActiveLineIndex(0);
+    const el = lineRefs.current[0];
+    if (!el) return;
+    el.focus();
+    el.setSelectionRange(0, 0);
+  }, [documentKey]);
+
+  // Keep roving index in range when lines shrink.
+  useEffect(() => {
+    if (activeLineIndex >= lines.length) {
+      setActiveLineIndex(Math.max(0, lines.length - 1));
+    }
+  }, [lines.length, activeLineIndex]);
+
+  // Debounced polite announcement for the focused line's meter status.
+  useEffect(() => {
+    if (!settings.showCounts) {
+      setLiveCountText("");
+      return;
+    }
+    const metered = meteredLines[activeLineIndex];
+    if (!metered) return;
+    const line = lines[activeLineIndex] ?? "";
+    const next = meterLiveLabel(
+      metered.total,
+      metered.target,
+      metered.status,
+      line.length > 0,
+    );
+    const timer = window.setTimeout(() => {
+      setLiveCountText(next);
+    }, LIVE_COUNT_DEBOUNCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [activeLineIndex, meteredLines, lines, settings.showCounts]);
 
   const markDirty = (...indices: number[]) => {
     if (dirtyLinesRef.current === "all") return;
@@ -190,9 +258,27 @@ export function TextCanvas({
   const focusLine = (index: number, offset: number) => {
     const el = lineRefs.current[index];
     if (!el) return;
+    setSelectAll(false);
+    setActiveLineIndex(index);
     el.focus();
     const nextOffset = Math.min(Math.max(0, offset), el.value.length);
     el.setSelectionRange(nextOffset, nextOffset);
+  };
+
+  const replaceDocument = (
+    next: string[],
+    focus?: { index: number; offset: number },
+  ) => {
+    setSelectAll(false);
+    const safe = next.length > 0 ? next : [""];
+    updateLines(
+      safe,
+      focus ?? {
+        index: 0,
+        offset: safe[0]?.length ?? 0,
+      },
+      "all",
+    );
   };
 
   const onLineKeyDown = (
@@ -201,6 +287,67 @@ export function TextCanvas({
   ) => {
     const ta = event.currentTarget;
     const { selectionStart, selectionEnd } = ta;
+    const mod = event.metaKey || event.ctrlKey;
+
+    if (mod && event.key.toLowerCase() === "a") {
+      event.preventDefault();
+      setSelectAll(true);
+      ta.setSelectionRange(0, ta.value.length);
+      return;
+    }
+
+    if (selectAll) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSelectAll(false);
+        ta.setSelectionRange(selectionStart, selectionStart);
+        return;
+      }
+
+      if (event.key === "Backspace" || event.key === "Delete") {
+        event.preventDefault();
+        replaceDocument([""], { index: 0, offset: 0 });
+        return;
+      }
+
+      if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+        event.preventDefault();
+        replaceDocument(["", ""], { index: 1, offset: 0 });
+        return;
+      }
+
+      if (mod && event.key.toLowerCase() === "c") {
+        event.preventDefault();
+        event.nativeEvent.stopImmediatePropagation?.();
+        void navigator.clipboard.writeText(joinLines(lines));
+        return;
+      }
+
+      if (mod && event.key.toLowerCase() === "x") {
+        event.preventDefault();
+        void navigator.clipboard.writeText(joinLines(lines));
+        replaceDocument([""], { index: 0, offset: 0 });
+        return;
+      }
+
+      if (
+        !mod &&
+        !event.altKey &&
+        event.key.length === 1 &&
+        !event.nativeEvent.isComposing
+      ) {
+        event.preventDefault();
+        replaceDocument([event.key], { index: 0, offset: 1 });
+        return;
+      }
+
+      if (event.key.startsWith("Arrow") || event.key === "Tab") {
+        setSelectAll(false);
+        // Fall through to normal handling / browser Tab.
+      } else if (!mod) {
+        return;
+      }
+    }
 
     if (event.key === "Enter" && !event.nativeEvent.isComposing) {
       event.preventDefault();
@@ -232,6 +379,43 @@ export function TextCanvas({
     }
 
     if (
+      event.key === "Delete" &&
+      selectionStart === selectionEnd &&
+      selectionStart === lines[index]!.length &&
+      index < lines.length - 1
+    ) {
+      event.preventDefault();
+      const joinAt = lines[index]!.length;
+      const next = [...lines];
+      next[index] = next[index]! + next[index + 1]!;
+      next.splice(index + 1, 1);
+      updateLines(next, { index, offset: joinAt }, [index, index + 1]);
+      return;
+    }
+
+    if (
+      event.key === "ArrowLeft" &&
+      selectionStart === 0 &&
+      selectionEnd === 0 &&
+      index > 0
+    ) {
+      event.preventDefault();
+      focusLine(index - 1, lines[index - 1]!.length);
+      return;
+    }
+
+    if (
+      event.key === "ArrowRight" &&
+      selectionStart === selectionEnd &&
+      selectionStart === lines[index]!.length &&
+      index < lines.length - 1
+    ) {
+      event.preventDefault();
+      focusLine(index + 1, 0);
+      return;
+    }
+
+    if (
       event.key === "ArrowUp" &&
       index > 0 &&
       selectionStart === selectionEnd &&
@@ -258,6 +442,16 @@ export function TextCanvas({
     event: ClipboardEvent<HTMLTextAreaElement>,
   ) => {
     const pasted = event.clipboardData.getData("text").replace(/\r\n/g, "\n");
+
+    if (selectAll) {
+      event.preventDefault();
+      const next = splitLines(pasted);
+      const focusIndex = Math.max(0, next.length - 1);
+      const focusOffset = next[focusIndex]?.length ?? 0;
+      replaceDocument(next, { index: focusIndex, offset: focusOffset });
+      return;
+    }
+
     if (!pasted.includes("\n")) return;
 
     event.preventDefault();
@@ -292,15 +486,38 @@ export function TextCanvas({
     }
   };
 
+  const onLineCopy = (event: ClipboardEvent<HTMLTextAreaElement>) => {
+    if (!selectAllRef.current) return;
+    event.preventDefault();
+    event.clipboardData.setData("text/plain", joinLines(linesRef.current));
+  };
+
+  const onLineCut = (event: ClipboardEvent<HTMLTextAreaElement>) => {
+    if (!selectAllRef.current) return;
+    event.preventDefault();
+    event.clipboardData.setData("text/plain", joinLines(linesRef.current));
+    replaceDocument([""], { index: 0, offset: 0 });
+  };
+
   const isEmptyDoc = lines.length === 1 && lines[0] === "";
   const fontSizeRem = `${settings.fontSize}rem`;
   const minLineHeightRem = `${settings.fontSize * WRAP_LEADING}rem`;
+  const tabStopIndex = Math.min(activeLineIndex, lines.length - 1);
 
   return (
     <div
       ref={containerRef}
-      className="mx-auto h-full w-full max-w-3xl overflow-auto py-16 pr-4 pl-6 [scrollbar-gutter:stable]"
+      id="poem"
+      tabIndex={-1}
+      className="mx-auto h-full w-full max-w-3xl overflow-auto py-16 pr-4 pl-6 outline-none [scrollbar-gutter:stable] focus-visible:outline-none"
     >
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {settings.showCounts ? liveCountText : ""}
+      </div>
       <div className={cn("flex flex-col", LINE_GAP_CLASS)}>
         {lines.map((line, index) => {
           const metered = meteredLines[index]!;
@@ -310,7 +527,7 @@ export function TextCanvas({
           return (
             <div key={index} className="relative flex items-start">
               <label className="sr-only" htmlFor={lineId}>
-                {index === 0 ? "Poem canvas" : `Line ${index + 1}`}
+                {`Line ${index + 1}`}
               </label>
               <textarea
                 ref={(el) => {
@@ -320,21 +537,26 @@ export function TextCanvas({
                 value={line}
                 rows={1}
                 spellCheck
-                autoFocus={index === 0}
+                tabIndex={index === tabStopIndex ? 0 : -1}
                 placeholder={
                   isEmptyDoc && index === 0 ? "Write a line…" : undefined
                 }
                 aria-describedby={
                   settings.showCounts ? statusId : undefined
                 }
+                onFocus={() => setActiveLineIndex(index)}
+                onMouseDown={() => setSelectAll(false)}
                 onChange={(event) => onLineChange(index, event.target.value)}
                 onKeyDown={(event) => onLineKeyDown(index, event)}
                 onPaste={(event) => onLinePaste(index, event)}
+                onCopy={onLineCopy}
+                onCut={onLineCut}
                 className={cn(
                   "w-full resize-none overflow-hidden bg-transparent pr-12",
                   "whitespace-pre-wrap break-words font-[family-name:var(--font-editor)] tracking-[0.01em]",
-                  "text-foreground caret-[var(--lyriic-ink)] placeholder:text-muted-foreground/45",
+                  "text-foreground caret-[var(--lyriic-ink)] placeholder:text-[var(--lyriic-subtle-faint)]",
                   "outline-none selection:bg-[var(--lyriic-selection)]",
+                  selectAll && "bg-[var(--lyriic-selection)]",
                 )}
                 style={{
                   fontSize: fontSizeRem,

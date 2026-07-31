@@ -43,9 +43,11 @@ export function ProjectSwitcher({
   const [renameValue, setRenameValue] = useState("");
   const renameInputRef = useRef<HTMLInputElement>(null);
   const renameInputId = useId();
+  const suppressMenuFocusRestore = useRef(false);
 
   const active = projects.find((p) => p.id === activeId) ?? projects[0];
   const canDelete = projects.length > 1;
+  const activeName = active?.name ?? "Draft";
 
   useEffect(() => {
     if (!renameOpen) return;
@@ -58,8 +60,15 @@ export function ProjectSwitcher({
 
   const openRename = () => {
     if (!active) return;
+    suppressMenuFocusRestore.current = true;
     setRenameValue(active.name);
     setRenameOpen(true);
+  };
+
+  const openDelete = () => {
+    if (!canDelete) return;
+    suppressMenuFocusRestore.current = true;
+    setDeleteOpen(true);
   };
 
   const handleConfirmRename = () => {
@@ -82,22 +91,35 @@ export function ProjectSwitcher({
             type="button"
             variant="ghost"
             size="sm"
-            className="h-8 max-w-48 gap-1 border-transparent bg-transparent px-2 font-normal text-muted-foreground shadow-none hover:text-foreground"
-            aria-label="Switch draft"
+            className="h-10 max-w-48 gap-1 border-transparent bg-transparent px-2.5 font-normal text-muted-foreground shadow-none hover:text-foreground"
+            aria-label={`Draft: ${activeName}`}
           >
-            <span className="truncate">{active?.name ?? "Draft"}</span>
-            <ChevronDown className="size-3.5 opacity-60" />
+            <span className="truncate">{activeName}</span>
+            <ChevronDown className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-48">
+        <DropdownMenuContent
+          align="end"
+          className="min-w-48"
+          onCloseAutoFocus={(event) => {
+            if (suppressMenuFocusRestore.current) {
+              event.preventDefault();
+              suppressMenuFocusRestore.current = false;
+            }
+          }}
+        >
           {projects.map((project) => (
             <DropdownMenuItem
               key={project.id}
               onSelect={() => onSwitch(project.id)}
+              aria-current={project.id === activeId ? "true" : undefined}
             >
               <span className="min-w-0 flex-1 truncate">{project.name}</span>
               {project.id === activeId ? (
-                <Check className="size-4 opacity-70" />
+                <>
+                  <span className="sr-only">(current)</span>
+                  <Check className="size-4" />
+                </>
               ) : null}
             </DropdownMenuItem>
           ))}
@@ -117,10 +139,7 @@ export function ProjectSwitcher({
           <DropdownMenuItem
             variant="destructive"
             disabled={!canDelete}
-            onSelect={() => {
-              if (!canDelete) return;
-              setDeleteOpen(true);
-            }}
+            onSelect={openDelete}
           >
             <Trash2 className="size-4" />
             Delete

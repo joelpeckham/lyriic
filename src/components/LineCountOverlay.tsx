@@ -9,6 +9,14 @@ type LineCountOverlayProps = {
   statusId: string;
 };
 
+function statusPhrase(status: MeterStatus, target: number | null): string {
+  if (target === null) return "";
+  if (status === "exact") return ", on meter";
+  if (status === "over") return ", over target";
+  if (status === "under") return ", under target";
+  return "";
+}
+
 export function LineCountOverlay({
   total,
   target,
@@ -18,7 +26,7 @@ export function LineCountOverlay({
 }: LineCountOverlayProps) {
   const label =
     target !== null
-      ? `${total} of ${target} syllables`
+      ? `${total} of ${target} syllables${statusPhrase(status, target)}`
       : `${total} syllables`;
 
   return (
@@ -34,12 +42,12 @@ export function LineCountOverlay({
           status === "over" && "text-[var(--lyriic-over)]",
           status !== "exact" &&
             status !== "over" &&
-            "text-muted-foreground/55",
+            "text-[var(--lyriic-subtle)]",
         )}
       >
         {total > 0 || lineHasText ? total : ""}
         {target !== null && total > 0 ? (
-          <span className="text-muted-foreground/35">/{target}</span>
+          <span className="text-[var(--lyriic-subtle-faint)]">/{target}</span>
         ) : null}
       </span>
     </>

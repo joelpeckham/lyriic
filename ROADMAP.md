@@ -63,9 +63,16 @@ Performance budget:
   - [x] Store per-project text + settings (meter, count/ruler prefs)
   - [x] Persist per-project syllable overrides (`setOverride` map → `localStorage`)
 
+## Pre–Phase 3 — Accessibility hardening
+
+- [x] App-wide theme (system / light / dark) + higher-contrast setting (`lyriic.prefs.v1`)
+- [x] `prefers-contrast` / `prefers-reduced-motion` / `forced-colors` CSS
+- [x] Contrast tokens for subtle text; editor keyboard (roving tabindex, focus ring, cross-line keys)
+- [x] Landmarks, draft naming, meter SR status, save-error live region
+
 ## Phase 3 — Meter presets + rulers (current)
 
-Settings Sheet (gear, top-right): meter type, show/hide counts, show/hide rulers, font size.
+Settings Sheet (gear, top-right): meter type, show/hide counts, show/hide rulers, font size; appearance (theme / contrast) is app-wide.
 
 Presets (v1):
 
