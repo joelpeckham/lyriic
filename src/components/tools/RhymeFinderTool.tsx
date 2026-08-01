@@ -57,7 +57,10 @@ function groupIdsBySyllables(ids: number[]): RhymeSyllableGroup[] {
 export function RhymeFinderTool() {
   const [query, setQuery] = useState("");
   const [rhymeMode, setRhymeMode] = useState<RhymeMode>("perfect");
-  const [modeReady, setModeReady] = useState(false);
+  const [loaded, setLoaded] = useState<{
+    key: string;
+    mode: RhymeMode;
+  } | null>(null);
   const dictRevision = useDictRevision();
   const dictReady = dictRevision > 0;
 
@@ -66,20 +69,20 @@ export function RhymeFinderTool() {
 
   // Defer the multi‑MB rhyme pack until the user asks for a word.
   useEffect(() => {
-    if (!lookupKey) {
-      setModeReady(false);
-      return;
-    }
+    if (!lookupKey) return;
     let cancelled = false;
-    setModeReady(false);
     void loadRhymeIndex(rhymeMode).then(() => {
-      if (!cancelled) setModeReady(true);
+      if (!cancelled) setLoaded({ key: lookupKey, mode: rhymeMode });
     });
     return () => {
       cancelled = true;
     };
   }, [rhymeMode, lookupKey]);
 
+  const modeReady =
+    !!lookupKey &&
+    loaded?.key === lookupKey &&
+    loaded.mode === rhymeMode;
   const rhymeReady = modeReady && isRhymeIndexReady(rhymeMode);
 
   const { rhymeIds, known } = useMemo(() => {

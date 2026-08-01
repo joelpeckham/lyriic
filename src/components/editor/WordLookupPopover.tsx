@@ -89,9 +89,11 @@ export function WordLookupPopover({
   const [rhymeMode, setRhymeMode] = useState<RhymeMode>("perfect");
   const open = request !== null;
   const display = useClosingRetention(request);
-  const meteredRef = useRef(meteredLine);
-  if (request) meteredRef.current = meteredLine;
-  const displayMetered = meteredRef.current;
+  // Wrap so `undefined` metered lines still count as a retained open payload.
+  const retainedMetered = useClosingRetention(
+    request ? { meteredLine } : null,
+  );
+  const displayMetered = retainedMetered?.meteredLine;
 
   const requestIdentity = display
     ? `${display.mode}:${display.from}:${display.to}:${display.word}`

@@ -39,10 +39,9 @@ function SettingsSheetGate({
   onOpenChange: (open: boolean) => void;
 }) {
   const [mounted, setMounted] = useState(open);
-
-  useEffect(() => {
-    if (open) setMounted(true);
-  }, [open]);
+  if (open && !mounted) {
+    setMounted(true);
+  }
 
   if (!mounted) {
     return (
