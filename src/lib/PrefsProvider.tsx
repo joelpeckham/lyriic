@@ -32,7 +32,6 @@ function commitPrefs(
 ): void {
   setPrefsState(next);
   savePrefs(next);
-  applyPrefsToDocument(next);
 }
 
 export function PrefsProvider({ children }: { children: ReactNode }) {
@@ -42,24 +41,21 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
     commitPrefs(next, setPrefsState);
   }, []);
 
-  const setTheme = useCallback((theme: ThemePref) => {
-    setPrefsState((prev) => {
-      const next = { ...prev, theme };
-      savePrefs(next);
-      applyPrefsToDocument(next);
-      return next;
-    });
-  }, []);
+  const setTheme = useCallback(
+    (theme: ThemePref) => {
+      commitPrefs({ ...prefs, theme }, setPrefsState);
+    },
+    [prefs],
+  );
 
-  const setContrast = useCallback((contrast: ContrastPref) => {
-    setPrefsState((prev) => {
-      const next = { ...prev, contrast };
-      savePrefs(next);
-      applyPrefsToDocument(next);
-      return next;
-    });
-  }, []);
+  const setContrast = useCallback(
+    (contrast: ContrastPref) => {
+      commitPrefs({ ...prefs, contrast }, setPrefsState);
+    },
+    [prefs],
+  );
 
+  // Single DOM apply path for prefs changes (and initial mount).
   useEffect(() => {
     applyPrefsToDocument(prefs);
   }, [prefs]);

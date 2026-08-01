@@ -1,7 +1,4 @@
-import {
-  isMeterPresetId,
-  type MeterPresetId,
-} from "@/lib/meters/presets";
+import { isMeterPresetId, type MeterPresetId } from "@/lib/meters";
 
 export type EditorSettings = {
   meter: MeterPresetId;

@@ -1,4 +1,4 @@
-import type { MeterStatus } from "@/lib/meters/buildMeteredLine";
+import { formatMeterLabel, type MeterStatus } from "@/lib/meters";
 import { cn } from "@/lib/utils";
 
 type LineCountOverlayProps = {
@@ -9,14 +9,6 @@ type LineCountOverlayProps = {
   statusId: string;
 };
 
-function statusPhrase(status: MeterStatus, target: number | null): string {
-  if (target === null) return "";
-  if (status === "exact") return ", on meter";
-  if (status === "over") return ", over target";
-  if (status === "under") return ", under target";
-  return "";
-}
-
 export function LineCountOverlay({
   total,
   target,
@@ -24,15 +16,12 @@ export function LineCountOverlay({
   lineHasText,
   statusId,
 }: LineCountOverlayProps) {
-  const label =
-    target !== null
-      ? `${total} of ${target} syllables${statusPhrase(status, target)}`
-      : `${total} syllables`;
+  const label = formatMeterLabel(total, target, status, lineHasText);
 
   return (
     <>
       <span id={statusId} className="sr-only">
-        {lineHasText || total > 0 ? label : "Empty line"}
+        {label}
       </span>
       <span
         aria-hidden

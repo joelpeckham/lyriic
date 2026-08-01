@@ -25,7 +25,7 @@ import {
   isMeterPresetId,
   METER_PRESETS,
   type MeterPresetId,
-} from "@/lib/meters/presets";
+} from "@/lib/meters";
 import { isThemePref, type ThemePref } from "@/lib/prefs";
 import {
   CUSTOM_SYLLABLES_MAX,

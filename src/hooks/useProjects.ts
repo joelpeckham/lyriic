@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-
-import { normalizeSettings, type EditorSettings } from "@/lib/settings";
 import {
-  isValidOverrideCount,
-  normalizeOverrideKey,
-  normalizeOverridesRecord,
-  replaceOverrides,
-} from "@/lib/syllables/overrides";
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   createEmptyProject,
@@ -14,40 +12,33 @@ import {
   loadProjectsState,
   saveProjectsState,
   type SaveResult,
-} from "./storage";
-import type { Project, ProjectsState } from "./types";
+} from "@/lib/projects/storage";
+import type { Project, ProjectsState } from "@/lib/projects/types";
+import { normalizeSettings, type EditorSettings } from "@/lib/settings";
+import {
+  isValidOverrideCount,
+  normalizeOverrideKey,
+  normalizeOverridesRecord,
+} from "@/lib/syllables/overrides";
 
 const AUTOSAVE_MS = 300;
 
 export type SaveStatus = "ok" | "error" | "idle";
 
-function syncEngineOverrides(
-  prev: ProjectsState,
-  next: ProjectsState,
-): void {
-  const prevActive = getActiveProject(prev);
-  const nextActive = getActiveProject(next);
-  if (
-    prevActive.id !== nextActive.id ||
-    prevActive.overrides !== nextActive.overrides
-  ) {
-    replaceOverrides(nextActive.overrides);
-  }
-}
-
 export function useProjects() {
   const [state, setState] = useState<ProjectsState>(() => {
     const { state: initial } = loadProjectsState();
-    replaceOverrides(getActiveProject(initial).overrides);
     return initial;
   });
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
   const stateRef = useRef(state);
-  stateRef.current = state;
-
   const structuralFlushRef = useRef(false);
   const active = getActiveProject(state);
+
+  useLayoutEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   const persist = useCallback((next: ProjectsState): SaveResult => {
     const result = saveProjectsState(next);
@@ -87,14 +78,12 @@ export function useProjects() {
   const commit = useCallback(
     (updater: (prev: ProjectsState) => ProjectsState, structural = false) => {
       if (structural) structuralFlushRef.current = true;
-      setState((prev) => {
-        const next = updater(prev);
-        if (next !== prev) {
-          syncEngineOverrides(prev, next);
-        }
-        stateRef.current = next;
-        return next;
-      });
+      const prev = stateRef.current;
+      const next = updater(prev);
+      if (next === prev) return;
+      // Keep stateRef current for autosave / beforeunload before paint.
+      stateRef.current = next;
+      setState(next);
     },
     [],
   );
