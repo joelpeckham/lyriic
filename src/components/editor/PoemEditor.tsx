@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
+import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
 import {
   setMeterOverlayData,
@@ -15,10 +16,6 @@ import {
   getMeterPreset,
 } from "@/lib/meters";
 import type { EditorSettings } from "@/lib/settings";
-import {
-  countLinesIncremental,
-  type LineSyllableCount,
-} from "@/lib/syllables";
 
 type PoemEditorProps = {
   value: string;
@@ -52,13 +49,6 @@ export function PoemEditor({
   const onChangeRef = useRef(onChange);
   const [activeLineIndex, setActiveLineIndex] = useState(0);
   const [liveCountText, setLiveCountText] = useState("");
-  const [countSnapshot, setCountSnapshot] = useState<{
-    value: string;
-    lines: string[];
-    counts: LineSyllableCount[];
-    documentKey: string;
-    overrideRevision: string;
-  } | null>(null);
 
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
@@ -69,35 +59,11 @@ export function PoemEditor({
     [overrides],
   );
 
-  let lineCounts: { lines: string[]; counts: LineSyllableCount[] };
-  if (
-    countSnapshot &&
-    countSnapshot.value === value &&
-    countSnapshot.documentKey === documentKey &&
-    countSnapshot.overrideRevision === overrideRevision
-  ) {
-    lineCounts = {
-      lines: countSnapshot.lines,
-      counts: countSnapshot.counts,
-    };
-  } else {
-    const policyChanged =
-      !countSnapshot ||
-      countSnapshot.documentKey !== documentKey ||
-      countSnapshot.overrideRevision !== overrideRevision;
-    lineCounts = countLinesIncremental(
-      value,
-      policyChanged ? null : (countSnapshot?.lines ?? null),
-      policyChanged ? null : (countSnapshot?.counts ?? null),
-    );
-    setCountSnapshot({
-      value,
-      lines: lineCounts.lines,
-      counts: lineCounts.counts,
-      documentKey,
-      overrideRevision,
-    });
-  }
+  const lineCounts = useSyllableLineCounts(
+    value,
+    documentKey,
+    overrideRevision,
+  );
 
   const pattern = useMemo((): readonly number[] => {
     if (settings.meter === "custom") return [settings.customSyllables];

@@ -21,6 +21,7 @@ export const syllableOverlay = ViewPlugin.fromClass(
   class {
     readonly dom: HTMLElement;
     private host: HTMLElement | null = null;
+    private rafId: number | null = null;
 
     constructor(view: EditorView) {
       this.dom = document.createElement("div");
@@ -28,7 +29,10 @@ export const syllableOverlay = ViewPlugin.fromClass(
       this.dom.setAttribute("aria-hidden", "true");
       this.mount(view);
       // Defer first paint until layout exists.
-      requestAnimationFrame(() => this.draw(view));
+      this.rafId = requestAnimationFrame(() => {
+        this.rafId = null;
+        this.draw(view);
+      });
     }
 
     private mount(view: EditorView) {
@@ -124,6 +128,10 @@ export const syllableOverlay = ViewPlugin.fromClass(
     }
 
     destroy() {
+      if (this.rafId !== null) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
       this.dom.remove();
       this.host = null;
     }
