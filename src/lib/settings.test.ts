@@ -55,6 +55,8 @@ describe("settingsForMeter", () => {
     expect(next?.showRulers).toBe(true);
     expect(next?.showMeterBreaks).toBe(true);
     expect(next?.showStress).toBe(true);
+    expect(next?.showRhymeScheme).toBe(false);
+    expect(next?.rhymeSchemeId).toBeNull();
   });
 
   it("seeds syllable forms without meter breaks", () => {
@@ -63,8 +65,32 @@ describe("settingsForMeter", () => {
     expect(next?.showMeterBreaks).toBe(false);
   });
 
+  it("seeds rhyme scheme for sonnet", () => {
+    const next = settingsForMeter("sonnet");
+    expect(next?.rhymeSchemeId).toBe("shakespearean");
+    expect(next?.showRhymeScheme).toBe(true);
+  });
+
   it("rejects custom and unknown ids", () => {
     expect(settingsForMeter("custom")).toBeNull();
     expect(settingsForMeter("nope")).toBeNull();
+  });
+});
+
+describe("normalizeSettings rhyme", () => {
+  it("defaults rhymeSchemeId to first scheme for rhyming meters", () => {
+    const next = normalizeSettings({ meter: "limerick" });
+    expect(next.rhymeSchemeId).toBe("limerick");
+    expect(next.showRhymeScheme).toBe(true);
+  });
+
+  it("keeps a valid named scheme", () => {
+    const next = normalizeSettings({
+      meter: "sonnet",
+      rhymeSchemeId: "petrarchan",
+      showRhymeScheme: false,
+    });
+    expect(next.rhymeSchemeId).toBe("petrarchan");
+    expect(next.showRhymeScheme).toBe(false);
   });
 });

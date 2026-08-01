@@ -12,7 +12,11 @@ import {
 export type MeterSeedOverlays = Partial<
   Pick<
     EditorSettings,
-    "showCounts" | "showRulers" | "showStress" | "showMeterBreaks"
+    | "showCounts"
+    | "showRulers"
+    | "showStress"
+    | "showMeterBreaks"
+    | "showRhymeScheme"
   >
 >;
 

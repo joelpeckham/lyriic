@@ -7,6 +7,7 @@ import {
   Monitor,
   Moon,
   MousePointerClick,
+  Music2,
   Ruler,
   Search,
   Settings,
@@ -37,6 +38,7 @@ import {
   FOOT_LABELS,
   listMeterCatalogByGroup,
   resolveMeterConfig,
+  rhymeSchemesForMeter,
   type CustomFootId,
 } from "@/lib/meters";
 import {
@@ -199,6 +201,75 @@ function CustomMeterControls({
       </div>
 
       <p className="text-muted-foreground text-xs">{preview.description}</p>
+    </div>
+  );
+}
+
+function RhymeSchemeControls({
+  settings,
+  onChange,
+}: {
+  settings: EditorSettings;
+  onChange: (next: EditorSettings) => void;
+}) {
+  const schemes = rhymeSchemesForMeter(settings.meter);
+  if (schemes.length === 0) return null;
+
+  const active = schemes.find((s) => s.id === settings.rhymeSchemeId) ?? schemes[0]!;
+
+  if (schemes.length === 1) {
+    return (
+      <div className="flex flex-col gap-1.5">
+        <Label>Rhyme scheme</Label>
+        <p className="text-sm text-muted-foreground">
+          {active.label}{" "}
+          <span className="font-[family-name:var(--font-brand)] tracking-wide tabular-nums">
+            {active.pattern}
+          </span>
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Label id="rhyme-scheme-label">Rhyme scheme</Label>
+      <div
+        role="radiogroup"
+        aria-labelledby="rhyme-scheme-label"
+        className="flex flex-col gap-1"
+      >
+        {schemes.map((scheme) => {
+          const selected = active.id === scheme.id;
+          return (
+            <button
+              key={scheme.id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              className={cn(
+                "flex w-full items-center justify-between gap-2 rounded-lg border px-3 py-2 text-left transition-colors",
+                "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
+                selected
+                  ? "border-border bg-muted text-foreground"
+                  : "border-transparent hover:bg-muted/60",
+              )}
+              onClick={() =>
+                onChange({
+                  ...settings,
+                  rhymeSchemeId: scheme.id,
+                  showRhymeScheme: true,
+                })
+              }
+            >
+              <span className="text-sm font-medium">{scheme.label}</span>
+              <span className="font-[family-name:var(--font-brand)] text-xs tracking-wide text-muted-foreground tabular-nums">
+                {scheme.pattern}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -425,6 +496,8 @@ export function SettingsSheet({
             />
           ) : null}
 
+          <RhymeSchemeControls settings={settings} onChange={onChange} />
+
           <Separator />
 
           <SettingsToggle
@@ -470,6 +543,19 @@ export function SettingsSheet({
               onChange({ ...settings, showMeterBreaks })
             }
           />
+
+          {rhymeSchemesForMeter(settings.meter).length > 0 ? (
+            <SettingsToggle
+              id="show-rhyme-scheme"
+              label="Rhyme scheme"
+              hint="Solid green = perfect rhyme, green ring = end rhyme, red = no rhyme"
+              icon={Music2}
+              checked={settings.showRhymeScheme}
+              onCheckedChange={(showRhymeScheme) =>
+                onChange({ ...settings, showRhymeScheme })
+              }
+            />
+          ) : null}
 
           <Separator />
 

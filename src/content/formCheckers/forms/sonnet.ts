@@ -44,7 +44,7 @@ export const sonnetForm: FormCheckerContent = {
   ],
   formNotes: [
     "lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. Substitutions, feminine endings, and speech stress will show as mismatches against the ideal grid.",
-    "lyriic does not enforce rhyme schemes (Shakespearean, Petrarchan, Spenserian), volta placement, or thematic “argument” structure — only line count, syllable target, and iambic stress.",
+    "This checker scores line count, syllable target, and iambic stress only. For Shakespearean, Petrarchan, or Spenserian rhyme dots while you draft, open the zen editor with the Sonnet meter.",
   ],
   faqs: [
     {
@@ -55,7 +55,7 @@ export const sonnetForm: FormCheckerContent = {
     {
       q: "Does lyriic check the rhyme scheme?",
       plain:
-        "No. Rhyme schemes and volta placement are not modeled. Open the zen editor with the Sonnet meter for live syllable and stress rulers beside each line.",
+        "Not on this page — the checker stays on syllables and stress. Open the zen editor with the Sonnet meter to pick Shakespearean, Petrarchan, or Spenserian and see colored rhyme dots beside each line.",
     },
     {
       q: "Is my draft uploaded?",
@@ -79,7 +79,7 @@ export const sonnetForm: FormCheckerContent = {
     "When light returns and names the world anew,",
     "And what was lost is somehow found in you.",
   ],
-  cta: "Write in the zen editor",
+  cta: "Check rhyme in the zen editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-5",
   meterExplainer: {
@@ -88,11 +88,11 @@ export const sonnetForm: FormCheckerContent = {
     body: [
       "In lyriic’s catalog, a sonnet is fourteen lines of iambic pentameter: ten syllables per line with expected stress on positions 2, 4, 6, 8, and 10 (da-DUM × 5).",
       "That matches the English teaching backbone shared by Shakespearean, Petrarchan, and Spenserian sonnets. Those traditions differ mainly in rhyme scheme and where the volta falls — not in the default meter.",
-      "lyriic enforces line count, syllable target, and the iambic stress contour when the stress pack is loaded. It does not score ABAB/CDCD patterns, octave–sestet splits, or theme rules.",
+      "This checker scores line count, syllable target, and the iambic stress contour when the stress pack is loaded. Named rhyme schemes (Shakespearean, Petrarchan, Spenserian) are available as colored dots in the zen editor.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 14. Matches English teaching sonnet as 14× IP. Intentionally omits rhyme schemes (Shakespearean/Petrarchan/Spenserian), volta placement, and thematic structure. sampleLines: 14 original lines at 10 syllables (dict primary).",
+    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 14, rhymeSchemes shakespearean/petrarchan/spenserian. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits volta placement and thematic structure. sampleLines: 14 original lines at 10 syllables (dict primary).",
   ],
 };

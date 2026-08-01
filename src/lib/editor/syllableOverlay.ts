@@ -6,7 +6,7 @@ import {
 
 import type { StressCode } from "@/lib/data/dictPack";
 import { isStressReady } from "@/lib/data/stress";
-import { COUNT_GUTTER_REM } from "@/lib/editor/constants";
+import { COUNT_GUTTER_REM, RHYME_GUTTER_REM } from "@/lib/editor/constants";
 import {
   mapSyllableMidpointToOffset,
   mapSyllableToOffset,
@@ -17,12 +17,16 @@ import {
   type MeteredLine,
   type MeterStatus,
 } from "@/lib/meters";
+import type { RhymeSchemeLine } from "@/lib/rhyme";
 
 export type MeterOverlayState = {
   showCounts: boolean;
   showRulers: boolean;
   showStress: boolean;
   showMeterBreaks: boolean;
+  showRhymeScheme: boolean;
+  /** Per-line rhyme-scheme analysis (aligned with textLines). */
+  rhymeLines: readonly RhymeSchemeLine[];
   /** Metered lines — tokens used as-is for ruler geometry. */
   lines: readonly MeteredLine[];
   textLines: readonly string[];
@@ -33,6 +37,8 @@ const EMPTY: MeterOverlayState = {
   showRulers: false,
   showStress: false,
   showMeterBreaks: false,
+  showRhymeScheme: false,
+  rhymeLines: [],
   lines: [],
   textLines: [],
 };
@@ -56,6 +62,24 @@ function statusClass(status: MeterStatus): string {
   if (status === "over") return "lyriic-count--over";
   if (status === "stress") return "lyriic-count--stress";
   return "lyriic-count--subtle";
+}
+
+function rhymeLetterTitle(line: RhymeSchemeLine): string {
+  const letter = line.letter ?? "?";
+  if (line.status === "mismatch") {
+    return `Rhyme ${letter} — does not match peers`;
+  }
+  if (line.status === "match") {
+    return `Rhyme ${letter} — perfect`;
+  }
+  if (line.status === "endMatch") {
+    return `Rhyme ${letter} — end rhyme`;
+  }
+  if (line.status === "unknown") {
+    return `Rhyme ${letter} — word not in dictionary`;
+  }
+  if (letter === "X") return "Unrhymed line";
+  return `Rhyme ${letter}`;
 }
 
 function tickClass(syllable: number, target: number | null): string {
@@ -177,12 +201,20 @@ export const syllableOverlay = ViewPlugin.fromClass(
         showRulers,
         showStress,
         showMeterBreaks,
+        showRhymeScheme,
+        rhymeLines,
         lines,
         textLines,
       } = getMeterOverlay(view);
       const showMismatchMarks =
         showMeterBreaks && lines.some(lineHasStressMismatch);
-      if (!showCounts && !showRulers && !showStress && !showMismatchMarks) {
+      if (
+        !showCounts &&
+        !showRulers &&
+        !showStress &&
+        !showMismatchMarks &&
+        !showRhymeScheme
+      ) {
         this.dom.replaceChildren();
         return;
       }
@@ -287,36 +319,76 @@ export const syllableOverlay = ViewPlugin.fromClass(
           }
         }
 
-        if (showCounts) {
-          // Prefer the first visible visual row for count vertical align.
-          let countTop = blockClientTop - hostRect.top;
-          try {
-            const startCoords = view.coordsAtPos(line.from);
-            if (startCoords) {
-              countTop = startCoords.top - hostRect.top;
-            } else {
-              const visiblePos = Math.max(line.from, from);
-              const visibleCoords = view.coordsAtPos(
-                posOnLine(line.from, line.to, visiblePos - line.from),
-              );
-              if (visibleCoords) {
-                countTop = visibleCoords.top - hostRect.top;
+        // Prefer the first visible visual row for count / rhyme vertical align.
+        let rowTop = blockClientTop - hostRect.top;
+        try {
+          const startCoords = view.coordsAtPos(line.from);
+          if (startCoords) {
+            rowTop = startCoords.top - hostRect.top;
+          } else {
+            const visiblePos = Math.max(line.from, from);
+            const visibleCoords = view.coordsAtPos(
+              posOnLine(line.from, line.to, visiblePos - line.from),
+            );
+            if (visibleCoords) {
+              rowTop = visibleCoords.top - hostRect.top;
+            }
+          }
+        } catch {
+          // jsdom / missing geometry — keep block-based top.
+        }
+
+        const fontSize = parseFloat(
+          getComputedStyle(view.contentDOM).fontSize || "16",
+        );
+        const countGutterPx = COUNT_GUTTER_REM * fontSize;
+        const rhymeSlotPx = showRhymeScheme ? RHYME_GUTTER_REM * fontSize : 0;
+        // Right gutter: [rhyme dot][syllable count…], both clear of glyphs.
+        const gutterPx = countGutterPx + rhymeSlotPx;
+        const gutterLeft = left + Math.max(0, width - gutterPx);
+
+        if (showRhymeScheme) {
+          const rhyme = rhymeLines[lineNo - 1];
+          if (rhyme && rhyme.letter && rhyme.status !== "empty") {
+            const dot = document.createElement("span");
+            const classes = ["lyriic-rhyme-dot"];
+            if (rhyme.status === "match") {
+              // Perfect rhyme — solid green.
+              classes.push("lyriic-rhyme-dot--match");
+            } else if (rhyme.status === "endMatch") {
+              // End rhyme only — hollow green donut.
+              classes.push("lyriic-rhyme-dot--end");
+            } else if (rhyme.status === "mismatch") {
+              classes.push("lyriic-rhyme-dot--mismatch");
+            } else if (
+              rhyme.status === "unknown" ||
+              rhyme.status === "open"
+            ) {
+              classes.push("lyriic-rhyme-dot--muted");
+              if (rhyme.colorIndex >= 0) {
+                classes.push(
+                  `lyriic-rhyme-dot--${String.fromCharCode(65 + (rhyme.colorIndex % 7))}`,
+                );
               }
             }
-          } catch {
-            // jsdom / missing geometry — keep block-based top.
+            dot.className = classes.join(" ");
+            dot.dataset.letter = rhyme.letter;
+            dot.title = rhymeLetterTitle(rhyme);
+            // Left edge of the right gutter, beside the syllable count.
+            dot.style.left = `${gutterLeft + rhymeSlotPx * 0.15}px`;
+            dot.style.top = `${rowTop + fontSize * 0.45}px`;
+            frag.append(dot);
           }
+        }
 
+        if (showCounts) {
           const el = document.createElement("span");
           el.className = `lyriic-count ${statusClass(overlay.status)}`;
-          el.style.top = `${countTop}px`;
+          el.style.top = `${rowTop}px`;
           // Sit in the line’s right gutter only — a full-width strip used to
           // cover glyphs and could flicker the cursor at sub-pixel edges.
-          const gutterPx =
-            COUNT_GUTTER_REM *
-            parseFloat(getComputedStyle(view.contentDOM).fontSize || "16");
-          el.style.left = `${left + Math.max(0, width - gutterPx)}px`;
-          el.style.width = `${Math.min(width, gutterPx)}px`;
+          el.style.left = `${gutterLeft + rhymeSlotPx}px`;
+          el.style.width = `${Math.min(width, countGutterPx)}px`;
 
           if (overlay.target !== null && total > 0) {
             el.append(document.createTextNode(String(total)));

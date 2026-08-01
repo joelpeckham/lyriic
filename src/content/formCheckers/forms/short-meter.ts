@@ -38,7 +38,7 @@ export const shortMeterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks the hymnal short-meter grid 6 · 6 · 8 · 6 and the iamb stress contour. Hymnal rhyme schemes (ABCB / ABAB) and tune pairing are not enforced.",
+    "lyriic checks the hymnal short-meter grid 6 · 6 · 8 · 6 and the iamb stress contour. For ABCB rhyme dots while you draft, open the zen editor with Short meter. Tune pairing stays with you.",
   ],
   faqs: [
     {
@@ -63,7 +63,7 @@ export const shortMeterForm: FormCheckerContent = {
     "The fellowship of kindred minds",
     "Is like to that above",
   ],
-  cta: "Write in the zen editor",
+  cta: "Check rhyme in the zen editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-6-6-8-6",
   meterExplainer: {
@@ -71,12 +71,12 @@ export const shortMeterForm: FormCheckerContent = {
     title: "How short meter works",
     body: [
       "Hymnal short meter (S.M.) is a quatrain written 6.6.8.6: six syllables, six, eight, six, usually iambic, so that the third line has four feet and the others three. Texts in the same metre can share tunes.",
-      "lyriic’s Short meter entry uses pattern [6, 6, 8, 6] with a four-line stanza, matching that teaching grid. Rhyme and tune choice stay outside the checker.",
+      "lyriic’s Short meter entry uses pattern [6, 6, 8, 6] with a four-line stanza, matching that teaching grid. ABCB rhyme dots are available in the zen editor; tune choice stays outside this checker.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [6, 6, 8, 6], iamb stress fill, footId iamb, stanzaLines 4 — matches English short meter (S.M.) 6.6.8.6. Fixed from earlier [6, 6] cycle after content-agent verification.",
-    "Intentionally omits ABCB/ABAB rhyme, tune pairing, double short meter (S.M.D.), and poulter’s measure.",
+    "Catalog: pattern [6, 6, 8, 6], iamb stress fill, footId iamb, stanzaLines 4, rhymeSchemes short-meter ABCB — matches English short meter (S.M.) 6.6.8.6. Form checker is syllable/stress only; rhyme overlays live in the zen editor.",
+    "Intentionally omits tune pairing, double short meter (S.M.D.), and poulter’s measure.",
   ],
 };

@@ -44,7 +44,7 @@ export const balladStanzaForm: FormCheckerContent = {
   ],
   formNotes: [
     "lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. Folk and literary ballads often admit anapests, headless lines, or looser counts — mismatches are feedback against the teaching grid, not a claim that every published stanza is perfectly regular.",
-    "Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. lyriic does not enforce rhyme, refrain, or narrative content.",
+    "Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. This checker stays on syllables and stress — open the zen editor for ABCB rhyme dots. Refrain and narrative stay with you.",
   ],
   faqs: [
     {
@@ -69,7 +69,7 @@ export const balladStanzaForm: FormCheckerContent = {
     "Right up above the mast did stand",
     "No bigger than the Moon",
   ],
-  cta: "Write in the zen editor",
+  cta: "Check rhyme in the zen editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-8-6-8-6",
   meterExplainer: {
@@ -78,11 +78,11 @@ export const balladStanzaForm: FormCheckerContent = {
     body: [
       "A ballad stanza is a quatrain of alternating iambic tetrameter and iambic trimeter: eight syllables, then six, then eight, then six. Strong beats fall on the even positions — 2, 4, 6, and 8 on long lines; 2, 4, and 6 on short ones (da-DUM × 4 / da-DUM × 3).",
       "lyriic’s catalog stores that full cycle as pattern [8, 6, 8, 6] with footId iamb and stanzaLines 4. The related Common meter entry uses pattern [8, 6] cycled across the same four-line stanza — identical syllable and stress targets.",
-      "Folk tradition often rhymes only lines 2 and 4 (ABCB) and may loosen unstressed syllables. lyriic checks the syllable and iambic stress grid only; rhyme, refrain, and story are left to you.",
+      "Folk tradition often rhymes only lines 2 and 4 (ABCB) and may loosen unstressed syllables. This checker scores the syllable and iambic stress grid; ABCB rhyme dots are available in the zen editor.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [8,6,8,6], footId iamb, stressPatterns via stressPatternsForCycle(iamb, [8,6,8,6]) → [[0,1,0,1,0,1,0,1], [0,1,0,1,0,1], [0,1,0,1,0,1,0,1], [0,1,0,1,0,1]], stanzaLines 4. Matches English teaching ballad stanza / common-metre quatrain (iambic tetrameter + trimeter). Intentionally omits ABCB/ABAB rhyme, folk ballad-metre stress looseness (variable unstressed syllables), refrains, and multi-line Coleridge variants. Related catalog entry common-meter is the same 8/6 cycle packaged as pattern [8,6]. sampleLines length 4.",
+    "Catalog: pattern [8,6,8,6], footId iamb, stressPatterns via stressPatternsForCycle(iamb, [8,6,8,6]), stanzaLines 4, rhymeSchemes ballad ABCB. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits folk ballad-metre stress looseness, refrains, and multi-line Coleridge variants. Related catalog entry common-meter is the same 8/6 cycle packaged as pattern [8,6]. sampleLines length 4.",
   ],
 };

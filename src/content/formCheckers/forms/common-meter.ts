@@ -45,7 +45,7 @@ export const commonMeterForm: FormCheckerContent = {
   ],
   formNotes: [
     "lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. Real hymns and ballads often admit substitutions — mismatches are feedback, not a claim that every published line is perfectly regular.",
-    "lyriic does not enforce rhyme schemes (ABAB common measure vs ABCB ballad stanza) or tune matching between hymn texts.",
+    "This checker scores syllables and stress only. For ABAB rhyme dots while you draft, open the zen editor with Common meter. Tune matching between hymn texts stays with you.",
   ],
   faqs: [
     {
@@ -70,13 +70,13 @@ export const commonMeterForm: FormCheckerContent = {
     "I once was lost, but now am found",
     "Was blind, but now I see",
   ],
-  cta: "Write in the zen editor",
+  cta: "Check rhyme in the zen editor",
   meterExplainer: {
     id: "common-meter",
     title: "Common meter (8 · 6)",
     body: [
       "Common meter alternates an eight-syllable iambic line with a six-syllable one: four da-DUM feet, then three. Across a quatrain the cycle reads 8 · 6 · 8 · 6 (often labeled CM or 86.86 in hymnals).",
-      "It is the shared grid of many English hymns and ballads. Strict common measure usually aims for ABAB rhyme; ballad stanza often uses ABCB with freer stress. lyriic checks the syllable and iambic stress cycle only — rhyme and tune are left to you.",
+      "It is the shared grid of many English hymns and ballads. Strict common measure usually aims for ABAB rhyme; ballad stanza often uses ABCB with freer stress. This checker scores the syllable and iambic stress cycle; ABAB rhyme dots are available in the zen editor.",
       "When stress-aware checking is on, lyriic marks the expected weak–strong contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.",
     ],
     status: "ready",
@@ -84,6 +84,6 @@ export const commonMeterForm: FormCheckerContent = {
   footExplainerId: "iamb",
   stressExplainerId: "iamb-8-6",
   verificationNotes: [
-    "Catalog: pattern [8, 6] (cycles to 8.6.8.6), footId iamb, stressPatterns [[0,1,0,1,0,1,0,1], [0,1,0,1,0,1]], stanzaLines 4. Matches English common metre / CM teaching form (iambic tetrameter + trimeter). Intentionally omits ABAB vs ABCB rhyme, ballad-meter stress looseness, tune interchangeability, and CM double / particular variants. Related catalog entry ballad-stanza expands the same cycle as pattern [8,6,8,6].",
+    "Catalog: pattern [8, 6] (cycles to 8.6.8.6), footId iamb, stressPatterns [[0,1,0,1,0,1,0,1], [0,1,0,1,0,1]], stanzaLines 4, rhymeSchemes common ABAB. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits ballad-meter stress looseness, tune interchangeability, and CM double / particular variants. Related catalog entry ballad-stanza expands the same cycle as pattern [8,6,8,6].",
   ],
 };

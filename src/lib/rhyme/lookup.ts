@@ -45,6 +45,42 @@ let testFixture: {
   end: RhymeModeData;
 } | null = null;
 
+let revision = 0;
+const listeners = new Set<() => void>();
+const readyAnnounced: Record<RhymeMode, boolean> = {
+  perfect: false,
+  end: false,
+};
+
+/** Monotonic revision bumped when a rhyme pack becomes ready or tests inject data. */
+export function getRhymeRevision(): number {
+  return revision;
+}
+
+/** Subscribe to rhyme-ready / test-inject notifications. Returns unsubscribe. */
+export function subscribeRhymeReady(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function notifyReady(): void {
+  for (const listener of listeners) listener();
+}
+
+function announceReady(mode: RhymeMode): void {
+  if (readyAnnounced[mode]) return;
+  readyAnnounced[mode] = true;
+  revision += 1;
+  notifyReady();
+}
+
+function bumpRevision(): void {
+  revision += 1;
+  notifyReady();
+}
+
 function storeFor(mode: RhymeMode) {
   return mode === "end" ? endStore : perfectStore;
 }
@@ -69,12 +105,14 @@ export async function loadRhymeIndex(
   await loadLexicon();
   const data = await storeFor(mode).load();
   assertRhymeAligned(data);
+  announceReady(mode);
   if (mode === "perfect" && typeof window !== "undefined") {
     runWhenIdle(() => {
       void endStore
         .load()
         .then((end) => {
           assertRhymeAligned(end);
+          announceReady("end");
         })
         .catch(() => {
           // Prefetch is best-effort; query path will surface failures.
@@ -126,14 +164,39 @@ export function hasRhymeEntry(
   word: string,
   mode: RhymeMode = "perfect",
 ): boolean {
+  return rhymeKeyIds(word, mode).length > 0;
+}
+
+/**
+ * Rhyme key ids for a word in the given mode (empty when unknown / unloaded).
+ * Alternate pronunciations are all returned.
+ */
+export function rhymeKeyIds(
+  word: string,
+  mode: RhymeMode = "perfect",
+): number[] {
   const lex = activeLex();
   const pack = activePack(mode);
-  if (!lex || !pack) return false;
+  if (!lex || !pack) return [];
   const key = normalizeLookupKey(word);
-  if (!key) return false;
+  if (!key) return [];
   const id = lex.wordToId.get(key);
-  if (id === undefined) return false;
-  return (pack.byWord[id]?.length ?? 0) > 0;
+  if (id === undefined) return [];
+  return pack.byWord[id] ?? [];
+}
+
+/** True when two words share at least one rhyme key in the given mode. */
+export function wordsRhyme(
+  a: string,
+  b: string,
+  mode: RhymeMode = "perfect",
+): boolean {
+  const keysA = rhymeKeyIds(a, mode);
+  if (keysA.length === 0) return false;
+  const keysB = rhymeKeyIds(b, mode);
+  if (keysB.length === 0) return false;
+  const setB = new Set(keysB);
+  return keysA.some((k) => setB.has(k));
 }
 
 /**
@@ -257,6 +320,9 @@ export function __setRhymeDataForTests(
 ): void {
   if (index === null) {
     testFixture = null;
+    readyAnnounced.perfect = false;
+    readyAnnounced.end = false;
+    bumpRevision();
     return;
   }
 
@@ -276,6 +342,9 @@ export function __setRhymeDataForTests(
     perfect: buildModeData(words, wordToId, index.byWord, index.byKey),
     end: buildModeData(words, wordToId, index.byWordEnd, index.byKeyEnd),
   };
+  readyAnnounced.perfect = true;
+  readyAnnounced.end = true;
+  bumpRevision();
 }
 
 function buildModeData(

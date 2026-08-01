@@ -42,7 +42,7 @@ export const heroicCoupletForm: FormCheckerContent = {
   ],
   formNotes: [
     "lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.",
-    "Tradition expects the two lines to rhyme (aa). lyriic does not enforce rhyme pairing, caesura placement, or closed vs. open couplet rhetoric.",
+    "Tradition expects the two lines to rhyme (aa). This checker scores syllables and stress; open the zen editor for couplet rhyme dots. Caesura placement and closed vs. open rhetoric stay with you.",
   ],
   faqs: [
     {
@@ -53,7 +53,7 @@ export const heroicCoupletForm: FormCheckerContent = {
     {
       q: "Does lyriic check rhyme as well as meter?",
       plain:
-        "No. This checker targets two ten-syllable iambic lines and the weak–strong stress contour when the stress pack is loaded. End rhyme is traditional for heroic couplets but is not enforced.",
+        "This page targets two ten-syllable iambic lines and the weak–strong stress contour. For end-rhyme dots on the couplet, open the zen editor with the Heroic couplet meter.",
     },
     {
       q: "Is my draft uploaded?",
@@ -65,7 +65,7 @@ export const heroicCoupletForm: FormCheckerContent = {
     "A little learning is a dangerous thing",
     "Drink deep, or taste not the Pierian spring",
   ],
-  cta: "Write in the zen editor",
+  cta: "Check rhyme in the zen editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-5",
   meterExplainer: {
@@ -74,11 +74,11 @@ export const heroicCoupletForm: FormCheckerContent = {
     body: [
       "A heroic couplet is two successive lines of iambic pentameter that traditionally rhyme. Each line targets ten syllables with expected stress on positions 2, 4, 6, 8, and 10 (da-DUM × 5). lyriic’s catalog models that as pattern [10] with stanzaLines 2.",
       "The same pentameter grid underlies blank verse (unrhymed) and many English sonnets. What makes the couplet “heroic” in teaching terms is the paired length plus end rhyme — not a different foot or syllable count.",
-      "Closed couplets often finish a thought within the pair; open couplets spill sense across the break. lyriic checks syllable and stress only; rhyme pairing and rhetorical closure are left to the writer.",
+      "Closed couplets often finish a thought within the pair; open couplets spill sense across the break. This checker scores syllable and stress; couplet rhyme dots are available in the zen editor.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 2. Matches English heroic couplet meter (paired iambic pentameter). Intentionally omits aa rhyme enforcement, caesura rules, and closed/open couplet rhetoric. sampleLines length 2.",
+    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 2, rhymeSchemes couplet AA. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits caesura rules and closed/open couplet rhetoric. sampleLines length 2.",
   ],
 };

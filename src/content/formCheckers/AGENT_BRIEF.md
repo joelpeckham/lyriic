@@ -36,5 +36,5 @@ When editing a shared explainer, set its `status: "ready"` and replace stub body
 ## Out of scope
 
 - Do not change syllable/stress algorithms or catalog patterns unless verification finds a clear bug — then note it in `verificationNotes` and stop; do not “fix” the catalog in the content pass without review.
-- Do not invent rhyme-scheme enforcement; lyriic does not model rhyme schemes.
+- Do not add interactive rhyme-scheme UI on form-checker tools pages (they stay syllable/stress SEO tools). Named schemes live on the meter catalog and are checked in the zen editor; CTAs for rhyming forms should point writers there.
 - Do not edit other meters’ form files.

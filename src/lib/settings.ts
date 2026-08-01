@@ -6,6 +6,8 @@ import {
   isMeterCatalogId,
   overlaysForMeterSeed,
   resolveMeterConfig,
+  resolveRhymeScheme,
+  rhymeSchemesForMeter,
 } from "@/lib/meters/presets";
 
 export type EditorSettings = {
@@ -16,6 +18,10 @@ export type EditorSettings = {
   showStress: boolean;
   /** Highlight syllables that break a stress-aware meter pattern. */
   showMeterBreaks: boolean;
+  /** Show rhyme-scheme gutter dots when the meter has schemes. */
+  showRhymeScheme: boolean;
+  /** Selected named rhyme scheme id for the current meter (null when none). */
+  rhymeSchemeId: string | null;
   /** Syllable targets per line for custom meter (cycle). */
   customPattern: number[];
   /** Optional foot used to fill stress for each custom line length. */
@@ -32,6 +38,8 @@ export const DEFAULT_SETTINGS: EditorSettings = {
   showRulers: true,
   showStress: true,
   showMeterBreaks: true,
+  showRhymeScheme: false,
+  rhymeSchemeId: null,
   customPattern: [8],
   customFoot: "none",
 };
@@ -82,6 +90,27 @@ function normalizeCustomPattern(
   return [...DEFAULT_SETTINGS.customPattern];
 }
 
+/** Default scheme id for a meter, or null when the meter has none. */
+export function defaultRhymeSchemeId(meterId: string): string | null {
+  return resolveRhymeScheme(meterId, null)?.id ?? null;
+}
+
+/**
+ * Normalize a persisted scheme id against the meter's catalog schemes.
+ * Falls back to the first scheme (or null).
+ */
+export function normalizeRhymeSchemeId(
+  meterId: string,
+  schemeId: unknown,
+): string | null {
+  const schemes = rhymeSchemesForMeter(meterId);
+  if (schemes.length === 0) return null;
+  if (typeof schemeId === "string" && schemes.some((s) => s.id === schemeId)) {
+    return schemeId;
+  }
+  return schemes[0]?.id ?? null;
+}
+
 /** Normalize persisted or partial settings into a valid EditorSettings. */
 export function normalizeSettings(raw: unknown): EditorSettings {
   const s =
@@ -102,6 +131,9 @@ export function normalizeSettings(raw: unknown): EditorSettings {
       ? s.customFoot
       : DEFAULT_SETTINGS.customFoot;
 
+  const rhymeSchemeId = normalizeRhymeSchemeId(meter, s.rhymeSchemeId);
+  const hasRhyme = rhymeSchemeId !== null;
+
   return {
     meter,
     showCounts:
@@ -120,20 +152,31 @@ export function normalizeSettings(raw: unknown): EditorSettings {
       typeof s.showMeterBreaks === "boolean"
         ? s.showMeterBreaks
         : DEFAULT_SETTINGS.showMeterBreaks,
+    showRhymeScheme:
+      typeof s.showRhymeScheme === "boolean"
+        ? s.showRhymeScheme
+        : hasRhyme
+          ? true
+          : DEFAULT_SETTINGS.showRhymeScheme,
+    rhymeSchemeId,
     customPattern,
     customFoot,
   };
 }
 
+export type OverlaySettingsPick = Pick<
+  EditorSettings,
+  | "showCounts"
+  | "showRulers"
+  | "showStress"
+  | "showMeterBreaks"
+  | "showRhymeScheme"
+>;
+
 /** Build settings for a catalog meter (deep link / writer route). */
 export function settingsForMeter(
   meterId: string,
-  overlayOverrides?: Partial<
-    Pick<
-      EditorSettings,
-      "showCounts" | "showRulers" | "showStress" | "showMeterBreaks"
-    >
-  >,
+  overlayOverrides?: Partial<OverlaySettingsPick>,
 ): EditorSettings | null {
   if (!isMeterCatalogId(meterId) || meterId === "custom") return null;
   const config = resolveMeterConfig({
@@ -145,6 +188,7 @@ export function settingsForMeter(
   return {
     ...DEFAULT_SETTINGS,
     meter: meterId,
+    rhymeSchemeId: defaultRhymeSchemeId(meterId),
     ...overlays,
     ...overlayOverrides,
   };

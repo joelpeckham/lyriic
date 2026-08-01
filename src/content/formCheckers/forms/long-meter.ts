@@ -43,7 +43,7 @@ export const longMeterForm: FormCheckerContent = {
   ],
   formNotes: [
     "lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. Real hymns may stretch “heavenly,” drop a syllable in singing, or substitute a foot — mismatches are feedback, not a claim that every line must be perfectly regular.",
-    "lyriic does not enforce hymn rhyme schemes (ABAB, AABB, and so on) or tune pairing. Doubled long metre (L.M.D., eight lines of eight) is out of scope for this checker.",
+    "This checker scores syllables and stress. For ABAB rhyme dots while you draft, open the zen editor with Long meter. Doubled long metre (L.M.D.) and tune pairing stay out of scope here.",
   ],
   faqs: [
     {
@@ -54,7 +54,7 @@ export const longMeterForm: FormCheckerContent = {
     {
       q: "How is long meter different from common meter?",
       plain:
-        "Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keeps eight syllables on every line (8.8.8.8). Both are typically iambic; lyriic checks syllables and stress, not rhyme.",
+        "Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keeps eight syllables on every line (8.8.8.8). Both are typically iambic; this checker scores syllables and stress, with rhyme dots available in the zen editor.",
     },
     {
       q: "Is my draft uploaded?",
@@ -68,20 +68,20 @@ export const longMeterForm: FormCheckerContent = {
     "Him serve with fear His praise forth tell",
     "Come ye before Him and rejoice",
   ],
-  cta: "Write in the zen editor",
+  cta: "Check rhyme in the zen editor",
   meterExplainer: {
     id: "long-meter",
     title: "Long meter (8 · 8 · 8 · 8)",
     body: [
       "Long meter (L.M.) is a hymn quatrain of four eight-syllable lines — 8.8.8.8 — in iambic tetrameter. Each line expects four rising feet (da-DUM × 4), with strong beats on positions 2, 4, 6, and 8.",
       "In the lyriic catalog the cycle is stored as 8 / 8 and repeats across the four stanza lines, matching hymnal L.M. Homogeneous eights distinguish it from common meter (8 / 6) and short meter.",
-      "When stress-aware checking is on, lyriic compares dictionary stress to that iambic contour line by line. Rhyme and tune choice stay yours.",
+      "When stress-aware checking is on, lyriic compares dictionary stress to that iambic contour line by line. ABAB rhyme dots are available in the zen editor; tune choice stays yours.",
     ],
     status: "ready",
   },
   footExplainerId: "iamb",
   stressExplainerId: "iamb-8-8",
   verificationNotes: [
-    "Catalog: pattern [8, 8] (cycles to 8.8.8.8), footId iamb, stressPatterns [[0,1,0,1,0,1,0,1], [0,1,0,1,0,1,0,1]], stanzaLines 4. Matches English hymn long metre / L.M. (four lines of iambic tetrameter). Intentionally omits rhyme (ABAB/AABB), tune pairing, doubled L.M. (L.M.D.), and long particular metre (8.8.8.8.8.8).",
+    "Catalog: pattern [8, 8] (cycles to 8.8.8.8), footId iamb, stressPatterns [[0,1,0,1,0,1,0,1], [0,1,0,1,0,1,0,1]], stanzaLines 4, rhymeSchemes long-meter ABAB. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits tune pairing, doubled L.M. (L.M.D.), and long particular metre (8.8.8.8.8.8).",
   ],
 };

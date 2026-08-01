@@ -1,4 +1,5 @@
 export {
+  getRhymeRevision,
   hasRhymeEntry,
   hasRhymeQueryEntry,
   isRhymeIndexReady,
@@ -10,5 +11,14 @@ export {
   materializeWords,
   prefetchRhymes,
   queryRhymeIds,
+  rhymeKeyIds,
+  subscribeRhymeReady,
+  wordsRhyme,
   type RhymeMode,
 } from "./lookup";
+export {
+  analyzeRhymeScheme,
+  endWordOfLine,
+  type RhymeLineStatus,
+  type RhymeSchemeLine,
+} from "./scheme";

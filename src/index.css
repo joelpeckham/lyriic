@@ -95,6 +95,14 @@
   --lyriic-ruler: oklch(0.55 0.01 56);
   --lyriic-subtle: oklch(0.48 0.012 58);
   --lyriic-subtle-faint: oklch(0.55 0.01 58);
+  --lyriic-rhyme-match: oklch(0.52 0.14 145);
+  --lyriic-rhyme-a: oklch(0.52 0.12 35);
+  --lyriic-rhyme-b: oklch(0.5 0.1 145);
+  --lyriic-rhyme-c: oklch(0.5 0.11 230);
+  --lyriic-rhyme-d: oklch(0.52 0.12 75);
+  --lyriic-rhyme-e: oklch(0.5 0.1 300);
+  --lyriic-rhyme-f: oklch(0.48 0.09 200);
+  --lyriic-rhyme-g: oklch(0.5 0.11 20);
   --lyriic-wash-a: #fafaf9;
   --lyriic-wash-b: #f5f5f4;
   --lyriic-wash-c: #ffffff;
@@ -141,6 +149,14 @@
   --lyriic-ruler: oklch(0.72 0.01 56);
   --lyriic-subtle: oklch(0.78 0.01 56);
   --lyriic-subtle-faint: oklch(0.7 0.01 56);
+  --lyriic-rhyme-match: oklch(0.74 0.14 145);
+  --lyriic-rhyme-a: oklch(0.72 0.12 35);
+  --lyriic-rhyme-b: oklch(0.72 0.1 145);
+  --lyriic-rhyme-c: oklch(0.72 0.11 230);
+  --lyriic-rhyme-d: oklch(0.74 0.12 75);
+  --lyriic-rhyme-e: oklch(0.72 0.1 300);
+  --lyriic-rhyme-f: oklch(0.7 0.09 200);
+  --lyriic-rhyme-g: oklch(0.72 0.11 20);
   --lyriic-wash-a: oklch(0.216 0.006 56);
   --lyriic-wash-b: oklch(0.268 0.007 34);
   --lyriic-wash-c: oklch(0.24 0.006 50);
@@ -350,6 +366,75 @@ html[data-contrast="more"].dark {
   font-size: 1.05rem;
   font-weight: 800;
   opacity: 1;
+}
+
+/* Rhyme-scheme gutter dots (letter → stable hue). */
+.lyriic-rhyme-dot {
+  position: absolute;
+  box-sizing: border-box;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  background: var(--lyriic-rhyme-a, var(--lyriic-ruler));
+  opacity: 0.9;
+  pointer-events: none;
+  user-select: none;
+  transform: translateY(-50%);
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    opacity 120ms ease;
+}
+
+.lyriic-rhyme-dot--A {
+  background: var(--lyriic-rhyme-a);
+}
+.lyriic-rhyme-dot--B {
+  background: var(--lyriic-rhyme-b);
+}
+.lyriic-rhyme-dot--C {
+  background: var(--lyriic-rhyme-c);
+}
+.lyriic-rhyme-dot--D {
+  background: var(--lyriic-rhyme-d);
+}
+.lyriic-rhyme-dot--E {
+  background: var(--lyriic-rhyme-e);
+}
+.lyriic-rhyme-dot--F {
+  background: var(--lyriic-rhyme-f);
+}
+.lyriic-rhyme-dot--G {
+  background: var(--lyriic-rhyme-g);
+}
+
+.lyriic-rhyme-dot--muted {
+  opacity: 0.4;
+  background: var(--lyriic-subtle-faint);
+}
+
+/* Perfect rhyme — solid green. */
+.lyriic-rhyme-dot--match {
+  background: var(--lyriic-rhyme-match);
+  border-color: var(--lyriic-rhyme-match);
+  opacity: 1;
+}
+
+/* End rhyme only — hollow green donut. */
+.lyriic-rhyme-dot--end {
+  background: transparent;
+  border-color: var(--lyriic-rhyme-match);
+  opacity: 1;
+}
+
+.lyriic-rhyme-dot--mismatch {
+  background: var(--lyriic-over);
+  border-color: var(--lyriic-over);
+  opacity: 1;
+  /* Non-color cue (WCAG 1.4.1) — ring, not color alone. */
+  box-shadow: 0 0 0 1.5px var(--lyriic-over);
 }
 
 @layer base {

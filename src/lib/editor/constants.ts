@@ -15,3 +15,6 @@ export const LINE_GAP_REM = 1.75;
 
 /** Right padding reserved for syllable count overlays. */
 export const COUNT_GUTTER_REM = 3;
+
+/** Extra right-gutter slot for rhyme-scheme dots (beside counts). */
+export const RHYME_GUTTER_REM = 0.9;

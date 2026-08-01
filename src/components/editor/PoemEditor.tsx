@@ -9,6 +9,7 @@ import {
 } from "@/components/editor/WordToolsPopover";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { usePrefs } from "@/hooks/usePrefs";
+import { useRhymeRevision } from "@/hooks/useRhymeRevision";
 import { useStressRevision } from "@/hooks/useStressRevision";
 import { useVariantsRevision } from "@/hooks/useVariantsRevision";
 import { isStressReady, loadStress } from "@/lib/data/stress";
@@ -35,8 +36,14 @@ import {
   formatMeterLabel,
   isStressAwareMeterConfig,
   resolveMeterConfig,
+  resolveRhymeScheme,
   type MeteredLine,
 } from "@/lib/meters";
+import {
+  analyzeRhymeScheme,
+  isRhymeQueryReady,
+  loadRhymeQuery,
+} from "@/lib/rhyme";
 import type { EditorSettings } from "@/lib/settings";
 
 type PoemEditorProps = {
@@ -128,6 +135,7 @@ export function PoemEditor({
   const dictRevision = useDictRevision();
   const stressPackRevision = useStressRevision();
   const variantsPackRevision = useVariantsRevision();
+  const rhymePackRevision = useRhymeRevision();
 
   const meterConfig = useMemo(
     () =>
@@ -139,9 +147,16 @@ export function PoemEditor({
     [settings.meter, settings.customPattern, settings.customFoot],
   );
 
+  const activeRhymeScheme = useMemo(
+    () => resolveRhymeScheme(settings.meter, settings.rhymeSchemeId),
+    [settings.meter, settings.rhymeSchemeId],
+  );
+
   const needsStress =
     settings.showStress || isStressAwareMeterConfig(meterConfig);
   const hasMeterTarget = meterConfig.pattern.length > 0;
+  const needsRhyme =
+    settings.showRhymeScheme && activeRhymeScheme !== null;
 
   // Retry failed pack loads; createLazyBinData clears its promise on error.
   useEffect(() => {
@@ -178,6 +193,24 @@ export function PoemEditor({
     };
   }, [hasMeterTarget, variantsPackRevision]);
 
+  useEffect(() => {
+    // Scheme overlay needs perfect + end packs (solid vs donut green).
+    if (!needsRhyme || isRhymeQueryReady(true)) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const attempt = () => {
+      void loadRhymeQuery(true).catch(() => {
+        if (cancelled) return;
+        timer = setTimeout(attempt, 3000);
+      });
+    };
+    attempt();
+    return () => {
+      cancelled = true;
+      if (timer !== undefined) clearTimeout(timer);
+    };
+  }, [needsRhyme, rhymePackRevision]);
+
   const lineCounts = useSyllableLineCounts(
     liveText,
     documentKey,
@@ -205,6 +238,18 @@ export function PoemEditor({
   useLayoutEffect(() => {
     meteredLinesRef.current = meteredLines;
   }, [meteredLines]);
+
+  const rhymeLines = useMemo(() => {
+    if (!needsRhyme || !activeRhymeScheme) return [];
+    // rhymePackRevision keeps analysis in sync after the pack loads.
+    void rhymePackRevision;
+    return analyzeRhymeScheme(lineCounts.lines, activeRhymeScheme.pattern);
+  }, [
+    needsRhyme,
+    activeRhymeScheme,
+    lineCounts.lines,
+    rhymePackRevision,
+  ]);
 
   // Create / destroy the editor once per mount (parent remounts on documentKey).
   useEffect(() => {
@@ -292,6 +337,8 @@ export function PoemEditor({
       showRulers: settings.showRulers,
       showStress: settings.showStress,
       showMeterBreaks: settings.showMeterBreaks,
+      showRhymeScheme: needsRhyme,
+      rhymeLines,
       lines: meteredLines,
       textLines: lineCounts.lines,
     });
@@ -299,6 +346,8 @@ export function PoemEditor({
   }, [
     meteredLines,
     lineCounts.lines,
+    rhymeLines,
+    needsRhyme,
     settings.showCounts,
     settings.showRulers,
     settings.showStress,

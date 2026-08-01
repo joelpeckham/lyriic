@@ -24,6 +24,16 @@ export const METER_GROUP_LABELS: Record<MeterGroupId, string> = {
   custom: "Custom",
 };
 
+export type RhymeScheme = {
+  readonly id: string;
+  readonly label: string;
+  /**
+   * Cycle of scheme letters, e.g. `"ABABCDCDEFEFGG"`.
+   * `X` = unrhymed (no peer required). Soft-cycles when the poem is longer.
+   */
+  readonly pattern: string;
+};
+
 export type MeterConfig = {
   readonly id: string;
   readonly label: string;
@@ -36,6 +46,8 @@ export type MeterConfig = {
   readonly stressPatterns?: readonly BinaryStressPattern[];
   /** Soft expected lines per stanza/poem; null/undefined = unbounded. */
   readonly stanzaLines?: number | null;
+  /** Named rhyme schemes for this form. Empty / omitted = none. */
+  readonly rhymeSchemes?: readonly RhymeScheme[];
   readonly description: string;
 };
 
@@ -80,6 +92,7 @@ function ballad(
   description: string,
   stanzaLines: number | null = 4,
   foot: FootId = "iamb",
+  rhymeSchemes?: readonly RhymeScheme[],
 ): MeterCatalogEntry {
   const stressPatterns = stressPatternsForCycle(foot, pattern);
   return {
@@ -91,6 +104,7 @@ function ballad(
     footId: foot,
     description,
     stanzaLines,
+    ...(rhymeSchemes && rhymeSchemes.length > 0 ? { rhymeSchemes } : {}),
   };
 }
 
@@ -100,6 +114,7 @@ function syllableForm(
   pattern: readonly number[],
   description: string,
   stanzaLines?: number | null,
+  rhymeSchemes?: readonly RhymeScheme[],
 ): MeterCatalogEntry {
   return {
     id,
@@ -108,7 +123,16 @@ function syllableForm(
     pattern,
     description,
     stanzaLines: stanzaLines ?? pattern.length,
+    ...(rhymeSchemes && rhymeSchemes.length > 0 ? { rhymeSchemes } : {}),
   };
+}
+
+function scheme(
+  id: string,
+  label: string,
+  pattern: string,
+): RhymeScheme {
+  return { id, label, pattern };
 }
 
 export const METER_CATALOG: readonly MeterCatalogEntry[] = [
@@ -162,6 +186,11 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     footId: "iamb",
     description: "14 lines of iambic pentameter",
     stanzaLines: 14,
+    rhymeSchemes: [
+      scheme("shakespearean", "Shakespearean", "ABABCDCDEFEFGG"),
+      scheme("petrarchan", "Petrarchan", "ABBAABBACDECDE"),
+      scheme("spenserian", "Spenserian", "ABABBCBCCDCDEE"),
+    ],
   },
   accentual(
     "iambic-hexameter",
@@ -228,6 +257,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     footId: "iamb",
     description: "Paired lines of iambic pentameter",
     stanzaLines: 2,
+    rhymeSchemes: [scheme("couplet", "Couplet", "AA")],
   },
 
   // Song / ballad
@@ -237,14 +267,26 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     [8, 6],
     "8 / 6 iambic ballad stanza",
     4,
+    "iamb",
+    [scheme("common", "Common", "ABAB")],
   ),
-  ballad("long-meter", "Long meter", [8, 8], "8 / 8 iambic hymn stanza", 4),
+  ballad(
+    "long-meter",
+    "Long meter",
+    [8, 8],
+    "8 / 8 iambic hymn stanza",
+    4,
+    "iamb",
+    [scheme("long-meter", "Long meter", "ABAB")],
+  ),
   ballad(
     "short-meter",
     "Short meter",
     [6, 6, 8, 6],
     "6 / 6 / 8 / 6 iambic hymn stanza",
     4,
+    "iamb",
+    [scheme("short-meter", "Short meter", "ABCB")],
   ),
   {
     id: "eights-and-sevens",
@@ -256,6 +298,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     footId: "trochee",
     description: "8 / 7 trochaic hymn meter",
     stanzaLines: 4,
+    rhymeSchemes: [scheme("eights-and-sevens", "8s & 7s", "ABAB")],
   },
   {
     id: "ballad-stanza",
@@ -266,6 +309,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     footId: "iamb",
     description: "Common-meter quatrain cycle",
     stanzaLines: 4,
+    rhymeSchemes: [scheme("ballad", "Ballad", "ABCB")],
   },
 
   // Syllable forms
@@ -301,6 +345,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     [8, 8, 5, 5, 8],
     "8 / 8 / 5 / 5 / 8 syllable shape",
     5,
+    [scheme("limerick", "Limerick", "AABBA")],
   ),
 
   {
@@ -385,8 +430,42 @@ export function resolveMeterConfig(input: ResolveMeterInput): MeterConfig {
     pattern: entry.pattern,
     stressPatterns: entry.stressPatterns,
     stanzaLines: entry.stanzaLines,
+    rhymeSchemes: entry.rhymeSchemes,
     description: entry.description,
   };
+}
+
+/** Named rhyme schemes for a catalog meter (empty when none). */
+export function rhymeSchemesForMeter(meterId: string): readonly RhymeScheme[] {
+  if (!isMeterCatalogId(meterId) || meterId === "custom") return [];
+  return getMeterCatalogEntry(meterId).rhymeSchemes ?? [];
+}
+
+/**
+ * Resolve a named scheme for a meter. Defaults to the first scheme when
+ * `schemeId` is missing or unknown.
+ */
+export function resolveRhymeScheme(
+  meterId: string,
+  schemeId: string | null | undefined,
+): RhymeScheme | null {
+  const schemes = rhymeSchemesForMeter(meterId);
+  if (schemes.length === 0) return null;
+  if (schemeId) {
+    const hit = schemes.find((s) => s.id === schemeId);
+    if (hit) return hit;
+  }
+  return schemes[0] ?? null;
+}
+
+/** Scheme letter for a line index (cycles the pattern). */
+export function rhymeLetterForLine(
+  schemePattern: string,
+  lineIndex: number,
+): string | null {
+  if (schemePattern.length === 0) return null;
+  const ch = schemePattern[lineIndex % schemePattern.length];
+  return ch ?? null;
 }
 
 function formatCustomDescription(
@@ -475,12 +554,15 @@ export function overlaysForMeterSeed(config: MeterConfig): {
   showRulers: boolean;
   showStress: boolean;
   showMeterBreaks: boolean;
+  showRhymeScheme: boolean;
 } {
   const stressAware = isStressAwareMeterConfig(config);
+  const hasRhyme = Boolean(config.rhymeSchemes && config.rhymeSchemes.length > 0);
   return {
     showCounts: true,
     showRulers: config.pattern.length > 0,
     showStress: true,
     showMeterBreaks: stressAware,
+    showRhymeScheme: hasRhyme,
   };
 }

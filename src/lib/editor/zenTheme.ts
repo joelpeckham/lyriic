@@ -3,6 +3,7 @@ import { EditorView } from "@codemirror/view";
 import {
   COUNT_GUTTER_REM,
   LINE_GAP_REM,
+  RHYME_GUTTER_REM,
   WRAP_LEADING,
 } from "@/lib/editor/constants";
 
@@ -50,7 +51,8 @@ export function zenEditorTheme(fontSizeRem: number) {
          ignore margins, so marginBottom makes hit-testing drift worse each line. */
       ".cm-line": {
         cursor: "text",
-        paddingRight: `${COUNT_GUTTER_REM}rem`,
+        /* Count gutter + rhyme-dot slot (scheme overlay sits beside counts). */
+        paddingRight: `${COUNT_GUTTER_REM + RHYME_GUTTER_REM}rem`,
         paddingBottom: `${LINE_GAP_REM}rem`,
         letterSpacing: "0.01em",
       },

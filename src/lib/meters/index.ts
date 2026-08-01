@@ -52,6 +52,9 @@ export {
   METER_PRESETS,
   overlaysForMeterSeed,
   resolveMeterConfig,
+  resolveRhymeScheme,
+  rhymeLetterForLine,
+  rhymeSchemesForMeter,
   stressExplainerIdForEntry,
   stressPatternForLine,
   targetForLine,
@@ -61,6 +64,7 @@ export {
   type MeterPreset,
   type MeterPresetId,
   type ResolveMeterInput,
+  type RhymeScheme,
 } from "./presets";
 export {
   isReusableEmptyDraft,
