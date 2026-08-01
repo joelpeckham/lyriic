@@ -1,6 +1,9 @@
 /**
  * Prerender content routes into dist/ after vite build.
  * Skips "/" so the SEO shell in index.html is preserved.
+ *
+ * Vercel build images lack the shared libs Playwright's Chromium needs
+ * (e.g. libnspr4.so), so we launch @sparticuz/chromium there instead.
  */
 import { execSync, spawn } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -12,6 +15,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 const PORT = 4179;
 const ORIGIN = `http://127.0.0.1:${PORT}`;
+const onVercel = Boolean(process.env.VERCEL);
 
 const ROUTES = [
   "/faq",
@@ -58,7 +62,7 @@ function routeToFile(route) {
   return join(dist, trimmed, "index.html");
 }
 
-function ensureChromium() {
+function ensurePlaywrightChromium() {
   const executable = chromium.executablePath();
   if (existsSync(executable)) return;
   console.log("Playwright Chromium missing; installing…");
@@ -68,13 +72,27 @@ function ensureChromium() {
   });
 }
 
+async function launchBrowser() {
+  if (onVercel) {
+    const sparticuz = (await import("@sparticuz/chromium")).default;
+    console.log("Launching @sparticuz/chromium for Vercel build…");
+    return chromium.launch({
+      args: sparticuz.args,
+      executablePath: await sparticuz.executablePath(),
+      headless: true,
+    });
+  }
+
+  ensurePlaywrightChromium();
+  return chromium.launch({ headless: true });
+}
+
 async function main() {
-  ensureChromium();
   const preview = startPreview();
   let browser;
   try {
     await waitForServer(ORIGIN);
-    browser = await chromium.launch({ headless: true });
+    browser = await launchBrowser();
     const page = await browser.newPage();
 
     for (const route of ROUTES) {
