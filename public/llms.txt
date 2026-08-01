@@ -1,0 +1,33 @@
+# lyriic
+
+> lyriic is a local-first web editor for writing poetry and lyrics in meter, with per-line syllable counts, optional meter rulers, and quiet rhyme/synonym helpers.
+
+lyriic runs entirely in the browser at https://lyriic.com. Drafts stay on-device; there is no account or cloud sync. Syllable counts default to the CMU Pronouncing Dictionary primary pronunciation; users can override ambiguous words per draft. lyriic is not a generative AI lyric writer.
+
+## Product
+
+- [lyriic home](https://lyriic.com/): Zen poem canvas with syllable counts and meter tools
+- [Product brief (Markdown)](https://lyriic.com/about.md): Features, audience, privacy model, how counting works
+- [FAQ](https://lyriic.com/faq): Common questions — also [faq.md](https://lyriic.com/faq.md)
+
+## Tools
+
+- [Syllable counter](https://lyriic.com/tools/syllable-counter): Per-line CMUdict syllable counts — [syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
+- [Haiku checker](https://lyriic.com/tools/haiku-checker): 5-7-5 validator — [haiku-checker.md](https://lyriic.com/tools/haiku-checker.md)
+- [Rhyme finder](https://lyriic.com/tools/rhyme-finder): Local rhyming dictionary — [rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
+
+## How it works
+
+- [Syllable counting](https://lyriic.com/about.md#how-syllable-counting-works): CMUdict primary pronunciation; hyphen splits; OOV heuristic; per-draft overrides
+- [Meter rulers](https://lyriic.com/faq.md): Haiku, iambic pentameter, common meter, or custom targets
+- [Rhymes and synonyms](https://lyriic.com/faq.md): Local dictionary helpers (not generative rewrite)
+
+## Policies
+
+- [Privacy](https://lyriic.com/privacy): Local-first; what is and is not collected — [privacy.md](https://lyriic.com/privacy.md)
+
+## Optional
+
+- [Sitemap](https://lyriic.com/sitemap.xml): Full URL list for crawlers
+- [robots.txt](https://lyriic.com/robots.txt): Crawl permissions
+- [llms-full.txt](https://lyriic.com/llms-full.txt): Concatenated product brief, FAQ, tools, and privacy

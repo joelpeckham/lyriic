@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "pnpm build:seo && tsc -b && vite build && pnpm prerender",
+    "build:seo": "node --experimental-strip-types scripts/build-seo-content.mjs",
+    "prerender": "node scripts/prerender.mjs",
     "lint": "oxlint",
     "lint:hooks": "eslint src",
     "typecheck": "tsc -b",
@@ -51,6 +53,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "jsdom": "^30.0.1",
     "oxlint": "^1.75.0",
+    "playwright": "^1.62.1",
     "shadcn": "^4.16.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.65.0",

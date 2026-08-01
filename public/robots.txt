@@ -1,4 +1,16 @@
+# https://lyriic.com/robots.txt
+# Agent index: https://lyriic.com/llms.txt
+
 User-agent: *
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
 Allow: /
 
 Sitemap: https://lyriic.com/sitemap.xml

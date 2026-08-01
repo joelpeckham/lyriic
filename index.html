@@ -6,39 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="A zen text editor for writing in meter. Syllable counts, meter rulers, and quiet synonym and rhyme helpers — local-first on lyriic.com."
+      content="Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser."
     />
     <link rel="canonical" href="https://lyriic.com/" />
-    <meta property="og:title" content="lyriic — a zen editor for writing in meter" />
+    <meta
+      property="og:title"
+      content="lyriic — zen poetry & lyric editor with syllable counts"
+    />
     <meta
       property="og:description"
-      content="A zen text editor for writing in meter. Syllable counts, meter rulers, and quiet synonym and rhyme helpers — local-first on lyriic.com."
+      content="Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser."
     />
     <meta property="og:url" content="https://lyriic.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="lyriic" />
-    <meta property="og:image" content="https://lyriic.com/og.png" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://lyriic.com/og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="lyriic — a zen editor for writing in meter" />
+    <meta
+      name="twitter:title"
+      content="lyriic — zen poetry & lyric editor with syllable counts"
+    />
     <meta
       name="twitter:description"
-      content="A zen text editor for writing in meter. Syllable counts, meter rulers, and quiet synonym and rhyme helpers — local-first on lyriic.com."
+      content="Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser."
     />
-    <meta name="twitter:image" content="https://lyriic.com/og.png" />
+    <meta name="twitter:image" content="https://lyriic.com/og.jpg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <title>lyriic — a zen editor for writing in meter</title>
+    <title>lyriic — zen poetry &amp; lyric editor with syllable counts</title>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "lyriic",
         "url": "https://lyriic.com/",
-        "description": "A zen text editor for writing in meter. Syllable counts, meter rulers, and quiet synonym and rhyme helpers — local-first on lyriic.com.",
+        "description": "Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript",
+        "isAccessibleForFree": true,
+        "featureList": [
+          "Per-line syllable counts from the CMU Pronouncing Dictionary",
+          "Optional meter rulers for haiku, iambic pentameter, and common meter",
+          "Hover or tap a word for rhyme and synonym helpers",
+          "Local-first drafts with no account or cloud sync",
+          "Works offline after assets load"
+        ],
+        "knowsAbout": [
+          "poetry",
+          "lyrics",
+          "meter",
+          "syllables",
+          "haiku",
+          "rhyme",
+          "songwriting"
+        ],
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -46,10 +71,96 @@
         }
       }
     </script>
+    <style>
+      /* Match app background so the SEO shell does not flash a white page. */
+      html,
+      body {
+        margin: 0;
+        background: #f7f3eb;
+      }
+      #root .seo-shell {
+        box-sizing: border-box;
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 2.5rem 1rem;
+        font-family: Georgia, "Times New Roman", serif;
+        color: #2a2620;
+        line-height: 1.55;
+      }
+      #root .seo-shell a {
+        color: inherit;
+      }
+      @media (prefers-color-scheme: dark) {
+        html,
+        body {
+          background: #1a1814;
+        }
+        #root .seo-shell {
+          color: #ebe6dc;
+        }
+      }
+    </style>
     <script src="/theme-boot.js"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <article class="seo-shell">
+        <h1>lyriic</h1>
+        <p>
+          A free, local-first zen editor for writing poetry and lyrics in meter.
+          Per-line syllable counts, optional meter rulers, and quiet rhyme and
+          synonym helpers — all in your browser. Not a generative AI lyric
+          writer.
+        </p>
+        <h2>Features</h2>
+        <ul>
+          <li>
+            Per-line syllable counts from the CMU Pronouncing Dictionary
+          </li>
+          <li>
+            Optional meter rulers for haiku (5/7/5), iambic pentameter, and
+            common meter
+          </li>
+          <li>Hover or tap a word for rhyme and synonym helpers</li>
+          <li>Drafts stay on your device — no account or cloud sync</li>
+          <li>Works offline after assets load</li>
+        </ul>
+        <h2>Tools</h2>
+        <ul>
+          <li>
+            <a href="/tools/syllable-counter">Syllable counter</a> for poems and
+            lyrics
+          </li>
+          <li>
+            <a href="/tools/haiku-checker">Haiku checker</a> for 5-7-5 syllable
+            patterns
+          </li>
+          <li>
+            <a href="/tools/rhyme-finder">Rhyme finder</a> with a local rhyming
+            dictionary
+          </li>
+        </ul>
+        <p>
+          <a href="/faq">FAQ</a> · <a href="/privacy">Privacy</a> ·
+          <a href="/about.md">About (Markdown)</a> ·
+          <a href="/llms.txt">llms.txt</a>
+        </p>
+      </article>
+    </div>
+    <noscript>
+      <article style="max-width: 42rem; margin: 0 auto; padding: 2.5rem 1rem">
+        <h1>lyriic</h1>
+        <p>
+          A free, local-first zen editor for writing poetry and lyrics in meter.
+          Enable JavaScript to use the interactive editor, or read the
+          <a href="/about.md">product brief</a>,
+          <a href="/faq">FAQ</a>, and tools:
+          <a href="/tools/syllable-counter">syllable counter</a>,
+          <a href="/tools/haiku-checker">haiku checker</a>,
+          <a href="/tools/rhyme-finder">rhyme finder</a>.
+        </p>
+      </article>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

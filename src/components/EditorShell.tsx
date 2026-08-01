@@ -37,10 +37,15 @@ export function EditorShell() {
   const { prefs, markEditorHintSeen } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const pageTitle =
-    active.name.trim() && active.name.trim() !== "Untitled"
-      ? `${active.name.trim()} · lyriic`
-      : SITE_TITLE;
+  // Keep the brand title on first paint / sharing; only rename after the draft
+  // has content so empty Untitled sessions do not pollute bookmarks.
+  const namedDraft =
+    active.name.trim() &&
+    active.name.trim() !== "Untitled" &&
+    active.text.trim().length > 0;
+  const pageTitle = namedDraft
+    ? `${active.name.trim()} · lyriic`
+    : SITE_TITLE;
 
   useDocumentMeta({
     title: pageTitle,

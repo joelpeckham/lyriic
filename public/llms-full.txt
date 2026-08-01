@@ -1,0 +1,171 @@
+# lyriic
+
+> A free, local-first zen editor for writing poetry and lyrics in meter.
+
+lyriic runs entirely in the browser at https://lyriic.com. It is a quiet writing canvas with per-line syllable counts, optional meter rulers, and dictionary-based rhyme and synonym helpers. It is **not** a generative AI lyric writer.
+
+## Who it is for
+
+Poets, songwriters, and anyone practicing meter or syllable-aware lines who wants tools that stay out of the way.
+
+## Core features
+
+- Per-line syllable counts from the CMU Pronouncing Dictionary primary pronunciation
+- Optional meter rulers (Haiku 5/7/5, iambic pentameter, common meter, or custom)
+- Hover or tap a word for synonyms and rhymes, sorted by syllable count
+- Per-draft syllable overrides for ambiguous words
+- Local-first drafts — no account, no cloud sync
+- Offline use after assets load
+
+## How syllable counting works
+
+Counts follow the CMU Pronouncing Dictionary primary pronunciation (stress-marked phones). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Users can override counts per draft in Settings.
+
+## Privacy
+
+Drafts and preferences stay in browser local storage. Poem text is not sent to a server for editing. See [Privacy](https://lyriic.com/privacy) and [privacy.md](https://lyriic.com/privacy.md).
+
+## Tools
+
+- [Syllable counter](https://lyriic.com/tools/syllable-counter) — [https://lyriic.com/tools/syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
+- [Haiku checker](https://lyriic.com/tools/haiku-checker) — [https://lyriic.com/tools/haiku-checker.md](https://lyriic.com/tools/haiku-checker.md)
+- [Rhyme finder](https://lyriic.com/tools/rhyme-finder) — [https://lyriic.com/tools/rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
+
+## Pricing
+
+Free. No account required.
+
+
+---
+
+# FAQ
+
+## What is lyriic?
+
+lyriic is a zen text editor for writing in meter — poetry, lyrics, or any line that needs a syllable count. It stays quiet so you can stay with the words. It is not a generative AI lyric writer.
+
+## How are syllables counted?
+
+Counts follow the CMU Pronouncing Dictionary primary pronunciation. Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.
+
+## What are meter rulers?
+
+Optional ticks at syllable boundaries. Presets include Haiku (5/7/5), iambic pentameter (10), and common meter (8/6), or a custom target.
+
+## How do synonyms and rhymes work?
+
+Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Suggestions are sorted by syllable count and highlighted when they match your meter target. Dictionaries ship with the app.
+
+## Where are my drafts stored?
+
+Locally in your browser — no account, no cloud sync. Drafts and preferences stay on this device. See the privacy policy for details.
+
+## Can I change the look of the editor?
+
+Yes. Settings include system, light, or dark theme, higher contrast, and editor font size (S–XL).
+
+## Does writing leave my browser?
+
+No. Syllable counts, thesaurus, and rhyme helpers run client-side. Poem text is not sent to a server for editing. You can keep writing offline after assets load.
+
+---
+
+# Tools
+
+# Syllable counter
+
+Paste a stanza or type line by line. See totals and per-word beats from the same CMUdict engine that powers the lyriic editor.
+
+Each line shows a syllable total, with a per-word breakdown so you can spot where a beat runs short or long. Try the haiku, iambic, or lyric samples to get a feel for the readout.
+
+Counts prefer the CMU Pronouncing Dictionary primary pronunciation. Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in a warmer tint).
+
+For live counts beside the cursor, meter rulers, and per-draft overrides, open the full editor — nothing leaves your device.
+
+## Is this syllable counter free?
+
+Yes. The tool runs in your browser on lyriic.com with no account and no upload of your text to a server for counting.
+
+## How accurate are the counts?
+
+Most English words use CMUdict primary pronunciations. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.
+
+## Can I use it for song lyrics?
+
+Yes. Per-line totals help match syllable counts to a melody or flow, whether you are writing verse, chorus, or spoken word.
+
+---
+
+# Haiku checker
+
+Shape a three-line draft against 5 · 7 · 5. Same CMUdict syllable engine as the lyriic poetry editor — private in your browser.
+
+Each line shows its syllable total, a simple meter tick, and a delta when you are over or under the English teaching targets of five, seven, and five.
+
+English haiku practice varies — some poets treat the form more loosely than strict 5-7-5, and Japanese haiku is counted in on, not English syllables. Use this checker for a clear syllabic readout, then refine the image on the page.
+
+When you want live 5/7/5 ticks while you write — not only after you paste — open the lyriic editor and choose the Haiku meter ruler. Drafts stay local; nothing is sent to a server for counting.
+
+## What is a 5-7-5 haiku?
+
+In English teaching contexts, a haiku is often three lines with five syllables, then seven, then five. Traditional Japanese haiku is measured in on (sound units), which is not identical to English syllables.
+
+## Does lyriic include a haiku meter ruler?
+
+Yes. In the editor, choose the Haiku preset under meter rulers for live 5/7/5 ticks beside each line as you write.
+
+## Is my haiku uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+---
+
+# Rhyme finder
+
+Browse rhymes by syllable count from a local dictionary. In the lyriic editor, hover or tap a word to open the same index beside your draft.
+
+Type a word to see rhyming candidates from the bundled index, grouped by syllables so you can keep meter in mind. Results stay on-device; there is no cloud rhyme API.
+
+The page is for browsing. The editor is for drafting: hover or tap a word, pick a rhyme sorted by syllable count—with meter-aware highlighting when a ruler is set.
+
+lyriic pairs rhyme helpers with live syllable counts and synonym lookup so you can shape meter and diction without leaving the line.
+
+## Is this a full RhymeZone replacement?
+
+It is a focused local rhyme index for drafting. For an all-in-one writing session with syllables and meter beside your lines, use the lyriic editor rather than switching tabs.
+
+## Do rhymes work offline?
+
+Yes after the app assets load. The rhyme index ships with the site and lookups run in your browser.
+
+## Does lyriic generate lyrics with AI?
+
+No. lyriic is a meter-focused editor with dictionary helpers — not a generative AI songwriting tool.
+
+---
+
+# Privacy
+
+Effective July 31, 2026
+
+lyriic is a client-only writing tool. This page explains what stays on your device and what does not leave your browser.
+
+## What lyriic stores
+
+Drafts (poem text, settings, and syllable overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, font size, and related flags) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.
+
+## What we do not collect
+
+lyriic does not run analytics, advertising pixels, or third-party trackers. Writing, syllable counts, synonym lookups, and rhyme helpers run in your browser. Poem text is not sent to a server for editing. Dictionaries ship with the app bundle and load locally.
+
+## Hosting and network
+
+The website is served as static files (currently via Vercel). Your browser requests those assets like any other site. The app is built so editing does not require outbound API calls for its core features. Hosting providers may log standard technical request data (such as IP address and user agent) as part of delivering the site; that is outside the editor's local storage model described above.
+
+## Sale of data
+
+We do not sell personal information. There is no personal profile stored by lyriic on a server to sell.
+
+## Contact
+
+Questions about this policy? Reach the maker at https://jpeckham.com.

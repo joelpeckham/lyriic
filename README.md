@@ -27,6 +27,8 @@ pnpm preview
 pnpm lint
 ```
 
+`pnpm build` regenerates SEO/agent files (`llms.txt`, markdown mirrors, sitemap), builds the app, then prerenders `/faq`, `/privacy`, and `/tools/*` (requires Playwright Chromium: `pnpm exec playwright install chromium`).
+
 Rebuild dictionary artifacts after updating `scripts/cmudict.dict`:
 
 ```bash
@@ -40,6 +42,8 @@ Rebuild the synonym map after updating Moby source (downloads if missing):
 pnpm build:thesaurus
 ```
 
+
+
 ## Syllable counting
 
 Defaults follow the [CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict) **primary** pronunciation (count phones with stress digits). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Prefer an alternate count for ambiguous words (e.g. poetic `fire` as 1) via Settings → Syllable overrides; overrides persist with the active draft.
@@ -50,6 +54,3 @@ CMUdict is © Carnegie Mellon University; use is unrestricted for research and c
 
 Vercel detects Vite automatically (`pnpm build` → `dist`). Security headers and CSP live in `vercel.json`. Point the production domain to `lyriic.com` in the Vercel dashboard (DNS). No env vars are required for the client-only editor.
 
-## Roadmap
-
-See [ROADMAP.md](./ROADMAP.md) for phases: syllable engine, editor canvas, meter rulers, thesaurus/rhyme popovers, and deploy polish.

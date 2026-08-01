@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { SITE_URL } from "@/lib/seo";
+import { OG_IMAGE, absoluteUrl } from "@/lib/seo";
 
 type DocumentMeta = {
   title: string;
@@ -42,14 +42,20 @@ export function useDocumentMeta({
   path,
 }: DocumentMeta): void {
   useEffect(() => {
-    const canonical = `${SITE_URL}${path === "/" ? "/" : path}`;
+    const canonical = absoluteUrl(path);
     document.title = title;
     upsertMeta("name", "description", description);
     upsertMeta("property", "og:title", title);
     upsertMeta("property", "og:description", description);
     upsertMeta("property", "og:url", canonical);
+    upsertMeta("property", "og:image", OG_IMAGE);
+    upsertMeta("property", "og:type", "website");
+    upsertMeta("property", "og:site_name", "lyriic");
+    upsertMeta("property", "og:locale", "en_US");
+    upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", title);
     upsertMeta("name", "twitter:description", description);
+    upsertMeta("name", "twitter:image", OG_IMAGE);
     upsertCanonical(canonical);
   }, [title, description, path]);
 }

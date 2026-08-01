@@ -51,6 +51,4 @@ export function handleAppShortcut(
 export const SHORTCUT_HINTS = [
   { action: "Settings", keys: "⌘ + ," },
   { action: "Focus poem", keys: "⌘ + ." },
-  { action: "Synonyms", keys: "⌘ + '" },
-  { action: "Rhymes", keys: "⌘ + ;" },
 ] as const;

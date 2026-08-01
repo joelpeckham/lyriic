@@ -32,6 +32,12 @@ export function AppFooter({
           variant === "overlay" && "opacity-70 transition-opacity hover:opacity-100",
         )}
       >
+        <Link to="/tools/syllable-counter" className={linkClass}>
+          Tools
+        </Link>
+        <span aria-hidden="true" className="text-foreground/25">
+          ·
+        </span>
         <Link to="/faq" className={linkClass}>
           FAQ
         </Link>

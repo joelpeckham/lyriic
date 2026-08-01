@@ -1,12 +1,12 @@
 import { useState, type KeyboardEvent } from "react";
 import {
-  BookA,
   CircleSlash,
   Contrast,
   Hash,
   Keyboard,
   Monitor,
   Moon,
+  MousePointerClick,
   Music2,
   Ruler,
   Settings,
@@ -78,8 +78,6 @@ const METER_ICONS: Record<MeterPresetId, LucideIcon> = {
 const SHORTCUT_ICONS = {
   Settings: Settings,
   "Focus poem": Type,
-  Synonyms: BookA,
-  Rhymes: Music2,
 } as const;
 
 function parseCustomSyllables(raw: string): number | null {
@@ -414,6 +412,19 @@ export function SettingsSheet({
           />
 
           <Separator />
+
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <MousePointerClick
+                className="size-4 text-muted-foreground"
+                aria-hidden
+              />
+              <p className="text-sm font-medium">Word tools</p>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Hover or tap a word for synonyms, rhymes, and syllable overrides.
+            </p>
+          </div>
 
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
