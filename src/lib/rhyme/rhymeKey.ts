@@ -8,8 +8,12 @@ const IPA_MULTI = [
   "aɪ",
   "aʊ",
   "oʊ",
+  "əʊ",
   "eɪ",
   "ɔɪ",
+  "ɪə",
+  "ʊə",
+  "ɛə",
   "dʒ",
   "tʃ",
   "n̩",
@@ -41,12 +45,21 @@ const IPA_VOWELS = new Set([
   "aɪ",
   "aʊ",
   "oʊ",
+  "əʊ",
   "eɪ",
   "ɔɪ",
+  "ɪə",
+  "ʊə",
+  "ɛə",
   "a",
   "ɒ",
   "e",
   "o",
+  "ɐ",
+  "ɨ",
+  "ɘ",
+  "ɵ",
+  "ʉ",
   "n̩",
   "l̩",
   "m̩",
@@ -55,12 +68,22 @@ const IPA_VOWELS = new Set([
   "r̩",
 ]);
 
+const IPA_CLOSING_DIPHTHONGS = new Set(["aɪ", "aʊ", "ɔɪ"]);
+
 const SYLLABIC_MARK = "\u0329";
 
 type IpaPhone = { phone: string; stress: 0 | 1 | 2; isVowel: boolean };
 
 function canonicalizeIpa(ipa: string): string {
-  return ipa.replaceAll("g", "ɡ");
+  let s = ipa.replaceAll("g", "ɡ");
+  s = s.replaceAll("ː", "");
+  s = s.replaceAll("ɜɹ", "ɝ");
+  s = s.replaceAll("əɹ", "ɚ");
+  s = s.replaceAll("ɾ", "t");
+  s = s.replaceAll("əʊ", "oʊ");
+  s = s.replaceAll("ᵻ", "ɪ");
+  s = s.replaceAll("ᵊ", "ə");
+  return s;
 }
 
 function tokenizeIpa(ipa: string): IpaPhone[] {
@@ -168,14 +191,33 @@ export function rhymeKeyFromIpa(ipa: string): string | null {
 
 /**
  * End-rhyme / unstressed key: last vowel nucleus through the coda, ignoring
- * stress (fun ↔ anyone). Mirrored in scripts/lib/ipa.mjs.
+ * stress (fun ↔ anyone). For -ire (aɪɚ), keep the diphthong so fire ↛ butter.
+ * Mirrored in scripts/lib/ipa.mjs.
  */
 export function endRhymeKeyFromIpa(ipa: string): string | null {
   const phones = tokenizeIpa(ipa);
+  let lastV = -1;
   for (let i = phones.length - 1; i >= 0; i -= 1) {
-    if (phones[i]?.isVowel) return keyFrom(phones, i);
+    if (phones[i]?.isVowel) {
+      lastV = i;
+      break;
+    }
   }
-  return null;
+  if (lastV === -1) return null;
+  const last = phones[lastV];
+  const prev = lastV > 0 ? phones[lastV - 1] : undefined;
+  let start = lastV;
+  if (
+    last &&
+    IPA_REDUCED.has(last.phone) &&
+    prev?.isVowel &&
+    IPA_CLOSING_DIPHTHONGS.has(prev.phone)
+  ) {
+    start = lastV - 1;
+  }
+  const key = keyFrom(phones, start);
+  // End rhyme ignores stress: NURSE (ɝ) and LETTER (ɚ) are the same coda.
+  return key ? key.replaceAll("ɝ", "ɚ") : null;
 }
 
 /**

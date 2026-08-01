@@ -62,6 +62,31 @@ describe("endRhymeKeyFromIpa", () => {
     expect(rhymeKeyFromIpa("ˈɛniwʌn")).toBe("ɛniwʌn");
     expect(endRhymeKeyFromIpa("ˈɛniwʌn")).toBe("ʌn");
   });
+
+  it("keeps the diphthong for -ire endings (fire ↛ butter)", () => {
+    expect(endRhymeKeyFromIpa("fˈaɪɚ")).toBe("aɪɚ");
+    expect(endRhymeKeyFromIpa("fˈaɪəɹ")).toBe("aɪɚ");
+  });
+
+  it("collapses NURSE/LETTER for end rhyme", () => {
+    expect(endRhymeKeyFromIpa("wˈɝld")).toBe("ɚld");
+    expect(endRhymeKeyFromIpa("kˈɝld")).toBe(endRhymeKeyFromIpa("ˈʌndɚwɝld"));
+  });
+});
+
+describe("canonicalize (via keys)", () => {
+  it("unifies Misaki ɜɹ/əɹ with CMU ɝ/ɚ", () => {
+    expect(rhymeKeyFromIpa("wˈɜɹld")).toBe(rhymeKeyFromIpa("wˈɝld"));
+    expect(rhymeKeyFromIpa("bˈʌtəɹ")).toBe(rhymeKeyFromIpa("bˈʌtɚ"));
+  });
+
+  it("maps US flap to t for rhyme identity", () => {
+    expect(rhymeKeyFromIpa("ˈæɾɪk")).toBe(rhymeKeyFromIpa("ˈætɪk"));
+  });
+
+  it("maps British əʊ to US oʊ", () => {
+    expect(rhymeKeyFromIpa("ɡəʊ")).toBe(rhymeKeyFromIpa("ɡoʊ"));
+  });
 });
 
 describe("rhymeKeyFromPhones (ARPAbet legacy)", () => {

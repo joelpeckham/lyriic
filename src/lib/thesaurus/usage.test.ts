@@ -36,4 +36,21 @@ describe("detectUsage", () => {
   it("returns null when context is ambiguous", () => {
     expect(detectUsage("light", "light", 0, 5)).toBeNull();
   });
+
+  it("treats -ed after determiners as adjectives", () => {
+    const line = "a tired man";
+    const start = line.indexOf("tired");
+    expect(detectUsage("tired", line, start, start + 5)).toBe("a");
+  });
+
+  it("treats copula + -ing as progressive verbs", () => {
+    const line = "she is writing";
+    const start = line.indexOf("writing");
+    expect(detectUsage("writing", line, start, start + 7)).toBe("v");
+  });
+
+  it("does not force bare -ed/-ing to verbs without context", () => {
+    expect(detectUsage("tired", "tired", 0, 5)).toBeNull();
+    expect(detectUsage("writing", "writing", 0, 7)).toBeNull();
+  });
 });

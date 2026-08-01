@@ -21,6 +21,8 @@ import { selectByFrequency, zipfFrequencies } from "./lib/frequency.mjs";
 import {
   arpabetToIpa,
   endRhymeKeyFromIpa,
+  isReducedRhymeKey,
+  isWeakIpa,
   misakiToIpa,
   rhymeKeyFromIpa,
   syllableCountFromIpa,
@@ -167,6 +169,13 @@ function mergeSources(gold, cmu, silver, wikipron) {
       // Drop fragment-like single-phoneme noise except short function words.
       const bare = ipa.replace(/[ˈˌ]/g, "");
       if (bare.length <= 1 && word.length > 2) return;
+      if (ipas.length > 0) {
+        // Letter-name / acronym readings (A B S) — not true word variants.
+        const primaries = (ipa.match(/ˈ/g) ?? []).length;
+        if (primaries >= 2) return;
+        // Weak forms (bən for been) when a fuller reading already exists.
+        if (isWeakIpa(ipa) && !ipas.every((p) => isWeakIpa(p))) return;
+      }
       seen.add(ipa);
       ipas.push(ipa);
     }
@@ -235,16 +244,33 @@ async function main() {
     /** @type {string[]} */
     const endKeys = [];
     const endSeen = new Set();
+    const primaryKey = rhymeKeyFromIpa(entry.primary);
+    const primaryEndKey = endRhymeKeyFromIpa(entry.primary);
     for (const ipa of [entry.primary, ...entry.alts]) {
+      const isPrimary = ipa === entry.primary;
       const key = rhymeKeyFromIpa(ipa);
-      if (key && !keySeen.has(key)) {
+      if (
+        key &&
+        !keySeen.has(key) &&
+        (isPrimary ||
+          !primaryKey ||
+          !isReducedRhymeKey(key) ||
+          isReducedRhymeKey(primaryKey))
+      ) {
         keySeen.add(key);
         keys.push(key);
         if (!(key in buckets)) buckets[key] = [];
         buckets[key].push(word);
       }
       const endKey = endRhymeKeyFromIpa(ipa);
-      if (endKey && !endSeen.has(endKey)) {
+      if (
+        endKey &&
+        !endSeen.has(endKey) &&
+        (isPrimary ||
+          !primaryEndKey ||
+          !isReducedRhymeKey(endKey) ||
+          isReducedRhymeKey(primaryEndKey))
+      ) {
         endSeen.add(endKey);
         endKeys.push(endKey);
         if (!(endKey in bucketsEnd)) bucketsEnd[endKey] = [];

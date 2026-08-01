@@ -20,4 +20,15 @@ describe("lookupForms", () => {
     expect(lookupForms("writing")).toContain("write");
     expect(lookupForms("loved")).toContain("love");
   });
+
+  it("lemmatizes short -ing verbs", () => {
+    expect(lookupForms("going")).toContain("go");
+    expect(lookupForms("doing")).toContain("do");
+  });
+
+  it("includes leaf and leave for leaves", () => {
+    const forms = lookupForms("leaves");
+    expect(forms).toContain("leaf");
+    expect(forms).toContain("leave");
+  });
 });

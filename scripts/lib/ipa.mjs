@@ -21,8 +21,12 @@ const IPA_MULTI = [
   "aɪ",
   "aʊ",
   "oʊ",
+  "əʊ",
   "eɪ",
   "ɔɪ",
+  "ɪə",
+  "ʊə",
+  "ɛə",
   "dʒ",
   "tʃ",
   "n̩",
@@ -56,13 +60,22 @@ const IPA_VOWELS = new Set([
   "aɪ",
   "aʊ",
   "oʊ",
+  "əʊ",
   "eɪ",
   "ɔɪ",
+  "ɪə",
+  "ʊə",
+  "ɛə",
   "a",
   "ɒ",
-  // WikiPron broad often uses ASCII mid vowels.
+  // WikiPron broad often uses ASCII mid vowels / extra qualities.
   "e",
   "o",
+  "ɐ",
+  "ɨ",
+  "ɘ",
+  "ɵ",
+  "ʉ",
   // Syllabic consonants (WikiPron).
   "n̩",
   "l̩",
@@ -190,8 +203,20 @@ export function wikipronToIpa(phonesSpaceSeparated) {
  * @returns {string}
  */
 function canonicalizeIpa(ipa) {
-  // ASCII g (WikiPron) → IPA voiced velar stop used by CMU mapping.
-  return ipa.replaceAll("g", "ɡ");
+  let s = ipa.replaceAll("g", "ɡ");
+  // Length marks must not participate in keys.
+  s = s.replaceAll("ː", "");
+  // Misaki uses ɜɹ/əɹ; CMU ER → ɝ/ɚ. Collapse to the compact rhotic vowels.
+  s = s.replaceAll("ɜɹ", "ɝ");
+  s = s.replaceAll("əɹ", "ɚ");
+  // US flap is an allophone of /t/; keep rhyme identity with CMU t.
+  s = s.replaceAll("ɾ", "t");
+  // WikiPron / British GOAT → US oʊ.
+  s = s.replaceAll("əʊ", "oʊ");
+  // Misaki-style reduced markers that may appear outside misakiToIpa.
+  s = s.replaceAll("ᵻ", "ɪ");
+  s = s.replaceAll("ᵊ", "ə");
+  return s;
 }
 
 /**
@@ -314,9 +339,12 @@ export function rhymeKeyFromIpa(ipa) {
   return keyFrom(phones, start);
 }
 
+const IPA_CLOSING_DIPHTHONGS = new Set(["aɪ", "aʊ", "ɔɪ"]);
+
 /**
  * End-rhyme / unstressed key: last vowel nucleus through the coda, ignoring
  * stress. Matches line-final identity (fun ↔ anyone).
+ * For -ire sequences (aɪɚ / aɪə), keep the diphthong so fire ↛ butter.
  * Mirrored in src/lib/rhyme/rhymeKey.ts.
  *
  * @param {string} ipa
@@ -324,10 +352,28 @@ export function rhymeKeyFromIpa(ipa) {
  */
 export function endRhymeKeyFromIpa(ipa) {
   const phones = tokenizeIpa(ipa);
+  let lastV = -1;
   for (let i = phones.length - 1; i >= 0; i -= 1) {
-    if (phones[i].isVowel) return keyFrom(phones, i);
+    if (phones[i].isVowel) {
+      lastV = i;
+      break;
+    }
   }
-  return null;
+  if (lastV === -1) return null;
+  const last = phones[lastV];
+  let start = lastV;
+  if (
+    last &&
+    IPA_REDUCED.has(last.phone) &&
+    lastV > 0 &&
+    phones[lastV - 1]?.isVowel &&
+    IPA_CLOSING_DIPHTHONGS.has(phones[lastV - 1].phone)
+  ) {
+    start = lastV - 1;
+  }
+  const key = keyFrom(phones, start);
+  // End rhyme ignores stress: NURSE (ɝ) and LETTER (ɚ) are the same coda.
+  return key ? key.replaceAll("ɝ", "ɚ") : null;
 }
 
 /**
@@ -342,4 +388,39 @@ export function syllableCountFromIpa(ipa) {
     if (p.isVowel) count += 1;
   }
   return count;
+}
+
+/**
+ * True when every nucleus is reduced or syllabic (weak-form reading).
+ *
+ * @param {string} ipa
+ * @returns {boolean}
+ */
+export function isWeakIpa(ipa) {
+  const vowels = tokenizeIpa(ipa).filter((p) => p.isVowel);
+  return (
+    vowels.length > 0 &&
+    vowels.every(
+      (p) => IPA_REDUCED.has(p.phone) || IPA_SYLLABIC.has(p.phone),
+    )
+  );
+}
+
+/**
+ * True when a rhyme key is anchored on a reduced / syllabic nucleus only.
+ *
+ * @param {string} key
+ * @returns {boolean}
+ */
+export function isReducedRhymeKey(key) {
+  return (
+    key.startsWith("ə") ||
+    key.startsWith("ɚ") ||
+    key.startsWith("n̩") ||
+    key.startsWith("l̩") ||
+    key.startsWith("m̩") ||
+    key.startsWith("ŋ̩") ||
+    key.startsWith("ɹ̩") ||
+    key.startsWith("r̩")
+  );
 }

@@ -32,4 +32,38 @@ describe("lookupSynonyms", () => {
     expect(syns[0]?.matchesUsage).toBe(true);
     expect(syns.find((s) => s.word === "cadaver")?.matchesUsage).toBe(false);
   });
+
+  it("does not pull adjective senses from false -s stems (news ↛ new)", () => {
+    __setThesaurusDataForTests({
+      news: { n: ["tidings", "info"] },
+      new: { a: ["fresh", "novel"], r: ["anew"] },
+    });
+    const syns = lookupSynonyms("news");
+    expect(syns.map((s) => s.word)).toEqual(["tidings", "info"]);
+  });
+
+  it("drops hop/scar when hope/scare also exist", () => {
+    __setThesaurusDataForTests({
+      hoped: { a: ["optimistic"] },
+      hope: { v: ["wish", "desire"], n: ["aspiration"] },
+      hop: { v: ["skip", "jump"] },
+    });
+    const syns = lookupSynonyms("hoped", "v");
+    expect(syns.filter((s) => s.matchesUsage).map((s) => s.word)).toEqual([
+      "wish",
+      "desire",
+    ]);
+    expect(syns.map((s) => s.word)).not.toContain("skip");
+  });
+
+  it("upgrades a synonym to matchesUsage across forms", () => {
+    __setThesaurusDataForTests({
+      remains: { n: ["stay", "cadaver"] },
+      remain: { v: ["stay", "persist"] },
+    });
+    const syns = lookupSynonyms("remains", "v");
+    expect(syns.find((s) => s.word === "stay")?.matchesUsage).toBe(true);
+    expect(syns.find((s) => s.word === "persist")?.matchesUsage).toBe(true);
+    expect(syns.find((s) => s.word === "cadaver")?.matchesUsage).toBe(false);
+  });
 });

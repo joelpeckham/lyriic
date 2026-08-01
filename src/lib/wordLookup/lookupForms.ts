@@ -19,30 +19,30 @@ export function lookupForms(word: string): string[] {
     add(`${word.slice(0, -3)}y`);
   }
   if (word.endsWith("ves") && word.length > 4) {
-    add(`${word.slice(0, -3)}f`);
+    // knives → knife; leaves → leaf (leave comes from the -s strip).
     add(`${word.slice(0, -3)}fe`);
+    add(`${word.slice(0, -3)}f`);
   }
-  if (word.endsWith("ing") && word.length > 5) {
+  if (word.endsWith("ing") && word.length > 4) {
     const stem = word.slice(0, -3);
-    add(stem);
-    add(`${stem}e`);
     if (stem.length >= 2 && stem.at(-1) === stem.at(-2)) {
       add(stem.slice(0, -1));
+    } else {
+      add(`${stem}e`);
+      add(stem);
     }
   }
   if (word.endsWith("ed") && word.length > 3) {
     const stem = word.slice(0, -2);
-    add(stem);
-    add(`${stem}e`);
     if (stem.length >= 2 && stem.at(-1) === stem.at(-2)) {
       add(stem.slice(0, -1));
+    } else {
+      add(`${stem}e`);
+      add(stem);
     }
   }
   if (word.endsWith("es") && word.length > 3) {
     add(word.slice(0, -2));
-    if (word.endsWith("ses") || word.endsWith("zes") || word.endsWith("xes") || word.endsWith("ches") || word.endsWith("shes")) {
-      add(word.slice(0, -2));
-    }
   }
   if (word.endsWith("s") && !word.endsWith("ss") && word.length > 2) {
     add(word.slice(0, -1));

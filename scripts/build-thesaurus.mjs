@@ -175,6 +175,19 @@ async function loadWiktionarySynonyms(gzPath) {
 
   let lines = 0;
 
+  /** Skip historical / joke thesaurus fill that drowns OEWN ranking. */
+  const SKIP_TAGS = new Set([
+    "obsolete",
+    "archaic",
+    "rare",
+    "dated",
+    "historical",
+    "humorous",
+    "slang",
+    "eye dialect",
+    "misspelling",
+  ]);
+
   /**
    * @param {unknown} linkages
    * @param {string} head
@@ -183,6 +196,15 @@ async function loadWiktionarySynonyms(gzPath) {
   function absorb(linkages, head, usage) {
     if (!Array.isArray(linkages)) return;
     for (const item of linkages) {
+      if (item && typeof item === "object" && "tags" in item) {
+        const tags = /** @type {{ tags?: unknown }} */ (item).tags;
+        if (
+          Array.isArray(tags) &&
+          tags.some((t) => typeof t === "string" && SKIP_TAGS.has(t))
+        ) {
+          continue;
+        }
+      }
       const raw =
         typeof item === "string"
           ? item

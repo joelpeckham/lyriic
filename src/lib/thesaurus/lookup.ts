@@ -38,6 +38,36 @@ function groupsFor(data: SynonymMap, form: string): SynonymGroups | null {
 }
 
 /**
+ * Inflectional candidates present in the map, with aggressive false stems
+ * dropped when a better silent-e / -fe lemma also exists.
+ */
+function dictionaryForms(data: SynonymMap, key: string): string[] {
+  const raw = lookupForms(key);
+  const present = raw.filter((form) => form === key || groupsFor(data, form));
+
+  return present.filter((form) => {
+    if (form === key) return true;
+    // hoped/scared: drop hop/scar when hope/scare is in the map.
+    if (
+      (key.endsWith("ed") || key.endsWith("ing")) &&
+      present.includes(`${form}e`)
+    ) {
+      return false;
+    }
+    // leaves: drop leaf when leave is in the map.
+    if (
+      key.endsWith("ves") &&
+      form.endsWith("f") &&
+      !form.endsWith("ff") &&
+      present.includes(`${form}e`)
+    ) {
+      return false;
+    }
+    return true;
+  });
+}
+
+/**
  * Sync lookup after {@link loadThesaurus} has resolved.
  * Returns [] for unknown words or if data is not yet loaded.
  * Also checks inflectional bases (remains → remain) so verb senses surface.
@@ -52,31 +82,48 @@ export function lookupSynonyms(
   const key = normalizeLookupKey(word);
   if (!key) return [];
 
-  const matched: string[] = [];
-  const other: string[] = [];
-  const seen = new Set<string>([key]);
+  const forms = dictionaryForms(data, key);
+  const surfaceGroups = groupsFor(data, key);
 
-  for (const form of lookupForms(key)) {
+  /** Best tier per synonym: true = matches requested usage. */
+  const best = new Map<string, boolean>();
+  const order: string[] = [];
+
+  function absorb(syn: string, matched: boolean): void {
+    if (!syn || syn === key) return;
+    const prev = best.get(syn);
+    if (prev === undefined) {
+      best.set(syn, matched);
+      order.push(syn);
+      return;
+    }
+    if (matched && !prev) best.set(syn, true);
+  }
+
+  for (const form of forms) {
     const groups = groupsFor(data, form);
     if (!groups) continue;
 
-    const preferred = usage ? (groups[usage] ?? []) : [];
-    for (const syn of preferred) {
-      if (seen.has(syn)) continue;
-      seen.add(syn);
-      matched.push(syn);
+    // Surface form (or missing surface): take all POS. Inflectional bases when
+    // the surface already exists: verbs only (remains → remain, not news → new).
+    const usages: WordUsage[] =
+      form === key || !surfaceGroups ? USAGE_ORDER : ["v"];
+
+    if (usage && usages.includes(usage)) {
+      for (const syn of groups[usage] ?? []) absorb(syn, true);
     }
 
-    for (const pos of USAGE_ORDER) {
+    for (const pos of usages) {
       if (usage && pos === usage) continue;
-      const syns = groups[pos];
-      if (!syns) continue;
-      for (const syn of syns) {
-        if (seen.has(syn)) continue;
-        seen.add(syn);
-        other.push(syn);
-      }
+      for (const syn of groups[pos] ?? []) absorb(syn, false);
     }
+  }
+
+  const matched: string[] = [];
+  const other: string[] = [];
+  for (const syn of order) {
+    if (best.get(syn)) matched.push(syn);
+    else other.push(syn);
   }
 
   return [
