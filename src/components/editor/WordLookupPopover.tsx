@@ -18,19 +18,21 @@ import {
 import type { WordLookupRequest } from "@/lib/editor/wordLookup";
 import type { MeteredLine } from "@/lib/meters/types";
 import { loadRhymeIndex, lookupRhymes } from "@/lib/rhyme";
+import { loadThesaurus, lookupSynonyms } from "@/lib/thesaurus";
 import {
   getCachedRanked,
-  loadThesaurus,
-  lookupSynonyms,
   preserveCasing,
   rankCandidates,
   rankedCacheKey,
   setCachedRanked,
   type RankedCandidate,
-} from "@/lib/thesaurus";
+} from "@/lib/wordLookup";
+
+/** Optional until editor request threading lands; prefer when present. */
+type LookupRequest = WordLookupRequest & { tokenSyllables?: number };
 
 type WordLookupPopoverProps = {
-  request: WordLookupRequest | null;
+  request: LookupRequest | null;
   onClose: () => void;
   onReplace: (from: number, to: number, insert: string) => void;
   onRestoreFocus: () => void;
@@ -38,6 +40,19 @@ type WordLookupPopoverProps = {
   overrides: Record<string, number>;
   overrideRevision: string;
 };
+
+function resolveTokenSyllables(
+  request: LookupRequest,
+  meteredLine: MeteredLine | undefined,
+): number {
+  if (typeof request.tokenSyllables === "number") {
+    return request.tokenSyllables;
+  }
+  const localStart = request.from - request.lineFrom;
+  return (
+    meteredLine?.tokens.find((t) => t.start === localStart)?.syllables ?? 0
+  );
+}
 
 type RemoteState = {
   key: string;
@@ -68,12 +83,8 @@ export function WordLookupPopover({
     setActive({ id: requestIdentity, index });
   }
 
-  const localStart =
-    request && open ? request.from - request.lineFrom : 0;
   const syllables =
-    (open &&
-      meteredLine?.tokens.find((t) => t.start === localStart)?.syllables) ||
-    0;
+    open && request ? resolveTokenSyllables(request, meteredLine) : 0;
   const lineTotal = meteredLine?.total ?? 0;
   const lineTarget = meteredLine?.target ?? null;
 

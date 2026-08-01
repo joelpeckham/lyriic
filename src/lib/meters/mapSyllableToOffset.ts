@@ -2,8 +2,8 @@
  * Map a 1-based cumulative syllable index to a character offset within a line.
  *
  * Rulers use token char spans + linear interpolation inside multi-syllable
- * words. `MeteredLine.boundaries` / `token.syllableEnd` are the same cumulative
- * ends; this helper is the canonical geometry for tick placement.
+ * words (`syllableStart` / `syllableEnd`). This helper is the canonical
+ * geometry for tick placement.
  */
 
 export type SyllableOffsetToken = {

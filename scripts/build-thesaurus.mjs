@@ -16,6 +16,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { normalizeLemma } from "./lib/lemma.mjs";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const inputPath = join(__dirname, "mthesaur.txt");
@@ -25,8 +27,6 @@ const outDir = join(root, "src/lib/thesaurus/data");
 const outPath = join(outDir, "synonyms.json");
 
 const MAX_SYNS = 40;
-/** Single token: letters with optional internal apostrophes (matches tokenizer). */
-const WORD_RE = /^[a-z]+(?:'[a-z]+)*$/;
 
 async function ensureMobySource() {
   if (existsSync(inputPath)) return;
@@ -38,20 +38,6 @@ async function ensureMobySource() {
     );
   }
   writeFileSync(inputPath, await res.text(), "utf8");
-}
-
-/**
- * @param {string} value
- * @returns {string | null}
- */
-function normalizeLemma(value) {
-  const word = value
-    .trim()
-    .toLowerCase()
-    .replace(/[\u2019']/g, "'");
-  if (!WORD_RE.test(word)) return null;
-  if (word.length < 2 || word.length > 28) return null;
-  return word;
 }
 
 /**

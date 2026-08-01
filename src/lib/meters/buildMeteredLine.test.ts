@@ -3,14 +3,13 @@ import { countLine } from "@/lib/syllables";
 import { buildMeteredLine } from "./buildMeteredLine";
 
 describe("buildMeteredLine", () => {
-  it("builds cumulative syllable boundaries per token", () => {
+  it("builds cumulative syllable spans per token", () => {
     const count = countLine("The poem has rhythm");
     const metered = buildMeteredLine(count, 0, [10]);
 
     expect(metered.total).toBe(1 + 2 + 1 + 2);
     expect(metered.target).toBe(10);
     expect(metered.status).toBe("under");
-    expect(metered.boundaries).toEqual([0, 1, 3, 4, 6]);
     expect(metered.tokens.map((t) => t.syllableStart)).toEqual([0, 1, 3, 4]);
     expect(metered.tokens.map((t) => t.syllableEnd)).toEqual([1, 3, 4, 6]);
     expect(metered.tokens[0]).toMatchObject({

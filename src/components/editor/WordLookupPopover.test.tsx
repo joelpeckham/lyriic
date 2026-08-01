@@ -10,8 +10,8 @@ import {
 } from "@/lib/editor/wordLookup";
 import type { MeteredLine } from "@/lib/meters/types";
 import { __setRhymeDataForTests } from "@/lib/rhyme/lookup";
-import { clearRankedCache } from "@/lib/thesaurus";
 import { __setThesaurusDataForTests } from "@/lib/thesaurus/lookup";
+import { clearRankedCache } from "@/lib/wordLookup";
 
 describe("WordLookupPopover", () => {
   let parent: HTMLDivElement;
@@ -84,7 +84,6 @@ describe("WordLookupPopover", () => {
         source: "dict",
       },
     ],
-    boundaries: [0, 1, 3, 4],
   };
 
   const request: WordLookupRequest = {

@@ -15,6 +15,8 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { normalizeLemma } from "./lib/lemma.mjs";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const inputPath = join(__dirname, "cmudict.dict");
@@ -22,8 +24,6 @@ const outDir = join(root, "src/lib/rhyme/data");
 const outPath = join(outDir, "rhyme-index.json");
 
 const MAX_PER_BUCKET = 40;
-/** Single token: letters with optional internal apostrophes (matches tokenizer). */
-const WORD_RE = /^[a-z]+(?:'[a-z]+)*$/;
 
 /**
  * @param {string[]} phones
@@ -47,20 +47,6 @@ function rhymeKeyFromPhones(phones) {
   }
   if (start === -1) return null;
   return phones.slice(start).join(" ");
-}
-
-/**
- * @param {string} value
- * @returns {string | null}
- */
-function normalizeLemma(value) {
-  const word = value
-    .trim()
-    .toLowerCase()
-    .replace(/[\u2019']/g, "'");
-  if (!WORD_RE.test(word)) return null;
-  if (word.length < 2 || word.length > 28) return null;
-  return word;
 }
 
 /**

@@ -1,33 +1,22 @@
+import { createLazyJsonData, normalizeLookupKey } from "@/lib/data/lazyJson";
+
 export type RhymeIndex = {
   byWord: Record<string, string>;
   byKey: Record<string, string[]>;
 };
 
-let dataPromise: Promise<RhymeIndex> | null = null;
-let data: RhymeIndex | null = null;
-
-function normalizeKey(word: string): string {
-  return word
-    .trim()
-    .toLowerCase()
-    .replace(/[\u2019']/g, "'");
-}
+const store = createLazyJsonData<RhymeIndex>(
+  () => import("./data/rhyme-index.json"),
+);
 
 /** Lazy-load the embedded rhyme index (separate Vite chunk). */
 export function loadRhymeIndex(): Promise<RhymeIndex> {
-  if (data) return Promise.resolve(data);
-  if (!dataPromise) {
-    dataPromise = import("./data/rhyme-index.json").then((mod) => {
-      data = mod.default as RhymeIndex;
-      return data;
-    });
-  }
-  return dataPromise;
+  return store.load();
 }
 
 /** True once the rhyme index has finished loading. */
 export function isRhymeIndexReady(): boolean {
-  return data !== null;
+  return store.isReady();
 }
 
 /**
@@ -36,8 +25,9 @@ export function isRhymeIndexReady(): boolean {
  * Excludes the query word from the rhyme bucket.
  */
 export function lookupRhymes(word: string): string[] {
+  const data = store.get();
   if (!data) return [];
-  const key = normalizeKey(word);
+  const key = normalizeLookupKey(word);
   if (!key) return [];
   const rhymeKey = data.byWord[key];
   if (!rhymeKey) return [];
@@ -48,6 +38,5 @@ export function lookupRhymes(word: string): string[] {
 
 /** Test helper — inject an index without hitting the JSON chunk. */
 export function __setRhymeDataForTests(index: RhymeIndex | null): void {
-  data = index;
-  dataPromise = index ? Promise.resolve(index) : null;
+  store.__setForTests(index);
 }
