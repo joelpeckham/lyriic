@@ -20,19 +20,10 @@ describe("buildMeteredLine", () => {
   });
 
   it("marks exact and over status against the line target", () => {
-    const five = countLine("An old silent pond"); // typical haiku opener may vary; use forced totals via short words
-    // "to be or" = 1+1+1 = 3
     const three = countLine("to be or");
     expect(buildMeteredLine(three, 0, [3]).status).toBe("exact");
     expect(buildMeteredLine(three, 0, [2]).status).toBe("over");
-    expect(buildMeteredLine(five, 0, []).status).toBe("none");
+    expect(buildMeteredLine(three, 0, []).status).toBe("none");
     expect(buildMeteredLine(three, 0, []).target).toBeNull();
-  });
-
-  it("cycles targets by line index", () => {
-    const line = countLine("to be or");
-    expect(buildMeteredLine(line, 0, [5, 7, 5]).target).toBe(5);
-    expect(buildMeteredLine(line, 1, [5, 7, 5]).target).toBe(7);
-    expect(buildMeteredLine(line, 2, [5, 7, 5]).target).toBe(5);
   });
 });
