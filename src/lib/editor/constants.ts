@@ -4,7 +4,10 @@
  */
 export const WRAP_LEADING = 1.35;
 
-/** Extra space between hard-newline poetic lines (Tailwind gap-4 = 1rem). */
+/**
+ * Extra space after each hard-newline poetic line (1rem).
+ * Applied as `.cm-line` paddingBottom in zenTheme — not margin (CM height map).
+ */
 export const LINE_GAP_REM = 1;
 
 /** Right padding reserved for syllable count overlays. */

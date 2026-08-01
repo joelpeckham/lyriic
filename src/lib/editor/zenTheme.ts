@@ -33,7 +33,8 @@ export function zenEditorTheme(fontSizeRem: number) {
         paddingTop: "6rem",
         paddingBottom: "4rem",
         paddingLeft: "1.5rem",
-        paddingRight: "1rem",
+        /* Keep in sync with .lyriic-count padding-right (index.css). */
+        paddingRight: "1.5rem",
         maxWidth: "48rem",
         width: "100%",
         marginLeft: "auto",
@@ -41,13 +42,15 @@ export function zenEditorTheme(fontSizeRem: number) {
         minHeight: "100%",
         boxSizing: "border-box",
       },
+      /* Poetic gap via padding — never margin. CM’s height map / posAtCoords
+         ignore margins, so marginBottom makes hit-testing drift worse each line. */
       ".cm-line": {
         paddingRight: `${COUNT_GUTTER_REM}rem`,
-        marginBottom: `${LINE_GAP_REM}rem`,
+        paddingBottom: `${LINE_GAP_REM}rem`,
         letterSpacing: "0.01em",
       },
       ".cm-line:last-child": {
-        marginBottom: "0",
+        paddingBottom: "0",
       },
       ".cm-content ::selection": {
         backgroundColor: "var(--lyriic-selection)",
