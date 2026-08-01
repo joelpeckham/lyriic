@@ -21,7 +21,7 @@ type PoemEditorProps = {
   value: string;
   onChange: (value: string) => void;
   settings: EditorSettings;
-  /** Active project overrides — used only to invalidate count cache. */
+  /** Active project overrides — threaded into counting + cache invalidation. */
   overrides: Record<string, number>;
   /** Stable document identity (e.g. project id) for full remount. */
   documentKey: string;
@@ -63,6 +63,7 @@ export function PoemEditor({
     value,
     documentKey,
     overrideRevision,
+    overrides,
   );
 
   const pattern = useMemo((): readonly number[] => {

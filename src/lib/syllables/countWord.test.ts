@@ -162,6 +162,34 @@ describe("countWord — overrides", () => {
     });
     expect(countWord("cooperate").source).not.toBe("override");
   });
+
+  it("explicit overrides record wins without touching the module Map", () => {
+    expect(countWord("fire", { fire: 1 })).toEqual({
+      word: "fire",
+      count: 1,
+      source: "override",
+    });
+    expect(countWord("fire")).toMatchObject({ count: 2, source: "dict" });
+  });
+
+  it("explicit overrides skip module memo (no leak from prior Map counts)", () => {
+    setOverride("fire", 1);
+    expect(countWord("fire").count).toBe(1);
+
+    // Threaded empty overrides must not reuse the Map-backed memo entry.
+    expect(countWord("fire", {})).toMatchObject({ count: 2, source: "dict" });
+    expect(countWord("fire", { fire: 1 })).toMatchObject({
+      count: 1,
+      source: "override",
+    });
+  });
+
+  it("explicit overrides apply case-insensitively via normalizeOverrideKey", () => {
+    expect(countWord("Fire", { fire: 1 })).toMatchObject({
+      count: 1,
+      source: "override",
+    });
+  });
 });
 
 describe("override changes invalidate incremental line reuse", () => {
@@ -176,6 +204,15 @@ describe("override changes invalidate incremental line reuse", () => {
 
     const fresh = countLinesIncremental(text, null, null);
     expect(fresh.counts[0]?.total).toBe(2);
+  });
+
+  it("threaded overrides recount without module Map sync", () => {
+    const text = "a fire";
+    const withOverride = countLinesIncremental(text, null, null, { fire: 1 });
+    expect(withOverride.counts[0]?.total).toBe(2);
+
+    const without = countLinesIncremental(text, null, null, {});
+    expect(without.counts[0]?.total).toBe(1 + 2);
   });
 });
 

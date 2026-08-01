@@ -1,14 +1,17 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, render, renderHook, waitFor } from "@testing-library/react";
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { PoemEditor } from "@/components/editor/PoemEditor";
+import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
+import { clearAllOverrides, setOverride } from "@/lib/syllables";
 import { DEFAULT_SETTINGS } from "@/lib/settings";
 
 afterEach(() => {
   cleanup();
+  clearAllOverrides();
 });
 
 describe("PoemEditor", () => {
@@ -38,6 +41,26 @@ describe("PoemEditor", () => {
     await waitFor(() => {
       expect(container.querySelector(".lyriic-syllable-overlay")).toBeTruthy();
     });
+  });
+
+  it("counts with threaded overrides on first render despite stale module Map", () => {
+    // Prior project left fire=1 in the module Map; layout sync has not run.
+    setOverride("fire", 1);
+
+    const { result } = renderHook(() =>
+      useSyllableLineCounts("a fire", "project-b", "", {}),
+    );
+
+    // Empty project overrides must win over the stale Map immediately.
+    expect(result.current.counts[0]?.total).toBe(1 + 2);
+  });
+
+  it("applies project overrides on first render without module Map sync", () => {
+    const { result } = renderHook(() =>
+      useSyllableLineCounts("a fire", "project-a", "fire:1", { fire: 1 }),
+    );
+
+    expect(result.current.counts[0]?.total).toBe(2);
   });
 });
 

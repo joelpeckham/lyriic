@@ -15,7 +15,9 @@ afterEach(() => {
 });
 
 describe("useSyllableOverrides", () => {
-  it("replaces the engine Map after layout on mount", () => {
+  it("replaces the engine Map after layout on mount (legacy bridge)", () => {
+    // Editor counting threads overrides directly; this hook only syncs the
+    // module Map for getOverride / setOverride callers.
     renderHook(() => useSyllableOverrides({ fire: 1 }));
 
     expect(getOverride("fire")).toBe(1);

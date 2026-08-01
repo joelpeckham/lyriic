@@ -19,8 +19,11 @@ function overridesMatch(
  * project's persisted overrides.
  *
  * Sync runs in useLayoutEffect (not during render) so React render stays
- * pure under the Compiler. Layout timing keeps the Map coherent before
- * paint / before children that depend on overrides are observed by the user.
+ * pure under the Compiler. Editor syllable counting must NOT depend on this
+ * Map — PoemEditor threads overrides into countLinesIncremental so the first
+ * render is correct before layout effects run. This hook remains a legacy
+ * bridge for unit tests and any callers that still use getOverride /
+ * setOverride on the module Map.
  *
  * Hard contract: only one PoemEditor / one active project may call this
  * hook. The module Map is a single global writer target — concurrent

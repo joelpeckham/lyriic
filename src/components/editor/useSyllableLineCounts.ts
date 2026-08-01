@@ -17,11 +17,15 @@ type CountCache = {
 /**
  * Incremental syllable line counts, cached in a ref mutated during render.
  * Idempotent for identical inputs — avoids setState-during-render double commit.
+ *
+ * Pass project `overrides` so counts resolve against that record on the first
+ * render (no dependency on module Map sync timing).
  */
 export function useSyllableLineCounts(
   value: string,
   documentKey: string,
   overrideRevision: string,
+  overrides: Record<string, number>,
 ): { lines: string[]; counts: LineSyllableCount[] } {
   const cacheRef = useRef<CountCache | null>(null);
   const cache = cacheRef.current;
@@ -43,6 +47,7 @@ export function useSyllableLineCounts(
     value,
     policyChanged ? null : (cache?.lines ?? null),
     policyChanged ? null : (cache?.counts ?? null),
+    overrides,
   );
   cacheRef.current = {
     value,

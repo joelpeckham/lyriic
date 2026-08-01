@@ -7,7 +7,7 @@
 import { lookupDict } from "./dict";
 import { countHeuristic } from "./heuristic";
 import { getMemo, setMemo } from "./memo";
-import { getOverride } from "./overrides";
+import { getOverride, normalizeOverrideKey } from "./overrides";
 import type { SyllableSource, WordSyllableCount } from "./types";
 
 function normalizePart(part: string): string {
@@ -28,27 +28,49 @@ function countSimple(normalized: string): {
   return { count: countHeuristic(normalized), source: "heuristic" };
 }
 
+function resolveOverride(
+  word: string,
+  overrides?: Record<string, number>,
+): number | undefined {
+  if (overrides !== undefined) {
+    const key = normalizeOverrideKey(word);
+    if (!key) return undefined;
+    return overrides[key];
+  }
+  return getOverride(word);
+}
+
 /**
  * Count syllables in a word (or hyphenated compound).
  * `word` should already be roughly normalized; punctuation is stripped.
+ *
+ * When `overrides` is provided, resolve against that record and skip the
+ * module memo (so project-scoped counts never leak via cache). When omitted,
+ * use the module Map + memo (unit tests / setOverride callers).
  */
-export function countWord(word: string): WordSyllableCount {
+export function countWord(
+  word: string,
+  overrides?: Record<string, number>,
+): WordSyllableCount {
   const display = word;
   const memoKey = word.toLowerCase().replace(/['\u2019]/g, "'");
+  const useModuleMemo = overrides === undefined;
 
-  const cached = getMemo(memoKey);
-  if (cached) {
-    return { ...cached, word: display };
+  if (useModuleMemo) {
+    const cached = getMemo(memoKey);
+    if (cached) {
+      return { ...cached, word: display };
+    }
   }
 
-  const override = getOverride(memoKey);
+  const override = resolveOverride(memoKey, overrides);
   if (override !== undefined) {
     const result: WordSyllableCount = {
       word: display,
       count: override,
       source: "override",
     };
-    setMemo(memoKey, result);
+    if (useModuleMemo) setMemo(memoKey, result);
     return result;
   }
 
@@ -61,7 +83,7 @@ export function countWord(word: string): WordSyllableCount {
         count: 0,
         source: "heuristic",
       };
-      setMemo(memoKey, result);
+      if (useModuleMemo) setMemo(memoKey, result);
       return result;
     }
 
@@ -69,7 +91,7 @@ export function countWord(word: string): WordSyllableCount {
     let allDict = true;
     let anyOverride = false;
     for (const part of parts) {
-      const partOverride = getOverride(part);
+      const partOverride = resolveOverride(part, overrides);
       if (partOverride !== undefined) {
         total += partOverride;
         anyOverride = true;
@@ -85,7 +107,7 @@ export function countWord(word: string): WordSyllableCount {
       count: total,
       source: anyOverride ? "override" : allDict ? "dict" : "heuristic",
     };
-    setMemo(memoKey, result);
+    if (useModuleMemo) setMemo(memoKey, result);
     return result;
   }
 
@@ -96,12 +118,12 @@ export function countWord(word: string): WordSyllableCount {
       count: 0,
       source: "heuristic",
     };
-    setMemo(memoKey, result);
+    if (useModuleMemo) setMemo(memoKey, result);
     return result;
   }
 
   const { count, source } = countSimple(normalized);
   const result: WordSyllableCount = { word: display, count, source };
-  setMemo(memoKey, result);
+  if (useModuleMemo) setMemo(memoKey, result);
   return result;
 }
