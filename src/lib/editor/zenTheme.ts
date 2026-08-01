@@ -25,6 +25,8 @@ export function zenEditorTheme(fontSizeRem: number) {
         fontSize: "inherit",
         overflow: "auto",
         scrollbarGutter: "stable",
+        WebkitOverflowScrolling: "touch",
+        touchAction: "pan-y",
       },
       ".cm-content": {
         caretColor: "var(--lyriic-ink)",

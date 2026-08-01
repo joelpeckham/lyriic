@@ -4,12 +4,40 @@ import {
   type ViewUpdate,
 } from "@codemirror/view";
 
-import { getMeterOverlay } from "@/lib/editor/meterOverlay";
 import {
   mapSyllableToOffset,
   rulerSyllableCount,
 } from "@/lib/meters/mapSyllableToOffset";
-import type { MeterStatus } from "@/lib/meters";
+import type { MeteredLine, MeterStatus } from "@/lib/meters";
+
+export type MeterOverlayState = {
+  showCounts: boolean;
+  showRulers: boolean;
+  /** Metered lines — tokens used as-is for ruler geometry. */
+  lines: readonly MeteredLine[];
+  textLines: readonly string[];
+};
+
+const EMPTY: MeterOverlayState = {
+  showCounts: false,
+  showRulers: false,
+  lines: [],
+  textLines: [],
+};
+
+/** Per-view meter data for the syllable overlay plugin. */
+const overlayByView = new WeakMap<EditorView, MeterOverlayState>();
+
+export function getMeterOverlay(view: EditorView): MeterOverlayState {
+  return overlayByView.get(view) ?? EMPTY;
+}
+
+export function setMeterOverlayData(
+  view: EditorView,
+  state: MeterOverlayState,
+): void {
+  overlayByView.set(view, state);
+}
 
 function statusClass(status: MeterStatus): string {
   if (status === "exact") return "lyriic-count--exact";
@@ -36,17 +64,14 @@ export const syllableOverlay = ViewPlugin.fromClass(
     readonly dom: HTMLElement;
     private host: HTMLElement | null = null;
     private rafId: number | null = null;
+    private pendingView: EditorView | null = null;
 
     constructor(view: EditorView) {
       this.dom = document.createElement("div");
       this.dom.className = "lyriic-syllable-overlay";
       this.dom.setAttribute("aria-hidden", "true");
       this.mount(view);
-      // Defer first paint until layout exists.
-      this.rafId = requestAnimationFrame(() => {
-        this.rafId = null;
-        this.draw(view);
-      });
+      this.scheduleDraw(view);
     }
 
     private mount(view: EditorView) {
@@ -61,6 +86,17 @@ export const syllableOverlay = ViewPlugin.fromClass(
       }
     }
 
+    private scheduleDraw(view: EditorView) {
+      this.pendingView = view;
+      if (this.rafId !== null) return;
+      this.rafId = requestAnimationFrame(() => {
+        this.rafId = null;
+        const v = this.pendingView;
+        this.pendingView = null;
+        if (v) this.draw(v);
+      });
+    }
+
     update(update: ViewUpdate) {
       if (!this.dom.isConnected) {
         this.mount(update.view);
@@ -68,17 +104,17 @@ export const syllableOverlay = ViewPlugin.fromClass(
       // I-11: avoid painting stale meter data after a doc edit; React redraws.
       if (update.docChanged) return;
       if (update.viewportChanged || update.geometryChanged) {
-        this.draw(update.view);
+        this.scheduleDraw(update.view);
       }
     }
 
     /** Called from React after meter data changes. */
     redraw(view: EditorView) {
-      this.draw(view);
+      this.scheduleDraw(view);
     }
 
     draw(view: EditorView) {
-      const { showCounts, showRulers, lines } = getMeterOverlay(view);
+      const { showCounts, showRulers, lines, textLines } = getMeterOverlay(view);
       if (!showCounts && !showRulers) {
         this.dom.replaceChildren();
         return;
@@ -103,7 +139,8 @@ export const syllableOverlay = ViewPlugin.fromClass(
         if (!overlay) continue;
 
         const total = overlay.total;
-        if (total <= 0 && !overlay.lineHasText) continue;
+        const lineHasText = (textLines[lineNo - 1] ?? "").length > 0;
+        if (total <= 0 && !lineHasText) continue;
 
         let lineCoords: { top: number; bottom: number } | null = null;
         try {
@@ -169,6 +206,7 @@ export const syllableOverlay = ViewPlugin.fromClass(
         cancelAnimationFrame(this.rafId);
         this.rafId = null;
       }
+      this.pendingView = null;
       this.dom.remove();
       this.host = null;
     }

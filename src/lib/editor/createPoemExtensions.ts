@@ -67,11 +67,5 @@ export function createPoemExtensions({
         onActiveLineChange(line.number - 1);
       }
     }),
-    EditorView.theme({
-      ".cm-scroller": {
-        WebkitOverflowScrolling: "touch",
-        touchAction: "pan-y",
-      },
-    }),
   ];
 }

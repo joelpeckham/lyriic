@@ -1,10 +1,5 @@
 import { type Extension, Facet } from "@codemirror/state";
-import {
-  EditorView,
-  keymap,
-  type PluginValue,
-  ViewPlugin,
-} from "@codemirror/view";
+import { EditorView, keymap } from "@codemirror/view";
 
 import {
   resolveWordTarget,
@@ -15,6 +10,11 @@ export type WordLookupMode = "thesaurus" | "rhyme";
 
 export type WordLookupRequest = WordTarget & {
   mode: WordLookupMode;
+  /**
+   * Syllable count for the resolved token, filled at open by PoemEditor when
+   * metered line data is available (avoids a tokens.find in the popover).
+   */
+  tokenSyllables?: number;
 };
 
 export type WordLookupHandler = (request: WordLookupRequest) => void;
@@ -27,44 +27,28 @@ const wordLookupFacet = Facet.define<WordLookupHandler, WordLookupHandler | null
   },
 );
 
-const LONG_PRESS_MS = 500;
-const MOVE_CANCEL_PX = 8;
-
-function resolveRequest(
+/** Open thesaurus/rhyme for the word at selection or an optional document pos. */
+export function openWordLookup(
   view: EditorView,
   mode: WordLookupMode,
   pos?: number,
-): WordLookupRequest | null {
-  const target = resolveWordTarget(view, pos);
-  if (!target) return null;
-  return { ...target, mode };
-}
-
-function openLookup(view: EditorView, mode: WordLookupMode, pos?: number): boolean {
+): boolean {
   const handler = view.state.facet(wordLookupFacet);
   if (!handler) return false;
-  const request = resolveRequest(view, mode, pos);
-  if (!request) return false;
-  handler(request);
+  const target = resolveWordTarget(view, pos);
+  if (!target) return false;
+  handler({ ...target, mode });
   return true;
 }
 
 /** Open thesaurus for the word at the current selection / caret. */
 export function openThesaurusCommand(view: EditorView): boolean {
-  return openLookup(view, "thesaurus");
+  return openWordLookup(view, "thesaurus");
 }
 
 /** Open rhyme lookup for the word at the current selection / caret. */
 export function openRhymeCommand(view: EditorView): boolean {
-  return openLookup(view, "rhyme");
-}
-
-/** Build a lookup request from an existing word target + mode. */
-export function lookupRequestFromTarget(
-  target: WordTarget,
-  mode: WordLookupMode,
-): WordLookupRequest {
-  return { ...target, mode };
+  return openWordLookup(view, "rhyme");
 }
 
 const wordLookupKeymap = keymap.of([
@@ -78,83 +62,12 @@ const wordLookupKeymap = keymap.of([
   },
 ]);
 
-class LongPressPlugin implements PluginValue {
-  private timer: number | null = null;
-  private startX = 0;
-  private startY = 0;
-  private startPos: number | null = null;
-  private view: EditorView;
-
-  constructor(view: EditorView) {
-    this.view = view;
-    this.onPointerDown = this.onPointerDown.bind(this);
-    this.onPointerMove = this.onPointerMove.bind(this);
-    this.onPointerUp = this.onPointerUp.bind(this);
-    this.onPointerCancel = this.onPointerCancel.bind(this);
-    view.dom.addEventListener("pointerdown", this.onPointerDown);
-    view.dom.addEventListener("pointermove", this.onPointerMove);
-    view.dom.addEventListener("pointerup", this.onPointerUp);
-    view.dom.addEventListener("pointercancel", this.onPointerCancel);
-  }
-
-  destroy(): void {
-    this.clearTimer();
-    this.view.dom.removeEventListener("pointerdown", this.onPointerDown);
-    this.view.dom.removeEventListener("pointermove", this.onPointerMove);
-    this.view.dom.removeEventListener("pointerup", this.onPointerUp);
-    this.view.dom.removeEventListener("pointercancel", this.onPointerCancel);
-  }
-
-  private clearTimer(): void {
-    if (this.timer !== null) {
-      window.clearTimeout(this.timer);
-      this.timer = null;
-    }
-    this.startPos = null;
-  }
-
-  private onPointerDown(event: PointerEvent): void {
-    if (event.button !== 0) return;
-    const pos = this.view.posAtCoords({ x: event.clientX, y: event.clientY });
-    if (pos === null) return;
-    this.startX = event.clientX;
-    this.startY = event.clientY;
-    this.clearTimer();
-    this.startPos = pos;
-    this.timer = window.setTimeout(() => {
-      const heldPos = this.startPos;
-      this.clearTimer();
-      if (heldPos === null) return;
-      openLookup(this.view, "thesaurus", heldPos);
-    }, LONG_PRESS_MS);
-  }
-
-  private onPointerMove(event: PointerEvent): void {
-    if (this.timer === null) return;
-    const dx = event.clientX - this.startX;
-    const dy = event.clientY - this.startY;
-    if (dx * dx + dy * dy > MOVE_CANCEL_PX * MOVE_CANCEL_PX) {
-      this.clearTimer();
-    }
-  }
-
-  private onPointerUp(): void {
-    this.clearTimer();
-  }
-
-  private onPointerCancel(): void {
-    this.clearTimer();
-  }
-}
-
-const longPressPlugin = ViewPlugin.fromClass(LongPressPlugin);
-
 /**
- * Word-lookup bridge: Mod-' (thesaurus) / Mod-; (rhyme) / long-press (thesaurus)
- * → handler facet.
+ * Word-lookup bridge: Mod-' (thesaurus) / Mod-; (rhyme) → handler facet.
+ * Long-press is handled by the shared pointer plugin in wordToolbar.
  */
 export function wordLookupExtension(onOpen: WordLookupHandler): Extension {
-  return [wordLookupFacet.of(onOpen), wordLookupKeymap, longPressPlugin];
+  return [wordLookupFacet.of(onOpen), wordLookupKeymap];
 }
 
 /** Targeted in-place word replace (undoable via CM history). */

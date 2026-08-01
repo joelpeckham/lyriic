@@ -109,7 +109,8 @@ export function wordTargetAtPointer(
 ): WordTarget | null {
   let pos: number | null = null;
   try {
-    pos = view.posAtCoords({ x, y }, true);
+    // Precise is the default; pass `false` only for imprecise/estimated hits.
+    pos = view.posAtCoords({ x, y });
   } catch {
     return null;
   }
