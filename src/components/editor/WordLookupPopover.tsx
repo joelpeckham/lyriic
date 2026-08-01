@@ -7,7 +7,10 @@ import {
   type KeyboardEvent,
 } from "react";
 
+import { toast } from "sonner";
+
 import { WordAnchor } from "@/components/editor/WordAnchor";
+import { useClosingRetention } from "@/components/editor/useClosingRetention";
 import {
   Popover,
   PopoverContent,
@@ -69,53 +72,60 @@ export function WordLookupPopover({
   const listId = useId();
   const listRef = useRef<HTMLDivElement>(null);
   const [remote, setRemote] = useState<RemoteState | null>(null);
-  const requestIdentity = request
-    ? `${request.mode}:${request.from}:${request.to}:${request.word}`
+  const open = request !== null;
+  const display = useClosingRetention(request);
+  const meteredRef = useRef(meteredLine);
+  if (request) meteredRef.current = meteredLine;
+  const displayMetered = meteredRef.current;
+
+  const requestIdentity = display
+    ? `${display.mode}:${display.from}:${display.to}:${display.word}`
     : "";
   const [active, setActive] = useState({ id: "", index: 0 });
   const activeIndex = active.id === requestIdentity ? active.index : 0;
-  const open = request !== null;
 
   function setActiveIndex(index: number): void {
     setActive({ id: requestIdentity, index });
   }
 
-  const syllables =
-    open && request ? resolveTokenSyllables(request, meteredLine) : 0;
-  const lineTotal = meteredLine?.total ?? 0;
-  const lineTarget = meteredLine?.target ?? null;
+  const syllables = display
+    ? resolveTokenSyllables(display, displayMetered)
+    : 0;
+  const lineTotal = displayMetered?.total ?? 0;
+  const lineTarget = displayMetered?.target ?? null;
 
-  const cacheKey =
-    open && request
-      ? rankedCacheKey({
-          mode: request.mode,
-          word: request.word,
-          lineTotal,
-          lineTarget,
-          tokenSyllables: syllables,
-          overrideRevision,
-        })
-      : null;
+  const cacheKey = display
+    ? rankedCacheKey({
+        mode: display.mode,
+        word: display.word,
+        lineTotal,
+        lineTarget,
+        tokenSyllables: syllables,
+        overrideRevision,
+      })
+    : null;
 
   const cached = cacheKey ? getCachedRanked(cacheKey) : undefined;
   const remoteMatch = cacheKey && remote?.key === cacheKey ? remote : null;
   const candidates = cached ?? remoteMatch?.items ?? null;
-  const loadState = !open
+  const loadState = !display
     ? "idle"
     : remoteMatch?.error
       ? "error"
       : candidates
         ? "ready"
-        : "loading";
+        : open
+          ? "loading"
+          : "idle";
 
   useEffect(() => {
-    if (!open || !request || !cacheKey || cached) return;
+    if (!open || !display || !cacheKey || cached) return;
 
     let cancelled = false;
     const load =
-      request.mode === "thesaurus"
-        ? loadThesaurus().then(() => lookupSynonyms(request.word))
-        : loadRhymeIndex().then(() => lookupRhymes(request.word));
+      display.mode === "thesaurus"
+        ? loadThesaurus().then(() => lookupSynonyms(display.word))
+        : loadRhymeIndex().then(() => lookupRhymes(display.word));
 
     void load
       .then((words) => {
@@ -141,7 +151,7 @@ export function WordLookupPopover({
     };
   }, [
     open,
-    request,
+    display,
     cacheKey,
     cached,
     syllables,
@@ -157,8 +167,20 @@ export function WordLookupPopover({
 
   function applyCandidate(candidate: RankedCandidate): void {
     if (!request) return;
-    const insert = preserveCasing(request.raw, candidate.word);
-    onReplace(request.from, request.to, insert);
+    const text = preserveCasing(request.raw, candidate.word);
+    if (request.mode === "rhyme") {
+      void navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          toast(`“${text}” copied to clipboard`);
+        })
+        .finally(() => {
+          onClose();
+          onRestoreFocus();
+        });
+      return;
+    }
+    onReplace(request.from, request.to, text);
     onClose();
   }
 
@@ -188,11 +210,11 @@ export function WordLookupPopover({
     }
   }
 
-  const isThesaurus = request?.mode === "thesaurus";
-  const title = request
+  const isThesaurus = display?.mode === "thesaurus";
+  const title = display
     ? isThesaurus
-      ? `Synonyms for ${request.raw}`
-      : `Rhymes for ${request.raw}`
+      ? `Synonyms for ${display.raw}`
+      : `Rhymes for ${display.raw}`
     : "Word lookup";
   const emptyLabel = isThesaurus ? "No synonyms found." : "No rhymes found.";
   const errorLabel = isThesaurus
@@ -200,7 +222,7 @@ export function WordLookupPopover({
     : "Couldn’t load rhymes.";
   const description = isThesaurus
     ? "Choose a synonym. Options are sorted by syllable count. Meter-matching options are marked."
-    : "Choose a rhyme. Options are sorted by syllable count. Meter-matching options are marked.";
+    : "Choose a rhyme to copy. Options are sorted by syllable count. Meter-matching options are marked.";
 
   return (
     <Popover
@@ -212,7 +234,7 @@ export function WordLookupPopover({
         }
       }}
     >
-      {request ? <WordAnchor anchor={request.anchor} /> : null}
+      {display ? <WordAnchor anchor={display.anchor} /> : null}
       <PopoverContent
         align="start"
         side="bottom"
@@ -235,7 +257,7 @@ export function WordLookupPopover({
           </PopoverDescription>
         </PopoverHeader>
 
-        {loadState === "loading" || loadState === "idle" ? (
+        {loadState === "loading" ? (
           <p className="px-1.5 py-2 text-sm text-muted-foreground">Loading…</p>
         ) : null}
 

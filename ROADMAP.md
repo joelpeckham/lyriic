@@ -116,7 +116,7 @@ Interaction (same affordances as thesaurus; distinct shortcut):
 - [x] Select or shortcut (`Mod-;`) on a word → shadcn `Popover` anchored to the selection (long-press stays thesaurus)
 - [x] Show rhyme candidates with each option’s syllable count shown subtly
 - [x] Sort by syllable count (ascending); highlight options that keep the current line on its meter target
-- [x] Clicking a rhyme replaces the word in place and closes the popover
+- [x] Clicking a rhyme copies it to the clipboard and closes the popover
 - [x] Must stay fast: cache lookups; never block typing on the main path
 
 Rhyme data (local-first):

@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BookA, Hash, Music2, RotateCcw } from "lucide-react";
 
 import { WordAnchor } from "@/components/editor/WordAnchor";
+import { useClosingRetention } from "@/components/editor/useClosingRetention";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
@@ -66,8 +67,9 @@ export function WordToolbarPopover({
   overrides,
 }: WordToolbarPopoverProps) {
   const open = target !== null;
-  const targetIdentity = target
-    ? `${target.from}:${target.to}:${target.word}`
+  const display = useClosingRetention(target);
+  const targetIdentity = display
+    ? `${display.from}:${display.to}:${display.word}`
     : "";
   const [panel, setPanel] = useState<{ id: string; view: Panel }>({
     id: "",
@@ -75,11 +77,11 @@ export function WordToolbarPopover({
   });
   const view = panel.id === targetIdentity ? panel.view : "actions";
 
-  const key = target ? normalizeOverrideKey(target.word) : "";
+  const key = display ? normalizeOverrideKey(display.word) : "";
   const hasOverride = Boolean(key && overrides[key] !== undefined);
   /** Dictionary / heuristic baseline — ignores project overrides. */
-  const baseline = target ? countWord(target.word, {}) : null;
-  const suggestion = target ? suggestionFor(target.word) : null;
+  const baseline = display ? countWord(display.word, {}) : null;
+  const suggestion = display ? suggestionFor(display.word) : null;
 
   const displayCount = hasOverride
     ? overrides[key]!
@@ -109,7 +111,7 @@ export function WordToolbarPopover({
   }
 
   function applyCount(raw: string | number): void {
-    if (!target || !key || !baseline) return;
+    if (!open || !display || !key || !baseline) return;
     const parsed = typeof raw === "number" ? raw : Number(raw);
     if (!Number.isFinite(parsed) || !isValidOverrideCount(parsed)) {
       setCountDraft(String(displayCount));
@@ -131,7 +133,7 @@ export function WordToolbarPopover({
         if (!next) onClose();
       }}
     >
-      {target ? <WordAnchor anchor={target.anchor} /> : null}
+      {display ? <WordAnchor anchor={display.anchor} /> : null}
       <PopoverContent
         align="center"
         side="bottom"
@@ -160,8 +162,8 @@ export function WordToolbarPopover({
           }
         }}
       >
-        {view === "actions" && target ? (
-          <ButtonGroup aria-label={`Word actions for ${target.raw}`}>
+        {view === "actions" && display ? (
+          <ButtonGroup aria-label={`Word actions for ${display.raw}`}>
             <Button
               type="button"
               variant="outline"
@@ -194,11 +196,11 @@ export function WordToolbarPopover({
           </ButtonGroup>
         ) : null}
 
-        {view === "syllables" && target && baseline ? (
+        {view === "syllables" && display && baseline ? (
           <>
             <PopoverHeader className="gap-0.5 px-0.5">
               <PopoverTitle className="text-xs font-medium tracking-wide text-muted-foreground">
-                Syllables · {target.raw}
+                Syllables · {display.raw}
               </PopoverTitle>
               <PopoverDescription className="text-muted-foreground text-xs">
                 {hasOverride
@@ -220,7 +222,7 @@ export function WordToolbarPopover({
                 min={OVERRIDE_COUNT_MIN}
                 max={OVERRIDE_COUNT_MAX}
                 value={countDraft}
-                aria-label={`Syllable count for ${target.raw}`}
+                aria-label={`Syllable count for ${display.raw}`}
                 className="h-8 w-16 tabular-nums"
                 onChange={(event) => setCountDraft(event.target.value)}
                 onBlur={() => applyCount(countDraft)}
