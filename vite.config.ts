@@ -15,10 +15,32 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-vendor",
+              test: /node_modules\/(?:react|react-dom|react-router|react-router-dom)\//,
+            },
+            {
+              name: "codemirror",
+              test: /node_modules\/@codemirror\//,
+            },
+            {
+              name: "radix",
+              test: /node_modules\/(?:radix-ui\/|@radix-ui\/)/,
+            },
+          ],
+        },
+      },
+    },
+  },
   test: {
     environment: "jsdom",
     include: ["src/**/*.test.{ts,tsx}"],
     setupFiles: ["src/test/setup.ts"],
   },
-
 });
+

@@ -1,22 +1,89 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
+import { Settings } from "lucide-react";
 
 import { AppFooter } from "@/components/AppFooter";
 import { AppHeader } from "@/components/AppHeader";
 import { ProjectSwitcher } from "@/components/ProjectSwitcher";
-import { SettingsSheet } from "@/components/SettingsSheet";
 import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
 import { PoemEditor } from "@/components/editor/PoemEditor";
+import { Button } from "@/components/ui/button";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { usePrefs } from "@/hooks/usePrefs";
 import { useProjects } from "@/hooks/useProjects";
+import type { EditorSettings } from "@/lib/settings";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 import { handleAppShortcut } from "@/lib/shortcuts";
+
+const SettingsSheet = lazy(() =>
+  import("@/components/SettingsSheet").then((m) => ({
+    default: m.SettingsSheet,
+  })),
+);
 
 const FIRST_RUN_PLACEHOLDER = "Write a line…";
 
 function focusPoem(): void {
   const poem = document.getElementById("poem");
   poem?.focus();
+}
+
+function SettingsSheetGate({
+  settings,
+  onChange,
+  open,
+  onOpenChange,
+}: {
+  settings: EditorSettings;
+  onChange: (next: EditorSettings) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const [mounted, setMounted] = useState(open);
+
+  useEffect(() => {
+    if (open) setMounted(true);
+  }, [open]);
+
+  if (!mounted) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-10 text-muted-foreground hover:text-foreground"
+        aria-label="Open settings"
+        onClick={() => {
+          setMounted(true);
+          onOpenChange(true);
+        }}
+      >
+        <Settings className="size-5" />
+      </Button>
+    );
+  }
+
+  return (
+    <Suspense
+      fallback={
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-10 text-muted-foreground hover:text-foreground"
+          aria-label="Open settings"
+          aria-busy="true"
+          disabled
+        >
+          <Settings className="size-5" />
+        </Button>
+      }
+    >
+      <SettingsSheet
+        settings={settings}
+        onChange={onChange}
+        open={open}
+        onOpenChange={onOpenChange}
+      />
+    </Suspense>
+  );
 }
 
 export function EditorShell() {
@@ -97,7 +164,7 @@ export function EditorShell() {
               onRename={renameProject}
               onDelete={deleteProject}
             />
-            <SettingsSheet
+            <SettingsSheetGate
               settings={active.settings}
               onChange={setSettings}
               open={settingsOpen}

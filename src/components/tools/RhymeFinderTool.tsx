@@ -55,13 +55,21 @@ function groupIdsBySyllables(ids: number[]): RhymeSyllableGroup[] {
 }
 
 export function RhymeFinderTool() {
-  const [query, setQuery] = useState("light");
+  const [query, setQuery] = useState("");
   const [rhymeMode, setRhymeMode] = useState<RhymeMode>("perfect");
   const [modeReady, setModeReady] = useState(false);
   const dictRevision = useDictRevision();
   const dictReady = dictRevision > 0;
 
+  const trimmed = query.trim();
+  const lookupKey = normalizeLookupKey(trimmed);
+
+  // Defer the multi‑MB rhyme pack until the user asks for a word.
   useEffect(() => {
+    if (!lookupKey) {
+      setModeReady(false);
+      return;
+    }
     let cancelled = false;
     setModeReady(false);
     void loadRhymeIndex(rhymeMode).then(() => {
@@ -70,10 +78,8 @@ export function RhymeFinderTool() {
     return () => {
       cancelled = true;
     };
-  }, [rhymeMode]);
+  }, [rhymeMode, lookupKey]);
 
-  const trimmed = query.trim();
-  const lookupKey = normalizeLookupKey(trimmed);
   const rhymeReady = modeReady && isRhymeIndexReady(rhymeMode);
 
   const { rhymeIds, known } = useMemo(() => {

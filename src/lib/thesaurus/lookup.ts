@@ -60,7 +60,7 @@ export async function loadThesaurus(): Promise<SynonymMap> {
   return Object.create(null) as SynonymMap;
 }
 
-/** Idle-prefetch thesaurus after lexicon is available. */
+/** Optional idle-prefetch; not used on cold load (keeps 3G TTI clear). */
 export function prefetchThesaurus(): void {
   if (typeof window === "undefined") return;
   const start = () => {

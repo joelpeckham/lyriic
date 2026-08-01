@@ -1,9 +1,16 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  lazy,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Annotation, Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
-import { WordLookupPopover } from "@/components/editor/WordLookupPopover";
 import { WordToolbarPopover } from "@/components/editor/WordToolbarPopover";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
@@ -29,6 +36,12 @@ import {
   type MeteredLine,
 } from "@/lib/meters";
 import type { EditorSettings } from "@/lib/settings";
+
+const WordLookupPopover = lazy(() =>
+  import("@/components/editor/WordLookupPopover").then((m) => ({
+    default: m.WordLookupPopover,
+  })),
+);
 
 type PoemEditorProps = {
   value: string;
@@ -311,25 +324,29 @@ export function PoemEditor({
         onClearOverride={onClearOverride}
         overrides={overrides}
       />
-      <WordLookupPopover
-        request={lookupRequest}
-        onClose={() => setLookupRequest(null)}
-        onReplace={(from, to, insert) => {
-          const view = viewRef.current;
-          if (!view) return;
-          replaceWordRange(view, from, to, insert);
-        }}
-        onRestoreFocus={() => {
-          viewRef.current?.focus();
-        }}
-        meteredLine={
-          lookupRequest
-            ? meteredLines[lookupRequest.lineIndex]
-            : undefined
-        }
-        overrides={overrides}
-        overrideRevision={overrideRevision}
-      />
+      {toolbarTarget || lookupRequest ? (
+        <Suspense fallback={null}>
+          <WordLookupPopover
+            request={lookupRequest}
+            onClose={() => setLookupRequest(null)}
+            onReplace={(from, to, insert) => {
+              const view = viewRef.current;
+              if (!view) return;
+              replaceWordRange(view, from, to, insert);
+            }}
+            onRestoreFocus={() => {
+              viewRef.current?.focus();
+            }}
+            meteredLine={
+              lookupRequest
+                ? meteredLines[lookupRequest.lineIndex]
+                : undefined
+            }
+            overrides={overrides}
+            overrideRevision={overrideRevision}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }
