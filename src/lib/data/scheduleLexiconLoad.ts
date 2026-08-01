@@ -1,6 +1,8 @@
 import { loadLexicon } from "@/lib/data/lexicon";
 import { runWhenIdle } from "@/lib/data/runWhenIdle";
+import { loadStress } from "@/lib/data/stress";
 import { loadVariants } from "@/lib/data/variants";
+import { prefetchRhymes } from "@/lib/rhyme/lookup";
 import { prefetchThesaurus } from "@/lib/thesaurus/lookup";
 
 type NetworkConnection = {
@@ -23,7 +25,8 @@ function lexiconIdleTimeoutMs(): number {
 }
 
 /**
- * One-time idle schedule for the shared lexicon (and thesaurus prefetch).
+ * One-time idle schedule for all shared dict packs.
+ * Lexicon first, then variants/stress; thesaurus and rhymes follow on later idle passes.
  * Safe to call from app root; subsequent calls are no-ops.
  */
 export function scheduleLexiconLoad(): void {
@@ -32,7 +35,9 @@ export function scheduleLexiconLoad(): void {
   runWhenIdle(() => {
     void loadLexicon().then(() => {
       void loadVariants().catch(() => {});
+      void loadStress().catch(() => {});
       prefetchThesaurus();
+      prefetchRhymes();
     });
   }, lexiconIdleTimeoutMs());
 }

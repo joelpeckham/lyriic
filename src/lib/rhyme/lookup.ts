@@ -93,6 +93,17 @@ export function isRhymeIndexReady(mode?: RhymeMode): boolean {
   );
 }
 
+/** Idle-prefetch rhyme packs after lexicon is available (end follows via loadRhymeIndex). */
+export function prefetchRhymes(): void {
+  if (typeof window === "undefined") return;
+  if (isRhymeIndexReady("perfect")) return;
+  runWhenIdle(() => {
+    void loadRhymeIndex("perfect").catch(() => {
+      // Prefetch is best-effort; query path will surface failures.
+    });
+  }, 2000);
+}
+
 function activeLex(): {
   words: string[];
   wordToId: Map<string, number>;

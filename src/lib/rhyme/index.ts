@@ -8,6 +8,7 @@ export {
   lookupRhymeIds,
   lookupRhymes,
   materializeWords,
+  prefetchRhymes,
   queryRhymeIds,
   type RhymeMode,
 } from "./lookup";
