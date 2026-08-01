@@ -1,3 +1,5 @@
+import { readJson, writeJson } from "./storageJson";
+
 export const PREFS_STORAGE_KEY = "lyriic.prefs.v1";
 
 export type ThemePref = "system" | "light" | "dark";
@@ -39,22 +41,19 @@ export function normalizePrefs(raw: unknown): AppPrefs {
   };
 }
 
+function prefsStorage(): Storage | null {
+  return typeof localStorage !== "undefined" ? localStorage : null;
+}
+
 export function loadPrefs(): AppPrefs {
-  try {
-    const raw = localStorage.getItem(PREFS_STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_PREFS };
-    return normalizePrefs(JSON.parse(raw) as unknown);
-  } catch {
-    return { ...DEFAULT_PREFS };
-  }
+  const result = readJson(prefsStorage(), PREFS_STORAGE_KEY);
+  if (result.status !== "ok") return { ...DEFAULT_PREFS };
+  return normalizePrefs(result.value);
 }
 
 export function savePrefs(prefs: AppPrefs): void {
-  try {
-    localStorage.setItem(PREFS_STORAGE_KEY, JSON.stringify(prefs));
-  } catch {
-    // Quota / private mode — appearance still applies in-session.
-  }
+  writeJson(prefsStorage(), PREFS_STORAGE_KEY, prefs);
+  // Quota / private mode — appearance still applies in-session.
 }
 
 export function systemPrefersDark(): boolean {
