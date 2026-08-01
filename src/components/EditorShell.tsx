@@ -86,25 +86,40 @@ function SettingsSheetGate({
   );
 }
 
+function countWrittenLines(text: string): number {
+  if (!text.trim()) return 0;
+  return text.split("\n").filter((line) => line.trim().length > 0).length;
+}
+
 function ActiveMeterChip({
   meterId,
+  writtenLines,
   onOpenSettings,
 }: {
   meterId: string;
+  writtenLines: number;
   onOpenSettings: () => void;
 }) {
   if (meterId === "none") return null;
   const entry = getMeterCatalogEntry(meterId);
+  const stanzaLines = entry.stanzaLines ?? null;
+  const showLineCount = stanzaLines !== null && stanzaLines > 0;
+  const label = showLineCount
+    ? `${entry.label} · ${writtenLines} / ${stanzaLines}`
+    : entry.label;
+  const ariaLabel = showLineCount
+    ? `${entry.label}, ${writtenLines} of ${stanzaLines} lines. Open settings to change.`
+    : `Meter: ${entry.label}. Open settings to change.`;
   return (
     <Button
       type="button"
       variant="ghost"
       size="sm"
-      className="max-w-40 truncate text-muted-foreground hover:text-foreground"
+      className="max-w-56 truncate tabular-nums text-muted-foreground hover:text-foreground"
       onClick={onOpenSettings}
-      aria-label={`Meter: ${entry.label}. Open settings to change.`}
+      aria-label={ariaLabel}
     >
-      {entry.label}
+      {label}
     </Button>
   );
 }
@@ -185,6 +200,7 @@ export function EditorShell() {
           <nav aria-label="Draft and settings" className="contents">
             <ActiveMeterChip
               meterId={active.settings.meter}
+              writtenLines={countWrittenLines(active.text)}
               onOpenSettings={() => setSettingsOpen(true)}
             />
             <ProjectSwitcher

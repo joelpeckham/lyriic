@@ -331,17 +331,11 @@ export function PoemEditor({
     setWordTarget(null);
   }
 
-  const stanzaLines = meterConfig.stanzaLines ?? null;
-  const writtenLines = lineCounts.lines.filter((line) => line.trim().length > 0)
-    .length;
-  const showStanzaHint =
-    stanzaLines !== null && stanzaLines > 0 && settings.meter !== "none";
-
   return (
     <div
       id="poem"
       tabIndex={-1}
-      className="relative mx-auto h-full w-full max-w-none outline-none focus-visible:outline-none"
+      className="relative mx-auto flex h-full min-h-0 w-full max-w-none flex-1 flex-col outline-none focus-visible:outline-none"
       onFocus={(event) => {
         // Skip link focuses #poem; move into the single CM textbox tab stop.
         if (event.target === event.currentTarget) {
@@ -352,15 +346,7 @@ export function PoemEditor({
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {settings.showCounts ? liveCountText : ""}
       </div>
-      <div ref={parentRef} className="h-full w-full" />
-      {showStanzaHint ? (
-        <p
-          className="pointer-events-none absolute inset-x-0 bottom-14 z-10 px-4 text-center font-[family-name:var(--font-ui)] text-xs text-muted-foreground/70"
-          aria-live="polite"
-        >
-          {writtenLines} / {stanzaLines} lines
-        </p>
-      ) : null}
+      <div ref={parentRef} className="min-h-0 w-full flex-1" />
       <WordToolsPopover
         target={wordTarget}
         onClose={closeWordUi}
