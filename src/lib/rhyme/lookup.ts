@@ -155,6 +155,53 @@ export function lookupRhymeIds(
   return out;
 }
 
+/**
+ * Perfect rhymes, optionally unioned with end rhymes (perfect-first, deduped).
+ * Call after {@link loadRhymeQuery} has resolved.
+ */
+export function queryRhymeIds(
+  word: string,
+  includeEnd: boolean,
+): number[] {
+  const perfect = lookupRhymeIds(word, "perfect");
+  if (!includeEnd) return perfect;
+  const end = lookupRhymeIds(word, "end");
+  if (end.length === 0) return perfect;
+  const seen = new Set(perfect);
+  const out = perfect.slice();
+  for (const id of end) {
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+  }
+  return out;
+}
+
+/** True when the word has a perfect entry, or an end entry when includeEnd. */
+export function hasRhymeQueryEntry(
+  word: string,
+  includeEnd: boolean,
+): boolean {
+  return (
+    hasRhymeEntry(word, "perfect") ||
+    (includeEnd && hasRhymeEntry(word, "end"))
+  );
+}
+
+/** Load perfect (and end when requested) for a rhyme query. */
+export async function loadRhymeQuery(includeEnd: boolean): Promise<void> {
+  await loadRhymeIndex("perfect");
+  if (includeEnd) await loadRhymeIndex("end");
+}
+
+/** True when packs needed for {@link queryRhymeIds} are ready. */
+export function isRhymeQueryReady(includeEnd: boolean): boolean {
+  return (
+    isRhymeIndexReady("perfect") &&
+    (!includeEnd || isRhymeIndexReady("end"))
+  );
+}
+
 /** Materialize a slice of word ids to strings. */
 export function materializeWords(
   ids: readonly number[],

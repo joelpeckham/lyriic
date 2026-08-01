@@ -1,19 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { EndRhymesSwitch } from "@/components/rhyme/EndRhymesSwitch";
 import { RhymeWordBank } from "@/components/tools/RhymeWordBank";
 import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { getToolBySlug } from "@/content/tools";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { getLexicon, syllablesForId } from "@/lib/data/lexicon";
 import {
-  hasRhymeEntry,
-  isRhymeIndexReady,
-  loadRhymeIndex,
-  lookupRhymeIds,
-  type RhymeMode,
+  hasRhymeQueryEntry,
+  isRhymeQueryReady,
+  loadRhymeQuery,
+  queryRhymeIds,
 } from "@/lib/rhyme";
 import { countWord } from "@/lib/syllables";
 import { normalizeLookupKey } from "@/lib/syllables/normalize";
@@ -34,10 +32,10 @@ const EXAMPLE_WORDS = [
 
 export function RhymeFinderTool() {
   const [query, setQuery] = useState("");
-  const [rhymeMode, setRhymeMode] = useState<RhymeMode>("perfect");
+  const [includeEndRhymes, setIncludeEndRhymes] = useState(false);
   const [loaded, setLoaded] = useState<{
     key: string;
-    mode: RhymeMode;
+    includeEnd: boolean;
   } | null>(null);
   const dictRevision = useDictRevision();
   const dictReady = dictRevision > 0;
@@ -49,29 +47,31 @@ export function RhymeFinderTool() {
   useEffect(() => {
     if (!lookupKey) return;
     let cancelled = false;
-    void loadRhymeIndex(rhymeMode).then(() => {
-      if (!cancelled) setLoaded({ key: lookupKey, mode: rhymeMode });
+    void loadRhymeQuery(includeEndRhymes).then(() => {
+      if (!cancelled) {
+        setLoaded({ key: lookupKey, includeEnd: includeEndRhymes });
+      }
     });
     return () => {
       cancelled = true;
     };
-  }, [rhymeMode, lookupKey]);
+  }, [includeEndRhymes, lookupKey]);
 
   const modeReady =
     !!lookupKey &&
     loaded?.key === lookupKey &&
-    loaded.mode === rhymeMode;
-  const rhymeReady = modeReady && isRhymeIndexReady(rhymeMode);
+    loaded.includeEnd === includeEndRhymes;
+  const rhymeReady = modeReady && isRhymeQueryReady(includeEndRhymes);
 
   const { rhymeIds, known } = useMemo(() => {
     if (!rhymeReady || !lookupKey) {
       return { rhymeIds: [] as number[], known: false };
     }
     return {
-      rhymeIds: lookupRhymeIds(lookupKey, rhymeMode),
-      known: hasRhymeEntry(lookupKey, rhymeMode),
+      rhymeIds: queryRhymeIds(lookupKey, includeEndRhymes),
+      known: hasRhymeQueryEntry(lookupKey, includeEndRhymes),
     };
-  }, [lookupKey, rhymeReady, rhymeMode]);
+  }, [lookupKey, rhymeReady, includeEndRhymes]);
 
   const groups = useMemo(() => {
     if (!dictReady || !lookupKey || rhymeIds.length === 0) return [];
@@ -90,17 +90,18 @@ export function RhymeFinderTool() {
     });
   }, [rhymeIds, dictReady, dictRevision, lookupKey]);
 
-  const status = !rhymeReady
-    ? "loading-index"
-    : trimmed.length === 0
+  const status =
+    trimmed.length === 0
       ? "empty-query"
-      : !known
-        ? "unknown"
-        : rhymeIds.length === 0
-          ? "no-rhymes"
-          : !dictReady
-            ? "loading-dict"
-            : "ready";
+      : !rhymeReady
+        ? "loading-index"
+        : !known
+          ? "unknown"
+          : rhymeIds.length === 0
+            ? "no-rhymes"
+            : !dictReady
+              ? "loading-dict"
+              : "ready";
 
   return (
     <div className="mt-8 font-[family-name:var(--font-ui)]">
@@ -124,33 +125,10 @@ export function RhymeFinderTool() {
           />
         </label>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <ButtonGroup aria-label="Rhyme type">
-            <Button
-              type="button"
-              size="sm"
-              variant={rhymeMode === "perfect" ? "secondary" : "outline"}
-              aria-pressed={rhymeMode === "perfect"}
-              onClick={() => setRhymeMode("perfect")}
-            >
-              Perfect
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={rhymeMode === "end" ? "secondary" : "outline"}
-              aria-pressed={rhymeMode === "end"}
-              onClick={() => setRhymeMode("end")}
-            >
-              End rhyme
-            </Button>
-          </ButtonGroup>
-          <p className="text-sm text-muted-foreground">
-            {rhymeMode === "perfect"
-              ? "Stress-matched endings (gun, begun)."
-              : "Final syllable only (fun ↔ anyone)."}
-          </p>
-        </div>
+        <EndRhymesSwitch
+          checked={includeEndRhymes}
+          onCheckedChange={setIncludeEndRhymes}
+        />
 
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-sm">
           <span className="text-muted-foreground">Try</span>

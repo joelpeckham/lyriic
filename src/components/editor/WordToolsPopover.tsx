@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { WordAnchor } from "@/components/editor/WordAnchor";
 import { useClosingRetention } from "@/components/editor/useClosingRetention";
 import { useKeyedState } from "@/components/editor/useKeyedState";
+import { EndRhymesSwitch } from "@/components/rhyme/EndRhymesSwitch";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
@@ -29,11 +30,7 @@ import type {
   WordTarget,
 } from "@/lib/editor/wordInteraction";
 import type { MeteredLine } from "@/lib/meters/types";
-import {
-  loadRhymeIndex,
-  lookupRhymeIds,
-  type RhymeMode,
-} from "@/lib/rhyme";
+import { loadRhymeQuery, queryRhymeIds } from "@/lib/rhyme";
 import { countWord } from "@/lib/syllables/countWord";
 import {
   isValidOverrideCount,
@@ -169,9 +166,9 @@ export function WordToolsPopover({
     String(displayCount),
   );
 
-  const [rhymeMode, setRhymeMode] = useKeyedState<RhymeMode>(
+  const [includeEndRhymes, setIncludeEndRhymes] = useKeyedState(
     lookupIdentity,
-    "perfect",
+    false,
   );
   const [activeIndex, setActiveIndex] = useKeyedState(lookupIdentity, 0);
   const [load, setLoad] = useState<LoadResult | null>(null);
@@ -196,7 +193,8 @@ export function WordToolsPopover({
     display && (view === "thesaurus" || view === "rhyme")
       ? rankedCacheKey({
           mode: view,
-          rhymeMode: view === "rhyme" ? rhymeMode : undefined,
+          includeEndRhymes:
+            view === "rhyme" ? includeEndRhymes : undefined,
           word: display.word,
           usage: view === "thesaurus" ? usage : undefined,
           lineTotal,
@@ -255,8 +253,8 @@ export function WordToolsPopover({
               limit: POPOVER_THESAURUS_RANK_LIMIT,
             });
           })
-        : loadRhymeIndex(rhymeMode).then(() => {
-            const ids = lookupRhymeIds(display.word, rhymeMode);
+        : loadRhymeQuery(includeEndRhymes).then(() => {
+            const ids = queryRhymeIds(display.word, includeEndRhymes);
             const lex = getLexicon();
             if (!lex) return [] as RankedCandidate[];
             return rankRhymeIds({
@@ -294,7 +292,7 @@ export function WordToolsPopover({
     lineTotal,
     lineTarget,
     overrides,
-    rhymeMode,
+    includeEndRhymes,
     usage,
     view,
   ]);
@@ -385,8 +383,8 @@ export function WordToolsPopover({
     : "Couldn’t load rhymes.";
   const lookupDescription = isThesaurus
     ? "Choose a synonym. Matching part of speech comes first, then meter fit and syllable count."
-    : rhymeMode === "end"
-      ? "Choose an end rhyme to copy. Matches the final syllable even when stress differs. Sorted by syllable count."
+    : includeEndRhymes
+      ? "Choose a rhyme to copy. Includes perfect rhymes plus end rhymes that match the final syllable. Sorted by syllable count. Meter-matching options are marked."
       : "Choose a perfect rhyme to copy. Options are sorted by syllable count. Meter-matching options are marked.";
 
   const contentClass =
@@ -432,34 +430,41 @@ export function WordToolsPopover({
         }}
       >
         {view === "actions" && display ? (
-          <ButtonGroup aria-label={`Word actions for ${display.raw}`}>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Syllable count"
-              onClick={() => setPanel("syllables")}
-            >
-              <Hash />
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Synonyms"
-              onClick={() => onOpenLookup("thesaurus")}
-            >
-              <BookA />
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label="Rhymes"
-              onClick={() => onOpenLookup("rhyme")}
-            >
-              <Music2 />
-            </Button>
+          <ButtonGroup
+            aria-label={`Word actions for ${display.raw}`}
+            className="[&_[data-slot=button]]:bg-popover [&_[data-slot=button]]:hover:bg-muted dark:[&_[data-slot=button]]:bg-popover dark:[&_[data-slot=button]]:hover:bg-muted"
+          >
+            <ButtonGroup>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Syllable count"
+                onClick={() => setPanel("syllables")}
+              >
+                <Hash />
+              </Button>
+            </ButtonGroup>
+            <ButtonGroup>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Synonyms"
+                onClick={() => onOpenLookup("thesaurus")}
+              >
+                <BookA />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                aria-label="Rhymes"
+                onClick={() => onOpenLookup("rhyme")}
+              >
+                <Music2 />
+              </Button>
+            </ButtonGroup>
           </ButtonGroup>
         ) : null}
 
@@ -545,26 +550,11 @@ export function WordToolsPopover({
             </PopoverHeader>
 
             {view === "rhyme" ? (
-              <ButtonGroup aria-label="Rhyme type" className="px-0.5">
-                <Button
-                  type="button"
-                  size="xs"
-                  variant={rhymeMode === "perfect" ? "secondary" : "ghost"}
-                  aria-pressed={rhymeMode === "perfect"}
-                  onClick={() => setRhymeMode("perfect")}
-                >
-                  Perfect
-                </Button>
-                <Button
-                  type="button"
-                  size="xs"
-                  variant={rhymeMode === "end" ? "secondary" : "ghost"}
-                  aria-pressed={rhymeMode === "end"}
-                  onClick={() => setRhymeMode("end")}
-                >
-                  End
-                </Button>
-              </ButtonGroup>
+              <EndRhymesSwitch
+                size="sm"
+                checked={includeEndRhymes}
+                onCheckedChange={setIncludeEndRhymes}
+              />
             ) : null}
 
             {loadState === "loading" ? (

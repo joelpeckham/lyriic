@@ -14,6 +14,8 @@ export function useDictRevision(): number {
   const [revision, setRevision] = useState(getDictRevision);
 
   useEffect(() => {
+    // Sync in case the pack finished between first render and subscribe.
+    setRevision(getDictRevision());
     return subscribeDictReady(() => {
       setRevision(getDictRevision());
     });

@@ -12,14 +12,14 @@ export function rankedCacheKey(parts: {
   lineTarget: number | null;
   tokenSyllables: number;
   overrideRevision: string;
-  /** Perfect vs end rhyme; ignored for thesaurus. */
-  rhymeMode?: "perfect" | "end";
+  /** When true, perfect ∪ end rhymes; ignored for thesaurus. */
+  includeEndRhymes?: boolean;
   /** Detected usage / POS; ignored for rhyme. */
   usage?: string | null;
 }): CacheKey {
   return [
     parts.mode,
-    parts.rhymeMode ?? "perfect",
+    parts.includeEndRhymes ? "end+" : "perfect",
     parts.word,
     parts.usage ?? "",
     parts.lineTotal,
