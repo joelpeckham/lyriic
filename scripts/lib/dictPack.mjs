@@ -104,9 +104,15 @@ export function decodeFrontCoded(buf, offset, count) {
   let i = offset;
   const dec = new TextDecoder();
   for (let n = 0; n < count; n++) {
+    if (i + 3 > buf.length) {
+      throw new Error("front-coded header truncated");
+    }
     const shared = buf[i++];
     const restLen = buf[i] | (buf[i + 1] << 8);
     i += 2;
+    if (i + restLen > buf.length) {
+      throw new Error("front-coded body truncated");
+    }
     const rest = dec.decode(buf.subarray(i, i + restLen));
     i += restLen;
     const w = prev.slice(0, shared) + rest;

@@ -7,6 +7,7 @@ export { buildMeteredLines } from "./buildMeteredLines";
 export {
   applySyllableVariantFit,
   chooseSyllableVariantFit,
+  fitLineStressVariants,
   fitLineSyllableVariants,
 } from "./fitSyllableVariants";
 export {
@@ -60,8 +61,10 @@ export {
 } from "./presets";
 export {
   isReusableEmptyDraft,
+  meterSeedIdentity,
   parseMeterSeed,
   settingsFromMeterSeed,
+  urlHasMeterSeedQuery,
   writerDocumentMeta,
   writerPath,
   WRITER_PRERENDER_SLUGS,

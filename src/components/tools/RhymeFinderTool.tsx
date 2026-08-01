@@ -8,8 +8,11 @@ import { getToolBySlug } from "@/content/tools";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { getLexicon, syllablesForId } from "@/lib/data/lexicon";
 import {
+  hasRhymeEntry,
   hasRhymeQueryEntry,
+  isRhymeIndexReady,
   isRhymeQueryReady,
+  loadRhymeIndex,
   loadRhymeQuery,
   queryRhymeIds,
 } from "@/lib/rhyme";
@@ -43,6 +46,8 @@ export function RhymeFinderTool() {
   const trimmed = query.trim();
   const lookupKey = normalizeLookupKey(trimmed);
 
+  const [endProbeReady, setEndProbeReady] = useState(false);
+
   // Defer the multi‑MB rhyme pack until the user asks for a word.
   useEffect(() => {
     if (!lookupKey) return;
@@ -73,6 +78,35 @@ export function RhymeFinderTool() {
     };
   }, [lookupKey, rhymeReady, includeEndRhymes]);
 
+  // When perfect is empty, probe end pack so we can hint "Enable End rhymes".
+  useEffect(() => {
+    if (
+      !rhymeReady ||
+      !lookupKey ||
+      includeEndRhymes ||
+      rhymeIds.length > 0 ||
+      !known
+    ) {
+      setEndProbeReady(false);
+      return;
+    }
+    let cancelled = false;
+    void loadRhymeIndex("end").then(() => {
+      if (!cancelled) setEndProbeReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [rhymeReady, lookupKey, includeEndRhymes, rhymeIds.length, known]);
+
+  const endRhymesAvailable =
+    !includeEndRhymes &&
+    rhymeIds.length === 0 &&
+    known &&
+    endProbeReady &&
+    isRhymeIndexReady("end") &&
+    hasRhymeEntry(lookupKey, "end");
+
   const groups = useMemo(() => {
     if (!dictReady || !lookupKey || rhymeIds.length === 0) return [];
     void dictRevision;
@@ -98,7 +132,9 @@ export function RhymeFinderTool() {
         : !known
           ? "unknown"
           : rhymeIds.length === 0
-            ? "no-rhymes"
+            ? endRhymesAvailable
+              ? "enable-end"
+              : "no-rhymes"
             : !dictReady
               ? "loading-dict"
               : "ready";
@@ -177,6 +213,14 @@ export function RhymeFinderTool() {
             “{trimmed}” isn’t in the local index. Try a common English word, or
             open the editor and keep drafting—the lookup is meant for everyday
             diction, not every proper name.
+          </p>
+        ) : null}
+
+        {status === "enable-end" ? (
+          <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
+            No perfect rhymes for “{trimmed}”, but end rhymes are available.
+            Turn on End rhymes above to see matches that share the final
+            syllable.
           </p>
         ) : null}
 

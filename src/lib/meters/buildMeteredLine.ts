@@ -3,7 +3,10 @@ import {
   targetForLine,
   type BinaryStressPattern,
 } from "./presets";
-import { fitLineSyllableVariants } from "./fitSyllableVariants";
+import {
+  fitLineStressVariants,
+  fitLineSyllableVariants,
+} from "./fitSyllableVariants";
 import {
   applyMetricalMonosyllables,
   flattenTokenStress,
@@ -115,6 +118,7 @@ export function buildMeteredLine(
       target,
       syllableOverrides,
       stressOverrides,
+      expectedStress,
     );
   }
 
@@ -126,6 +130,16 @@ export function buildMeteredLine(
     total > 0
   ) {
     applyMetricalMonosyllables(tokens, expectedStress, stressOverrides);
+    // Same-syllable stress alts when count fits but contour still mismatches.
+    if (isStressReady() && !stressMatches(flattenTokenStress(tokens), expectedStress)) {
+      fitLineStressVariants(
+        tokens,
+        expectedStress,
+        syllableOverrides,
+        stressOverrides,
+      );
+      applyMetricalMonosyllables(tokens, expectedStress, stressOverrides);
+    }
   }
 
   const lineStress = flattenTokenStress(tokens);

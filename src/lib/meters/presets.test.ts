@@ -34,6 +34,12 @@ describe("METER_CATALOG", () => {
       expect(isMeterCatalogId(id)).toBe(true);
     }
   });
+
+  it("uses trochaic contour for 8s & 7s", () => {
+    const entry = METER_CATALOG.find((e) => e.id === "eights-and-sevens");
+    expect(entry?.stressPatterns?.[0]).toEqual([1, 0, 1, 0, 1, 0, 1, 0]);
+    expect(entry?.stressPatterns?.[1]).toEqual([1, 0, 1, 0, 1, 0, 1]);
+  });
 });
 
 describe("resolveMeterConfig", () => {

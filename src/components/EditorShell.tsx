@@ -132,7 +132,10 @@ export function EditorShell() {
 
   useMeterSeed(routeSlug, applyMeterSeed);
 
-  const writerMeta = routeSlug ? writerDocumentMeta(routeSlug) : null;
+  const seededMeta = routeSlug ? writerDocumentMeta(routeSlug) : null;
+  // Drop writer SEO meta once the active draft leaves the seeded meter.
+  const writerMeta =
+    seededMeta && active.settings.meter === routeSlug ? seededMeta : null;
 
   // Keep the brand title on first paint / sharing; only rename after the draft
   // has content so empty Untitled sessions do not pollute bookmarks.

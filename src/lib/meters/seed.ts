@@ -58,15 +58,45 @@ export function settingsFromMeterSeed(seed: MeterSeed): EditorSettings | null {
   return settingsForMeter(seed.meterId, seed.overlays);
 }
 
-/** True when a draft is empty and still on default meter settings. */
-export function isReusableEmptyDraft(project: {
-  text: string;
-  settings: EditorSettings;
-}): boolean {
+/** True when the URL still carries seed query flags (fresh deep link). */
+export function urlHasMeterSeedQuery(searchParams: URLSearchParams): boolean {
   return (
-    project.text.trim().length === 0 &&
-    project.settings.meter === DEFAULT_SETTINGS.meter
+    searchParams.has("meter") ||
+    searchParams.has("counts") ||
+    searchParams.has("rulers") ||
+    searchParams.has("stress") ||
+    searchParams.has("breaks")
   );
+}
+
+/**
+ * Stable one-shot identity for a seed. Excludes overlay query so stripping
+ * `?stress=1` etc. does not look like a new seed.
+ */
+export function meterSeedIdentity(
+  slug: string | null | undefined,
+  meterId: string,
+): string {
+  const fromSlug =
+    typeof slug === "string" && slug.trim().length > 0 ? slug.trim() : null;
+  return fromSlug ? `slug:${fromSlug}` : `meter:${meterId}`;
+}
+
+/**
+ * True when a draft can be reused for a meter seed: empty text and either
+ * still on the default free canvas or already on the target meter.
+ */
+export function isReusableEmptyDraft(
+  project: {
+    text: string;
+    settings: EditorSettings;
+  },
+  targetMeter?: string,
+): boolean {
+  if (project.text.trim().length !== 0) return false;
+  const meter = project.settings.meter;
+  if (meter === DEFAULT_SETTINGS.meter) return true;
+  return targetMeter !== undefined && meter === targetMeter;
 }
 
 export const WRITER_PRERENDER_SLUGS = [

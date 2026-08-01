@@ -11,8 +11,8 @@ import { useDictRevision } from "@/hooks/useDictRevision";
 import { usePrefs } from "@/hooks/usePrefs";
 import { useStressRevision } from "@/hooks/useStressRevision";
 import { useVariantsRevision } from "@/hooks/useVariantsRevision";
-import { loadStress } from "@/lib/data/stress";
-import { loadVariants } from "@/lib/data/variants";
+import { isStressReady, loadStress } from "@/lib/data/stress";
+import { isVariantsReady, loadVariants } from "@/lib/data/variants";
 import {
   createPoemExtensions,
   externalValueSync,
@@ -143,15 +143,40 @@ export function PoemEditor({
     settings.showStress || isStressAwareMeterConfig(meterConfig);
   const hasMeterTarget = meterConfig.pattern.length > 0;
 
+  // Retry failed pack loads; createLazyBinData clears its promise on error.
   useEffect(() => {
-    if (!needsStress) return;
-    void loadStress().catch(() => {});
-  }, [needsStress]);
+    if (!needsStress || isStressReady()) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const attempt = () => {
+      void loadStress().catch(() => {
+        if (cancelled) return;
+        timer = setTimeout(attempt, 3000);
+      });
+    };
+    attempt();
+    return () => {
+      cancelled = true;
+      if (timer !== undefined) clearTimeout(timer);
+    };
+  }, [needsStress, stressPackRevision]);
 
   useEffect(() => {
-    if (!hasMeterTarget) return;
-    void loadVariants().catch(() => {});
-  }, [hasMeterTarget]);
+    if (!hasMeterTarget || isVariantsReady()) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const attempt = () => {
+      void loadVariants().catch(() => {
+        if (cancelled) return;
+        timer = setTimeout(attempt, 3000);
+      });
+    };
+    attempt();
+    return () => {
+      cancelled = true;
+      if (timer !== undefined) clearTimeout(timer);
+    };
+  }, [hasMeterTarget, variantsPackRevision]);
 
   const lineCounts = useSyllableLineCounts(
     liveText,

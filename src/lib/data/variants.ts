@@ -28,9 +28,20 @@ const store = createLazyBinData<VariantsPack>(
       throw new Error("expected variants pack");
     }
     // Rebuild Map after worker structured-clone.
-    return {
+    const pack = {
       byWordId: new Map(decoded.data.byWordId),
     };
+    const lex = getLexicon();
+    if (lex) {
+      for (const wordId of pack.byWordId.keys()) {
+        if (wordId < 0 || wordId >= lex.words.length) {
+          throw new Error(
+            `variants wordId ${wordId} out of range for lexicon ${lex.words.length}`,
+          );
+        }
+      }
+    }
+    return pack;
   },
 );
 
@@ -66,10 +77,23 @@ function bumpRevision(): void {
   notifyReady();
 }
 
+function assertVariantsAligned(pack: VariantsPack): void {
+  const lex = getLexicon();
+  if (!lex) return;
+  for (const wordId of pack.byWordId.keys()) {
+    if (wordId < 0 || wordId >= lex.words.length) {
+      throw new Error(
+        `variants wordId ${wordId} out of range for lexicon ${lex.words.length}`,
+      );
+    }
+  }
+}
+
 /** Lazy-load the variants pack (requires lexicon for word-id alignment). */
 export function loadVariants(): Promise<VariantsPack> {
   return loadLexicon().then(() =>
     store.load().then((pack) => {
+      assertVariantsAligned(pack);
       if (!readyAnnounced) announceReady();
       return pack;
     }),
@@ -119,8 +143,8 @@ export function lookupSyllableVariants(
 }
 
 /**
- * Stress pattern for a specific syllable count: alt match, else primary when
- * the citation count matches `n`.
+ * Stress pattern for a specific syllable count: citation primary when it
+ * matches `n`, else the first same-count alt from variants.bin.
  */
 export function stressForSyllableCount(
   word: string,
@@ -129,10 +153,6 @@ export function stressForSyllableCount(
   const n = Math.max(0, Math.floor(syllableCount));
   if (n <= 0) return undefined;
 
-  for (const alt of lookupSyllableVariants(word)) {
-    if (alt.syllables === n) return alt.stress;
-  }
-
   const normalized = normalizeWord(word);
   if (!normalized) return undefined;
   const id = resolveWordId(normalized);
@@ -140,6 +160,10 @@ export function stressForSyllableCount(
   const primarySyl = syllablesForId(id);
   if (primarySyl === n) {
     return lookupStress(normalized);
+  }
+
+  for (const alt of lookupSyllableVariants(normalized)) {
+    if (alt.syllables === n) return alt.stress;
   }
   return undefined;
 }

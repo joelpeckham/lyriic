@@ -6,6 +6,7 @@
 
 import type { StressCode } from "@/lib/data/dictPack";
 import { lookupStress } from "@/lib/data/stress";
+import { stressForSyllableCount } from "@/lib/data/variants";
 import { countWord } from "@/lib/syllables/countWord";
 import { normalizeWord } from "@/lib/syllables/normalize";
 import {
@@ -45,26 +46,33 @@ export function primaryStressIndex(
   return secondary >= 0 ? secondary : null;
 }
 
-/** Keep leftmost primary; demote later primaries to secondary. */
+/** Keep rightmost primary; demote earlier primaries to secondary. */
 function demoteExtraPrimaries(pattern: StressCode[]): StressCode[] {
-  let seenPrimary = false;
-  for (let i = 0; i < pattern.length; i++) {
-    if (pattern[i] !== 1) continue;
-    if (!seenPrimary) {
-      seenPrimary = true;
-      continue;
+  let keep = -1;
+  for (let i = pattern.length - 1; i >= 0; i--) {
+    if (pattern[i] === 1) {
+      keep = i;
+      break;
     }
-    pattern[i] = 2;
+  }
+  if (keep < 0) return pattern;
+  for (let i = 0; i < pattern.length; i++) {
+    if (i !== keep && pattern[i] === 1) pattern[i] = 2;
   }
   return pattern;
 }
 
 function alignPatternLength(
+  word: string,
   pattern: StressCode[],
   syllableCount: number,
 ): StressCode[] {
   if (pattern.length === syllableCount) return pattern;
   if (syllableCount <= 0) return [];
+  const fromVariants = stressForSyllableCount(word, syllableCount);
+  if (fromVariants && fromVariants.length === syllableCount) {
+    return fromVariants;
+  }
   const primary = primaryStressIndex(pattern);
   const idx = primary !== null ? Math.min(primary, syllableCount - 1) : 0;
   return patternFromPrimary(syllableCount, idx);
@@ -109,6 +117,10 @@ function baseStress(normalized: string, syllableCount: number): WordStress {
     if (syllableCount <= 0) {
       return { word: normalized, pattern: [], source: "dict" };
     }
+    const fromVariants = stressForSyllableCount(normalized, syllableCount);
+    if (fromVariants && fromVariants.length === syllableCount) {
+      return { word: normalized, pattern: fromVariants, source: "dict" };
+    }
     const primary = primaryStressIndex(dict);
     const idx = primary !== null ? Math.min(primary, syllableCount - 1) : 0;
     return {
@@ -117,6 +129,12 @@ function baseStress(normalized: string, syllableCount: number): WordStress {
       source: "dict",
     };
   }
+
+  const fromVariants = stressForSyllableCount(normalized, syllableCount);
+  if (fromVariants && fromVariants.length === syllableCount) {
+    return { word: normalized, pattern: fromVariants, source: "dict" };
+  }
+
   return {
     word: normalized,
     pattern: heuristicStress(syllableCount),
@@ -150,6 +168,19 @@ export function resolveWordStress(
     };
   }
 
+  // Prefer whole-word citation stress when present (compounds in stress.bin).
+  const wholeNormalized = normalizeWord(memoKey);
+  if (wholeNormalized && memoKey.includes("-")) {
+    const wholeDict = lookupStress(wholeNormalized);
+    if (wholeDict !== undefined && wholeDict.length === syllables) {
+      return { word: display, pattern: wholeDict, source: "dict" };
+    }
+    const wholeVariant = stressForSyllableCount(wholeNormalized, syllables);
+    if (wholeVariant && wholeVariant.length === syllables) {
+      return { word: display, pattern: wholeVariant, source: "dict" };
+    }
+  }
+
   // Whole-word syllable override on a compound: shape stress to that count.
   const wholeSylOverride = resolveSyllableOverride(memoKey, syllableOverrides);
   if (wholeSylOverride !== undefined && memoKey.includes("-")) {
@@ -168,7 +199,7 @@ export function resolveWordStress(
     demoteExtraPrimaries(partPatterns);
     return {
       word: display,
-      pattern: alignPatternLength(partPatterns, syllables),
+      pattern: alignPatternLength(memoKey, partPatterns, syllables),
       source: allDict ? "dict" : "heuristic",
     };
   }
@@ -205,7 +236,7 @@ export function resolveWordStress(
     demoteExtraPrimaries(pattern);
     return {
       word: display,
-      pattern: alignPatternLength(pattern, syllables),
+      pattern: alignPatternLength(memoKey, pattern, syllables),
       source: anyOverride ? "override" : allDict ? "dict" : "heuristic",
     };
   }

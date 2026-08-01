@@ -3,8 +3,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { getMeterCatalogEntry } from "@/lib/meters/presets";
 import {
+  meterSeedIdentity,
   parseMeterSeed,
   settingsFromMeterSeed,
+  urlHasMeterSeedQuery,
 } from "@/lib/meters/seed";
 import type { EditorSettings } from "@/lib/settings";
 
@@ -16,6 +18,9 @@ type ApplySeed = (
 /**
  * Apply a one-shot meter seed from `/write/:slug` and/or `?meter=`.
  * Strips consumed query params; keeps the pretty write path.
+ *
+ * Identity is slug/meter only so stripping overlay query flags does not
+ * re-apply defaults. Fresh `?meter=` / overlay params always re-seed.
  */
 export function useMeterSeed(
   slug: string | undefined,
@@ -34,9 +39,10 @@ export function useMeterSeed(
     const seed = parseMeterSeed(slug, searchParams);
     if (!seed) return;
 
-    const key = `${slug ?? ""}|${searchParams.toString()}`;
-    if (appliedKey.current === key) return;
-    appliedKey.current = key;
+    const identity = meterSeedIdentity(slug, seed.meterId);
+    const freshQuery = urlHasMeterSeedQuery(searchParams);
+    if (!freshQuery && appliedKey.current === identity) return;
+    appliedKey.current = identity;
 
     const settings = settingsFromMeterSeed(seed);
     if (!settings) return;
@@ -48,13 +54,7 @@ export function useMeterSeed(
     });
 
     // Drop meter/overlay query flags; keep /write/:slug when present.
-    if (
-      searchParams.has("meter") ||
-      searchParams.has("counts") ||
-      searchParams.has("rulers") ||
-      searchParams.has("stress") ||
-      searchParams.has("breaks")
-    ) {
+    if (freshQuery) {
       const next = new URLSearchParams(searchParams);
       next.delete("meter");
       next.delete("counts");

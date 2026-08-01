@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { isReusableEmptyDraft } from "@/lib/meters/seed";
 import {
   createEmptyProject,
   getActiveProject,
@@ -8,7 +9,7 @@ import {
   STORAGE_KEY,
   type SaveResult,
 } from "@/lib/projects/storage";
-import type { ProjectsState } from "@/lib/projects/types";
+import type { Project, ProjectsState } from "@/lib/projects/types";
 import { normalizeSettings, type EditorSettings } from "@/lib/settings";
 import {
   isValidStressOverride,
@@ -304,37 +305,61 @@ export function useProjects() {
     const reuseEmpty = options?.reuseEmpty ?? true;
     commit((prev) => {
       const current = getActiveProject(prev);
-      const empty = current.text.trim().length === 0;
-      const canReuse =
-        reuseEmpty &&
-        empty &&
-        (current.settings.meter === "none" ||
-          current.settings.meter === settings.meter);
-      if (canReuse) {
+      const targetMeter = settings.meter;
+
+      const reuseCandidate = (project: Project): boolean =>
+        reuseEmpty && isReusableEmptyDraft(project, targetMeter);
+
+      // Prefer active empty draft, else any empty draft already on this meter.
+      let reuseId: string | null = null;
+      if (reuseCandidate(current)) {
+        reuseId = current.id;
+      } else if (reuseEmpty) {
+        const existing = prev.projects.find(
+          (p) =>
+            p.id !== current.id &&
+            p.text.trim().length === 0 &&
+            p.settings.meter === targetMeter,
+        );
+        if (existing) reuseId = existing.id;
+      }
+
+      if (reuseId) {
+        const reused = prev.projects.find((p) => p.id === reuseId)!;
         const nextName =
-          current.name.trim() === "Untitled" || !current.name.trim()
+          reused.name.trim() === "Untitled" || !reused.name.trim()
             ? name
-            : current.name;
+            : reused.name;
+        const nextSettings = normalizeSettings(settings);
+        const overridesCleared =
+          Object.keys(reused.overrides).length > 0 ||
+          Object.keys(reused.stressOverrides).length > 0;
         if (
-          settingsEqual(current.settings, settings) &&
-          current.name === nextName
+          settingsEqual(reused.settings, nextSettings) &&
+          reused.name === nextName &&
+          !overridesCleared &&
+          prev.activeId === reuseId
         ) {
           return prev;
         }
         return {
           ...prev,
+          activeId: reuseId,
           projects: prev.projects.map((project) =>
-            project.id === current.id
+            project.id === reuseId
               ? {
                   ...project,
                   name: nextName,
-                  settings: normalizeSettings(settings),
+                  settings: nextSettings,
+                  overrides: {},
+                  stressOverrides: {},
                   updatedAt: Date.now(),
                 }
               : project,
           ),
         };
       }
+
       const project = createEmptyProject(name, settings);
       return {
         ...prev,

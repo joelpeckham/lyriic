@@ -231,13 +231,16 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
   ),
   ballad("long-meter", "Long meter", [8, 8], "8 / 8 iambic hymn stanza", 4),
   ballad("short-meter", "Short meter", [6, 6], "6 / 6 iambic hymn stanza", 4),
-  ballad(
-    "eights-and-sevens",
-    "8s & 7s",
-    [8, 7],
-    "8 / 7 iambic hymn meter",
-    4,
-  ),
+  {
+    id: "eights-and-sevens",
+    label: "8s & 7s",
+    group: "ballad",
+    pattern: [8, 7],
+    // Classic 8.7.8.7 hymn meter is trochaic (odd lines end strong).
+    stressPatterns: stressPatternsForCycle("trochee", [8, 7]),
+    description: "8 / 7 trochaic hymn meter",
+    stanzaLines: 4,
+  },
   {
     id: "ballad-stanza",
     label: "Ballad stanza",

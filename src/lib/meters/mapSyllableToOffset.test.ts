@@ -51,11 +51,12 @@ describe("mapSyllableToOffset", () => {
     expect(mapSyllableToOffset(tokens, 2)).toBe(7);
   });
 
-  it("returns null when syllable is past the line", () => {
+  it("parks under-target ticks at end of line", () => {
     const tokens = [
       tok({ start: 0, end: 3, syllables: 1, syllableStart: 0, syllableEnd: 1 }),
     ];
-    expect(mapSyllableToOffset(tokens, 2)).toBeNull();
+    expect(mapSyllableToOffset(tokens, 2)).toBe(3);
+    expect(mapSyllableToOffset(tokens, 10)).toBe(3);
   });
 });
 

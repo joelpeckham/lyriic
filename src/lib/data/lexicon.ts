@@ -72,7 +72,10 @@ export function getLexicon(): Lexicon | null {
 export function syllablesForId(id: number): number | undefined {
   const lex = store.get();
   if (!lex || id < 0 || id >= lex.syllables.length) return undefined;
-  return lex.syllables[id];
+  const syl = lex.syllables[id];
+  // syl < 1 is not a usable dict hit (e.g. build edge cases).
+  if (syl === undefined || syl < 1) return undefined;
+  return syl;
 }
 
 /** Look up the CMU-primary syllable count for a normalized word. */
@@ -101,7 +104,9 @@ export function lookupDict(normalized: string): number | undefined {
 function lookupInLex(lex: Lexicon, word: string): number | undefined {
   const id = lex.wordToId.get(word);
   if (id === undefined) return undefined;
-  return lex.syllables[id];
+  const syl = lex.syllables[id];
+  if (syl === undefined || syl < 1) return undefined;
+  return syl;
 }
 
 /** Test helper — inject a decoded lexicon without hitting the binary pack. */

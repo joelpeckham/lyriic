@@ -24,5 +24,8 @@ describe("variants lookup", () => {
     const alts = lookupSyllableVariants("juliet");
     const two = alts.find((a) => a.syllables === 2);
     expect(two?.stress).toEqual([1, 0]);
+    // Citation primary wins when syllable count matches primary.
+    expect(stressForSyllableCount("juliet", 3)?.length).toBe(3);
+    expect(stressForSyllableCount("juliet", 2)).toEqual([1, 0]);
   });
 });

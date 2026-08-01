@@ -57,6 +57,19 @@ describe("resolveWordStress", () => {
     expect(result.pattern.length).toBe(3);
   });
 
+  it("uses variants.bin stress when syllable override compresses juliet", () => {
+    const result = resolveWordStress("juliet", {}, { juliet: 2 });
+    expect(result.source).toBe("dict");
+    expect(result.pattern).toEqual([1, 0]);
+  });
+
+  it("keeps rightmost primary in hyphenated compounds", () => {
+    const result = resolveWordStress("self-control");
+    expect(result.pattern.filter((s) => s === 1).length).toBe(1);
+    // control is right-stressed; primary should land on the final syllable.
+    expect(result.pattern[result.pattern.length - 1]).toBe(1);
+  });
+
   it("applies primary-index override", () => {
     const result = resolveWordStress("poem", { poem: 1 });
     expect(result.source).toBe("override");

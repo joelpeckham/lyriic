@@ -53,14 +53,32 @@ function storeFor(mode: RhymeMode) {
  * Lazy-load a rhyme mode pack (and lexicon). Perfect and end are separate assets.
  * Prefetches end after perfect resolves when loading perfect.
  */
+function assertRhymeAligned(pack: RhymeModeData): void {
+  const lex = getLexicon();
+  if (!lex) return;
+  if (pack.byWord.length !== lex.words.length) {
+    throw new Error(
+      `rhyme pack length ${pack.byWord.length} !== lexicon ${lex.words.length}`,
+    );
+  }
+}
+
 export async function loadRhymeIndex(
   mode: RhymeMode = "perfect",
 ): Promise<RhymeModeData> {
   await loadLexicon();
   const data = await storeFor(mode).load();
+  assertRhymeAligned(data);
   if (mode === "perfect" && typeof window !== "undefined") {
     runWhenIdle(() => {
-      void endStore.load();
+      void endStore
+        .load()
+        .then((end) => {
+          assertRhymeAligned(end);
+        })
+        .catch(() => {
+          // Prefetch is best-effort; query path will surface failures.
+        });
     }, 2000);
   }
   return data;

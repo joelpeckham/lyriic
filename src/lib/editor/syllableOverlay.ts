@@ -4,12 +4,13 @@ import {
   type ViewUpdate,
 } from "@codemirror/view";
 
+import type { StressCode } from "@/lib/data/dictPack";
+import { isStressReady } from "@/lib/data/stress";
 import {
   mapSyllableMidpointToOffset,
   mapSyllableToOffset,
   rulerSyllableCount,
 } from "@/lib/meters/mapSyllableToOffset";
-import type { StressCode } from "@/lib/data/dictPack";
 import {
   stressMismatchMask,
   type MeteredLine,
@@ -74,9 +75,11 @@ function flattenStress(line: MeteredLine): StressCode[] {
 /**
  * Mismatch mask when the line is comparable (count matches target and
  * expected stress length aligns); otherwise null.
+ * Gated on stress pack readiness — same as line status — to avoid heuristic flash.
  */
 function lineStressMismatchMask(line: MeteredLine): boolean[] | null {
   if (
+    !isStressReady() ||
     line.expectedStress === null ||
     line.target === null ||
     line.total !== line.target

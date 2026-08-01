@@ -25,6 +25,13 @@ export function mapSyllableToOffset(
 ): number | null {
   if (!Number.isFinite(syllable) || syllable < 1) return null;
 
+  let writtenTotal = 0;
+  let lineEnd = 0;
+  for (const token of tokens) {
+    if (token.syllableEnd > writtenTotal) writtenTotal = token.syllableEnd;
+    if (token.end > lineEnd) lineEnd = token.end;
+  }
+
   for (const token of tokens) {
     if (token.syllables <= 0) continue;
     if (syllable <= token.syllableStart || syllable > token.syllableEnd) {
@@ -39,6 +46,11 @@ export function mapSyllableToOffset(
     const span = token.end - token.start;
     const offset = token.start + (span * within) / token.syllables;
     return Math.floor(offset);
+  }
+
+  // Under-target ruler ticks: park leftover syllables at end of line.
+  if (tokens.length > 0 && syllable > writtenTotal) {
+    return lineEnd;
   }
 
   return null;

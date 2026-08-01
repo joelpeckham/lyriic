@@ -36,7 +36,13 @@ import type {
   WordTarget,
 } from "@/lib/editor/wordInteraction";
 import type { MeteredLine } from "@/lib/meters/types";
-import { loadRhymeQuery, queryRhymeIds } from "@/lib/rhyme";
+import {
+  hasRhymeEntry,
+  isRhymeIndexReady,
+  loadRhymeIndex,
+  loadRhymeQuery,
+  queryRhymeIds,
+} from "@/lib/rhyme";
 import { primaryStressIndex, resolveWordStress } from "@/lib/stress";
 import { countWord } from "@/lib/syllables/countWord";
 import {
@@ -99,6 +105,14 @@ function clampOverrideCount(value: number): number {
   );
 }
 
+function findMeteredToken(
+  target: WordToolsTarget,
+  meteredLine: MeteredLine | undefined,
+) {
+  const localStart = target.from - target.lineFrom;
+  return meteredLine?.tokens.find((t) => t.start === localStart);
+}
+
 function resolveTokenSyllables(
   target: WordToolsTarget,
   meteredLine: MeteredLine | undefined,
@@ -106,10 +120,7 @@ function resolveTokenSyllables(
   if (typeof target.tokenSyllables === "number") {
     return target.tokenSyllables;
   }
-  const localStart = target.from - target.lineFrom;
-  return (
-    meteredLine?.tokens.find((t) => t.start === localStart)?.syllables ?? 0
-  );
+  return findMeteredToken(target, meteredLine)?.syllables ?? 0;
 }
 
 type LoadResult = {
@@ -171,33 +182,65 @@ export function WordToolsPopover({
     key && stressOverrides[key] !== undefined,
   );
   const baseline = display ? countWord(display.word, {}) : null;
+  const meteredToken = display
+    ? findMeteredToken(display, displayMetered)
+    : undefined;
   const variantCounts = display
     ? syllableCountsForWord(display.word).filter(
         (n) => n !== baseline?.count,
       )
     : [];
+  // Prefer meter-fitted syllable count when the line has a matching token.
   const displayCount = hasOverride
     ? overrides[key]!
-    : (baseline?.count ?? 1);
+    : (meteredToken?.syllables ?? baseline?.count ?? 1);
   const [countDraft, setCountDraft] = useKeyedState(
     targetIdentity,
     String(displayCount),
   );
 
+  const syllableOverridesForStress =
+    display && key
+      ? hasOverride
+        ? overrides
+        : meteredToken &&
+            baseline &&
+            meteredToken.syllables !== baseline.count
+          ? { ...overrides, [key]: meteredToken.syllables }
+          : overrides
+      : overrides;
+
   const stressResolved = display
-    ? resolveWordStress(display.word, stressOverrides, overrides)
+    ? !hasStressOverride &&
+      meteredToken &&
+      meteredToken.stress.length === displayCount
+      ? {
+          word: display.word,
+          pattern: meteredToken.stress,
+          source: "dict" as const,
+        }
+      : resolveWordStress(
+          display.word,
+          stressOverrides,
+          syllableOverridesForStress,
+        )
     : null;
+  // null = no primary (all unstressed); do not coerce to 0.
   const selectedPrimaryIndex =
     stressResolved != null
-      ? (primaryStressIndex(stressResolved.pattern) ?? 0)
-      : 0;
+      ? primaryStressIndex(stressResolved.pattern)
+      : null;
   const stressSyllableCount = stressResolved?.pattern.length ?? displayCount;
 
-  const [includeEndRhymes, setIncludeEndRhymes] = useKeyedState(
-    lookupIdentity,
-    false,
+  // Reset End rhymes when the popover closes (panel already resets on open).
+  const [includeEndRhymes, setIncludeEndRhymes] = useState(false);
+  useLayoutEffect(() => {
+    if (!open) setIncludeEndRhymes(false);
+  }, [open]);
+  const [activeIndex, setActiveIndex] = useKeyedState(
+    `${lookupIdentity}|end:${includeEndRhymes ? 1 : 0}`,
+    0,
   );
-  const [activeIndex, setActiveIndex] = useKeyedState(lookupIdentity, 0);
   const [load, setLoad] = useState<LoadResult | null>(null);
 
   const syllables = display
@@ -354,6 +397,20 @@ export function WordToolsPopover({
     listRef.current?.focus();
   }, [open, loadState, lookupIdentity, view]);
 
+  // Prefetch end pack when perfect list is empty so the enable-End hint works.
+  useEffect(() => {
+    if (
+      !open ||
+      view !== "rhyme" ||
+      includeEndRhymes ||
+      loadState !== "ready" ||
+      (candidates && candidates.length > 0)
+    ) {
+      return;
+    }
+    void loadRhymeIndex("end");
+  }, [open, view, includeEndRhymes, loadState, candidates]);
+
   function applyCount(raw: string | number): void {
     if (!open || !display || !key || !baseline) return;
     const parsed = typeof raw === "number" ? raw : Number(raw);
@@ -379,8 +436,13 @@ export function WordToolsPopover({
       Math.max(0, Math.floor(index)),
       stressSyllableCount - 1,
     );
-    const dictPrimary = resolveWordStress(display.word, {}, overrides);
+    const dictPrimary = resolveWordStress(
+      display.word,
+      {},
+      syllableOverridesForStress,
+    );
     const dictIndex = primaryStressIndex(dictPrimary.pattern);
+    // Clear override when tapping the citation primary.
     if (
       dictIndex !== null &&
       next === dictIndex &&
@@ -450,7 +512,15 @@ export function WordToolsPopover({
           ? `Syllables · ${display.raw}`
           : `Word actions for ${display.raw}`
     : "Word tools";
-  const emptyLabel = isThesaurus ? "No synonyms found." : "No rhymes found.";
+  const rhymeEmptyHint =
+    view === "rhyme" &&
+    !includeEndRhymes &&
+    isRhymeIndexReady("end") &&
+    display &&
+    hasRhymeEntry(display.word, "end")
+      ? "No perfect rhymes — enable End rhymes for more matches."
+      : "No rhymes found.";
+  const emptyLabel = isThesaurus ? "No synonyms found." : rhymeEmptyHint;
   const errorLabel = isThesaurus
     ? "Couldn’t load thesaurus."
     : "Couldn’t load rhymes.";
@@ -588,6 +658,7 @@ export function WordToolsPopover({
                   aria-label={`Clear syllable override for ${key}`}
                   onClick={() => {
                     onClearOverride(key);
+                    setCountDraft(String(baseline.count));
                     if (
                       hasStressOverride &&
                       baseline &&
@@ -648,7 +719,9 @@ export function WordToolsPopover({
                   className="flex flex-wrap gap-1"
                 >
                   {Array.from({ length: stressSyllableCount }, (_, index) => {
-                    const selected = index === selectedPrimaryIndex;
+                    const selected =
+                      selectedPrimaryIndex !== null &&
+                      index === selectedPrimaryIndex;
                     return (
                       <Button
                         key={index}
@@ -753,8 +826,8 @@ export function WordToolsPopover({
                       <span
                         className={
                           candidate.keepsMeter
-                            ? "min-w-0 truncate underline decoration-muted-foreground/50 underline-offset-2"
-                            : "min-w-0 truncate"
+                            ? "min-w-0 wrap-break-word underline decoration-muted-foreground/50 underline-offset-2"
+                            : "min-w-0 wrap-break-word"
                         }
                       >
                         {candidate.word}
