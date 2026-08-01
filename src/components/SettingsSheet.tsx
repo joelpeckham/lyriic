@@ -20,7 +20,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { usePrefs } from "@/lib/PrefsProvider";
+import { usePrefs } from "@/hooks/usePrefs";
 import {
   isMeterPresetId,
   METER_PRESETS,
