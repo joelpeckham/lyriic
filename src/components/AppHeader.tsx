@@ -40,16 +40,16 @@ export function AppHeader({
     <header
       className={cn(
         "flex items-start justify-between gap-4 p-4",
+        // Overlay: capture the top band so the editor underneath cannot show
+        // an I-beam through the chrome (pointer-events-none caused that).
         variant === "overlay" &&
-          "pointer-events-none absolute inset-x-0 top-0 z-20",
+          "pointer-events-auto absolute inset-x-0 top-0 z-20 cursor-default",
         className,
       )}
     >
       {brand}
       {actions ? (
-        <div className="pointer-events-auto flex shrink-0 items-center gap-1">
-          {actions}
-        </div>
+        <div className="flex shrink-0 items-center gap-1">{actions}</div>
       ) : null}
     </header>
   );

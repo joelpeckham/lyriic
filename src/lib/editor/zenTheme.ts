@@ -27,9 +27,13 @@ export function zenEditorTheme(fontSizeRem: number) {
         scrollbarGutter: "stable",
         WebkitOverflowScrolling: "touch",
         touchAction: "pan-y",
+        cursor: "default",
       },
       ".cm-content": {
         caretColor: "var(--lyriic-ink)",
+        /* Padding above/below the verse is not “text” — keep the arrow there
+           so the header/footer overlays are not I-beam / flicker zones. */
+        cursor: "default",
         paddingTop: "6rem",
         paddingBottom: "4rem",
         paddingLeft: "1.5rem",
@@ -45,6 +49,7 @@ export function zenEditorTheme(fontSizeRem: number) {
       /* Poetic gap via padding — never margin. CM’s height map / posAtCoords
          ignore margins, so marginBottom makes hit-testing drift worse each line. */
       ".cm-line": {
+        cursor: "text",
         paddingRight: `${COUNT_GUTTER_REM}rem`,
         paddingBottom: `${LINE_GAP_REM}rem`,
         letterSpacing: "0.01em",

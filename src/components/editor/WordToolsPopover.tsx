@@ -31,6 +31,7 @@ import {
   loadVariants,
   syllableCountsForWord,
 } from "@/lib/data/variants";
+import { WORD_TOOLBAR_SIDE_OFFSET_PX } from "@/lib/editor/resolveWordTarget";
 import type {
   WordLookupMode,
   WordTarget,
@@ -536,6 +537,13 @@ export function WordToolsPopover({
         ? "w-60 gap-1.5 p-1.5"
         : "w-56 gap-1.5 p-1.5";
 
+  // Outer shell ignores hits so slide/zoom (and transparent actions chrome)
+  // cannot steal the I-beam over the word; only the inner surface is live.
+  const contentShellClass = cn(
+    contentClass,
+    "pointer-events-none animate-none data-open:animate-none data-closed:animate-none",
+  );
+
   return (
     <Popover
       open={open}
@@ -550,10 +558,11 @@ export function WordToolsPopover({
       <PopoverContent
         align={view === "actions" ? "center" : "start"}
         side="bottom"
-        sideOffset={6}
+        sideOffset={WORD_TOOLBAR_SIDE_OFFSET_PX}
         collisionPadding={12}
+        avoidCollisions={view !== "actions"}
         data-word-toolbar=""
-        className={contentClass}
+        className={contentShellClass}
         onOpenAutoFocus={(event) => {
           event.preventDefault();
         }}
@@ -561,8 +570,6 @@ export function WordToolsPopover({
           event.preventDefault();
           if (isLookup) onRestoreFocus();
         }}
-        onPointerEnter={() => onPopoverHoverChange(true)}
-        onPointerLeave={() => onPopoverHoverChange(false)}
         onPointerDownOutside={(event) => {
           // Actions/syllables: pointer bridge owns dismiss — ignore editor hits.
           // Thesaurus/rhyme: allow outside click (including editor) to close.
@@ -573,6 +580,15 @@ export function WordToolsPopover({
           }
         }}
       >
+        <div
+          className={cn(
+            "pointer-events-auto",
+            view === "actions" && "cursor-default [&_button]:cursor-pointer",
+            view !== "actions" && "flex flex-col gap-1.5",
+          )}
+          onPointerEnter={() => onPopoverHoverChange(true)}
+          onPointerLeave={() => onPopoverHoverChange(false)}
+        >
         {view === "actions" && display ? (
           <ButtonGroup
             aria-label={`Word actions for ${display.raw}`}
@@ -841,6 +857,7 @@ export function WordToolsPopover({
             ) : null}
           </>
         ) : null}
+        </div>
       </PopoverContent>
     </Popover>
   );

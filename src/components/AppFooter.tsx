@@ -9,7 +9,7 @@ type AppFooterProps = {
 };
 
 const linkClass =
-  "underline-offset-2 transition-colors hover:text-foreground hover:underline focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/80 focus-visible:outline-none";
+  "cursor-pointer underline-offset-2 transition-colors hover:text-foreground hover:underline focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/80 focus-visible:outline-none";
 
 export function AppFooter({
   variant = "flow",
@@ -19,8 +19,10 @@ export function AppFooter({
     <footer
       className={cn(
         "font-[family-name:var(--font-ui)] text-xs text-muted-foreground",
+        // Overlay: own the bottom band (cursor:default) so FAQ/Tools edges do
+        // not alternate with the editor I-beam showing through gaps.
         variant === "overlay" &&
-          "pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 py-3",
+          "pointer-events-auto absolute inset-x-0 bottom-0 z-20 cursor-default px-4 py-3",
         variant === "flow" && "mt-auto px-4 py-6",
         className,
       )}
@@ -28,7 +30,7 @@ export function AppFooter({
       <nav
         aria-label="Site"
         className={cn(
-          "pointer-events-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-1",
+          "mx-auto flex w-fit flex-wrap items-center justify-center gap-x-3 gap-y-1",
           variant === "overlay" && "opacity-70 transition-opacity hover:opacity-100",
         )}
       >

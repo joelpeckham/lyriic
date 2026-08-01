@@ -9,6 +9,7 @@ import {
 
 import {
   pointerHitsWordAnchor,
+  pointerHitsWordToolbarBridge,
   resolveWordTarget,
   wordTargetAtPointer,
   type WordTarget,
@@ -248,13 +249,27 @@ class WordPointerPlugin implements PluginValue {
     emitToolbar(this.view, target);
   }
 
+  /** Refresh glyph box from current layout so pin math stays current. */
+  private refreshOpenAnchor(): void {
+    if (!this.openTarget || !this.openKey) return;
+    const fresh = resolveWordTarget(this.view, this.openTarget.from);
+    if (fresh && targetKey(fresh) === this.openKey) {
+      this.openTarget = fresh;
+    }
+  }
+
   private isPinnedWordAt(x: number, y: number): boolean {
     if (!this.openKey || !this.openTarget) return false;
+    this.refreshOpenAnchor();
     // Geometry first — empty line margins must not keep the pin alive via
     // snapped document positions.
     const geo = pointerHitsWordAnchor(x, y, this.openTarget.anchor);
     if (geo === true) return true;
-    if (geo === false) return false;
+    // Bridge the sideOffset gap (and collision-flipped top side) so the
+    // pointer can travel word → toolbar without scheduling hide.
+    const bridge = pointerHitsWordToolbarBridge(x, y, this.openTarget.anchor);
+    if (bridge === true) return true;
+    if (geo === false || bridge === false) return false;
     // No glyph box (jsdom): fall back to precise word-under-pointer.
     const target = wordTargetAtPointer(this.view, x, y);
     return target !== null && targetKey(target) === this.openKey;

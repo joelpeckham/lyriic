@@ -6,6 +6,7 @@ import {
 
 import type { StressCode } from "@/lib/data/dictPack";
 import { isStressReady } from "@/lib/data/stress";
+import { COUNT_GUTTER_REM } from "@/lib/editor/constants";
 import {
   mapSyllableMidpointToOffset,
   mapSyllableToOffset,
@@ -309,8 +310,13 @@ export const syllableOverlay = ViewPlugin.fromClass(
           const el = document.createElement("span");
           el.className = `lyriic-count ${statusClass(overlay.status)}`;
           el.style.top = `${countTop}px`;
-          el.style.left = `${left}px`;
-          el.style.width = `${width}px`;
+          // Sit in the line’s right gutter only — a full-width strip used to
+          // cover glyphs and could flicker the cursor at sub-pixel edges.
+          const gutterPx =
+            COUNT_GUTTER_REM *
+            parseFloat(getComputedStyle(view.contentDOM).fontSize || "16");
+          el.style.left = `${left + Math.max(0, width - gutterPx)}px`;
+          el.style.width = `${Math.min(width, gutterPx)}px`;
 
           if (overlay.target !== null && total > 0) {
             el.append(document.createTextNode(String(total)));

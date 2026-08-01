@@ -251,12 +251,15 @@ html[data-contrast="more"].dark {
   user-select: none;
 }
 
+.lyriic-syllable-overlay * {
+  pointer-events: none;
+}
+
 .lyriic-count {
   position: absolute;
   box-sizing: border-box;
   padding-top: 0.3rem;
-  /* Match .cm-content horizontal pad; counts span the content box and would
-     otherwise sit flush on the viewport edge (esp. narrow screens). */
+  /* Gutter-only box (set in JS) — never a full-width strip over glyphs. */
   padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
   text-align: right;
   font-family: var(--font-ui), system-ui, sans-serif;

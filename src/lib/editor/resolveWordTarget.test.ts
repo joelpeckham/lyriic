@@ -4,8 +4,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   pointerHitsWordAnchor,
+  pointerHitsWordToolbarBridge,
+  WORD_HIT_PAD_PX,
+  WORD_TOOLBAR_SIDE_OFFSET_PX,
   wordTargetAtPointer,
 } from "./resolveWordTarget";
+
+const anchor = { left: 100, right: 140, top: 20, bottom: 36 };
 
 describe("pointerHitsWordAnchor", () => {
   it("returns null for degenerate anchors", () => {
@@ -15,10 +20,63 @@ describe("pointerHitsWordAnchor", () => {
   });
 
   it("accepts pointers inside the box and rejects outside", () => {
-    const anchor = { left: 100, right: 140, top: 20, bottom: 36 };
     expect(pointerHitsWordAnchor(120, 28, anchor)).toBe(true);
     expect(pointerHitsWordAnchor(50, 28, anchor)).toBe(false);
     expect(pointerHitsWordAnchor(200, 28, anchor)).toBe(false);
+  });
+});
+
+describe("pointerHitsWordToolbarBridge", () => {
+  it("returns null for degenerate anchors", () => {
+    expect(
+      pointerHitsWordToolbarBridge(10, 10, {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      }),
+    ).toBeNull();
+  });
+
+  it("covers the dead zone below the word pad toward the popover", () => {
+    const yInGap = anchor.bottom + WORD_HIT_PAD_PX + 1;
+    expect(yInGap).toBeLessThanOrEqual(
+      anchor.bottom + WORD_TOOLBAR_SIDE_OFFSET_PX,
+    );
+    expect(pointerHitsWordAnchor(120, yInGap, anchor)).toBe(false);
+    expect(pointerHitsWordToolbarBridge(120, yInGap, anchor)).toBe(true);
+    // Far edge of the sideOffset corridor still pins.
+    expect(
+      pointerHitsWordToolbarBridge(
+        120,
+        anchor.bottom + WORD_TOOLBAR_SIDE_OFFSET_PX,
+        anchor,
+      ),
+    ).toBe(true);
+  });
+
+  it("covers the dead zone above the word for collision-flipped side", () => {
+    const yInGap = anchor.top - WORD_HIT_PAD_PX - 1;
+    expect(yInGap).toBeGreaterThanOrEqual(
+      anchor.top - WORD_TOOLBAR_SIDE_OFFSET_PX,
+    );
+    expect(pointerHitsWordAnchor(120, yInGap, anchor)).toBe(false);
+    expect(pointerHitsWordToolbarBridge(120, yInGap, anchor)).toBe(true);
+  });
+
+  it("rejects pointers outside the horizontal word corridor", () => {
+    const yInGap = anchor.bottom + WORD_HIT_PAD_PX + 1;
+    expect(pointerHitsWordToolbarBridge(50, yInGap, anchor)).toBe(false);
+  });
+
+  it("rejects pointers past the sideOffset", () => {
+    expect(
+      pointerHitsWordToolbarBridge(
+        120,
+        anchor.bottom + WORD_TOOLBAR_SIDE_OFFSET_PX + 1,
+        anchor,
+      ),
+    ).toBe(false);
   });
 });
 

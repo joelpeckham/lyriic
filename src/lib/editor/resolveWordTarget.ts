@@ -24,7 +24,14 @@ export type WordTarget = {
 };
 
 /** Padding around the glyph box for hit-testing (sub-pixel / anti-alias). */
-const WORD_HIT_PAD_PX = 3;
+export const WORD_HIT_PAD_PX = 3;
+
+/**
+ * Vertical gap between word and toolbar — must match WordToolsPopover
+ * `sideOffset`. The pad stops short of this, leaving a dead zone unless
+ * bridged by {@link pointerHitsWordToolbarBridge}.
+ */
+export const WORD_TOOLBAR_SIDE_OFFSET_PX = 12;
 
 function isDegenerateAnchor(anchor: WordAnchor): boolean {
   return anchor.right <= anchor.left || anchor.bottom <= anchor.top;
@@ -47,6 +54,36 @@ export function pointerHitsWordAnchor(
     y >= anchor.top - pad &&
     y <= anchor.bottom + pad
   );
+}
+
+/**
+ * Whether the pointer is in the corridor between the word box and the toolbar
+ * placement (below by default, or above when collision flips `side`).
+ * Keeps the hover pin alive across the sideOffset − pad dead zone.
+ */
+export function pointerHitsWordToolbarBridge(
+  x: number,
+  y: number,
+  anchor: WordAnchor,
+  sideOffset = WORD_TOOLBAR_SIDE_OFFSET_PX,
+  pad = WORD_HIT_PAD_PX,
+): boolean | null {
+  if (isDegenerateAnchor(anchor)) return null;
+  if (sideOffset <= pad) return false;
+
+  const left = anchor.left - pad;
+  const right = anchor.right + pad;
+  if (x < left || x > right) return false;
+
+  // Below word → default popover placement
+  if (y > anchor.bottom + pad && y <= anchor.bottom + sideOffset) {
+    return true;
+  }
+  // Above word → collision-flipped placement
+  if (y >= anchor.top - sideOffset && y < anchor.top - pad) {
+    return true;
+  }
+  return false;
 }
 
 /**
