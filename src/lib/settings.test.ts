@@ -54,7 +54,7 @@ describe("settingsForMeter", () => {
     expect(next?.showCounts).toBe(true);
     expect(next?.showRulers).toBe(true);
     expect(next?.showMeterBreaks).toBe(true);
-    expect(next?.showStress).toBe(false);
+    expect(next?.showStress).toBe(true);
   });
 
   it("seeds syllable forms without meter breaks", () => {

@@ -4,13 +4,14 @@
  * stress marks (top) and syllable ticks (bottom) inside each visual row so
  * they do not collide across wraps.
  */
-export const WRAP_LEADING = 1.85;
+export const WRAP_LEADING = 2.3;
 
 /**
  * Extra space after each hard-newline poetic line.
  * Applied as `.cm-line` paddingBottom in zenTheme — not margin (CM height map).
+ * Sized so syllable ticks (hung below the glyph box) clear the next line.
  */
-export const LINE_GAP_REM = 1.25;
+export const LINE_GAP_REM = 1.75;
 
 /** Right padding reserved for syllable count overlays. */
 export const COUNT_GUTTER_REM = 3;

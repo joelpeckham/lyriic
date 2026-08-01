@@ -425,7 +425,7 @@ export function overlaysForMeterSeed(config: MeterConfig): {
   return {
     showCounts: true,
     showRulers: config.pattern.length > 0,
-    showStress: false,
+    showStress: true,
     showMeterBreaks: stressAware,
   };
 }

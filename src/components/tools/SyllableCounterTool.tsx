@@ -119,9 +119,6 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
                 </>
               )}
             </p>
-            <p className="text-xs text-muted-foreground">
-              Dictionary primary · private in your browser
-            </p>
           </div>
 
           <div className="grid gap-0 md:grid-cols-2 md:divide-x md:divide-border/50">

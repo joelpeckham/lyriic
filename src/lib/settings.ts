@@ -29,8 +29,8 @@ export const CUSTOM_PATTERN_MAX_LINES = 16;
 export const DEFAULT_SETTINGS: EditorSettings = {
   meter: "none",
   showCounts: true,
-  showRulers: false,
-  showStress: false,
+  showRulers: true,
+  showStress: true,
   showMeterBreaks: true,
   customPattern: [8],
   customFoot: "none",

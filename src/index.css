@@ -293,30 +293,30 @@ html[data-contrast="more"].dark {
   color: var(--lyriic-subtle-faint);
 }
 
-/* Meter rulers: short ticks inside the visual line box (bottom leading). */
+/* Meter rulers: ticks in the lower leading / line gap (clear of baseline). */
 .lyriic-ruler-tick,
 .lyriic-ruler-tick--target,
 .lyriic-ruler-tick--over {
   position: absolute;
-  width: 1px;
-  height: 0.4rem;
-  margin-left: -0.5px;
+  width: 2px;
+  height: 0.7rem;
+  margin-left: -1px;
   background: var(--lyriic-ruler);
-  opacity: 0.45;
+  opacity: 0.72;
   pointer-events: none;
-  /* Sit just above the line-box bottom so soft-wraps do not collide. */
-  transform: translateY(calc(-100% - 0.05rem));
+  /* Drop below the glyph box into the line gap so ticks clear the baseline. */
+  transform: translateY(0.28rem);
 }
 
 .lyriic-ruler-tick--target {
-  height: 0.55rem;
-  opacity: 0.75;
+  height: 0.9rem;
+  opacity: 0.92;
 }
 
 .lyriic-ruler-tick--over {
-  width: 1.5px;
-  margin-left: -0.75px;
-  height: 0.5rem;
+  width: 2.5px;
+  margin-left: -1.25px;
+  height: 0.8rem;
   background: var(--lyriic-over);
   opacity: 1;
 }
@@ -326,25 +326,25 @@ html[data-contrast="more"].dark {
   position: absolute;
   color: var(--lyriic-ruler);
   font-family: var(--font-ui), system-ui, sans-serif;
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 700;
   line-height: 1;
-  opacity: 0.7;
+  opacity: 0.85;
   pointer-events: none;
   user-select: none;
   /* Inside the line box (not the gap above) so wraps/next lines stay clear. */
-  transform: translate(-50%, 0.08em);
+  transform: translate(-50%, 0.12em);
 }
 
 .lyriic-stress-mark--weak {
-  opacity: 0.55;
+  opacity: 0.68;
 }
 
 .lyriic-stress-mark--off,
 .lyriic-stress-mark--weak.lyriic-stress-mark--off {
   color: var(--lyriic-over);
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
   opacity: 1;
 }
 
