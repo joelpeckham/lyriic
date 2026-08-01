@@ -109,7 +109,7 @@ importers:
         specifier: ^1.75.0
         version: 1.76.0
       playwright:
-        specifier: ^1.61.1
+        specifier: ~1.61.1
         version: 1.61.1
       shadcn:
         specifier: ^4.16.1
