@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Settings } from "lucide-react";
 
 import { AppFooter } from "@/components/AppFooter";
@@ -8,7 +9,10 @@ import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
 import { PoemEditor } from "@/components/editor/PoemEditor";
 import { Button } from "@/components/ui/button";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { useMeterSeed } from "@/hooks/useMeterSeed";
 import { useProjects } from "@/hooks/useProjects";
+import { getMeterCatalogEntry } from "@/lib/meters/presets";
+import { writerDocumentMeta } from "@/lib/meters/seed";
 import type { EditorSettings } from "@/lib/settings";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 import { handleAppShortcut } from "@/lib/shortcuts";
@@ -82,7 +86,31 @@ function SettingsSheetGate({
   );
 }
 
+function ActiveMeterChip({
+  meterId,
+  onOpenSettings,
+}: {
+  meterId: string;
+  onOpenSettings: () => void;
+}) {
+  if (meterId === "none") return null;
+  const entry = getMeterCatalogEntry(meterId);
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className="max-w-40 truncate text-muted-foreground hover:text-foreground"
+      onClick={onOpenSettings}
+      aria-label={`Meter: ${entry.label}. Open settings to change.`}
+    >
+      {entry.label}
+    </Button>
+  );
+}
+
 export function EditorShell() {
+  const { slug: routeSlug } = useParams<{ slug?: string }>();
   const {
     projects,
     active,
@@ -94,6 +122,7 @@ export function EditorShell() {
     clearStressOverride,
     switchProject,
     createProject,
+    applyMeterSeed,
     renameProject,
     deleteProject,
     saveStatus,
@@ -101,20 +130,28 @@ export function EditorShell() {
 
   const [settingsOpen, setSettingsOpen] = useState(false);
 
+  useMeterSeed(routeSlug, applyMeterSeed);
+
+  const writerMeta = routeSlug ? writerDocumentMeta(routeSlug) : null;
+
   // Keep the brand title on first paint / sharing; only rename after the draft
   // has content so empty Untitled sessions do not pollute bookmarks.
   const namedDraft =
     active.name.trim() &&
     active.name.trim() !== "Untitled" &&
     active.text.trim().length > 0;
-  const pageTitle = namedDraft
-    ? `${active.name.trim()} · lyriic`
-    : SITE_TITLE;
+  const pageTitle = writerMeta
+    ? writerMeta.title
+    : namedDraft
+      ? `${active.name.trim()} · lyriic`
+      : SITE_TITLE;
+  const pageDescription = writerMeta?.description ?? SITE_DESCRIPTION;
+  const pagePath = writerMeta?.path ?? "/";
 
   useDocumentMeta({
     title: pageTitle,
-    description: SITE_DESCRIPTION,
-    path: "/",
+    description: pageDescription,
+    path: pagePath,
   });
 
   useEffect(() => {
@@ -143,6 +180,10 @@ export function EditorShell() {
         brandAs="heading"
         actions={
           <nav aria-label="Draft and settings" className="contents">
+            <ActiveMeterChip
+              meterId={active.settings.meter}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
             <ProjectSwitcher
               projects={projects}
               activeId={active.id}

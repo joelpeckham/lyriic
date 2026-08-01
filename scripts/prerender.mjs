@@ -17,6 +17,12 @@ const ROUTES = [
   "/tools/syllable-counter",
   "/tools/haiku-checker",
   "/tools/rhyme-finder",
+  "/write/haiku",
+  "/write/iambic-pentameter",
+  "/write/common-meter",
+  "/write/tanka",
+  "/write/sonnet",
+  "/write/limerick",
 ];
 
 const OG_IMAGE = "https://lyriic.com/og.jpg";

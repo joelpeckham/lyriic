@@ -24,6 +24,11 @@ const ToolRoute = lazy(() =>
     default: m.ToolRoute,
   })),
 );
+const WriteRoute = lazy(() =>
+  import("./components/pages/WriteRoute").then((m) => ({
+    default: m.WriteRoute,
+  })),
+);
 
 function RouteFallback() {
   return (
@@ -42,6 +47,7 @@ createRoot(document.getElementById("root")!).render(
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<EditorShell />} />
+            <Route path="/write/:slug" element={<WriteRoute />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/tools/:slug" element={<ToolRoute />} />

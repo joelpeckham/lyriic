@@ -8,6 +8,7 @@ import { Route, Routes, StaticRouter } from "react-router-dom";
 import { FaqPage } from "@/components/pages/FaqPage";
 import { PrivacyPage } from "@/components/pages/PrivacyPage";
 import { ToolPage } from "@/components/pages/ToolPage";
+import { WriterSeoPage } from "@/components/pages/WriterSeoPage";
 import { HaikuCheckerTool } from "@/components/tools/HaikuCheckerTool";
 import { RhymeFinderTool } from "@/components/tools/RhymeFinderTool";
 import { SyllableCounterTool } from "@/components/tools/SyllableCounterTool";
@@ -20,6 +21,7 @@ import {
   PRIVACY_TITLE,
 } from "@/content/privacy";
 import { getToolBySlug, type ToolPageContent } from "@/content/tools";
+import { WRITER_PRERENDER_SLUGS, writerDocumentMeta } from "@/lib/meters/seed";
 import { absoluteUrl } from "@/lib/seo";
 
 export type RenderResult = {
@@ -83,6 +85,16 @@ function metaForRoute(route: string): {
     };
   }
 
+  const writeMatch = /^\/write\/([^/]+)$/.exec(route);
+  if (writeMatch) {
+    const slug = writeMatch[1]!;
+    const meta = writerDocumentMeta(slug);
+    if (!meta) {
+      throw new Error(`Unknown writer prerender route: ${route}`);
+    }
+    return meta;
+  }
+
   const match = /^\/tools\/([^/]+)$/.exec(route);
   const tool = match ? getToolBySlug(match[1]!) : undefined;
   if (!tool) {
@@ -117,12 +129,23 @@ function ToolBody({ tool }: { tool: ToolPageContent }) {
 function App({ route }: { route: string }) {
   const toolMatch = /^\/tools\/([^/]+)$/.exec(route);
   const tool = toolMatch ? getToolBySlug(toolMatch[1]!) : undefined;
+  const writeMatch = /^\/write\/([^/]+)$/.exec(route);
+  const writeSlug = writeMatch?.[1];
 
   return (
     <StaticRouter location={route}>
       <Routes>
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        <Route
+          path="/write/:slug"
+          element={
+            writeSlug &&
+            (WRITER_PRERENDER_SLUGS as readonly string[]).includes(writeSlug) ? (
+              <WriterSeoPage slug={writeSlug} />
+            ) : null
+          }
+        />
         <Route
           path="/tools/:slug"
           element={

@@ -178,7 +178,7 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
 
       <ToolEditorPitch
         title="Count here. Write in the editor."
-        body="This page gives you totals. In the full lyriic editor, syllable counts sit beside every line while you draft — with meter rulers for forms like haiku or iambic pentameter, and quiet overrides when a word (say fire) should count as one beat instead of two. Drafts stay on your device."
+        body="This page gives you totals. In the full lyriic editor, syllable counts sit beside every line while you draft — with meter rulers for haiku, iambic pentameter, and dozens of other forms, plus quiet overrides when a word (say fire) should count as one beat instead of two. Drafts stay on your device."
         cta={tool.cta}
       />
     </div>

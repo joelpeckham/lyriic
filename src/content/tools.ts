@@ -72,7 +72,7 @@ export const TOOL_PAGES: ToolPageContent[] = [
       {
         q: "Does lyriic include a haiku meter ruler?",
         plain:
-          "Yes. In the editor, choose the Haiku preset under meter rulers for live 5/7/5 ticks beside each line as you write.",
+          "Yes. Open the Haiku writer, or choose Haiku under Meter in Settings, for live 5/7/5 ticks beside each line as you write.",
       },
       {
         q: "Is my haiku uploaded?",

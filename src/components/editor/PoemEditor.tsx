@@ -33,8 +33,8 @@ import { zenEditorTheme } from "@/lib/editor/zenTheme";
 import {
   buildMeteredLines,
   formatMeterLabel,
-  getMeterPreset,
-  isStressAwareMeter,
+  isStressAwareMeterConfig,
+  resolveMeterConfig,
   type MeteredLine,
 } from "@/lib/meters";
 import type { EditorSettings } from "@/lib/settings";
@@ -129,11 +129,19 @@ export function PoemEditor({
   const stressPackRevision = useStressRevision();
   const variantsPackRevision = useVariantsRevision();
 
+  const meterConfig = useMemo(
+    () =>
+      resolveMeterConfig({
+        meter: settings.meter,
+        customPattern: settings.customPattern,
+        customFoot: settings.customFoot,
+      }),
+    [settings.meter, settings.customPattern, settings.customFoot],
+  );
+
   const needsStress =
-    settings.showStress || isStressAwareMeter(settings.meter);
-  const hasMeterTarget =
-    settings.meter !== "none" &&
-    (settings.meter !== "custom" || settings.customSyllables > 0);
+    settings.showStress || isStressAwareMeterConfig(meterConfig);
+  const hasMeterTarget = meterConfig.pattern.length > 0;
 
   useEffect(() => {
     if (!needsStress) return;
@@ -153,24 +161,15 @@ export function PoemEditor({
     dictRevision,
   );
 
-  const meterOptions = useMemo(() => {
-    const preset = getMeterPreset(settings.meter);
-    const pattern =
-      settings.meter === "custom"
-        ? [settings.customSyllables]
-        : preset.pattern;
-    return {
-      pattern,
-      stressPatterns: preset.stressPatterns,
+  const meterOptions = useMemo(
+    () => ({
+      pattern: meterConfig.pattern,
+      stressPatterns: meterConfig.stressPatterns,
       stressOverrides,
       syllableOverrides: overrides,
-    };
-  }, [
-    settings.meter,
-    settings.customSyllables,
-    stressOverrides,
-    overrides,
-  ]);
+    }),
+    [meterConfig, stressOverrides, overrides],
+  );
 
   const stressRevision = `${stressOverrideRevision}|${stressPackRevision}|${variantsPackRevision}|${dictRevision}`;
 
@@ -307,6 +306,12 @@ export function PoemEditor({
     setWordTarget(null);
   }
 
+  const stanzaLines = meterConfig.stanzaLines ?? null;
+  const writtenLines = lineCounts.lines.filter((line) => line.trim().length > 0)
+    .length;
+  const showStanzaHint =
+    stanzaLines !== null && stanzaLines > 0 && settings.meter !== "none";
+
   return (
     <div
       id="poem"
@@ -323,6 +328,14 @@ export function PoemEditor({
         {settings.showCounts ? liveCountText : ""}
       </div>
       <div ref={parentRef} className="h-full w-full" />
+      {showStanzaHint ? (
+        <p
+          className="pointer-events-none absolute inset-x-0 bottom-14 z-10 px-4 text-center font-[family-name:var(--font-ui)] text-xs text-muted-foreground/70"
+          aria-live="polite"
+        >
+          {writtenLines} / {stanzaLines} lines
+        </p>
+      ) : null}
       <WordToolsPopover
         target={wordTarget}
         onClose={closeWordUi}

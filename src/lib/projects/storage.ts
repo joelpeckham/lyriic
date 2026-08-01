@@ -9,6 +9,7 @@ import {
 import {
   DEFAULT_SETTINGS,
   normalizeSettings,
+  type EditorSettings,
 } from "@/lib/settings";
 import { readJson, writeJson } from "@/lib/storageJson";
 import { normalizeStressOverridesRecord } from "@/lib/stress/overrides";
@@ -35,13 +36,16 @@ export function createProjectId(): string {
   return `p-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function createEmptyProject(name = "Untitled"): Project {
+export function createEmptyProject(
+  name = "Untitled",
+  settings: EditorSettings = DEFAULT_SETTINGS,
+): Project {
   const now = Date.now();
   return {
     id: createProjectId(),
     name,
     text: "",
-    settings: { ...DEFAULT_SETTINGS },
+    settings: normalizeSettings(settings),
     overrides: {},
     stressOverrides: {},
     updatedAt: now,

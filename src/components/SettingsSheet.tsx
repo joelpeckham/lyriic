@@ -1,15 +1,14 @@
-import { useState, type KeyboardEvent } from "react";
+import { useMemo, useState } from "react";
 import {
   CircleDot,
-  CircleSlash,
   Contrast,
   Hash,
   Keyboard,
   Monitor,
   Moon,
   MousePointerClick,
-  Music2,
   Ruler,
+  Search,
   Settings,
   Sun,
   Type,
@@ -32,7 +31,13 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { usePrefs } from "@/hooks/usePrefs";
-import { METER_PRESETS, type MeterPresetId } from "@/lib/meters";
+import {
+  CUSTOM_FOOT_IDS,
+  FOOT_LABELS,
+  listMeterCatalogByGroup,
+  resolveMeterConfig,
+  type CustomFootId,
+} from "@/lib/meters";
 import {
   DEFAULT_FONT_SIZE,
   FONT_SIZE_MAX,
@@ -40,10 +45,11 @@ import {
   type ThemePref,
 } from "@/lib/prefs";
 import {
-  CUSTOM_SYLLABLES_MAX,
-  CUSTOM_SYLLABLES_MIN,
+  formatCustomPattern,
+  parseCustomPattern,
   type EditorSettings,
 } from "@/lib/settings";
+import { applyMeterChoice } from "@/lib/settings/applyMeterChoice";
 import { SHORTCUT_HINTS } from "@/lib/shortcuts";
 import { cn } from "@/lib/utils";
 
@@ -71,72 +77,10 @@ const THEME_OPTIONS: {
   { value: "dark", label: "Dark", icon: Moon },
 ];
 
-const METER_ICONS: Record<MeterPresetId, LucideIcon> = {
-  none: CircleSlash,
-  haiku: Hash,
-  "iambic-pentameter": Type,
-  "common-meter": Music2,
-  custom: Ruler,
-};
-
 const SHORTCUT_ICONS = {
   Settings: Settings,
   "Focus poem": Type,
 } as const;
-
-function parseCustomSyllables(raw: string): number | null {
-  if (raw.trim() === "") return null;
-  const next = Number(raw);
-  if (!Number.isFinite(next)) return null;
-  return Math.round(next);
-}
-
-function clampCustomSyllables(value: number): number {
-  return Math.min(
-    CUSTOM_SYLLABLES_MAX,
-    Math.max(CUSTOM_SYLLABLES_MIN, value),
-  );
-}
-
-function CustomSyllablesInput({
-  value,
-  onCommit,
-}: {
-  value: number;
-  onCommit: (next: number) => void;
-}) {
-  const [draft, setDraft] = useState(() => String(value));
-
-  const commit = (raw: string) => {
-    const parsed = parseCustomSyllables(raw);
-    const next = clampCustomSyllables(parsed ?? value);
-    setDraft(String(next));
-    if (next !== value) onCommit(next);
-  };
-
-  return (
-    <div className="flex flex-col gap-2 pl-1">
-      <Label htmlFor="custom-syllables">Syllables per line</Label>
-      <Input
-        id="custom-syllables"
-        type="number"
-        inputMode="numeric"
-        min={CUSTOM_SYLLABLES_MIN}
-        max={CUSTOM_SYLLABLES_MAX}
-        value={draft}
-        onChange={(event) => setDraft(event.target.value)}
-        onBlur={() => commit(draft)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            commit(draft);
-          }
-        }}
-        className="w-24"
-      />
-    </div>
-  );
-}
 
 function SettingsToggle({
   id,
@@ -178,14 +122,175 @@ function SettingsToggle({
   );
 }
 
-function meterRadioIndex(meter: MeterPresetId): number {
-  const index = METER_PRESETS.findIndex((preset) => preset.id === meter);
-  return index >= 0 ? index : 0;
+function CustomMeterControls({
+  settings,
+  onChange,
+}: {
+  settings: EditorSettings;
+  onChange: (next: EditorSettings) => void;
+}) {
+  const [draft, setDraft] = useState(() =>
+    formatCustomPattern(settings.customPattern),
+  );
+
+  const commitPattern = (raw: string) => {
+    const parsed = parseCustomPattern(raw);
+    const next = parsed ?? settings.customPattern;
+    setDraft(formatCustomPattern(next));
+    if (
+      next.length !== settings.customPattern.length ||
+      next.some((n, i) => n !== settings.customPattern[i])
+    ) {
+      onChange(applyMeterChoice({ ...settings, customPattern: next }, "custom"));
+    }
+  };
+
+  const preview = resolveMeterConfig({
+    meter: "custom",
+    customPattern: settings.customPattern,
+    customFoot: settings.customFoot,
+  });
+
+  return (
+    <div className="flex flex-col gap-3 rounded-lg border border-border/70 bg-muted/30 px-3 py-3">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="custom-pattern">Syllables per line</Label>
+        <Input
+          id="custom-pattern"
+          value={draft}
+          placeholder="8 or 5, 7, 5"
+          onChange={(event) => setDraft(event.target.value)}
+          onBlur={() => commitPattern(draft)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              commitPattern(draft);
+            }
+          }}
+        />
+        <p className="text-muted-foreground text-xs">
+          Fixed length or a cycle like 5, 7, 5
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="custom-foot">Stress foot</Label>
+        <select
+          id="custom-foot"
+          className={cn(
+            "h-9 w-full rounded-lg border border-input bg-background px-3 text-sm",
+            "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
+          )}
+          value={settings.customFoot}
+          onChange={(event) => {
+            const customFoot = event.target.value as CustomFootId;
+            onChange(
+              applyMeterChoice({ ...settings, customFoot }, "custom"),
+            );
+          }}
+        >
+          {CUSTOM_FOOT_IDS.map((foot) => (
+            <option key={foot} value={foot}>
+              {FOOT_LABELS[foot]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <p className="text-muted-foreground text-xs">{preview.description}</p>
+    </div>
+  );
 }
 
-function focusMeterRadio(group: HTMLElement, index: number) {
-  const radios = group.querySelectorAll<HTMLElement>('[role="radio"]');
-  radios[index]?.focus();
+function MeterPicker({
+  settings,
+  onChange,
+}: {
+  settings: EditorSettings;
+  onChange: (next: EditorSettings) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const groups = useMemo(() => listMeterCatalogByGroup(), []);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return groups;
+    return groups
+      .map((group) => ({
+        ...group,
+        entries: group.entries.filter(
+          (entry) =>
+            entry.label.toLowerCase().includes(q) ||
+            entry.description.toLowerCase().includes(q) ||
+            entry.id.includes(q),
+        ),
+      }))
+      .filter((group) => group.entries.length > 0);
+  }, [groups, query]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="relative">
+        <Search
+          className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+          aria-hidden
+        />
+        <Input
+          id="meter-search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search meters…"
+          className="pl-8"
+          aria-label="Search meters"
+        />
+      </div>
+
+      <div
+        role="listbox"
+        aria-label="Meter"
+        className="flex max-h-64 flex-col gap-3 overflow-y-auto pr-0.5"
+      >
+        {filtered.map((group) => (
+          <div key={group.group} className="flex flex-col gap-1">
+            <p className="px-1 text-[0.7rem] font-medium tracking-wide text-muted-foreground uppercase">
+              {group.label}
+            </p>
+            {group.entries.map((entry) => {
+              const selected = settings.meter === entry.id;
+              return (
+                <button
+                  key={entry.id}
+                  type="button"
+                  role="option"
+                  aria-selected={selected}
+                  className={cn(
+                    "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors",
+                    "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
+                    selected
+                      ? "border-border bg-muted text-foreground"
+                      : "border-transparent hover:bg-muted/60",
+                  )}
+                  onClick={() => onChange(applyMeterChoice(settings, entry.id))}
+                >
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <span className="text-sm font-medium">{entry.label}</span>
+                    {entry.description ? (
+                      <span className="text-muted-foreground text-xs">
+                        {entry.description}
+                      </span>
+                    ) : null}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ))}
+        {filtered.length === 0 ? (
+          <p className="px-1 text-sm text-muted-foreground">No meters match.</p>
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 export function SettingsSheet({
@@ -201,35 +306,6 @@ export function SettingsSheet({
   )
     ? prefs.fontSize
     : DEFAULT_FONT_SIZE;
-
-  const selectedMeterIndex = meterRadioIndex(settings.meter);
-
-  const onMeterKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    const { key } = event;
-    const last = METER_PRESETS.length - 1;
-    let nextIndex = selectedMeterIndex;
-
-    if (key === "ArrowDown" || key === "ArrowRight") {
-      nextIndex = (selectedMeterIndex + 1) % METER_PRESETS.length;
-    } else if (key === "ArrowUp" || key === "ArrowLeft") {
-      nextIndex =
-        (selectedMeterIndex - 1 + METER_PRESETS.length) % METER_PRESETS.length;
-    } else if (key === "Home") {
-      nextIndex = 0;
-    } else if (key === "End") {
-      nextIndex = last;
-    } else {
-      return;
-    }
-
-    event.preventDefault();
-    const next = METER_PRESETS[nextIndex];
-    if (!next) return;
-    if (next.id !== settings.meter) {
-      onChange({ ...settings, meter: next.id });
-    }
-    focusMeterRadio(event.currentTarget, nextIndex);
-  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -334,61 +410,16 @@ export function SettingsSheet({
 
           <div className="flex flex-col gap-3">
             <Label id="meter-label">Meter</Label>
-            <div
-              role="radiogroup"
-              aria-labelledby="meter-label"
-              tabIndex={-1}
-              className="flex flex-col gap-1.5"
-              onKeyDown={onMeterKeyDown}
-            >
-              {METER_PRESETS.map((preset) => {
-                const Icon = METER_ICONS[preset.id];
-                const selected = settings.meter === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    tabIndex={selected ? 0 : -1}
-                    className={cn(
-                      "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-colors",
-                      "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
-                      selected
-                        ? "border-border bg-muted text-foreground"
-                        : "border-transparent hover:bg-muted/60",
-                    )}
-                    onClick={() =>
-                      onChange({ ...settings, meter: preset.id })
-                    }
-                  >
-                    <Icon
-                      className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                      aria-hidden
-                    />
-                    <span className="flex min-w-0 flex-col gap-0.5">
-                      <span className="text-sm font-medium">{preset.label}</span>
-                      {preset.description ? (
-                        <span className="text-muted-foreground text-xs">
-                          {preset.description}
-                        </span>
-                      ) : null}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            <MeterPicker settings={settings} onChange={onChange} />
           </div>
 
-          {settings.meter === "custom" && (
-            <CustomSyllablesInput
-              key={settings.customSyllables}
-              value={settings.customSyllables}
-              onCommit={(customSyllables) =>
-                onChange({ ...settings, customSyllables })
-              }
+          {settings.meter === "custom" ? (
+            <CustomMeterControls
+              key={formatCustomPattern(settings.customPattern)}
+              settings={settings}
+              onChange={onChange}
             />
-          )}
+          ) : null}
 
           <Separator />
 

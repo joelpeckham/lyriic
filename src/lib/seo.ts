@@ -10,7 +10,7 @@ export const OG_IMAGE = `${SITE_URL}/og.jpg`;
 
 export const SITE_FEATURE_LIST = [
   "Per-line syllable counts from a fused US pronunciation dictionary",
-  "Optional meter rulers for haiku, iambic pentameter, and common meter",
+  "Optional meter rulers for haiku, sonnet, tanka, iambic verse, and many more forms",
   "Hover or tap a word for rhyme and synonym helpers",
   "Local-first drafts with no account or cloud sync",
   "Works offline after assets load",

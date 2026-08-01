@@ -8,9 +8,16 @@ type ToolEditorPitchProps = {
   body: string;
   /** Label for the editor CTA — typically `tool.cta`. */
   cta: string;
+  /** Editor destination — defaults to home; use `/write/:slug` for seeded meters. */
+  to?: string;
 };
 
-export function ToolEditorPitch({ title, body, cta }: ToolEditorPitchProps) {
+export function ToolEditorPitch({
+  title,
+  body,
+  cta,
+  to = "/",
+}: ToolEditorPitchProps) {
   const headingId = useId();
 
   return (
@@ -29,7 +36,7 @@ export function ToolEditorPitch({ title, body, cta }: ToolEditorPitchProps) {
       </p>
       <p className="mt-4">
         <Button asChild>
-          <Link to="/">{cta}</Link>
+          <Link to={to}>{cta}</Link>
         </Button>
       </p>
     </aside>

@@ -168,6 +168,15 @@ ${PRIVACY_SECTIONS.map((section) => `## ${section.h2}\n\n${section.body}`).join(
 
 writeFileSync(join(publicDir, "llms-full.txt"), llmsFull);
 
+const WRITER_SLUGS = [
+  "haiku",
+  "iambic-pentameter",
+  "common-meter",
+  "tanka",
+  "sonnet",
+  "limerick",
+];
+
 const urls = [
   { loc: `${SITE}/`, priority: "1.0", changefreq: "weekly" },
   { loc: `${SITE}/faq`, priority: "0.6", changefreq: "monthly" },
@@ -175,6 +184,11 @@ const urls = [
   ...TOOL_PAGES.map((tool) => ({
     loc: `${SITE}${tool.path}`,
     priority: "0.8",
+    changefreq: "monthly",
+  })),
+  ...WRITER_SLUGS.map((slug) => ({
+    loc: `${SITE}/write/${slug}`,
+    priority: "0.7",
     changefreq: "monthly",
   })),
   { loc: `${SITE}/about.md`, priority: "0.5", changefreq: "monthly" },

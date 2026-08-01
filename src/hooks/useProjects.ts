@@ -284,9 +284,58 @@ export function useProjects() {
     });
   }
 
-  function createProject(name = "Untitled") {
+  function createProject(name = "Untitled", settings?: EditorSettings) {
     commit((prev) => {
-      const project = createEmptyProject(name);
+      const project = createEmptyProject(name, settings);
+      return {
+        ...prev,
+        activeId: project.id,
+        projects: [...prev.projects, project],
+      };
+    });
+  }
+
+  /** Apply settings to the active draft, or create a new draft when needed. */
+  function applyMeterSeed(
+    settings: EditorSettings,
+    options?: { name?: string; reuseEmpty?: boolean },
+  ) {
+    const name = options?.name ?? "Untitled";
+    const reuseEmpty = options?.reuseEmpty ?? true;
+    commit((prev) => {
+      const current = getActiveProject(prev);
+      const empty = current.text.trim().length === 0;
+      const canReuse =
+        reuseEmpty &&
+        empty &&
+        (current.settings.meter === "none" ||
+          current.settings.meter === settings.meter);
+      if (canReuse) {
+        const nextName =
+          current.name.trim() === "Untitled" || !current.name.trim()
+            ? name
+            : current.name;
+        if (
+          settingsEqual(current.settings, settings) &&
+          current.name === nextName
+        ) {
+          return prev;
+        }
+        return {
+          ...prev,
+          projects: prev.projects.map((project) =>
+            project.id === current.id
+              ? {
+                  ...project,
+                  name: nextName,
+                  settings: normalizeSettings(settings),
+                  updatedAt: Date.now(),
+                }
+              : project,
+          ),
+        };
+      }
+      const project = createEmptyProject(name, settings);
       return {
         ...prev,
         activeId: project.id,
@@ -335,6 +384,7 @@ export function useProjects() {
     clearStressOverride,
     switchProject,
     createProject,
+    applyMeterSeed,
     renameProject,
     deleteProject,
   };

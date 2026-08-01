@@ -367,8 +367,9 @@ export function HaikuCheckerTool() {
 
       <ToolEditorPitch
         title="Live Haiku meter in the editor"
-        body="In lyriic, choose the Haiku meter ruler for 5/7/5 ticks beside each line as you write — not just after you paste. Hover or tap a word for rhymes and synonyms. Drafts stay local on your device."
+        body="Open the Haiku writer for 5/7/5 ticks beside each line as you write — not just after you paste. Hover or tap a word for rhymes and synonyms. Drafts stay local on your device."
         cta={tool.cta}
+        to="/write/haiku"
       />
     </div>
   );
