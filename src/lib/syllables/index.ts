@@ -1,5 +1,5 @@
 export { countLine, countLines, countLinesIncremental } from "./countLine";
-export { countWord } from "./countWord";
+export { clearMemo, countWord } from "./countWord";
 export {
   dictSize,
   getDictRevision,
@@ -8,21 +8,12 @@ export {
   lookupDict,
   subscribeDictReady,
 } from "./dict";
-
 export { countHeuristic } from "./heuristic";
 export {
-  clearAllOverrides,
-  clearOverride,
-  getOverride,
-  getOverrides,
   isValidOverrideCount,
   normalizeOverrideKey,
   normalizeOverridesRecord,
-  overridesToRecord,
-  replaceOverrides,
-  setOverride,
 } from "./overrides";
-export { clearMemo } from "./memo";
 export { tokenizeLine } from "./tokenize";
 export type {
   LineSyllableCount,

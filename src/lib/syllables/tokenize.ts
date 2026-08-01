@@ -1,3 +1,4 @@
+import { normalizeWord } from "./normalize";
 import type { WordToken } from "./types";
 
 /** Straight apostrophe or typographic right single quotation mark. */
@@ -12,10 +13,6 @@ const WORD_RE = new RegExp(
   "gu",
 );
 
-function normalizeWord(raw: string): string {
-  return raw.toLowerCase().replace(/['\u2019]/g, "'");
-}
-
 /** Split a poetic line into word tokens with character offsets. */
 export function tokenizeLine(line: string): WordToken[] {
   const tokens: WordToken[] = [];
@@ -24,7 +21,7 @@ export function tokenizeLine(line: string): WordToken[] {
     const start = match.index ?? 0;
     tokens.push({
       raw,
-      word: normalizeWord(raw),
+      word: normalizeWord(raw, { keepHyphen: true }),
       start,
       end: start + raw.length,
     });

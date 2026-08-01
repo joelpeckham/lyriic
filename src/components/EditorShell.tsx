@@ -6,7 +6,6 @@ import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
 import { PoemEditor } from "@/components/editor/PoemEditor";
 import { usePrefs } from "@/hooks/usePrefs";
 import { useProjects } from "@/hooks/useProjects";
-import { useSyllableOverrides } from "@/hooks/useSyllableOverrides";
 import { handleAppShortcut } from "@/lib/shortcuts";
 
 const FIRST_RUN_PLACEHOLDER = "Write a line… ⌘' synonyms · ⌘; rhymes";
@@ -33,8 +32,6 @@ export function EditorShell() {
 
   const { prefs, markEditorHintSeen } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
-
-  useSyllableOverrides(active.overrides);
 
   useEffect(() => {
     document.title = `${active.name} · lyriic`;

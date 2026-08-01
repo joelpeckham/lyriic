@@ -1,17 +1,6 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { countWord } from "./countWord";
 import { countLine, countLines, countLinesIncremental } from "./countLine";
-import {
-  clearAllOverrides,
-  clearOverride,
-  overridesToRecord,
-  replaceOverrides,
-  setOverride,
-} from "./overrides";
-
-afterEach(() => {
-  clearAllOverrides();
-});
 
 describe("countWord — CMU primary dictionary", () => {
   const dictCases: Array<[string, number]> = [
@@ -109,74 +98,66 @@ describe("countWord — heuristic OOV", () => {
 
 describe("countWord — overrides", () => {
   it("override wins over dict", () => {
-    setOverride("fire", 1);
-    expect(countWord("fire")).toEqual({
+    expect(countWord("fire", { fire: 1 })).toEqual({
       word: "fire",
       count: 1,
       source: "override",
     });
   });
 
-  it("clearOverride restores dict", () => {
-    setOverride("fire", 1);
-    clearOverride("fire");
-    expect(countWord("fire")).toMatchObject({ count: 2, source: "dict" });
+  it("empty overrides restore dict", () => {
+    expect(countWord("fire", { fire: 1 })).toMatchObject({
+      count: 1,
+      source: "override",
+    });
+    expect(countWord("fire", {})).toMatchObject({ count: 2, source: "dict" });
   });
 
   it("override applies case-insensitively", () => {
-    setOverride("FIRE", 1);
-    expect(countWord("Fire").source).toBe("override");
-    expect(countWord("Fire").count).toBe(1);
+    // Record keys are normalized at persistence; lookup normalizes the word.
+    expect(countWord("Fire", { fire: 1 })).toMatchObject({
+      count: 1,
+      source: "override",
+    });
+    expect(countWord("FIRE", { fire: 1 }).count).toBe(1);
   });
 
   it("hyphen compound with overridden part reports source override", () => {
-    setOverride("fire", 1);
     const truck = countWord("truck").count;
-    expect(countWord("fire-truck")).toEqual({
+    expect(countWord("fire-truck", { fire: 1 })).toEqual({
       word: "fire-truck",
       count: 1 + truck,
       source: "override",
     });
   });
 
-  it("replaceOverrides swaps the whole map", () => {
-    setOverride("fire", 1);
-    replaceOverrides({ every: 2 });
-    expect(countWord("fire")).toMatchObject({ count: 2, source: "dict" });
-    expect(countWord("every")).toMatchObject({ count: 2, source: "override" });
-    expect(overridesToRecord()).toEqual({ every: 2 });
-  });
-
   it("rejects invalid override counts", () => {
-    setOverride("fire", 0);
-    setOverride("fire", Number.NaN);
-    setOverride("fire", Number.POSITIVE_INFINITY);
-    expect(countWord("fire")).toMatchObject({ count: 2, source: "dict" });
+    expect(countWord("fire", { fire: 0 })).toMatchObject({
+      count: 2,
+      source: "dict",
+    });
+    expect(countWord("fire", { fire: Number.NaN })).toMatchObject({
+      count: 2,
+      source: "dict",
+    });
+    expect(
+      countWord("fire", { fire: Number.POSITIVE_INFINITY }),
+    ).toMatchObject({ count: 2, source: "dict" });
   });
 
   it("keeps hyphenated override keys distinct from unhyphenated forms", () => {
-    setOverride("co-operate", 4);
-    expect(countWord("co-operate")).toMatchObject({
+    expect(countWord("co-operate", { "co-operate": 4 })).toMatchObject({
       count: 4,
       source: "override",
     });
-    expect(countWord("cooperate").source).not.toBe("override");
+    expect(countWord("cooperate", { "co-operate": 4 }).source).not.toBe(
+      "override",
+    );
   });
 
-  it("explicit overrides record wins without touching the module Map", () => {
-    expect(countWord("fire", { fire: 1 })).toEqual({
-      word: "fire",
-      count: 1,
-      source: "override",
-    });
-    expect(countWord("fire")).toMatchObject({ count: 2, source: "dict" });
-  });
-
-  it("explicit overrides skip module memo (no leak from prior Map counts)", () => {
-    setOverride("fire", 1);
-    expect(countWord("fire").count).toBe(1);
-
-    // Threaded empty overrides must not reuse the Map-backed memo entry.
+  it("base memo is shared across override records (no leak)", () => {
+    expect(countWord("fire", { fire: 1 }).count).toBe(1);
+    // Empty overrides must still see the dict base, not a cached override.
     expect(countWord("fire", {})).toMatchObject({ count: 2, source: "dict" });
     expect(countWord("fire", { fire: 1 })).toMatchObject({
       count: 1,
@@ -198,11 +179,14 @@ describe("override changes invalidate incremental line reuse", () => {
     const first = countLinesIncremental(text, null, null);
     expect(first.counts[0]?.total).toBe(1 + 2);
 
-    setOverride("fire", 1);
-    const stale = countLinesIncremental(text, first.lines, first.counts);
+    const stale = countLinesIncremental(text, first.lines, first.counts, {
+      fire: 1,
+    });
+    // Same snapshot + new overrides would reuse stale objects — callers must
+    // clear the snapshot when counting policy changes.
     expect(stale.counts[0]).toBe(first.counts[0]);
 
-    const fresh = countLinesIncremental(text, null, null);
+    const fresh = countLinesIncremental(text, null, null, { fire: 1 });
     expect(fresh.counts[0]?.total).toBe(2);
   });
 
@@ -231,6 +215,13 @@ describe("countLine", () => {
     expect(result.total).toBe(1 + 2 + 1 + 2);
   });
 
+  it("sums per-word counts for a short line", () => {
+    const result = countLine("to be or");
+    expect(result.total).toBe(3);
+    expect(result.perWord).toHaveLength(3);
+    expect(result.tokens).toHaveLength(3);
+  });
+
   it("counts hyphenates as one token", () => {
     const result = countLine("a wine-bottle");
     expect(result.tokens).toHaveLength(2);
@@ -256,6 +247,22 @@ describe("countLinesIncremental", () => {
     expect(second.counts[0]).toBe(first.counts[0]);
     expect(second.counts[1]).not.toBe(first.counts[1]);
     expect(second.counts[1]?.total).toBe(countLine("changed line").total);
+  });
+
+  it("recounts shifted indices after a line insert", () => {
+    const first = countLinesIncremental("alpha\nbeta", null, null);
+    const inserted = countLinesIncremental(
+      "new\nalpha\nbeta",
+      first.lines,
+      first.counts,
+    );
+
+    // Index 0 is new; former "alpha"/"beta" shift and must be recounted objects.
+    expect(inserted.counts[0]?.total).toBe(1);
+    expect(inserted.counts[1]).not.toBe(first.counts[0]);
+    expect(inserted.counts[1]?.total).toBe(first.counts[0]?.total);
+    expect(inserted.lines[1]).toBe("alpha");
+    expect(inserted.counts[2]?.total).toBe(first.counts[1]?.total);
   });
 
   it("handles 500-line documents", () => {
