@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { LineCountOverlay } from "@/components/editor/LineCountOverlay";
 import { useLineAutosize } from "@/hooks/useLineAutosize";
 import { useLineDocument } from "@/hooks/useLineDocument";
+import { highlightForLine, type LineRange } from "@/lib/editor/lineSelection";
 import {
   buildMeteredLines,
   formatMeterLabel,
@@ -39,6 +40,58 @@ function overridesKey(overrides: Record<string, number>): string {
     .sort()
     .map((key) => `${key}:${overrides[key]}`)
     .join("|");
+}
+
+function SelectionHighlight({
+  line,
+  lineIndex,
+  selectAll,
+  lineRange,
+  fontSizeRem,
+}: {
+  line: string;
+  lineIndex: number;
+  selectAll: boolean;
+  lineRange: LineRange | null;
+  fontSizeRem: string;
+}) {
+  const highlight = selectAll
+    ? line.length > 0
+      ? {
+          before: "",
+          selected: line,
+          after: "",
+          emptyMarker: false,
+        }
+      : null
+    : lineRange
+      ? highlightForLine(line, lineIndex, lineRange)
+      : null;
+
+  if (!highlight) return null;
+
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 pr-12 whitespace-pre-wrap break-words font-[family-name:var(--font-editor)] tracking-[0.01em] text-transparent"
+      style={{
+        fontSize: fontSizeRem,
+        lineHeight: WRAP_LEADING,
+      }}
+    >
+      {highlight.before}
+      {highlight.emptyMarker ? (
+        <span className="inline-block min-w-[0.35em] rounded-[0.12em] bg-[var(--lyriic-selection)]">
+          &nbsp;
+        </span>
+      ) : (
+        <span className="rounded-[0.12em] bg-[var(--lyriic-selection)] box-decoration-clone">
+          {highlight.selected}
+        </span>
+      )}
+      {highlight.after}
+    </div>
+  );
 }
 
 export function TextCanvas({
@@ -118,7 +171,9 @@ export function TextCanvas({
 
   const {
     selectAll,
-    setSelectAll,
+    lineRange,
+    hasCustomSelection,
+    onLinePointerDown,
     onLineChange,
     onLineKeyDown,
     onLinePaste,
@@ -192,26 +247,21 @@ export function TextCanvas({
           const statusId = `${lineId}-status`;
 
           return (
-            <div key={index} className="relative flex items-start">
-              <label className="sr-only" htmlFor={lineId}>
+            <div
+              key={index}
+              className="relative flex items-start select-none"
+            >
+              <label className="sr-only select-none" htmlFor={lineId}>
                 {`Line ${index + 1}`}
               </label>
               <div className="relative min-w-0 w-full">
-                {/* Text-shaped select-all highlight (not full textarea width). */}
-                {selectAll && line.length > 0 ? (
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 pr-12 whitespace-pre-wrap break-words font-[family-name:var(--font-editor)] tracking-[0.01em]"
-                    style={{
-                      fontSize: fontSizeRem,
-                      lineHeight: WRAP_LEADING,
-                    }}
-                  >
-                    <span className="rounded-[0.12em] bg-[var(--lyriic-selection)] box-decoration-clone">
-                      {line}
-                    </span>
-                  </div>
-                ) : null}
+                <SelectionHighlight
+                  line={line}
+                  lineIndex={index}
+                  selectAll={selectAll}
+                  lineRange={lineRange}
+                  fontSizeRem={fontSizeRem}
+                />
                 <textarea
                   ref={(el) => {
                     lineRefs.current[index] = el;
@@ -228,19 +278,19 @@ export function TextCanvas({
                     settings.showCounts ? statusId : undefined
                   }
                   onFocus={() => setActiveLineIndex(index)}
-                  onMouseDown={() => setSelectAll(false)}
+                  onPointerDown={(event) => onLinePointerDown(index, event)}
                   onChange={(event) => onLineChange(index, event.target.value)}
                   onKeyDown={(event) => onLineKeyDown(index, event)}
                   onPaste={(event) => onLinePaste(index, event)}
                   onCopy={onLineCopy}
                   onCut={onLineCut}
                   className={cn(
-                    "relative w-full resize-none overflow-hidden bg-transparent pr-12",
+                    "relative w-full resize-none overflow-hidden bg-transparent pr-12 select-text",
                     "whitespace-pre-wrap break-words font-[family-name:var(--font-editor)] tracking-[0.01em]",
                     "text-foreground caret-[var(--lyriic-ink)] placeholder:text-[var(--lyriic-subtle-faint)]",
                     "outline-none",
-                    // Whole-poem select uses a text-shaped overlay; suppress native ::selection.
-                    selectAll
+                    // Custom selection uses a text-shaped overlay; suppress native ::selection.
+                    hasCustomSelection
                       ? "selection:bg-transparent"
                       : "selection:bg-[var(--lyriic-selection)]",
                   )}

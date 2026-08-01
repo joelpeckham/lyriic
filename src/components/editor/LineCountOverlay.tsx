@@ -20,13 +20,13 @@ export function LineCountOverlay({
 
   return (
     <>
-      <span id={statusId} className="sr-only">
+      <span id={statusId} className="sr-only select-none">
         {label}
       </span>
       <span
         aria-hidden
         className={cn(
-          "pointer-events-none absolute top-0 right-0 pt-1.5 font-[family-name:var(--font-ui)] text-xs tabular-nums transition-colors",
+          "pointer-events-none absolute top-0 right-0 pt-1.5 select-none font-[family-name:var(--font-ui)] text-xs tabular-nums transition-colors",
           status === "exact" && "text-[var(--lyriic-match)]",
           status === "over" && "text-[var(--lyriic-over)]",
           status !== "exact" &&
