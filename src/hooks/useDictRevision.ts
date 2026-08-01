@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import {
   getDictRevision,
@@ -11,15 +11,9 @@ import {
  * via scheduleLexiconLoad.
  */
 export function useDictRevision(): number {
-  const [revision, setRevision] = useState(getDictRevision);
-
-  useEffect(() => {
-    // Sync in case the pack finished between first render and subscribe.
-    setRevision(getDictRevision());
-    return subscribeDictReady(() => {
-      setRevision(getDictRevision());
-    });
-  }, []);
-
-  return revision;
+  return useSyncExternalStore(
+    subscribeDictReady,
+    getDictRevision,
+    getDictRevision,
+  );
 }

@@ -164,12 +164,16 @@ export function WordToolsPopover({
     ? `${display.mode}:${targetIdentity}`
     : "";
 
-  // Fresh open returns to the tool picker (before paint). Leave panel alone on
-  // close so the exit animation can still show syllables.
+  // Fresh open returns to the tool picker. Leave panel alone on close so the
+  // exit animation can still show syllables.
   const [panel, setPanel] = useState<Panel>("actions");
-  useLayoutEffect(() => {
+  const [includeEndRhymes, setIncludeEndRhymes] = useState(false);
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (open) setPanel("actions");
-  }, [open]);
+    else setIncludeEndRhymes(false);
+  }
   // Lookup mode from PoemEditor wins over local actions/syllables.
   const view: Panel = display?.mode ?? panel;
 
@@ -232,11 +236,6 @@ export function WordToolsPopover({
       : null;
   const stressSyllableCount = stressResolved?.pattern.length ?? displayCount;
 
-  // Reset End rhymes when the popover closes (panel already resets on open).
-  const [includeEndRhymes, setIncludeEndRhymes] = useState(false);
-  useLayoutEffect(() => {
-    if (!open) setIncludeEndRhymes(false);
-  }, [open]);
   const [activeIndex, setActiveIndex] = useKeyedState(
     `${lookupIdentity}|end:${includeEndRhymes ? 1 : 0}`,
     0,

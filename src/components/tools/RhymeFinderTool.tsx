@@ -46,8 +46,6 @@ export function RhymeFinderTool() {
   const trimmed = query.trim();
   const lookupKey = normalizeLookupKey(trimmed);
 
-  const [endProbeReady, setEndProbeReady] = useState(false);
-
   // Defer the multi‑MB rhyme pack until the user asks for a word.
   useEffect(() => {
     if (!lookupKey) return;
@@ -79,31 +77,26 @@ export function RhymeFinderTool() {
   }, [lookupKey, rhymeReady, includeEndRhymes]);
 
   // When perfect is empty, probe end pack so we can hint "Enable End rhymes".
+  const shouldProbeEnd =
+    rhymeReady &&
+    !!lookupKey &&
+    !includeEndRhymes &&
+    rhymeIds.length === 0 &&
+    known;
+  const [, setEndProbeTick] = useState(0);
   useEffect(() => {
-    if (
-      !rhymeReady ||
-      !lookupKey ||
-      includeEndRhymes ||
-      rhymeIds.length > 0 ||
-      !known
-    ) {
-      setEndProbeReady(false);
-      return;
-    }
+    if (!shouldProbeEnd) return;
     let cancelled = false;
     void loadRhymeIndex("end").then(() => {
-      if (!cancelled) setEndProbeReady(true);
+      if (!cancelled) setEndProbeTick((n) => n + 1);
     });
     return () => {
       cancelled = true;
     };
-  }, [rhymeReady, lookupKey, includeEndRhymes, rhymeIds.length, known]);
+  }, [shouldProbeEnd, lookupKey]);
 
   const endRhymesAvailable =
-    !includeEndRhymes &&
-    rhymeIds.length === 0 &&
-    known &&
-    endProbeReady &&
+    shouldProbeEnd &&
     isRhymeIndexReady("end") &&
     hasRhymeEntry(lookupKey, "end");
 

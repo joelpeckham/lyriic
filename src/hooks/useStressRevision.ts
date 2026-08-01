@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import {
   getStressRevision,
@@ -9,14 +9,9 @@ import {
  * Subscribes to stress-pack readiness so meter overlays recount after load.
  */
 export function useStressRevision(): number {
-  const [revision, setRevision] = useState(getStressRevision);
-
-  useEffect(() => {
-    setRevision(getStressRevision());
-    return subscribeStressReady(() => {
-      setRevision(getStressRevision());
-    });
-  }, []);
-
-  return revision;
+  return useSyncExternalStore(
+    subscribeStressReady,
+    getStressRevision,
+    getStressRevision,
+  );
 }
