@@ -72,11 +72,18 @@
       }
     </script>
     <style>
-      /* Match app background so the SEO shell does not flash a white page. */
+      /* Match app background so the SEO shell does not flash a white page.
+         Unlayered so it wins over Tailwind @layer utilities. Drive dark via
+         html.dark (theme-boot / prefs) — not only prefers-color-scheme, or
+         Settings → Dark leaves a light html/body paint. */
       html,
       body {
         margin: 0;
         background: #f7f3eb;
+      }
+      html.dark,
+      html.dark body {
+        background: #1a1814;
       }
       html.js #root .seo-shell {
         display: none;
@@ -93,12 +100,16 @@
       #root .seo-shell a {
         color: inherit;
       }
+      html.dark #root .seo-shell {
+        color: #ebe6dc;
+      }
+      /* No-JS: theme-boot never runs, so fall back to OS preference. */
       @media (prefers-color-scheme: dark) {
-        html,
-        body {
+        html:not(.js),
+        html:not(.js) body {
           background: #1a1814;
         }
-        #root .seo-shell {
+        html:not(.js) #root .seo-shell {
           color: #ebe6dc;
         }
       }
