@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ContentPageLayout } from "@/components/pages/ContentPageLayout";
 import {
   PRIVACY_DESCRIPTION,
@@ -7,6 +8,33 @@ import {
   PRIVACY_TITLE,
 } from "@/content/privacy";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+
+const URL_RE = /(https:\/\/[^\s]+)/g;
+
+function linkifyBody(body: string): ReactNode {
+  const parts = body.split(URL_RE);
+  return parts.map((part, index) => {
+    if (!part.startsWith("https://")) {
+      return part;
+    }
+    const href = part.replace(/[.,;:)]+$/, "");
+    const trailing = part.slice(href.length);
+    const label = href.replace(/^https:\/\//, "");
+    return (
+      <span key={`${href}-${index}`}>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 hover:text-foreground"
+        >
+          {label}
+        </a>
+        {trailing}
+      </span>
+    );
+  });
+}
 
 export function PrivacyPage() {
   useDocumentMeta({
@@ -33,34 +61,7 @@ export function PrivacyPage() {
             <h2 className="text-base font-medium text-foreground">
               {section.h2}
             </h2>
-            <p className="mt-2">
-              {section.h2 === "What lyriic stores" ? (
-                <>
-                  Drafts (poem text, settings, and syllable overrides) are saved
-                  in your browser&apos;s local storage under the key{" "}
-                  <code className="text-foreground/80">lyriic.projects.v1</code>.
-                  Appearance preferences (theme, contrast, and font size) use{" "}
-                  <code className="text-foreground/80">lyriic.prefs.v1</code>.
-                  There is no account and no cloud sync — data stays on this
-                  device unless you clear site data or your browser removes it.
-                </>
-              ) : section.h2 === "Contact" ? (
-                <>
-                  Questions about this policy? Reach the maker at{" "}
-                  <a
-                    href="https://jpeckham.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-2 hover:text-foreground"
-                  >
-                    jpeckham.com
-                  </a>
-                  .
-                </>
-              ) : (
-                section.body
-              )}
-            </p>
+            <p className="mt-2">{linkifyBody(section.body)}</p>
           </section>
         ))}
       </div>
