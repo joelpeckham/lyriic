@@ -12,9 +12,12 @@ dist
 dist-ssr
 *.local
 
-# Large PD source (~24MB); rebuild fetches if missing (`pnpm build:thesaurus`).
-# Runtime uses the committed synonyms.json artifact.
+# Legacy Moby dump (no longer used by build:thesaurus).
 scripts/mthesaur.txt
+
+# Downloaded dictionary sources (Misaki, WikiPron, OEWN, Wiktionary).
+# Runtime uses committed JSON under src/lib/*/data/.
+scripts/sources/
 
 # Editor directories and files
 .vscode/*

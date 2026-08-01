@@ -356,7 +356,7 @@ export function HaikuCheckerTool() {
       </div>
 
       <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-        Counts use English syllables (CMUdict). Traditional Japanese haiku is
+        Counts use English syllables from the bundled dictionary. Traditional Japanese haiku is
         measured in <span className="italic">on</span> — sound units that are
         not the same as English syllables — so treat 5 · 7 · 5 as a useful
         teaching form, not a universal rule.

@@ -1,10 +1,10 @@
 # Syllable counter
 
-Paste a stanza or type line by line. See totals and per-word beats from the same CMUdict engine that powers the lyriic editor.
+Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor.
 
 Each line shows a syllable total, with a per-word breakdown so you can spot where a beat runs short or long. Try the haiku, iambic, or lyric samples to get a feel for the readout.
 
-Counts prefer the CMU Pronouncing Dictionary primary pronunciation. Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in a warmer tint).
+Counts prefer the primary pronunciation from a fused US dictionary (Misaki, CMUdict, WikiPron). Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in a warmer tint).
 
 For live counts beside the cursor, meter rulers, and per-draft overrides, open the full editor — nothing leaves your device.
 
@@ -16,7 +16,7 @@ Yes. The tool runs in your browser on lyriic.com with no account and no upload o
 
 ### How accurate are the counts?
 
-Most English words use CMUdict primary pronunciations. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.
+Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.
 
 ### Can I use it for song lyrics?
 

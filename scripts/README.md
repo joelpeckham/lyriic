@@ -1,39 +1,55 @@
 # Scripts
 
-## `cmudict.dict`
+Dictionary rebuilds download large sources into `scripts/sources/` (gitignored)
+and write committed runtime JSON under `src/lib/*/data/`.
 
-Vendored [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict) (cmusphinx format). Unrestricted use; acknowledge CMU on redistribute.
-
-## `build-cmu-syllables.mjs`
-
-Parses `cmudict.dict` and writes primary syllable counts to `src/lib/syllables/data/cmu-syllables.json`.
+Requires Python `wordfreq` for Zipf ranking:
 
 ```bash
-pnpm build:cmu
+pip install wordfreq
 ```
 
-## Moby Thesaurus II (`mthesaur.txt`)
+`pnpm build` does **not** regenerate dictionary artifacts.
 
-[Moby Thesaurus II](https://www.gutenberg.org/ebooks/3202) by Grady Ward — public domain (Project Gutenberg ebook 3202). Acknowledge on redistribute.
+## Pronunciation (syllables + rhymes)
 
-The raw file (`scripts/mthesaur.txt`, ~24 MB) is not committed; `build-thesaurus` downloads it from Gutenberg when missing.
+Fuses US English sources, preference order Misaki gold → CMUdict → Misaki silver → WikiPron:
 
-## `build-thesaurus.mjs`
+| Source | License | Role |
+|--------|---------|------|
+| [Misaki](https://github.com/hexgrad/misaki) `us_gold` / `us_silver` | Apache 2.0 | Vetted narrow IPA |
+| [CMUdict](https://github.com/cmusphinx/cmudict) (`cmudict.dict`) | BSD-style / unrestricted | Long-tail coverage (vendored) |
+| [WikiPron](https://github.com/CUNY-CL/wikipron) `eng_latn_us_broad` | CC-BY-SA | Variants + extra coverage |
 
-Parses Moby Thesaurus II into a compact single-word synonym map at `src/lib/thesaurus/data/synonyms.json`. Headwords are restricted to lemmas present in the CMU syllable map; each head keeps up to 40 short single-word synonyms.
+```bash
+pnpm build:pronunciation
+# aliases:
+pnpm build:cmu
+pnpm build:rhyme
+```
+
+Writes:
+
+- `src/lib/syllables/data/cmu-syllables.json` — vowel-nucleus syllable counts
+- `src/lib/rhyme/data/rhyme-index.json` — perfect-rhyme index (IPA keys; alt pronunciations; Zipf-ranked buckets, max 80)
+
+Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last vowel) through the coda. See `scripts/lib/ipa.mjs` and `src/lib/rhyme/rhymeKey.ts`.
+
+## Thesaurus
+
+| Source | License | Role |
+|--------|---------|------|
+| [Open English WordNet 2025](https://github.com/globalwordnet/english-wordnet) | CC-BY 4.0 | Synset members + adjective `similar` |
+| [Wiktionary](https://kaikki.org/dictionary/) (kaikki.org / wiktextract) | CC-BY-SA | Additional synonym links |
+| [`wordfreq`](https://pypi.org/project/wordfreq/) | MIT | Zipf ranking at build time |
 
 ```bash
 pnpm build:thesaurus
 ```
 
-`pnpm build` does not regenerate this file — commit the JSON artifact (lazy-loaded at runtime).
+Writes `src/lib/thesaurus/data/synonyms.json`. Headwords restricted to the syllable map; OEWN candidates ranked first, then Wiktionary fill (max 60 single-word lemmas).
 
-## `build-rhyme-index.mjs`
+## Other
 
-Parses `cmudict.dict` primary pronunciations into a perfect-rhyme index at `src/lib/rhyme/data/rhyme-index.json` (`byWord` → key, `byKey` → capped lemmas). Rhyme key = ARPAbet from the last primary stress (fallback: last secondary) through the coda. Each bucket keeps up to 40 shorter lemmas.
-
-```bash
-pnpm build:rhyme
-```
-
-`pnpm build` does not regenerate this file — commit the JSON artifact (lazy-loaded at runtime). Key algorithm is mirrored in `src/lib/rhyme/rhymeKey.ts` for tests.
+- `build-seo-content.mjs` — SEO / agent markdown mirrors
+- `prerender.mjs` — static prerender for marketing routes

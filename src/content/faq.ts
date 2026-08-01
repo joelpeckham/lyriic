@@ -6,7 +6,7 @@ export type FaqEntry = {
 export const FAQ_TITLE = "FAQ — lyriic";
 
 export const FAQ_DESCRIPTION =
-  "Answers about lyriic: syllable counting with CMUdict, meter rulers for haiku and iambic verse, synonyms and rhymes, and local-first drafts.";
+  "Answers about lyriic: syllable counting, meter rulers for haiku and iambic verse, synonyms and rhymes, and local-first drafts.";
 
 export const FAQ_INTRO =
   "Quick answers about writing in meter with lyriic.";
@@ -21,7 +21,7 @@ export const FAQ_ENTRIES: FaqEntry[] = [
   {
     q: "How are syllables counted?",
     plain:
-      "Counts follow the CMU Pronouncing Dictionary primary pronunciation. Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.",
+      "Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.",
   },
   {
     q: "What are meter rulers?",
@@ -31,7 +31,12 @@ export const FAQ_ENTRIES: FaqEntry[] = [
   {
     q: "How do synonyms and rhymes work?",
     plain:
-      "Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Suggestions are sorted by syllable count and highlighted when they match your meter target. Dictionaries ship with the app.",
+      "Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Suggestions are sorted by syllable count and highlighted when they match your meter target. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for perfect rhymes).",
+  },
+  {
+    q: "Where does the dictionary data come from?",
+    plain:
+      "Syllables and rhymes use Misaki (Apache 2.0), the CMU Pronouncing Dictionary (acknowledgment requested by CMU), and WikiPron / Wiktionary pronunciations (CC-BY-SA). Synonyms use Open English WordNet (CC-BY 4.0) with additional links from Wiktionary (CC-BY-SA).",
   },
   {
     q: "Where are my drafts stored?",

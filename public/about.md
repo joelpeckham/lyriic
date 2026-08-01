@@ -10,7 +10,7 @@ Poets, songwriters, and anyone practicing meter or syllable-aware lines who want
 
 ## Core features
 
-- Per-line syllable counts from the CMU Pronouncing Dictionary primary pronunciation
+- Per-line syllable counts from a fused US pronunciation dictionary (Misaki, CMUdict, WikiPron)
 - Optional meter rulers (Haiku 5/7/5, iambic pentameter, common meter, or custom)
 - Hover or tap a word for synonyms and rhymes, sorted by syllable count
 - Per-draft syllable overrides for ambiguous words
@@ -19,7 +19,7 @@ Poets, songwriters, and anyone practicing meter or syllable-aware lines who want
 
 ## How syllable counting works
 
-Counts follow the CMU Pronouncing Dictionary primary pronunciation (stress-marked phones). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Users can override counts per draft in Settings.
+Counts follow the primary IPA pronunciation from a fused US dictionary (Misaki, CMU Pronouncing Dictionary, WikiPron). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Users can override counts per draft in Settings.
 
 ## Privacy
 

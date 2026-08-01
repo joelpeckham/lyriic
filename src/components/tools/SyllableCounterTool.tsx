@@ -118,7 +118,7 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
               )}
             </p>
             <p className="text-xs text-muted-foreground">
-              CMUdict primary · private in your browser
+              Dictionary primary · private in your browser
             </p>
           </div>
 
@@ -244,10 +244,10 @@ function SyllableLineRow({
                     )}
                     title={
                       word.source === "heuristic"
-                        ? "Estimated from spelling (not in CMUdict)"
+                        ? "Estimated from spelling (not in dictionary)"
                         : word.source === "override"
                           ? "Using a syllable override"
-                          : "CMUdict primary pronunciation"
+                          : "Dictionary primary pronunciation"
                     }
                   >
                     <span className="text-foreground/80">{word.word}</span>

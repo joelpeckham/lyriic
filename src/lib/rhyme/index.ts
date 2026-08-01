@@ -4,4 +4,4 @@ export {
   lookupRhymes,
   type RhymeIndex,
 } from "./lookup";
-export { rhymeKeyFromPhones } from "./rhymeKey";
+export { rhymeKeyFromIpa, rhymeKeyFromPhones } from "./rhymeKey";

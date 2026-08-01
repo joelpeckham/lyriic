@@ -1,7 +1,8 @@
 import { createLazyJsonData, normalizeLookupKey } from "@/lib/data/lazyJson";
 
 export type RhymeIndex = {
-  byWord: Record<string, string>;
+  /** Primary rhyme key, or all pronunciation keys when variants exist. */
+  byWord: Record<string, string | string[]>;
   byKey: Record<string, string[]>;
 };
 
@@ -19,21 +20,41 @@ export function isRhymeIndexReady(): boolean {
   return store.isReady();
 }
 
+function keysForWord(
+  data: RhymeIndex,
+  word: string,
+): string[] {
+  const raw = data.byWord[word];
+  if (!raw) return [];
+  return Array.isArray(raw) ? raw : [raw];
+}
+
 /**
  * Sync lookup after {@link loadRhymeIndex} has resolved.
  * Returns [] for unknown words or if data is not yet loaded.
  * Excludes the query word from the rhyme bucket.
+ * Unions buckets across alternate pronunciations (primary first).
  */
 export function lookupRhymes(word: string): string[] {
   const data = store.get();
   if (!data) return [];
   const key = normalizeLookupKey(word);
   if (!key) return [];
-  const rhymeKey = data.byWord[key];
-  if (!rhymeKey) return [];
-  const bucket = data.byKey[rhymeKey];
-  if (!bucket) return [];
-  return bucket.filter((w) => w !== key);
+  const rhymeKeys = keysForWord(data, key);
+  if (rhymeKeys.length === 0) return [];
+
+  const out: string[] = [];
+  const seen = new Set<string>([key]);
+  for (const rhymeKey of rhymeKeys) {
+    const bucket = data.byKey[rhymeKey];
+    if (!bucket) continue;
+    for (const w of bucket) {
+      if (seen.has(w)) continue;
+      seen.add(w);
+      out.push(w);
+    }
+  }
+  return out;
 }
 
 /** Test helper — inject an index without hitting the JSON chunk. */

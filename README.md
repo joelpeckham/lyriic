@@ -29,26 +29,34 @@ pnpm lint
 
 `pnpm build` regenerates SEO/agent files (`llms.txt`, markdown mirrors, sitemap), builds the app, then prerenders `/faq`, `/privacy`, and `/tools/*` (requires Playwright Chromium: `pnpm exec playwright install chromium`).
 
-Rebuild dictionary artifacts after updating `scripts/cmudict.dict`:
+Rebuild pronunciation artifacts (syllables + perfect rhymes). Downloads Misaki and WikiPron into `scripts/sources/` when missing; requires `pip install wordfreq`:
 
 ```bash
-pnpm build:cmu
-pnpm build:rhyme
+pnpm build:pronunciation
 ```
 
-Rebuild the synonym map after updating Moby source (downloads if missing):
+Rebuild the synonym map (Open English WordNet + Wiktionary; downloads when missing):
 
 ```bash
 pnpm build:thesaurus
 ```
 
-
-
 ## Syllable counting
 
-Defaults follow the [CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict) **primary** pronunciation (count phones with stress digits). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Prefer an alternate count for ambiguous words (e.g. poetic `fire` as 1) via Settings → Syllable overrides; overrides persist with the active draft.
+Defaults follow the fused US pronunciation corpus (Misaki + [CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict) + WikiPron): vowel nuclei in the primary IPA transcription. Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Prefer an alternate count for ambiguous words (e.g. poetic `fire` as 1) via Settings → Syllable overrides; overrides persist with the active draft.
 
-CMUdict is © Carnegie Mellon University; use is unrestricted for research and commercial purposes. Acknowledgment requested on redistribute.
+## Data attribution
+
+Offline dictionaries are built from:
+
+- [Misaki](https://github.com/hexgrad/misaki) pronunciation data — Apache 2.0
+- [CMUdict](https://github.com/cmusphinx/cmudict) — © Carnegie Mellon University; unrestricted use; acknowledgment requested
+- [WikiPron](https://github.com/CUNY-CL/wikipron) (Wiktionary pronunciations) — CC-BY-SA
+- [Open English WordNet](https://github.com/globalwordnet/english-wordnet) — CC-BY 4.0
+- [Wiktionary](https://www.wiktionary.org/) synonyms via [kaikki.org / wiktextract](https://kaikki.org/dictionary/) — CC-BY-SA
+- [`wordfreq`](https://pypi.org/project/wordfreq/) — MIT (build-time ranking only)
+
+See [scripts/README.md](scripts/README.md) for rebuild details.
 
 ## Deploy
 

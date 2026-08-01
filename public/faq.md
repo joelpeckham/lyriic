@@ -8,7 +8,7 @@ lyriic is a zen text editor for writing in meter — poetry, lyrics, or any line
 
 ## How are syllables counted?
 
-Counts follow the CMU Pronouncing Dictionary primary pronunciation. Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.
+Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.
 
 ## What are meter rulers?
 
@@ -16,7 +16,11 @@ Optional ticks at syllable boundaries. Presets include Haiku (5/7/5), iambic pen
 
 ## How do synonyms and rhymes work?
 
-Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Suggestions are sorted by syllable count and highlighted when they match your meter target. Dictionaries ship with the app.
+Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Suggestions are sorted by syllable count and highlighted when they match your meter target. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for perfect rhymes).
+
+## Where does the dictionary data come from?
+
+Syllables and rhymes use Misaki (Apache 2.0), the CMU Pronouncing Dictionary (acknowledgment requested by CMU), and WikiPron / Wiktionary pronunciations (CC-BY-SA). Synonyms use Open English WordNet (CC-BY 4.0) with additional links from Wiktionary (CC-BY-SA).
 
 ## Where are my drafts stored?
 

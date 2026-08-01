@@ -1,6 +1,6 @@
 /**
- * CMU Pronouncing Dictionary primary syllable counts.
- * Built by scripts/build-cmu-syllables.mjs from cmusphinx/cmudict.
+ * Primary syllable counts from the fused pronunciation corpus
+ * (Misaki + CMUdict + WikiPron). Built by scripts/build-pronunciation.mjs.
  * Lazy-loaded so the main chunk stays light (heuristic until ready).
  */
 import { clearMemo } from "./countWord";

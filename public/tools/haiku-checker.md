@@ -1,6 +1,6 @@
 # Haiku checker
 
-Shape a three-line draft against 5 · 7 · 5. Same CMUdict syllable engine as the lyriic poetry editor — private in your browser.
+Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.
 
 Each line shows its syllable total, a simple meter tick, and a delta when you are over or under the English teaching targets of five, seven, and five.
 

@@ -30,7 +30,7 @@ Poets, songwriters, and anyone practicing meter or syllable-aware lines who want
 
 ## Core features
 
-- Per-line syllable counts from the CMU Pronouncing Dictionary primary pronunciation
+- Per-line syllable counts from a fused US pronunciation dictionary (Misaki, CMUdict, WikiPron)
 - Optional meter rulers (Haiku 5/7/5, iambic pentameter, common meter, or custom)
 - Hover or tap a word for synonyms and rhymes, sorted by syllable count
 - Per-draft syllable overrides for ambiguous words
@@ -39,7 +39,7 @@ Poets, songwriters, and anyone practicing meter or syllable-aware lines who want
 
 ## How syllable counting works
 
-Counts follow the CMU Pronouncing Dictionary primary pronunciation (stress-marked phones). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Users can override counts per draft in Settings.
+Counts follow the primary IPA pronunciation from a fused US dictionary (Misaki, CMU Pronouncing Dictionary, WikiPron). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Users can override counts per draft in Settings.
 
 ## Privacy
 
@@ -98,7 +98,7 @@ const llmsTxt = `# lyriic
 
 > lyriic is a local-first web editor for writing poetry and lyrics in meter, with per-line syllable counts, optional meter rulers, and quiet rhyme/synonym helpers.
 
-lyriic runs entirely in the browser at ${SITE}. Drafts stay on-device; there is no account or cloud sync. Syllable counts default to the CMU Pronouncing Dictionary primary pronunciation; users can override ambiguous words per draft. lyriic is not a generative AI lyric writer.
+lyriic runs entirely in the browser at ${SITE}. Drafts stay on-device; there is no account or cloud sync. Syllable counts default to a fused US pronunciation dictionary; users can override ambiguous words per draft. lyriic is not a generative AI lyric writer.
 
 ## Product
 
@@ -108,13 +108,13 @@ lyriic runs entirely in the browser at ${SITE}. Drafts stay on-device; there is 
 
 ## Tools
 
-- [Syllable counter](${SITE}/tools/syllable-counter): Per-line CMUdict syllable counts — [syllable-counter.md](${SITE}/tools/syllable-counter.md)
+- [Syllable counter](${SITE}/tools/syllable-counter): Per-line syllable counts — [syllable-counter.md](${SITE}/tools/syllable-counter.md)
 - [Haiku checker](${SITE}/tools/haiku-checker): 5-7-5 validator — [haiku-checker.md](${SITE}/tools/haiku-checker.md)
 - [Rhyme finder](${SITE}/tools/rhyme-finder): Local rhyming dictionary — [rhyme-finder.md](${SITE}/tools/rhyme-finder.md)
 
 ## How it works
 
-- [Syllable counting](${SITE}/about.md#how-syllable-counting-works): CMUdict primary pronunciation; hyphen splits; OOV heuristic; per-draft overrides
+- [Syllable counting](${SITE}/about.md#how-syllable-counting-works): Fused pronunciation dictionary; hyphen splits; OOV heuristic; per-draft overrides
 - [Meter rulers](${SITE}/faq.md): Haiku, iambic pentameter, common meter, or custom targets
 - [Rhymes and synonyms](${SITE}/faq.md): Local dictionary helpers (not generative rewrite)
 

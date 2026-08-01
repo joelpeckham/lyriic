@@ -10,3 +10,4 @@ export {
   type RankedCandidate,
   type RankCandidatesInput,
 } from "./rankCandidates";
+export { lookupForms } from "./lookupForms";

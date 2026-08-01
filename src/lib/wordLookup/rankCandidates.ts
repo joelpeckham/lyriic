@@ -19,7 +19,9 @@ export type RankCandidatesInput = {
 };
 
 /**
- * Rank synonym candidates by syllable count ascending and flag meter-preserving ones.
+ * Rank lookup candidates for the editor popover.
+ * Prefer meter-preserving matches, then closest syllable count to the
+ * replaced token (so "domains" beats "gains" for "remains"), then alpha.
  * When `lineTarget` is null, `keepsMeter` is always false.
  */
 export function rankCandidates({
@@ -48,6 +50,10 @@ export function rankCandidates({
   }
 
   ranked.sort((a, b) => {
+    if (a.keepsMeter !== b.keepsMeter) return a.keepsMeter ? -1 : 1;
+    const da = Math.abs(a.syllables - tokenSyllables);
+    const db = Math.abs(b.syllables - tokenSyllables);
+    if (da !== db) return da - db;
     if (a.syllables !== b.syllables) return a.syllables - b.syllables;
     return a.word.localeCompare(b.word);
   });

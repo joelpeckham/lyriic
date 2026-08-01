@@ -66,7 +66,7 @@ export function RhymeFinderTool() {
     const all = lookupRhymes(lookupKey);
     return {
       rhymes: all.slice(0, RESULT_LIMIT),
-      known: Boolean(index.byWord[lookupKey]),
+      known: index.byWord[lookupKey] !== undefined,
       truncated: all.length > RESULT_LIMIT,
     };
   }, [lookupKey, index]);

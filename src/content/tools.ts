@@ -21,13 +21,13 @@ export const TOOL_PAGES: ToolPageContent[] = [
     slug: "syllable-counter",
     title: "Syllable Counter for Poetry & Lyrics — lyriic",
     description:
-      "Free syllable counter for poems and song lyrics. Per-line and per-word counts from the CMU Pronouncing Dictionary — private in your browser.",
+      "Free syllable counter for poems and song lyrics. Per-line and per-word counts from lyriic’s pronunciation dictionary — private in your browser.",
     h1: "Syllable counter",
     intro:
-      "Paste a stanza or type line by line. See totals and per-word beats from the same CMUdict engine that powers the lyriic editor.",
+      "Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor.",
     body: [
       "Each line shows a syllable total, with a per-word breakdown so you can spot where a beat runs short or long. Try the haiku, iambic, or lyric samples to get a feel for the readout.",
-      "Counts prefer the CMU Pronouncing Dictionary primary pronunciation. Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in a warmer tint).",
+      "Counts prefer the primary pronunciation from a fused US dictionary (Misaki, CMUdict, WikiPron). Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in a warmer tint).",
       "For live counts beside the cursor, meter rulers, and per-draft overrides, open the full editor — nothing leaves your device.",
     ],
     faqs: [
@@ -39,7 +39,7 @@ export const TOOL_PAGES: ToolPageContent[] = [
       {
         q: "How accurate are the counts?",
         plain:
-          "Most English words use CMUdict primary pronunciations. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.",
+          "Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.",
       },
       {
         q: "Can I use it for song lyrics?",
@@ -54,10 +54,10 @@ export const TOOL_PAGES: ToolPageContent[] = [
     slug: "haiku-checker",
     title: "Haiku Checker (5-7-5) — lyriic",
     description:
-      "Check a three-line haiku against 5-7-5 with live syllable deltas. Free, private, CMUdict-based — then keep writing with lyriic’s Haiku meter ruler.",
+      "Check a three-line haiku against 5-7-5 with live syllable deltas. Free, private, and dictionary-based — then keep writing with lyriic’s Haiku meter ruler.",
     h1: "Haiku checker",
     intro:
-      "Shape a three-line draft against 5 · 7 · 5. Same CMUdict syllable engine as the lyriic poetry editor — private in your browser.",
+      "Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.",
     body: [
       "Each line shows its syllable total, a simple meter tick, and a delta when you are over or under the English teaching targets of five, seven, and five.",
       "English haiku practice varies — some poets treat the form more loosely than strict 5-7-5, and Japanese haiku is counted in on, not English syllables. Use this checker for a clear syllabic readout, then refine the image on the page.",

@@ -15,7 +15,16 @@ function FaqAnswer({ question }: { question: string }) {
     case "How are syllables counted?":
       return (
         <>
-          Counts follow the{" "}
+          Counts follow a fused US pronunciation dictionary built from{" "}
+          <a
+            href="https://github.com/hexgrad/misaki"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            Misaki
+          </a>
+          , the{" "}
           <a
             href="http://www.speech.cs.cmu.edu/cgi-bin/cmudict"
             target="_blank"
@@ -23,11 +32,37 @@ function FaqAnswer({ question }: { question: string }) {
             className="underline underline-offset-2 hover:text-foreground"
           >
             CMU Pronouncing Dictionary
+          </a>
+          , and{" "}
+          <a
+            href="https://github.com/CUNY-CL/wikipron"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            WikiPron
+          </a>
+          . Hyphenated compounds are split and summed. Unfamiliar words fall
+          back to a spelling heuristic. For ambiguous words (like poetic{" "}
+          <em>fire</em> as one syllable), set a per-draft override in Settings →
+          Syllable overrides.
+        </>
+      );
+    case "Where does the dictionary data come from?":
+      return (
+        <>
+          Syllables and rhymes use Misaki (Apache 2.0), the CMU Pronouncing
+          Dictionary (acknowledgment requested by CMU), and WikiPron /
+          Wiktionary pronunciations (CC-BY-SA). Synonyms use{" "}
+          <a
+            href="https://github.com/globalwordnet/english-wordnet"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            Open English WordNet
           </a>{" "}
-          primary pronunciation (stress-marked phones). Hyphenated compounds are
-          split and summed. Unfamiliar words fall back to a spelling heuristic.
-          For ambiguous words (like poetic <em>fire</em> as one syllable), set a
-          per-draft override in Settings → Syllable overrides.
+          (CC-BY 4.0) with additional links from Wiktionary (CC-BY-SA).
         </>
       );
     case "Where are my drafts stored?":
