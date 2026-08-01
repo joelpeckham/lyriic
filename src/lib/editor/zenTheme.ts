@@ -28,7 +28,7 @@ export function zenEditorTheme(fontSizeRem: number) {
       },
       ".cm-content": {
         caretColor: "var(--lyriic-ink)",
-        paddingTop: "4rem",
+        paddingTop: "6rem",
         paddingBottom: "4rem",
         paddingLeft: "1.5rem",
         paddingRight: "1rem",

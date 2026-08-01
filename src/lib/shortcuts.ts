@@ -49,8 +49,8 @@ export function handleAppShortcut(
 
 /** Display labels for Settings → Keyboard (Mac-first; fine for v1). */
 export const SHORTCUT_HINTS = [
-  { action: "Settings", keys: "⌘," },
-  { action: "Focus poem", keys: "⌘." },
-  { action: "Synonyms", keys: "⌘'" },
-  { action: "Rhymes", keys: "⌘;" },
+  { action: "Settings", keys: "⌘ + ," },
+  { action: "Focus poem", keys: "⌘ + ." },
+  { action: "Synonyms", keys: "⌘ + '" },
+  { action: "Rhymes", keys: "⌘ + ;" },
 ] as const;

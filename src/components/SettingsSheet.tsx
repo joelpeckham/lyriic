@@ -17,12 +17,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
+import { Kbd } from "@/components/ui/kbd";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -164,9 +164,6 @@ export function SettingsSheet({
       <SheetContent side="right" className="gap-0 overflow-hidden">
         <SheetHeader className="shrink-0">
           <SheetTitle>Settings</SheetTitle>
-          <SheetDescription>
-            Appearance is app-wide. Meter guides apply to the active draft.
-          </SheetDescription>
         </SheetHeader>
 
         <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pb-6">
@@ -226,6 +223,48 @@ export function SettingsSheet({
                 }
               />
             </div>
+
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <Type className="size-4 text-muted-foreground" aria-hidden />
+                <Label id="font-size-label">Font size</Label>
+              </div>
+              <ButtonGroup aria-labelledby="font-size-label">
+                {FONT_SIZE_OPTIONS.map((option) => {
+                  const selected = fontValue === option.value;
+                  return (
+                    <Button
+                      key={option.value}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      aria-label={option.aria}
+                      aria-pressed={selected}
+                      className={cn(
+                        "min-w-10",
+                        selected && "bg-muted text-foreground",
+                      )}
+                      onClick={() => {
+                        onChange({
+                          ...settings,
+                          fontSize: Math.min(
+                            FONT_SIZE_MAX,
+                            Math.max(FONT_SIZE_MIN, option.value),
+                          ),
+                        });
+                      }}
+                    >
+                      <span
+                        className="font-[family-name:var(--font-brand)]"
+                        style={{ fontSize: `${0.65 + option.value * 0.2}rem` }}
+                      >
+                        {option.label}
+                      </span>
+                    </Button>
+                  );
+                })}
+              </ButtonGroup>
+            </div>
           </div>
 
           <Separator />
@@ -284,48 +323,6 @@ export function SettingsSheet({
               }
             />
           )}
-
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Type className="size-4 text-muted-foreground" aria-hidden />
-              <Label id="font-size-label">Font size</Label>
-            </div>
-            <ButtonGroup aria-labelledby="font-size-label">
-              {FONT_SIZE_OPTIONS.map((option) => {
-                const selected = fontValue === option.value;
-                return (
-                  <Button
-                    key={option.value}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    aria-label={option.aria}
-                    aria-pressed={selected}
-                    className={cn(
-                      "min-w-10",
-                      selected && "bg-muted text-foreground",
-                    )}
-                    onClick={() => {
-                      onChange({
-                        ...settings,
-                        fontSize: Math.min(
-                          FONT_SIZE_MAX,
-                          Math.max(FONT_SIZE_MIN, option.value),
-                        ),
-                      });
-                    }}
-                  >
-                    <span
-                      className="font-[family-name:var(--font-brand)]"
-                      style={{ fontSize: `${0.65 + option.value * 0.2}rem` }}
-                    >
-                      {option.label}
-                    </span>
-                  </Button>
-                );
-              })}
-            </ButtonGroup>
-          </div>
 
           <Separator />
 
@@ -406,9 +403,7 @@ export function SettingsSheet({
                       ) : null}
                       {hint.action}
                     </span>
-                    <kbd className="text-muted-foreground font-[family-name:var(--font-ui)] text-xs tracking-widest">
-                      {hint.keys}
-                    </kbd>
+                    <Kbd>{hint.keys}</Kbd>
                   </li>
                 );
               })}
