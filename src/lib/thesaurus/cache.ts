@@ -5,6 +5,7 @@ type CacheKey = string;
 const cache = new Map<CacheKey, RankedCandidate[]>();
 
 export function rankedCacheKey(parts: {
+  mode: "thesaurus" | "rhyme";
   word: string;
   lineTotal: number;
   lineTarget: number | null;
@@ -12,6 +13,7 @@ export function rankedCacheKey(parts: {
   overrideRevision: string;
 }): CacheKey {
   return [
+    parts.mode,
     parts.word,
     parts.lineTotal,
     parts.lineTarget ?? "none",

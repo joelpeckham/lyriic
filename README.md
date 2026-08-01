@@ -27,10 +27,17 @@ pnpm preview
 pnpm lint
 ```
 
-Rebuild the CMU syllable map after updating `scripts/cmudict.dict`:
+Rebuild dictionary artifacts after updating `scripts/cmudict.dict`:
 
 ```bash
 pnpm build:cmu
+pnpm build:rhyme
+```
+
+Rebuild the synonym map after updating Moby source (downloads if missing):
+
+```bash
+pnpm build:thesaurus
 ```
 
 ## Syllable counting

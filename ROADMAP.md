@@ -109,27 +109,27 @@ Word-level synonym helper that respects meter.
 
 ## Phase 4.5 — Rhyme popover
 
-Word-level rhyme helper that reuses the Phase 4 popover shell and meter-aware ranking. **Deferred** after Phase 4.
+Word-level rhyme helper that reuses the Phase 4 popover shell and meter-aware ranking.
 
-Interaction (same affordances as thesaurus; distinct shortcut / menu action):
+Interaction (same affordances as thesaurus; distinct shortcut):
 
-- Select or long-press / shortcut on a word → shadcn `Popover` anchored to the selection
-- Show rhyme candidates with each option’s syllable count shown subtly
-- Sort by syllable count (ascending); highlight options that keep the current line on its meter target
-- Clicking a rhyme replaces the word in place and closes the popover
-- Must stay fast: cache lookups; never block typing on the main path
+- [x] Select or shortcut (`Mod-;`) on a word → shadcn `Popover` anchored to the selection (long-press stays thesaurus)
+- [x] Show rhyme candidates with each option’s syllable count shown subtly
+- [x] Sort by syllable count (ascending); highlight options that keep the current line on its meter target
+- [x] Clicking a rhyme replaces the word in place and closes the popover
+- [x] Must stay fast: cache lookups; never block typing on the main path
 
 Rhyme data (local-first):
 
-- Today’s runtime `cmu-syllables.json` stores **counts only** — phones are discarded at build time. Add a build step (extend `pnpm build:cmu` or a sibling script) that emits a compact rhyme index from `scripts/cmudict.dict` (primary pronunciation): perfect rhymes via shared stressed-vowel+coda key (ARPAbet from the last primary stress)
-- Lazy-load the rhyme index (separate chunk) so first paint stays light; heuristic / empty state when the word is OOV
-- Cap result lists; prefer common short words when many keys collide
+- [x] Sibling build (`pnpm build:rhyme`) emits a compact rhyme index from `scripts/cmudict.dict` (primary pronunciation): perfect rhymes via shared stressed-vowel+coda key (ARPAbet from the last primary stress)
+- [x] Lazy-load the rhyme index (separate chunk) so first paint stays light; empty state when the word is OOV
+- [x] Cap result lists; prefer shorter lemmas when many keys collide
 - Slant / near rhyme is stretch (Phase 6), not v1
 
 Shared with Phase 4:
 
-- One popover host / selection bridge in the CodeMirror canvas; thesaurus vs rhyme as modes (or sibling actions), not two divergent selection stacks
-- Replacement must be a targeted CM change (not full-doc replace) — see pre–Phase 3 I-33
+- [x] One popover host / selection bridge in the CodeMirror canvas; thesaurus vs rhyme as modes
+- [x] Replacement is a targeted CM change (not full-doc replace) — see pre–Phase 3 I-33
 
 ## Phase 5 — Polish + deploy
 
@@ -153,5 +153,4 @@ Shared with Phase 4:
 ## Out of scope for now
 
 - Auth, accounts, cloud sync (local drafts only until Phase 6)
-- Rhyme popover (Phase 4.5)
 - CMU code-splitting / lazy load (Phase 5)

@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:cmu": "node scripts/build-cmu-syllables.mjs",
-    "build:thesaurus": "node scripts/build-thesaurus.mjs"
+    "build:thesaurus": "node scripts/build-thesaurus.mjs",
+    "build:rhyme": "node scripts/build-rhyme-index.mjs"
   },
   "dependencies": {
     "@codemirror/commands": "^6.10.4",

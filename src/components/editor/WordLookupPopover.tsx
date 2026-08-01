@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/popover";
 import type { WordLookupRequest } from "@/lib/editor/wordLookup";
 import type { MeteredLine } from "@/lib/meters/types";
+import { loadRhymeIndex, lookupRhymes } from "@/lib/rhyme";
 import {
   getCachedRanked,
   loadThesaurus,
@@ -57,11 +58,11 @@ export function WordLookupPopover({
   const listRef = useRef<HTMLDivElement>(null);
   const [remote, setRemote] = useState<RemoteState | null>(null);
   const requestIdentity = request
-    ? `${request.from}:${request.to}:${request.word}`
+    ? `${request.mode}:${request.from}:${request.to}:${request.word}`
     : "";
   const [active, setActive] = useState({ id: "", index: 0 });
   const activeIndex = active.id === requestIdentity ? active.index : 0;
-  const open = request !== null && request.mode === "thesaurus";
+  const open = request !== null;
 
   function setActiveIndex(index: number): void {
     setActive({ id: requestIdentity, index });
@@ -79,6 +80,7 @@ export function WordLookupPopover({
   const cacheKey =
     open && request
       ? rankedCacheKey({
+          mode: request.mode,
           word: request.word,
           lineTotal,
           lineTarget,
@@ -102,12 +104,16 @@ export function WordLookupPopover({
     if (!open || !request || !cacheKey || cached) return;
 
     let cancelled = false;
-    void loadThesaurus()
-      .then(() => {
+    const load =
+      request.mode === "thesaurus"
+        ? loadThesaurus().then(() => lookupSynonyms(request.word))
+        : loadRhymeIndex().then(() => lookupRhymes(request.word));
+
+    void load
+      .then((words) => {
         if (cancelled) return;
-        const syns = lookupSynonyms(request.word);
         const ranked = rankCandidates({
-          candidates: syns,
+          candidates: words,
           tokenSyllables: syllables,
           lineTotal,
           lineTarget,
@@ -174,10 +180,19 @@ export function WordLookupPopover({
     }
   }
 
-  const title =
-    request?.mode === "thesaurus"
+  const isThesaurus = request?.mode === "thesaurus";
+  const title = request
+    ? isThesaurus
       ? `Synonyms for ${request.raw}`
-      : "Word lookup";
+      : `Rhymes for ${request.raw}`
+    : "Word lookup";
+  const emptyLabel = isThesaurus ? "No synonyms found." : "No rhymes found.";
+  const errorLabel = isThesaurus
+    ? "Couldn’t load thesaurus."
+    : "Couldn’t load rhymes.";
+  const description = isThesaurus
+    ? "Choose a synonym. Options are sorted by syllable count. Meter-matching options are marked."
+    : "Choose a rhyme. Options are sorted by syllable count. Meter-matching options are marked.";
 
   return (
     <Popover
@@ -221,8 +236,7 @@ export function WordLookupPopover({
             {title}
           </PopoverTitle>
           <PopoverDescription className="sr-only">
-            Choose a synonym. Options are sorted by syllable count.
-            Meter-matching options are marked.
+            {description}
           </PopoverDescription>
         </PopoverHeader>
 
@@ -232,13 +246,13 @@ export function WordLookupPopover({
 
         {loadState === "error" ? (
           <p className="px-1.5 py-2 text-sm text-muted-foreground">
-            Couldn’t load thesaurus.
+            {errorLabel}
           </p>
         ) : null}
 
         {loadState === "ready" && candidates && candidates.length === 0 ? (
           <p className="px-1.5 py-2 text-sm text-muted-foreground">
-            No synonyms found.
+            {emptyLabel}
           </p>
         ) : null}
 

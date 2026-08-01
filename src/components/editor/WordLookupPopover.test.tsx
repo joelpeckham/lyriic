@@ -9,6 +9,7 @@ import {
   type WordLookupRequest,
 } from "@/lib/editor/wordLookup";
 import type { MeteredLine } from "@/lib/meters/types";
+import { __setRhymeDataForTests } from "@/lib/rhyme/lookup";
 import { clearRankedCache } from "@/lib/thesaurus";
 import { __setThesaurusDataForTests } from "@/lib/thesaurus/lookup";
 
@@ -21,6 +22,15 @@ describe("WordLookupPopover", () => {
     __setThesaurusDataForTests({
       silent: ["quiet", "mute", "hushed"],
     });
+    __setRhymeDataForTests({
+      byWord: {
+        silent: "AY1 L AH0 N T",
+        violent: "AY1 L AH0 N T",
+      },
+      byKey: {
+        "AY1 L AH0 N T": ["silent", "violent"],
+      },
+    });
     parent = document.createElement("div");
     document.body.appendChild(parent);
     view = new EditorView({
@@ -32,6 +42,7 @@ describe("WordLookupPopover", () => {
   afterEach(() => {
     cleanup();
     __setThesaurusDataForTests(null);
+    __setRhymeDataForTests(null);
     clearRankedCache();
     view.destroy();
     parent.remove();
@@ -111,6 +122,37 @@ describe("WordLookupPopover", () => {
     fireEvent.click(quiet);
 
     expect(view.state.doc.toString()).toBe("soft quiet fire");
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it("lists rhymes and replaces the word in the editor", async () => {
+    const onClose = vi.fn();
+    const rhymeRequest: WordLookupRequest = {
+      ...request,
+      mode: "rhyme",
+    };
+    render(
+      <WordLookupPopover
+        request={rhymeRequest}
+        onClose={onClose}
+        onReplace={(from, to, insert) => {
+          replaceWordRange(view, from, to, insert);
+        }}
+        onRestoreFocus={() => view.focus()}
+        meteredLine={meteredLine}
+        overrides={{}}
+        overrideRevision=""
+      />,
+    );
+
+    const violent = await waitFor(() =>
+      screen.getByRole("option", { name: /violent/i }),
+    );
+    expect(screen.getByText("Rhymes for silent")).toBeTruthy();
+
+    fireEvent.click(violent);
+
+    expect(view.state.doc.toString()).toBe("soft violent fire");
     expect(onClose).toHaveBeenCalled();
   });
 });

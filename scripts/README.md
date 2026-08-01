@@ -27,3 +27,13 @@ pnpm build:thesaurus
 ```
 
 `pnpm build` does not regenerate this file — commit the JSON artifact (lazy-loaded at runtime).
+
+## `build-rhyme-index.mjs`
+
+Parses `cmudict.dict` primary pronunciations into a perfect-rhyme index at `src/lib/rhyme/data/rhyme-index.json` (`byWord` → key, `byKey` → capped lemmas). Rhyme key = ARPAbet from the last primary stress (fallback: last secondary) through the coda. Each bucket keeps up to 40 shorter lemmas.
+
+```bash
+pnpm build:rhyme
+```
+
+`pnpm build` does not regenerate this file — commit the JSON artifact (lazy-loaded at runtime). Key algorithm is mirrored in `src/lib/rhyme/rhymeKey.ts` for tests.

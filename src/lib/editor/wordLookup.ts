@@ -95,10 +95,19 @@ export function openThesaurusCommand(view: EditorView): boolean {
   return openLookup(view, "thesaurus");
 }
 
-const thesaurusKeymap = keymap.of([
+/** Open rhyme lookup for the word at the current selection / caret. */
+export function openRhymeCommand(view: EditorView): boolean {
+  return openLookup(view, "rhyme");
+}
+
+const wordLookupKeymap = keymap.of([
   {
     key: "Mod-'",
     run: openThesaurusCommand,
+  },
+  {
+    key: "Mod-;",
+    run: openRhymeCommand,
   },
 ]);
 
@@ -175,11 +184,11 @@ class LongPressPlugin implements PluginValue {
 const longPressPlugin = ViewPlugin.fromClass(LongPressPlugin);
 
 /**
- * Word-lookup bridge: Mod-' / long-press → handler facet.
- * Rhyme mode will reuse the same open path later (Phase 4.5).
+ * Word-lookup bridge: Mod-' (thesaurus) / Mod-; (rhyme) / long-press (thesaurus)
+ * → handler facet.
  */
 export function wordLookupExtension(onOpen: WordLookupHandler): Extension {
-  return [wordLookupFacet.of(onOpen), thesaurusKeymap, longPressPlugin];
+  return [wordLookupFacet.of(onOpen), wordLookupKeymap, longPressPlugin];
 }
 
 /** Targeted in-place word replace (undoable via CM history). */
@@ -192,7 +201,7 @@ export function replaceWordRange(
   view.dispatch({
     changes: { from, to, insert },
     selection: { anchor: from + insert.length },
-    userEvent: "input.replace.thesaurus",
+    userEvent: "input.replace.wordLookup",
   });
   view.focus();
 }

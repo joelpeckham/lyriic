@@ -3,6 +3,7 @@ import { EditorView } from "@codemirror/view";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+  openRhymeCommand,
   openThesaurusCommand,
   replaceWordRange,
   wordLookupExtension,
@@ -40,6 +41,23 @@ describe("wordLookup", () => {
     const req = onOpen.mock.calls[0]?.[0] as WordLookupRequest;
     expect(req).toMatchObject({
       mode: "thesaurus",
+      raw: "silent",
+      word: "silent",
+      from: 5,
+      to: 11,
+      lineIndex: 0,
+    });
+  });
+
+  it("opens rhyme for the word at the caret via command", () => {
+    const onOpen = vi.fn();
+    mount("soft silent fire", onOpen);
+    view.dispatch({ selection: { anchor: 7 } });
+    expect(openRhymeCommand(view)).toBe(true);
+    expect(onOpen).toHaveBeenCalledOnce();
+    const req = onOpen.mock.calls[0]?.[0] as WordLookupRequest;
+    expect(req).toMatchObject({
+      mode: "rhyme",
       raw: "silent",
       word: "silent",
       from: 5,
