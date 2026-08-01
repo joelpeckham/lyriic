@@ -2,6 +2,7 @@ import {
   DEFAULT_SETTINGS,
   normalizeSettings,
 } from "@/lib/settings";
+import { readJson, writeJson } from "@/lib/storageJson";
 import { normalizeOverridesRecord } from "@/lib/syllables/overrides";
 import type { Project, ProjectsState } from "./types";
 
@@ -108,32 +109,20 @@ export function loadProjectsState(
   storage: Pick<Storage, "getItem" | "setItem"> | null =
     typeof localStorage !== "undefined" ? localStorage : null,
 ): LoadResult {
-  if (!storage) {
-    return { state: createInitialState(), quarantined: false };
-  }
-
-  let raw: string | null = null;
-  try {
-    raw = storage.getItem(STORAGE_KEY);
-  } catch {
-    return { state: createInitialState(), quarantined: false };
-  }
-
-  if (!raw) {
-    return { state: createInitialState(), quarantined: false };
-  }
-
-  try {
-    const parsed = parseProjectsState(JSON.parse(raw) as unknown);
+  const result = readJson(storage, STORAGE_KEY);
+  if (result.status === "ok") {
+    const parsed = parseProjectsState(result.value);
     if (parsed) {
       return { state: parsed, quarantined: false };
     }
-  } catch {
-    // fall through to quarantine
+    if (storage) quarantineRaw(result.raw, storage);
+    return { state: createInitialState(), quarantined: true };
   }
-
-  quarantineRaw(raw, storage);
-  return { state: createInitialState(), quarantined: true };
+  if (result.status === "corrupt") {
+    if (storage) quarantineRaw(result.raw, storage);
+    return { state: createInitialState(), quarantined: true };
+  }
+  return { state: createInitialState(), quarantined: false };
 }
 
 export function saveProjectsState(
@@ -142,21 +131,15 @@ export function saveProjectsState(
     ? localStorage
     : null,
 ): SaveResult {
-  if (!storage) return { ok: false, reason: "unavailable" };
-  try {
-    storage.setItem(STORAGE_KEY, JSON.stringify(state));
-    return { ok: true };
-  } catch (error) {
-    const quota =
-      error instanceof DOMException &&
-      (error.name === "QuotaExceededError" ||
-        error.name === "NS_ERROR_DOM_QUOTA_REACHED");
+  const result = writeJson(storage, STORAGE_KEY, state);
+  if (!result.ok) {
     console.warn(
       "[lyriic] Failed to persist projects",
-      quota ? "(quota exceeded)" : error,
+      result.reason === "quota" ? "(quota exceeded)" : result.error,
     );
-    return { ok: false, reason: quota ? "quota" : "unavailable" };
+    return { ok: false, reason: result.reason };
   }
+  return { ok: true };
 }
 
 export function getActiveProject(state: ProjectsState): Project {

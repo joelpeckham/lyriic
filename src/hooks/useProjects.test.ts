@@ -245,43 +245,28 @@ describe("useProjects", () => {
     });
   });
 
-  it("flushes buffered text on beforeunload before debounce", () => {
-    const { result } = renderHook(() => useProjects());
+  it.each(["beforeunload", "pagehide"] as const)(
+    "flushes buffered text on %s before debounce",
+    (eventName) => {
+      const { result } = renderHook(() => useProjects());
+      const latest = `${eventName}-latest`;
 
-    act(() => {
-      vi.advanceTimersByTime(AUTOSAVE_MS);
-    });
+      act(() => {
+        vi.advanceTimersByTime(AUTOSAVE_MS);
+      });
 
-    act(() => {
-      result.current.setText("unload-latest");
-    });
-    expect(result.current.active.text).not.toBe("unload-latest");
-    expect(readStored().projects[0]?.text).not.toBe("unload-latest");
+      act(() => {
+        result.current.setText(latest);
+      });
+      expect(result.current.active.text).not.toBe(latest);
+      expect(readStored().projects[0]?.text).not.toBe(latest);
 
-    act(() => {
-      window.dispatchEvent(new Event("beforeunload"));
-    });
-    expect(readStored().projects[0]?.text).toBe("unload-latest");
-  });
-
-  it("flushes buffered text on pagehide before debounce", () => {
-    const { result } = renderHook(() => useProjects());
-
-    act(() => {
-      vi.advanceTimersByTime(AUTOSAVE_MS);
-    });
-
-    act(() => {
-      result.current.setText("pagehide-latest");
-    });
-    expect(result.current.active.text).not.toBe("pagehide-latest");
-    expect(readStored().projects[0]?.text).not.toBe("pagehide-latest");
-
-    act(() => {
-      window.dispatchEvent(new Event("pagehide"));
-    });
-    expect(readStored().projects[0]?.text).toBe("pagehide-latest");
-  });
+      act(() => {
+        window.dispatchEvent(new Event(eventName));
+      });
+      expect(readStored().projects[0]?.text).toBe(latest);
+    },
+  );
 
   describe("cross-tab storage events", () => {
     it("reloads remote state when there is no pending local text buffer", () => {

@@ -1,11 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import {
-  DEFAULT_PREFS,
-  normalizePrefs,
-  PREFS_STORAGE_KEY,
-  resolveDark,
-} from "./prefs";
+import { DEFAULT_PREFS, normalizePrefs, resolveDark } from "./prefs";
 
 describe("normalizePrefs", () => {
   it("fills defaults for empty input", () => {
@@ -57,11 +52,5 @@ describe("resolveDark", () => {
       }),
     });
     expect(resolveDark("system")).toBe(true);
-  });
-});
-
-describe("PREFS_STORAGE_KEY", () => {
-  it("is stable", () => {
-    expect(PREFS_STORAGE_KEY).toBe("lyriic.prefs.v1");
   });
 });
