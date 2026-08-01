@@ -4,6 +4,7 @@ import { EditorView } from "@codemirror/view";
 
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
 import { WordLookupPopover } from "@/components/editor/WordLookupPopover";
+import { useDictRevision } from "@/hooks/useDictRevision";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
 import {
   setMeterOverlayData,
@@ -30,6 +31,8 @@ type PoemEditorProps = {
   overrides: Record<string, number>;
   /** Stable document identity (e.g. project id) for full remount. */
   documentKey: string;
+  /** Empty-doc placeholder (first-run hint vs short prompt). */
+  placeholderText?: string;
 };
 
 const LIVE_COUNT_DEBOUNCE_MS = 500;
@@ -47,6 +50,7 @@ export function PoemEditor({
   settings,
   overrides,
   documentKey,
+  placeholderText,
 }: PoemEditorProps) {
   const parentRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -77,12 +81,14 @@ export function PoemEditor({
     () => overridesKey(overrides),
     [overrides],
   );
+  const dictRevision = useDictRevision();
 
   const lineCounts = useSyllableLineCounts(
     liveText,
     documentKey,
     overrideRevision,
     overrides,
+    dictRevision,
   );
 
   const pattern = useMemo((): readonly number[] => {
@@ -114,6 +120,7 @@ export function PoemEditor({
           onOpenWordLookup: (request) => {
             onOpenWordLookupRef.current(request);
           },
+          placeholderText,
         }),
       ],
     });

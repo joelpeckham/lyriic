@@ -32,6 +32,7 @@ import {
   FONT_SIZE_MIN,
   type EditorSettings,
 } from "@/lib/settings";
+import { SHORTCUT_HINTS } from "@/lib/shortcuts";
 import {
   isValidOverrideCount,
   normalizeOverrideKey,
@@ -43,6 +44,8 @@ type SettingsSheetProps = {
   overrides: Record<string, number>;
   onSetOverride: (word: string, count: number) => void;
   onClearOverride: (word: string) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
 const FONT_SIZE_OPTIONS = [
@@ -266,6 +269,8 @@ export function SettingsSheet({
   overrides,
   onSetOverride,
   onClearOverride,
+  open,
+  onOpenChange,
 }: SettingsSheetProps) {
   const { prefs, setTheme, setContrast } = usePrefs();
 
@@ -276,7 +281,7 @@ export function SettingsSheet({
     : String(DEFAULT_FONT_SIZE);
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
@@ -448,6 +453,25 @@ export function SettingsSheet({
             onSetOverride={onSetOverride}
             onClearOverride={onClearOverride}
           />
+
+          <Separator />
+
+          <div className="flex flex-col gap-3">
+            <p className="text-sm font-medium">Keyboard</p>
+            <ul className="flex flex-col gap-2 text-sm">
+              {SHORTCUT_HINTS.map((hint) => (
+                <li
+                  key={hint.action}
+                  className="flex items-center justify-between gap-4"
+                >
+                  <span className="text-muted-foreground">{hint.action}</span>
+                  <kbd className="text-muted-foreground font-[family-name:var(--font-ui)] text-xs tracking-widest">
+                    {hint.keys}
+                  </kbd>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

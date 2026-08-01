@@ -14,14 +14,26 @@ describe("normalizePrefs", () => {
 
   it("preserves valid fields", () => {
     expect(
-      normalizePrefs({ theme: "dark", contrast: "more" }),
-    ).toEqual({ theme: "dark", contrast: "more" });
+      normalizePrefs({
+        theme: "dark",
+        contrast: "more",
+        seenEditorHint: true,
+      }),
+    ).toEqual({
+      theme: "dark",
+      contrast: "more",
+      seenEditorHint: true,
+    });
   });
 
   it("falls back unknown values", () => {
     expect(normalizePrefs({ theme: "sepia", contrast: "max" })).toEqual(
       DEFAULT_PREFS,
     );
+  });
+
+  it("defaults seenEditorHint when missing", () => {
+    expect(normalizePrefs({ theme: "light" }).seenEditorHint).toBe(false);
   });
 });
 

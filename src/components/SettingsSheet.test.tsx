@@ -33,11 +33,14 @@ function renderSheet(
     onChange: (next: typeof DEFAULT_SETTINGS) => void;
     onSetOverride: (word: string, count: number) => void;
     onClearOverride: (word: string) => void;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
   }> = {},
 ) {
   const onChange = props.onChange ?? vi.fn();
   const onSetOverride = props.onSetOverride ?? vi.fn();
   const onClearOverride = props.onClearOverride ?? vi.fn();
+  const onOpenChange = props.onOpenChange ?? vi.fn();
 
   render(
     <PrefsProvider>
@@ -47,22 +50,26 @@ function renderSheet(
         overrides={props.overrides ?? {}}
         onSetOverride={onSetOverride}
         onClearOverride={onClearOverride}
+        open={props.open ?? false}
+        onOpenChange={onOpenChange}
       />
     </PrefsProvider>,
   );
 
-  return { onChange, onSetOverride, onClearOverride };
+  return { onChange, onSetOverride, onClearOverride, onOpenChange };
 }
 
-async function openSettings() {
-  fireEvent.click(screen.getByRole("button", { name: "Open settings" }));
-  return screen.findByRole("dialog");
+async function openSettings(
+  props: Parameters<typeof renderSheet>[0] = {},
+) {
+  const result = renderSheet({ ...props, open: true });
+  await screen.findByRole("dialog");
+  return result;
 }
 
 describe("SettingsSheet", () => {
   it("toggles meter rulers via showRulers", async () => {
-    const { onChange } = renderSheet();
-    await openSettings();
+    const { onChange } = await openSettings();
 
     fireEvent.click(screen.getByRole("switch", { name: "Meter rulers" }));
 
@@ -74,12 +81,11 @@ describe("SettingsSheet", () => {
   it("adds and clears syllable overrides through project mutators", async () => {
     const onSetOverride = vi.fn();
     const onClearOverride = vi.fn();
-    renderSheet({
+    await openSettings({
       overrides: { fire: 1 },
       onSetOverride,
       onClearOverride,
     });
-    await openSettings();
 
     const list = screen.getByRole("list", { name: "Active overrides" });
     expect(within(list).getByText(/fire/)).toBeTruthy();
@@ -102,10 +108,21 @@ describe("SettingsSheet", () => {
 
   it("offers quiet fire/every suggestion buttons", async () => {
     const onSetOverride = vi.fn();
-    renderSheet({ onSetOverride });
-    await openSettings();
+    await openSettings({ onSetOverride });
 
     fireEvent.click(screen.getByRole("button", { name: "fire → 1" }));
     expect(onSetOverride).toHaveBeenCalledWith("fire", 1);
+  });
+
+  it("lists keyboard shortcuts", async () => {
+    await openSettings();
+    expect(screen.getByText("Keyboard")).toBeTruthy();
+    expect(screen.getByText("Synonyms")).toBeTruthy();
+    expect(screen.getByText("Rhymes")).toBeTruthy();
+  });
+
+  it("opens when controlled open is true", async () => {
+    renderSheet({ open: true });
+    expect(await screen.findByRole("dialog")).toBeTruthy();
   });
 });

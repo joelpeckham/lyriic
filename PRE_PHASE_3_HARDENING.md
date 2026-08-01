@@ -174,4 +174,6 @@ Completed via parallel Grok 4.5 worktree agents, merged on `main`:
 
 Phase 3 closed: I-01 (rulers), I-07 (override UI), I-11 (skip stale redraw on docChanged + liveText), I-13 (over non-color cue), I-15 (`countLine` tests), I-16 (SettingsSheet smoke), I-28 (boundaries docs).
 
-Still open for later waves: I-19–I-22, I-24–I-27, I-29–I-34 (see lists above).
+Phase 5 closed (2026-07-31): I-19 (`vercel.json` CSP/headers + external `theme-boot.js`), I-22 (lazy CMU + recount), I-29 (`typecheck` + GitHub Actions CI), I-32 (self-hosted fonts via fontsource).
+
+Still open for later waves: I-20, I-21, I-24–I-27, I-30–I-34 (see lists above).

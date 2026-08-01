@@ -1,6 +1,14 @@
 export { countLine, countLines, countLinesIncremental } from "./countLine";
 export { countWord } from "./countWord";
-export { dictSize, lookupDict } from "./dict";
+export {
+  dictSize,
+  getDictRevision,
+  isDictReady,
+  loadDict,
+  lookupDict,
+  subscribeDictReady,
+} from "./dict";
+
 export { countHeuristic } from "./heuristic";
 export {
   clearAllOverrides,

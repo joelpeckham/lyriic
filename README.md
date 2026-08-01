@@ -48,7 +48,7 @@ CMUdict is © Carnegie Mellon University; use is unrestricted for research and c
 
 ## Deploy
 
-Vercel detects Vite automatically (`pnpm build` → `dist`). Point the production domain to `lyriic.com`. No env vars are required for the client-only editor.
+Vercel detects Vite automatically (`pnpm build` → `dist`). Security headers and CSP live in `vercel.json`. Point the production domain to `lyriic.com` in the Vercel dashboard (DNS). No env vars are required for the client-only editor.
 
 ## Roadmap
 

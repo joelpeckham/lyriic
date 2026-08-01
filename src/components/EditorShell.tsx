@@ -1,11 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { ProjectSwitcher } from "@/components/ProjectSwitcher";
 import { SettingsSheet } from "@/components/SettingsSheet";
 import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
 import { PoemEditor } from "@/components/editor/PoemEditor";
+import { usePrefs } from "@/hooks/usePrefs";
 import { useProjects } from "@/hooks/useProjects";
 import { useSyllableOverrides } from "@/hooks/useSyllableOverrides";
+import { handleAppShortcut } from "@/lib/shortcuts";
+
+const FIRST_RUN_PLACEHOLDER = "Write a line… ⌘' synonyms · ⌘; rhymes";
+
+function focusPoem(): void {
+  const poem = document.getElementById("poem");
+  poem?.focus();
+}
 
 export function EditorShell() {
   const {
@@ -22,11 +31,36 @@ export function EditorShell() {
     saveStatus,
   } = useProjects();
 
+  const { prefs, markEditorHintSeen } = usePrefs();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   useSyllableOverrides(active.overrides);
 
   useEffect(() => {
     document.title = `${active.name} · lyriic`;
   }, [active.name]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      handleAppShortcut(event, {
+        settingsOpen,
+        setSettingsOpen,
+        focusPoem,
+      });
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [settingsOpen]);
+
+  useEffect(() => {
+    if (prefs.seenEditorHint) return;
+    if (active.text.trim().length === 0) return;
+    markEditorHintSeen();
+  }, [active.text, prefs.seenEditorHint, markEditorHintSeen]);
+
+  const placeholderText = prefs.seenEditorHint
+    ? "Write a line…"
+    : FIRST_RUN_PLACEHOLDER;
 
   return (
     <div className="relative flex min-h-dvh flex-1 flex-col">
@@ -59,6 +93,8 @@ export function EditorShell() {
             overrides={active.overrides}
             onSetOverride={setOverride}
             onClearOverride={clearOverride}
+            open={settingsOpen}
+            onOpenChange={setSettingsOpen}
           />
         </nav>
       </header>
@@ -71,6 +107,7 @@ export function EditorShell() {
             settings={active.settings}
             overrides={active.overrides}
             documentKey={active.id}
+            placeholderText={placeholderText}
           />
         </EditorErrorBoundary>
       </main>

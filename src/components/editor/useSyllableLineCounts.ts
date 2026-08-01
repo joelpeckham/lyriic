@@ -12,6 +12,7 @@ type CountCache = {
   counts: LineSyllableCount[];
   documentKey: string;
   overrideRevision: string;
+  dictRevision: number;
 };
 
 /**
@@ -20,12 +21,14 @@ type CountCache = {
  *
  * Pass project `overrides` so counts resolve against that record on the first
  * render (no dependency on module Map sync timing).
+ * `dictRevision` forces a full recount when the lazy CMU map becomes ready.
  */
 export function useSyllableLineCounts(
   value: string,
   documentKey: string,
   overrideRevision: string,
   overrides: Record<string, number>,
+  dictRevision: number,
 ): { lines: string[]; counts: LineSyllableCount[] } {
   const cacheRef = useRef<CountCache | null>(null);
   const cache = cacheRef.current;
@@ -34,7 +37,8 @@ export function useSyllableLineCounts(
     cache &&
     cache.value === value &&
     cache.documentKey === documentKey &&
-    cache.overrideRevision === overrideRevision
+    cache.overrideRevision === overrideRevision &&
+    cache.dictRevision === dictRevision
   ) {
     return { lines: cache.lines, counts: cache.counts };
   }
@@ -42,7 +46,8 @@ export function useSyllableLineCounts(
   const policyChanged =
     !cache ||
     cache.documentKey !== documentKey ||
-    cache.overrideRevision !== overrideRevision;
+    cache.overrideRevision !== overrideRevision ||
+    cache.dictRevision !== dictRevision;
   const lineCounts = countLinesIncremental(
     value,
     policyChanged ? null : (cache?.lines ?? null),
@@ -55,6 +60,7 @@ export function useSyllableLineCounts(
     counts: lineCounts.counts,
     documentKey,
     overrideRevision,
+    dictRevision,
   };
   return lineCounts;
 }

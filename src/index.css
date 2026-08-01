@@ -49,8 +49,8 @@
 
 /* Stone-50 cream paper (#fafaf9), neutral ink */
 :root {
-  --font-brand: "Fraunces", Georgia, serif;
-  --font-editor: "Literata", Georgia, serif;
+  --font-brand: "Fraunces Variable", Fraunces, Georgia, serif;
+  --font-editor: "Literata Variable", Literata, Georgia, serif;
   --font-ui: "Source Sans 3", system-ui, sans-serif;
 
   --background: #fafaf9;

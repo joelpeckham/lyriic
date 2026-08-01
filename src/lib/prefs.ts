@@ -6,11 +6,14 @@ export type ContrastPref = "default" | "more";
 export type AppPrefs = {
   theme: ThemePref;
   contrast: ContrastPref;
+  /** Quiet first-run editor hint has been dismissed (typed or acknowledged). */
+  seenEditorHint: boolean;
 };
 
 export const DEFAULT_PREFS: AppPrefs = {
   theme: "system",
   contrast: "default",
+  seenEditorHint: false,
 };
 
 export function isThemePref(value: unknown): value is ThemePref {
@@ -29,6 +32,10 @@ export function normalizePrefs(raw: unknown): AppPrefs {
   return {
     theme: isThemePref(s.theme) ? s.theme : DEFAULT_PREFS.theme,
     contrast: isContrastPref(s.contrast) ? s.contrast : DEFAULT_PREFS.contrast,
+    seenEditorHint:
+      typeof s.seenEditorHint === "boolean"
+        ? s.seenEditorHint
+        : DEFAULT_PREFS.seenEditorHint,
   };
 }
 

@@ -21,6 +21,7 @@ type PrefsContextValue = {
   prefs: AppPrefs;
   setTheme: (theme: ThemePref) => void;
   setContrast: (contrast: ContrastPref) => void;
+  markEditorHintSeen: () => void;
   setPrefs: (next: AppPrefs) => void;
 };
 
@@ -55,6 +56,15 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
     [prefs],
   );
 
+  const markEditorHintSeen = useCallback(() => {
+    setPrefsState((prev) => {
+      if (prev.seenEditorHint) return prev;
+      const next = { ...prev, seenEditorHint: true };
+      savePrefs(next);
+      return next;
+    });
+  }, []);
+
   // Single DOM apply path for prefs changes (and initial mount).
   useEffect(() => {
     applyPrefsToDocument(prefs);
@@ -69,8 +79,8 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
   }, [prefs]);
 
   const value = useMemo(
-    () => ({ prefs, setTheme, setContrast, setPrefs }),
-    [prefs, setTheme, setContrast, setPrefs],
+    () => ({ prefs, setTheme, setContrast, markEditorHintSeen, setPrefs }),
+    [prefs, setTheme, setContrast, markEditorHintSeen, setPrefs],
   );
 
   return (

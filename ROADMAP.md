@@ -133,12 +133,12 @@ Shared with Phase 4:
 
 ## Phase 5 — Polish + deploy
 
-- Keyboard shortcuts (toggle settings, focus canvas, thesaurus, rhyme)
-- Quiet first-run microcopy
-- SEO/meta for lyriic.com, favicon
-- Vercel + custom domain (`dist` static output)
-- Lighthouse pass; no layout shift on gear/Sheet
-- Shrink CMU payload: today `cmu-syllables.json` is statically imported and lands in the main JS chunk (~1.5 MB raw / ~0.5 MB gzip). Prefer lazy `import()` / separate chunk (or gzipped asset) so first paint isn’t blocked; `pnpm build` still does not run `build:cmu` — commit the generated JSON (or add a Vercel build step if we stop vendoring it). Apply the same lazy pattern to the Phase 4.5 rhyme index.
+- [x] Keyboard shortcuts (toggle settings `Mod-,`, focus canvas `Mod-.`, thesaurus `Mod-'`, rhyme `Mod-;`)
+- [x] Quiet first-run microcopy (enriched placeholder + `seenEditorHint` in prefs)
+- [x] SEO/meta for lyriic.com, favicon + apple-touch-icon, `robots.txt`
+- [x] Vercel + custom domain (`dist` static output; `vercel.json` CSP/headers; domain is Dashboard DNS)
+- [x] Lighthouse pass; no layout shift on gear/Sheet
+- [x] Shrink CMU payload: lazy `import()` → separate chunk; heuristic until ready then recount. Vendored JSON stays committed; `pnpm build` does not run `build:cmu`. Rhyme index already lazy (Phase 4.5).
 
 ## Phase 6 — Stretch
 
@@ -153,4 +153,3 @@ Shared with Phase 4:
 ## Out of scope for now
 
 - Auth, accounts, cloud sync (local drafts only until Phase 6)
-- CMU code-splitting / lazy load (Phase 5)

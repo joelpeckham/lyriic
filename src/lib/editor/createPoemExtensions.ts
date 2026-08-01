@@ -12,6 +12,8 @@ export type PoemExtensionOptions = {
   onDocChange: (text: string) => void;
   onActiveLineChange: (lineIndex: number) => void;
   onOpenWordLookup?: WordLookupHandler;
+  /** Empty-doc placeholder; defaults to a short zen prompt. */
+  placeholderText?: string;
 };
 
 /**
@@ -23,12 +25,13 @@ export function createPoemExtensions({
   onDocChange,
   onActiveLineChange,
   onOpenWordLookup,
+  placeholderText = "Write a line…",
 }: PoemExtensionOptions): Extension[] {
   return [
     history(),
     // Native browser selection (text-shaped) rather than CM's full-width blocks.
     EditorView.lineWrapping,
-    placeholder("Write a line…"),
+    placeholder(placeholderText),
     keymap.of([...defaultKeymap, ...historyKeymap]),
     EditorView.editorAttributes.of({
       class: "lyriic-poem",
