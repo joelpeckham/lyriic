@@ -9,27 +9,15 @@ import {
 } from "./dictPackCodec";
 
 export type {
-  DecodedPack,
-  DictPackKind,
   Lexicon,
   RhymeModeData,
   ThesaurusEntry,
   ThesaurusPack,
-  ThesaurusUsageCode,
 } from "./dictPackCodec";
 
 export {
   buildThesaurusByHead,
-  decodeFrontCoded,
-  decodeLexicon,
-  decodePack,
-  decodeRhymePack,
-  decodeThesaurus,
-  decodeUvarint,
-  DICT_MAGIC,
-  DICT_PACK_VERSION,
   resolveDictId,
-  usageCharToCode,
   usageCodeToChar,
 } from "./dictPackCodec";
 

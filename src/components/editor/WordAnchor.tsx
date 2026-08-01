@@ -1,11 +1,5 @@
 import { PopoverAnchor } from "@/components/ui/popover";
-
-type WordAnchorRect = {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-};
+import type { WordAnchor as WordAnchorRect } from "@/lib/editor/resolveWordTarget";
 
 /** Fixed viewport span for Popover positioning over a word glyph box. */
 export function WordAnchor({ anchor }: { anchor: WordAnchorRect }) {

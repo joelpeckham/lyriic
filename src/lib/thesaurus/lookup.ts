@@ -6,8 +6,9 @@ import {
   type ThesaurusEntry,
   type ThesaurusPack,
 } from "@/lib/data/dictPack";
-import { normalizeLookupKey } from "@/lib/data/lazyJson";
 import { getLexicon, loadLexicon } from "@/lib/data/lexicon";
+import { runWhenIdle } from "@/lib/data/runWhenIdle";
+import { normalizeLookupKey } from "@/lib/syllables/normalize";
 import { lookupForms } from "@/lib/wordLookup/lookupForms";
 
 import type { WordUsage } from "./usage";
@@ -51,31 +52,20 @@ const store = createLazyBinData<ThesaurusRuntime>(
 let testMap: SynonymMap | null = null;
 
 /** Lazy-load the thesaurus pack (requires lexicon for id resolution). */
-export async function loadThesaurus(): Promise<SynonymMap> {
+export async function loadThesaurus(): Promise<void> {
   const lex = await loadLexicon();
   const runtime = await store.load();
   if (runtime.pack.byHead.size === 0) {
     buildThesaurusByHead(runtime.pack, lex.words);
   }
-  return Object.create(null) as SynonymMap;
 }
 
-/** Optional idle-prefetch; not used on cold load (keeps 3G TTI clear). */
+/** Idle-prefetch thesaurus after lexicon is available. */
 export function prefetchThesaurus(): void {
   if (typeof window === "undefined") return;
-  const start = () => {
+  runWhenIdle(() => {
     void loadThesaurus();
-  };
-  if (typeof window.requestIdleCallback === "function") {
-    window.requestIdleCallback(start, { timeout: 4000 });
-  } else {
-    window.setTimeout(start, 50);
-  }
-}
-
-/** True once the synonym map has finished loading. */
-export function isThesaurusReady(): boolean {
-  return testMap !== null || (store.isReady() && getLexicon() !== null);
+  }, 4000);
 }
 
 function groupsFor(form: string): SynonymGroups | null {

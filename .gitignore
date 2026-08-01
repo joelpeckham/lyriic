@@ -16,7 +16,7 @@ dist-ssr
 scripts/mthesaur.txt
 
 # Downloaded dictionary sources (Misaki, WikiPron, OEWN, Wiktionary).
-# Runtime uses committed JSON under src/lib/*/data/.
+# Runtime uses committed binary packs under src/lib/data/packs/.
 scripts/sources/
 
 # Editor directories and files

@@ -31,13 +31,15 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { usePrefs } from "@/hooks/usePrefs";
 import { METER_PRESETS, type MeterPresetId } from "@/lib/meters";
-import { type ThemePref } from "@/lib/prefs";
 import {
-  CUSTOM_SYLLABLES_MAX,
-  CUSTOM_SYLLABLES_MIN,
   DEFAULT_FONT_SIZE,
   FONT_SIZE_MAX,
   FONT_SIZE_MIN,
+  type ThemePref,
+} from "@/lib/prefs";
+import {
+  CUSTOM_SYLLABLES_MAX,
+  CUSTOM_SYLLABLES_MIN,
   type EditorSettings,
 } from "@/lib/settings";
 import { SHORTCUT_HINTS } from "@/lib/shortcuts";
@@ -190,12 +192,12 @@ export function SettingsSheet({
   open,
   onOpenChange,
 }: SettingsSheetProps) {
-  const { prefs, setTheme, setContrast } = usePrefs();
+  const { prefs, setTheme, setContrast, setFontSize } = usePrefs();
 
   const fontValue = FONT_SIZE_OPTIONS.some(
-    (option) => option.value === settings.fontSize,
+    (option) => option.value === prefs.fontSize,
   )
-    ? settings.fontSize
+    ? prefs.fontSize
     : DEFAULT_FONT_SIZE;
 
   const selectedMeterIndex = meterRadioIndex(settings.meter);
@@ -305,13 +307,12 @@ export function SettingsSheet({
                         selected && "bg-muted text-foreground",
                       )}
                       onClick={() => {
-                        onChange({
-                          ...settings,
-                          fontSize: Math.min(
+                        setFontSize(
+                          Math.min(
                             FONT_SIZE_MAX,
                             Math.max(FONT_SIZE_MIN, option.value),
                           ),
-                        });
+                        );
                       }}
                     >
                       <span

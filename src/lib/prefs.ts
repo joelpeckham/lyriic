@@ -5,17 +5,21 @@ export const PREFS_STORAGE_KEY = "lyriic.prefs.v1";
 export type ThemePref = "system" | "light" | "dark";
 export type ContrastPref = "default" | "more";
 
+export const FONT_SIZE_MIN = 1;
+export const FONT_SIZE_MAX = 3;
+export const DEFAULT_FONT_SIZE = 1.75;
+
 export type AppPrefs = {
   theme: ThemePref;
   contrast: ContrastPref;
-  /** Quiet first-run editor hint has been dismissed (typed or acknowledged). */
-  seenEditorHint: boolean;
+  /** Editor font size in rem. */
+  fontSize: number;
 };
 
 export const DEFAULT_PREFS: AppPrefs = {
   theme: "system",
   contrast: "default",
-  seenEditorHint: false,
+  fontSize: DEFAULT_FONT_SIZE,
 };
 
 export function isThemePref(value: unknown): value is ThemePref {
@@ -26,6 +30,18 @@ export function isContrastPref(value: unknown): value is ContrastPref {
   return value === "default" || value === "more";
 }
 
+export function clampFontSize(value: number): number {
+  const rounded = Math.round(value * 100) / 100;
+  return Math.min(FONT_SIZE_MAX, Math.max(FONT_SIZE_MIN, rounded));
+}
+
+/** True when persisted prefs already include an explicit fontSize. */
+export function prefsHasFontSize(raw: unknown): boolean {
+  if (!raw || typeof raw !== "object") return false;
+  const fontSize = (raw as Record<string, unknown>).fontSize;
+  return typeof fontSize === "number" && Number.isFinite(fontSize);
+}
+
 /** Normalize persisted or partial prefs into a valid AppPrefs. */
 export function normalizePrefs(raw: unknown): AppPrefs {
   const s =
@@ -34,10 +50,10 @@ export function normalizePrefs(raw: unknown): AppPrefs {
   return {
     theme: isThemePref(s.theme) ? s.theme : DEFAULT_PREFS.theme,
     contrast: isContrastPref(s.contrast) ? s.contrast : DEFAULT_PREFS.contrast,
-    seenEditorHint:
-      typeof s.seenEditorHint === "boolean"
-        ? s.seenEditorHint
-        : DEFAULT_PREFS.seenEditorHint,
+    fontSize:
+      typeof s.fontSize === "number" && Number.isFinite(s.fontSize)
+        ? clampFontSize(s.fontSize)
+        : DEFAULT_PREFS.fontSize,
   };
 }
 

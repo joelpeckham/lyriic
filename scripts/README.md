@@ -23,9 +23,6 @@ Fuses US English sources, preference order Misaki gold → CMUdict → Misaki si
 
 ```bash
 pnpm build:pronunciation
-# aliases:
-pnpm build:cmu
-pnpm build:rhyme
 ```
 
 Writes:
@@ -34,7 +31,7 @@ Writes:
 - `src/lib/data/packs/rhyme-perfect.bin` — perfect-rhyme ID index
 - `src/lib/data/packs/rhyme-end.bin` — end-rhyme ID index
 
-Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last non-reduced vowel) through the coda. End-rhyme key = last vowel nucleus through the coda (ignores stress; fun ↔ anyone). See `scripts/lib/ipa.mjs` and `src/lib/rhyme/rhymeKey.ts`. Pack codec: `scripts/lib/dictPack.mjs`.
+Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last non-reduced vowel) through the coda. End-rhyme key = last vowel nucleus through the coda (ignores stress; fun ↔ anyone). IPA helpers live in `scripts/lib/ipa.mjs` (build-time only; client uses precomputed packs). Pack codec: `scripts/lib/dictPack.mjs`.
 
 ## Thesaurus
 
@@ -52,6 +49,5 @@ Requires `lexicon.bin` from `build:pronunciation`. Writes `src/lib/data/packs/th
 
 ## Other
 
-- `convert-json-to-dict-packs.mjs` — one-shot JSON → binary migration (legacy)
 - `build-seo-content.mjs` — SEO / agent markdown mirrors
-- `prerender.mjs` — static prerender for marketing routes
+- `prerender.mjs` — static prerender for marketing routes (`react-dom/server` + Vite SSR)

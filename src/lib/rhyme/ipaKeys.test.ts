@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+// Build-time IPA helpers — not part of the client bundle.
 import {
   endRhymeKeyFromIpa,
   rhymeKeyFromIpa,
-  rhymeKeyFromPhones,
-} from "./rhymeKey";
+} from "../../../scripts/lib/ipa.mjs";
 
-describe("rhymeKeyFromIpa", () => {
+describe("rhymeKeyFromIpa (scripts/lib/ipa.mjs)", () => {
   it("shares a key for perfect rhymes (rhyme / time / lime)", () => {
     const rhyme = rhymeKeyFromIpa("ɹˈaɪm");
     const time = rhymeKeyFromIpa("tˈaɪm");
@@ -17,7 +17,6 @@ describe("rhymeKeyFromIpa", () => {
   });
 
   it("uses the last primary stress for multi-syllable words", () => {
-    // hello: həˈloʊ
     expect(rhymeKeyFromIpa("həˈloʊ")).toBe("oʊ");
   });
 
@@ -52,7 +51,7 @@ describe("rhymeKeyFromIpa", () => {
   });
 });
 
-describe("endRhymeKeyFromIpa", () => {
+describe("endRhymeKeyFromIpa (scripts/lib/ipa.mjs)", () => {
   it("uses the last nucleus ignoring stress (fun ↔ anyone)", () => {
     expect(endRhymeKeyFromIpa("fˈʌn")).toBe("ʌn");
     expect(endRhymeKeyFromIpa("ˈɛniwʌn")).toBe("ʌn");
@@ -70,7 +69,9 @@ describe("endRhymeKeyFromIpa", () => {
 
   it("collapses NURSE/LETTER for end rhyme", () => {
     expect(endRhymeKeyFromIpa("wˈɝld")).toBe("ɚld");
-    expect(endRhymeKeyFromIpa("kˈɝld")).toBe(endRhymeKeyFromIpa("ˈʌndɚwɝld"));
+    expect(endRhymeKeyFromIpa("kˈɝld")).toBe(
+      endRhymeKeyFromIpa("ˈʌndɚwɝld"),
+    );
   });
 });
 
@@ -86,14 +87,5 @@ describe("canonicalize (via keys)", () => {
 
   it("maps British əʊ to US oʊ", () => {
     expect(rhymeKeyFromIpa("ɡəʊ")).toBe(rhymeKeyFromIpa("ɡoʊ"));
-  });
-});
-
-describe("rhymeKeyFromPhones (ARPAbet legacy)", () => {
-  it("shares a key for perfect rhymes", () => {
-    const rhyme = rhymeKeyFromPhones(["R", "AY1", "M"]);
-    const time = rhymeKeyFromPhones(["T", "AY1", "M"]);
-    expect(rhyme).toBe("AY1 M");
-    expect(time).toBe(rhyme);
   });
 });

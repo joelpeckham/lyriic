@@ -6,7 +6,7 @@ lyriic is a client-only writing tool. This page explains what stays on your devi
 
 ## What lyriic stores
 
-Drafts (poem text, settings, and syllable overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, font size, and related flags) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.
+Drafts (poem text, settings, and syllable overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.
 
 ## What we do not collect
 

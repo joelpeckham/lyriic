@@ -49,11 +49,6 @@ export function usageCodeToChar(
   return USAGE_CHARS[code] ?? null;
 }
 
-export function usageCharToCode(ch: string): ThesaurusUsageCode | null {
-  const i = USAGE_CHARS.indexOf(ch as (typeof USAGE_CHARS)[number]);
-  return i >= 0 ? (i as ThesaurusUsageCode) : null;
-}
-
 function readMagic(buf: Uint8Array): string {
   return String.fromCharCode(buf[0]!, buf[1]!, buf[2]!, buf[3]!);
 }

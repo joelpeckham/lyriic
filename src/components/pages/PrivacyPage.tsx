@@ -39,8 +39,7 @@ export function PrivacyPage() {
                   Drafts (poem text, settings, and syllable overrides) are saved
                   in your browser&apos;s local storage under the key{" "}
                   <code className="text-foreground/80">lyriic.projects.v1</code>.
-                  Appearance preferences (theme, contrast, font size, and
-                  related flags) use{" "}
+                  Appearance preferences (theme, contrast, and font size) use{" "}
                   <code className="text-foreground/80">lyriic.prefs.v1</code>.
                   There is no account and no cloud sync — data stays on this
                   device unless you clear site data or your browser removes it.

@@ -15,9 +15,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:pronunciation": "node scripts/build-pronunciation.mjs",
-    "build:cmu": "node scripts/build-pronunciation.mjs",
-    "build:thesaurus": "node scripts/build-thesaurus.mjs",
-    "build:rhyme": "node scripts/build-pronunciation.mjs"
+    "build:thesaurus": "node scripts/build-thesaurus.mjs"
   },
   "dependencies": {
     "@codemirror/commands": "^6.10.4",
@@ -42,7 +40,6 @@
   "devDependencies": {
     "@babel/core": "^8.0.1",
     "@rolldown/plugin-babel": "^0.2.3",
-    "@sparticuz/chromium": "^149.0.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@types/babel__core": "^7.20.5",
@@ -55,7 +52,6 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "jsdom": "^30.0.1",
     "oxlint": "^1.75.0",
-    "playwright": "~1.61.1",
     "shadcn": "^4.16.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.65.0",

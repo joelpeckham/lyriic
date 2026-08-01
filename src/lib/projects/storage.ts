@@ -1,4 +1,12 @@
 import {
+  clampFontSize,
+  DEFAULT_PREFS,
+  normalizePrefs,
+  prefsHasFontSize,
+  PREFS_STORAGE_KEY,
+  savePrefs,
+} from "@/lib/prefs";
+import {
   DEFAULT_SETTINGS,
   normalizeSettings,
 } from "@/lib/settings";
@@ -68,8 +76,72 @@ function normalizeProject(raw: unknown): Project | null {
 }
 
 /**
+ * Read fontSize from a legacy project.settings payload (pre–prefs migration).
+ */
+function fontSizeFromProjectSettings(settings: unknown): number | null {
+  if (!settings || typeof settings !== "object") return null;
+  const fontSize = (settings as Record<string, unknown>).fontSize;
+  if (typeof fontSize !== "number" || !Number.isFinite(fontSize)) return null;
+  return clampFontSize(fontSize);
+}
+
+/**
+ * Peek active project's legacy settings.fontSize from a raw projects payload.
+ */
+function activeProjectFontSize(raw: unknown): number | null {
+  if (!raw || typeof raw !== "object") return null;
+  const data = raw as Record<string, unknown>;
+  if (!Array.isArray(data.projects) || typeof data.activeId !== "string") {
+    return null;
+  }
+  const active = data.projects.find(
+    (item) =>
+      item &&
+      typeof item === "object" &&
+      (item as Record<string, unknown>).id === data.activeId,
+  );
+  if (!active || typeof active !== "object") return null;
+  return fontSizeFromProjectSettings(
+    (active as Record<string, unknown>).settings,
+  );
+}
+
+/**
+ * One-time: if prefs lack fontSize, copy it from the active project's
+ * legacy settings.fontSize (when present). Idempotent once prefs store fontSize.
+ */
+export function migrateFontSizeToPrefsIfNeeded(
+  rawProjects?: unknown,
+  storage: Pick<Storage, "getItem" | "setItem"> | null =
+    typeof localStorage !== "undefined" ? localStorage : null,
+): void {
+  if (!storage) return;
+
+  const prefsResult = readJson(storage, PREFS_STORAGE_KEY);
+  if (prefsResult.status === "ok" && prefsHasFontSize(prefsResult.value)) {
+    return;
+  }
+
+  const projectsRaw =
+    rawProjects ??
+    (() => {
+      const result = readJson(storage, STORAGE_KEY);
+      return result.status === "ok" ? result.value : null;
+    })();
+
+  const fromProject = activeProjectFontSize(projectsRaw);
+  if (fromProject === null) return;
+
+  const base =
+    prefsResult.status === "ok"
+      ? normalizePrefs(prefsResult.value)
+      : { ...DEFAULT_PREFS };
+  savePrefs({ ...base, fontSize: fromProject });
+}
+
+/**
  * Parse and soft-migrate a v1 projects payload.
- * Missing Phase-3 fields (e.g. fontSize) receive defaults via normalizeSettings.
+ * Unknown / legacy fields (e.g. fontSize) are dropped via normalizeSettings.
  */
 export function parseProjectsState(raw: unknown): ProjectsState | null {
   if (!raw || typeof raw !== "object") return null;
@@ -111,6 +183,7 @@ export function loadProjectsState(
 ): LoadResult {
   const result = readJson(storage, STORAGE_KEY);
   if (result.status === "ok") {
+    migrateFontSizeToPrefsIfNeeded(result.value, storage);
     const parsed = parseProjectsState(result.value);
     if (parsed) {
       return { state: parsed, quarantined: false };

@@ -1,33 +1,30 @@
-import {
-  Suspense,
-  lazy,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Annotation, Compartment, EditorState } from "@codemirror/state";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
-import { WordToolbarPopover } from "@/components/editor/WordToolbarPopover";
+import {
+  WordToolsPopover,
+  type WordToolsTarget,
+} from "@/components/editor/WordToolsPopover";
 import { useDictRevision } from "@/hooks/useDictRevision";
-import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
+import { usePrefs } from "@/hooks/usePrefs";
+import {
+  createPoemExtensions,
+  externalValueSync,
+} from "@/lib/editor/createPoemExtensions";
 import {
   getSyllableOverlay,
   setMeterOverlayData,
 } from "@/lib/editor/syllableOverlay";
 import {
-  replaceWordRange,
-  type WordLookupRequest,
-} from "@/lib/editor/wordLookup";
-import {
   dismissWordToolbar,
+  replaceWordRange,
   setWordToolbarPopoverHovered,
   setWordToolbarSticky,
-  type WordToolbarTarget,
-} from "@/lib/editor/wordToolbar";
+  type WordLookupRequest,
+  type WordTarget,
+} from "@/lib/editor/wordInteraction";
 import { zenEditorTheme } from "@/lib/editor/zenTheme";
 import {
   buildMeteredLines,
@@ -36,12 +33,6 @@ import {
   type MeteredLine,
 } from "@/lib/meters";
 import type { EditorSettings } from "@/lib/settings";
-
-const WordLookupPopover = lazy(() =>
-  import("@/components/editor/WordLookupPopover").then((m) => ({
-    default: m.WordLookupPopover,
-  })),
-);
 
 type PoemEditorProps = {
   value: string;
@@ -53,14 +44,9 @@ type PoemEditorProps = {
   onClearOverride: (word: string) => void;
   /** Stable document identity (e.g. project id) for full remount. */
   documentKey: string;
-  /** Empty-doc placeholder (first-run hint vs short prompt). */
-  placeholderText?: string;
 };
 
 const LIVE_COUNT_DEBOUNCE_MS = 500;
-
-/** Marks a full-doc replace driven by the React `value` prop (not user typing). */
-const externalValueSync = Annotation.define<boolean>();
 
 function overridesKey(overrides: Record<string, number>): string {
   return Object.keys(overrides)
@@ -71,7 +57,7 @@ function overridesKey(overrides: Record<string, number>): string {
 
 function tokenSyllablesFor(
   metered: readonly MeteredLine[],
-  target: Pick<WordLookupRequest, "lineIndex" | "from" | "lineFrom">,
+  target: Pick<WordTarget, "lineIndex" | "from" | "lineFrom">,
 ): number {
   const line = metered[target.lineIndex];
   const localStart = target.from - target.lineFrom;
@@ -86,45 +72,39 @@ export function PoemEditor({
   onSetOverride,
   onClearOverride,
   documentKey,
-  placeholderText,
 }: PoemEditorProps) {
+  const { prefs } = usePrefs();
   const parentRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const themeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
   const meteredLinesRef = useRef<readonly MeteredLine[]>([]);
-  const onOpenWordLookupRef = useRef<(request: WordLookupRequest) => void>(
-    () => {},
-  );
-  const onWordToolbarChangeRef = useRef<
-    (target: WordToolbarTarget | null) => void
-  >(() => {});
+  /** Single mutable bridge for CM → React word UI. */
+  const wordBridgeRef = useRef({
+    setToolbar: (_target: WordTarget | null) => {},
+    openLookup: (_request: WordLookupRequest) => {},
+  });
   /** Live CM document — counts stay in sync even when parent text is debounced. */
   const [liveText, setLiveText] = useState(value);
   const [activeLineIndex, setActiveLineIndex] = useState(0);
   const [liveCountText, setLiveCountText] = useState("");
-  const [lookupRequest, setLookupRequest] = useState<WordLookupRequest | null>(
-    null,
-  );
-  const [toolbarTarget, setToolbarTarget] =
-    useState<WordToolbarTarget | null>(null);
+  const [wordTarget, setWordTarget] = useState<WordToolsTarget | null>(null);
 
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
 
   useLayoutEffect(() => {
-    onOpenWordLookupRef.current = (request) => {
-      setToolbarTarget(null);
-      setLookupRequest({
+    wordBridgeRef.current.setToolbar = (target) => {
+      setWordTarget(target);
+    };
+    wordBridgeRef.current.openLookup = (request) => {
+      setWordTarget({
         ...request,
         tokenSyllables: tokenSyllablesFor(meteredLinesRef.current, request),
       });
     };
-    onWordToolbarChangeRef.current = (target) => {
-      setToolbarTarget(target);
-    };
-  }, []);
+  });
 
   const overrideRevision = useMemo(
     () => overridesKey(overrides),
@@ -162,31 +142,22 @@ export function PoemEditor({
     const state = EditorState.create({
       doc: value,
       extensions: [
-        themeComp.of(zenEditorTheme(settings.fontSize)),
+        themeComp.of(zenEditorTheme(prefs.fontSize)),
         ...createPoemExtensions({
-          onDocChange: (text) => {
+          onDocChange: (text, { userEdit }) => {
             setLiveText(text);
-            // Toolbar dismisses itself; lookup holds stale replace ranges.
-            setLookupRequest(null);
+            setWordTarget(null);
+            if (userEdit) onChangeRef.current(text);
           },
           onActiveLineChange: setActiveLineIndex,
-          onOpenWordLookup: (request) => {
-            onOpenWordLookupRef.current(request);
+          onWordInteraction: {
+            onToolbarChange: (target) => {
+              wordBridgeRef.current.setToolbar(target);
+            },
+            onOpenLookup: (request) => {
+              wordBridgeRef.current.openLookup(request);
+            },
           },
-          onWordToolbarChange: (target) => {
-            onWordToolbarChangeRef.current(target);
-          },
-          placeholderText,
-        }),
-        // Parent onChange separately so external value sync can suppress it.
-        EditorView.updateListener.of((update) => {
-          if (!update.docChanged) return;
-          if (
-            update.transactions.some((tr) => tr.annotation(externalValueSync))
-          ) {
-            return;
-          }
-          onChangeRef.current(update.state.doc.toString());
         }),
       ],
     });
@@ -226,10 +197,10 @@ export function PoemEditor({
     if (!view) return;
     view.dispatch({
       effects: themeCompartment.current.reconfigure(
-        zenEditorTheme(settings.fontSize),
+        zenEditorTheme(prefs.fontSize),
       ),
     });
-  }, [settings.fontSize]);
+  }, [prefs.fontSize]);
 
   // Push meter overlay data into the editor plugin.
   useEffect(() => {
@@ -277,6 +248,12 @@ export function PoemEditor({
     settings.showCounts,
   ]);
 
+  function closeWordUi(): void {
+    const view = viewRef.current;
+    if (view) dismissWordToolbar(view);
+    setWordTarget(null);
+  }
+
   return (
     <div
       id="poem"
@@ -293,13 +270,9 @@ export function PoemEditor({
         {settings.showCounts ? liveCountText : ""}
       </div>
       <div ref={parentRef} className="h-full w-full" />
-      <WordToolbarPopover
-        target={toolbarTarget}
-        onClose={() => {
-          const view = viewRef.current;
-          if (view) dismissWordToolbar(view);
-          setToolbarTarget(null);
-        }}
+      <WordToolsPopover
+        target={wordTarget}
+        onClose={closeWordUi}
         onPopoverHoverChange={(hovered) => {
           const view = viewRef.current;
           if (view) setWordToolbarPopoverHovered(view, hovered);
@@ -309,44 +282,29 @@ export function PoemEditor({
           if (view) setWordToolbarSticky(view, sticky);
         }}
         onOpenLookup={(mode) => {
-          if (!toolbarTarget) return;
-          const request: WordLookupRequest = {
-            ...toolbarTarget,
+          if (!wordTarget) return;
+          setWordTarget({
+            ...wordTarget,
             mode,
-            tokenSyllables: tokenSyllablesFor(meteredLines, toolbarTarget),
-          };
+            tokenSyllables: tokenSyllablesFor(meteredLines, wordTarget),
+          });
+        }}
+        onReplace={(from, to, insert) => {
           const view = viewRef.current;
-          if (view) dismissWordToolbar(view);
-          setToolbarTarget(null);
-          setLookupRequest(request);
+          if (!view) return;
+          replaceWordRange(view, from, to, insert);
+        }}
+        onRestoreFocus={() => {
+          viewRef.current?.focus();
         }}
         onSetOverride={onSetOverride}
         onClearOverride={onClearOverride}
+        meteredLine={
+          wordTarget ? meteredLines[wordTarget.lineIndex] : undefined
+        }
         overrides={overrides}
+        overrideRevision={overrideRevision}
       />
-      {toolbarTarget || lookupRequest ? (
-        <Suspense fallback={null}>
-          <WordLookupPopover
-            request={lookupRequest}
-            onClose={() => setLookupRequest(null)}
-            onReplace={(from, to, insert) => {
-              const view = viewRef.current;
-              if (!view) return;
-              replaceWordRange(view, from, to, insert);
-            }}
-            onRestoreFocus={() => {
-              viewRef.current?.focus();
-            }}
-            meteredLine={
-              lookupRequest
-                ? meteredLines[lookupRequest.lineIndex]
-                : undefined
-            }
-            overrides={overrides}
-            overrideRevision={overrideRevision}
-          />
-        </Suspense>
-      ) : null}
     </div>
   );
 }

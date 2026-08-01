@@ -6,8 +6,10 @@ import {
   type ReactNode,
 } from "react";
 
+import { migrateFontSizeToPrefsIfNeeded } from "@/lib/projects/storage";
 import {
   applyPrefsToDocument,
+  clampFontSize,
   loadPrefs,
   savePrefs,
   type AppPrefs,
@@ -19,38 +21,37 @@ type PrefsContextValue = {
   prefs: AppPrefs;
   setTheme: (theme: ThemePref) => void;
   setContrast: (contrast: ContrastPref) => void;
-  markEditorHintSeen: () => void;
+  setFontSize: (fontSize: number) => void;
 };
 
 const PrefsContext = createContext<PrefsContextValue | null>(null);
 
 export function PrefsProvider({ children }: { children: ReactNode }) {
-  const [prefs, setPrefsState] = useState<AppPrefs>(() => loadPrefs());
+  const [prefs, setPrefsState] = useState<AppPrefs>(() => {
+    // Run before first loadPrefs so legacy project fontSize is available.
+    migrateFontSizeToPrefsIfNeeded();
+    return loadPrefs();
+  });
 
   function setTheme(theme: ThemePref) {
-    setPrefsState((prev) => {
-      const next = { ...prev, theme };
-      savePrefs(next);
-      return next;
-    });
+    setPrefsState((prev) => ({ ...prev, theme }));
   }
 
   function setContrast(contrast: ContrastPref) {
-    setPrefsState((prev) => {
-      const next = { ...prev, contrast };
-      savePrefs(next);
-      return next;
-    });
+    setPrefsState((prev) => ({ ...prev, contrast }));
   }
 
-  function markEditorHintSeen() {
-    setPrefsState((prev) => {
-      if (prev.seenEditorHint) return prev;
-      const next = { ...prev, seenEditorHint: true };
-      savePrefs(next);
-      return next;
-    });
+  function setFontSize(fontSize: number) {
+    setPrefsState((prev) => ({
+      ...prev,
+      fontSize: clampFontSize(fontSize),
+    }));
   }
+
+  // Persist outside setState updaters.
+  useEffect(() => {
+    savePrefs(prefs);
+  }, [prefs]);
 
   // Single DOM apply path for prefs changes (and initial mount).
   useEffect(() => {
@@ -67,7 +68,7 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
 
   return (
     <PrefsContext.Provider
-      value={{ prefs, setTheme, setContrast, markEditorHintSeen }}
+      value={{ prefs, setTheme, setContrast, setFontSize }}
     >
       {children}
     </PrefsContext.Provider>

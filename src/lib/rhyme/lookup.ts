@@ -1,19 +1,13 @@
 import { createLazyBinData, type RhymeModeData } from "@/lib/data/dictPack";
-import { normalizeLookupKey } from "@/lib/data/lazyJson";
 import {
   getLexicon,
   loadLexicon,
-  wordForId,
   type Lexicon,
 } from "@/lib/data/lexicon";
+import { runWhenIdle } from "@/lib/data/runWhenIdle";
+import { normalizeLookupKey } from "@/lib/syllables/normalize";
 
 export type RhymeMode = "perfect" | "end";
-
-/** @deprecated Kept for type exports; runtime uses binary packs. */
-export type RhymeIndex = {
-  perfect: RhymeModeData;
-  end: RhymeModeData;
-};
 
 const perfectStore = createLazyBinData<RhymeModeData>(
   () =>
@@ -65,9 +59,9 @@ export async function loadRhymeIndex(
   await loadLexicon();
   const data = await storeFor(mode).load();
   if (mode === "perfect" && typeof window !== "undefined") {
-    scheduleIdle(() => {
+    runWhenIdle(() => {
       void endStore.load();
-    });
+    }, 2000);
   }
   return data;
 }
@@ -79,14 +73,6 @@ export function isRhymeIndexReady(mode?: RhymeMode): boolean {
   return (
     (perfectStore.isReady() || endStore.isReady()) && getLexicon() !== null
   );
-}
-
-function scheduleIdle(start: () => void): void {
-  if (typeof window.requestIdleCallback === "function") {
-    window.requestIdleCallback(start, { timeout: 2000 });
-    return;
-  }
-  window.setTimeout(start, 1);
 }
 
 function activeLex(): {
@@ -183,8 +169,6 @@ export function materializeWords(
   }
   return out;
 }
-
-export { wordForId };
 
 /** Test helper — inject mode packs without hitting binary assets. */
 export function __setRhymeDataForTests(

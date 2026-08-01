@@ -1,10 +1,13 @@
 import { useId, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 
+import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
 import { Button } from "@/components/ui/button";
+import { getToolBySlug } from "@/content/tools";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { countLine } from "@/lib/syllables";
 import { cn } from "@/lib/utils";
+
+const tool = getToolBySlug("haiku-checker")!;
 
 const TARGETS = [5, 7, 5] as const;
 const DEFAULT_LINES = [
@@ -362,21 +365,11 @@ export function HaikuCheckerTool() {
         teaching form, not a universal rule.
       </p>
 
-      <aside className="mt-8 border-t border-border/70 pt-8">
-        <p className="font-[family-name:var(--font-brand)] text-xl tracking-tight text-foreground">
-          Live Haiku meter in the editor
-        </p>
-        <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
-          In lyriic, choose the Haiku meter ruler for 5/7/5 ticks beside each
-          line as you write — not just after you paste. Hover or tap a word for
-          rhymes and synonyms. Drafts stay local on your device.
-        </p>
-        <p className="mt-4">
-          <Button asChild size="lg">
-            <Link to="/">Write with the Haiku meter</Link>
-          </Button>
-        </p>
-      </aside>
+      <ToolEditorPitch
+        title="Live Haiku meter in the editor"
+        body="In lyriic, choose the Haiku meter ruler for 5/7/5 ticks beside each line as you write — not just after you paste. Hover or tap a word for rhymes and synonyms. Drafts stay local on your device."
+        cta={tool.cta}
+      />
     </div>
   );
 }

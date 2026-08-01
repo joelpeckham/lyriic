@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ContentPageLayout } from "@/components/pages/ContentPageLayout";
-import { ToolCta } from "@/components/tools/ToolCta";
 import { ToolFaqList } from "@/components/tools/ToolFaqList";
 import type { ToolPageContent } from "@/content/tools";
 import { TOOL_PAGES } from "@/content/tools";
@@ -12,15 +11,9 @@ import { SITE_URL } from "@/lib/seo";
 type ToolPageProps = {
   tool: ToolPageContent;
   children: ReactNode;
-  /** When the tool embeds its own editor pitch/CTA, hide the shared button. */
-  showCta?: boolean;
 };
 
-export function ToolPage({
-  tool,
-  children,
-  showCta = true,
-}: ToolPageProps) {
+export function ToolPage({ tool, children }: ToolPageProps) {
   useDocumentMeta({
     title: tool.title,
     description: tool.description,
@@ -69,8 +62,6 @@ export function ToolPage({
           <p key={paragraph.slice(0, 48)}>{paragraph}</p>
         ))}
       </div>
-
-      {showCta ? <ToolCta label={tool.cta} /> : null}
 
       <ToolFaqList faqs={tool.faqs} path={tool.path} />
 

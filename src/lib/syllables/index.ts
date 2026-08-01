@@ -1,13 +1,10 @@
 export { countLine, countLines, countLinesIncremental } from "./countLine";
 export { clearMemo, countWord } from "./countWord";
 export {
-  dictSize,
   getDictRevision,
-  isDictReady,
-  loadDict,
   lookupDict,
   subscribeDictReady,
-} from "./dict";
+} from "@/lib/data/lexicon";
 export { countHeuristic } from "./heuristic";
 export {
   isValidOverrideCount,
@@ -17,7 +14,6 @@ export {
 export { tokenizeLine } from "./tokenize";
 export type {
   LineSyllableCount,
-  SyllableProvider,
   SyllableSource,
   WordSyllableCount,
   WordToken,

@@ -1,11 +1,13 @@
 import { useId, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
+import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
+import { getToolBySlug } from "@/content/tools";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { countLines } from "@/lib/syllables";
 import type { LineSyllableCount } from "@/lib/syllables/types";
 import { cn } from "@/lib/utils";
+
+const tool = getToolBySlug("syllable-counter")!;
 
 const SAMPLES = [
   {
@@ -174,23 +176,11 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
         </div>
       </div>
 
-      <aside className="border-t border-border/60 pt-8 font-[family-name:var(--font-ui)]">
-        <h2 className="font-[family-name:var(--font-brand)] text-xl tracking-tight text-foreground">
-          Count here. Write in the editor.
-        </h2>
-        <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
-          This page gives you totals. In the full lyriic editor, syllable counts
-          sit beside every line while you draft — with meter rulers for forms
-          like haiku or iambic pentameter, and quiet overrides when a word (say{" "}
-          <em className="text-foreground">fire</em>) should count as one beat
-          instead of two. Drafts stay on your device.
-        </p>
-        <p className="mt-4">
-          <Button asChild>
-            <Link to="/">Open the zen editor</Link>
-          </Button>
-        </p>
-      </aside>
+      <ToolEditorPitch
+        title="Count here. Write in the editor."
+        body="This page gives you totals. In the full lyriic editor, syllable counts sit beside every line while you draft — with meter rulers for forms like haiku or iambic pentameter, and quiet overrides when a word (say fire) should count as one beat instead of two. Drafts stay on your device."
+        cta={tool.cta}
+      />
     </div>
   );
 }

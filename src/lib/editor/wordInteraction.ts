@@ -1,6 +1,7 @@
 import { type Extension, Facet } from "@codemirror/state";
 import {
   EditorView,
+  keymap,
   type PluginValue,
   type ViewUpdate,
   ViewPlugin,
@@ -8,15 +9,28 @@ import {
 
 import {
   pointerHitsWordAnchor,
+  resolveWordTarget,
   wordTargetAtPointer,
   type WordTarget,
 } from "@/lib/editor/resolveWordTarget";
-import { openWordLookup } from "@/lib/editor/wordLookup";
 
-/** Alias kept for WordToolbarPopover imports. */
-export type WordToolbarTarget = WordTarget;
+export type { WordTarget };
 
-export type WordToolbarHandler = (target: WordTarget | null) => void;
+export type WordLookupMode = "thesaurus" | "rhyme";
+
+export type WordLookupRequest = WordTarget & {
+  mode: WordLookupMode;
+  /**
+   * Syllable count for the resolved token, filled at open by PoemEditor when
+   * metered line data is available.
+   */
+  tokenSyllables?: number;
+};
+
+export type WordInteractionHandlers = {
+  onToolbarChange: (target: WordTarget | null) => void;
+  onOpenLookup: (request: WordLookupRequest) => void;
+};
 
 /** Exported for tests. */
 export const HOVER_SHOW_MS = 350;
@@ -30,17 +44,17 @@ export const WORD_TOOLBAR_ATTR = "data-word-toolbar";
 
 const MOVE_CANCEL_PX = 8;
 
-const wordToolbarFacet = Facet.define<
-  WordToolbarHandler,
-  WordToolbarHandler | null
+const wordInteractionFacet = Facet.define<
+  WordInteractionHandlers,
+  WordInteractionHandlers | null
 >({
   combine(handlers) {
     return handlers[handlers.length - 1] ?? null;
   },
 });
 
-function emit(view: EditorView, target: WordTarget | null): void {
-  view.state.facet(wordToolbarFacet)?.(target);
+function emitToolbar(view: EditorView, target: WordTarget | null): void {
+  view.state.facet(wordInteractionFacet)?.onToolbarChange(target);
 }
 
 function targetKey(target: WordTarget | null): string {
@@ -49,7 +63,10 @@ function targetKey(target: WordTarget | null): string {
 }
 
 function isInsideToolbar(target: EventTarget | null): boolean {
-  return target instanceof Element && Boolean(target.closest(`[${WORD_TOOLBAR_ATTR}]`));
+  return (
+    target instanceof Element &&
+    Boolean(target.closest(`[${WORD_TOOLBAR_ATTR}]`))
+  );
 }
 
 /**
@@ -65,7 +82,7 @@ class WordPointerPlugin implements PluginValue {
   private openKey = "";
   private openTarget: WordTarget | null = null;
   private popoverHovered = false;
-  /** When true, ignore mouse-leave hide (e.g. syllable override panel). */
+  /** When true, ignore mouse-leave hide (e.g. syllable / lookup panels). */
   private sticky = false;
   private docListening = false;
   private suppressTap = false;
@@ -119,8 +136,8 @@ class WordPointerPlugin implements PluginValue {
   }
 
   /**
-   * Pin the toolbar open (no mouse-leave dismiss). Used while the syllable
-   * override panel is active so editing isn’t interrupted by mouseout.
+   * Pin the toolbar open (no mouse-leave dismiss). Used while syllable /
+   * thesaurus / rhyme panels are active so editing isn’t interrupted by mouseout.
    */
   setSticky(sticky: boolean): void {
     this.sticky = sticky;
@@ -180,7 +197,7 @@ class WordPointerPlugin implements PluginValue {
     if (this.openKey) {
       this.openKey = "";
       this.openTarget = null;
-      emit(this.view, null);
+      emitToolbar(this.view, null);
     }
   }
 
@@ -199,7 +216,7 @@ class WordPointerPlugin implements PluginValue {
       this.showTimer = null;
       this.pendingKey = "";
       this.setOpen(target);
-      emit(this.view, target);
+      emitToolbar(this.view, target);
     }, HOVER_SHOW_MS);
   }
 
@@ -214,7 +231,7 @@ class WordPointerPlugin implements PluginValue {
       this.detachDocumentListener();
       this.openKey = "";
       this.openTarget = null;
-      emit(this.view, null);
+      emitToolbar(this.view, null);
     }, HOVER_HIDE_MS);
   }
 
@@ -228,7 +245,7 @@ class WordPointerPlugin implements PluginValue {
     this.clearShow();
     this.clearHide();
     this.setOpen(target);
-    emit(this.view, target);
+    emitToolbar(this.view, target);
   }
 
   private isPinnedWordAt(x: number, y: number): boolean {
@@ -371,6 +388,43 @@ function getPlugin(view: EditorView): WordPointerPlugin | null {
   return view.plugin(wordPointerPlugin);
 }
 
+/** Open thesaurus/rhyme for the word at selection or an optional document pos. */
+export function openWordLookup(
+  view: EditorView,
+  mode: WordLookupMode,
+  pos?: number,
+): boolean {
+  const handlers = view.state.facet(wordInteractionFacet);
+  if (!handlers) return false;
+  const target = resolveWordTarget(view, pos);
+  if (!target) return false;
+  // Drop hover toolbar so React state is owned by the lookup panel.
+  getPlugin(view)?.dismiss();
+  handlers.onOpenLookup({ ...target, mode });
+  return true;
+}
+
+/** Open thesaurus for the word at the current selection / caret. */
+export function openThesaurusCommand(view: EditorView): boolean {
+  return openWordLookup(view, "thesaurus");
+}
+
+/** Open rhyme lookup for the word at the current selection / caret. */
+export function openRhymeCommand(view: EditorView): boolean {
+  return openWordLookup(view, "rhyme");
+}
+
+const wordLookupKeymap = keymap.of([
+  {
+    key: "Mod-'",
+    run: openThesaurusCommand,
+  },
+  {
+    key: "Mod-;",
+    run: openRhymeCommand,
+  },
+]);
+
 /** Cancel hide while the pointer is over the portaled toolbar. */
 export function setWordToolbarPopoverHovered(
   view: EditorView,
@@ -379,7 +433,7 @@ export function setWordToolbarPopoverHovered(
   getPlugin(view)?.setPopoverHovered(hovered);
 }
 
-/** Pin toolbar open while an intentional panel (syllables) is active. */
+/** Pin toolbar open while an intentional panel is active. */
 export function setWordToolbarSticky(
   view: EditorView,
   sticky: boolean,
@@ -392,10 +446,30 @@ export function dismissWordToolbar(view: EditorView): void {
   getPlugin(view)?.dismiss();
 }
 
+/** Targeted in-place word replace (undoable via CM history). */
+export function replaceWordRange(
+  view: EditorView,
+  from: number,
+  to: number,
+  insert: string,
+): void {
+  view.dispatch({
+    changes: { from, to, insert },
+    selection: { anchor: from + insert.length },
+    userEvent: "input.replace.wordLookup",
+  });
+  view.focus();
+}
+
 /**
- * Debounced hover + tap word toolbar + long-press thesaurus bridge.
- * Emits a word target (or null to dismiss) via the handler facet.
+ * Hover/tap word toolbar + long-press/keymap thesaurus·rhyme bridge.
  */
-export function wordToolbarExtension(onChange: WordToolbarHandler): Extension {
-  return [wordToolbarFacet.of(onChange), wordPointerPlugin];
+export function wordInteractionExtension(
+  handlers: WordInteractionHandlers,
+): Extension {
+  return [
+    wordInteractionFacet.of(handlers),
+    wordPointerPlugin,
+    wordLookupKeymap,
+  ];
 }

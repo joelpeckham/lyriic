@@ -12,3 +12,11 @@ export function normalizeWord(
     .replace(/['\u2019]/g, "'")
     .replace(strip, "");
 }
+
+/** Trim + lowercase + straighten apostrophes for rhyme/thesaurus keys. */
+export function normalizeLookupKey(word: string): string {
+  return word
+    .trim()
+    .toLowerCase()
+    .replace(/[\u2019']/g, "'");
+}

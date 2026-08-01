@@ -1,26 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { RhymeEditorPitch } from "@/components/tools/RhymeEditorPitch";
-import {
-  RhymeWordBank,
-  type RhymeSyllableGroup,
-} from "@/components/tools/RhymeWordBank";
+import { RhymeWordBank } from "@/components/tools/RhymeWordBank";
+import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
+import { getToolBySlug } from "@/content/tools";
 import { useDictRevision } from "@/hooks/useDictRevision";
-import { normalizeLookupKey } from "@/lib/data/lazyJson";
 import { getLexicon, syllablesForId } from "@/lib/data/lexicon";
 import {
   hasRhymeEntry,
   isRhymeIndexReady,
   loadRhymeIndex,
   lookupRhymeIds,
-  materializeWords,
   type RhymeMode,
 } from "@/lib/rhyme";
 import { countWord } from "@/lib/syllables";
+import { normalizeLookupKey } from "@/lib/syllables/normalize";
+import { rankAndGroupRhymeIds } from "@/lib/wordLookup";
 import { cn } from "@/lib/utils";
+
+const tool = getToolBySlug("rhyme-finder")!;
 
 const EXAMPLE_WORDS = [
   "light",
@@ -31,28 +31,6 @@ const EXAMPLE_WORDS = [
   "fire",
   "fun",
 ] as const;
-
-function groupIdsBySyllables(ids: number[]): RhymeSyllableGroup[] {
-  const lex = getLexicon();
-  const map = new Map<number, number[]>();
-  for (const id of ids) {
-    const packed = syllablesForId(id);
-    const count =
-      packed ??
-      (lex ? countWord(lex.words[id] ?? "").count : 0);
-    const list = map.get(count);
-    if (list) list.push(id);
-    else map.set(count, [id]);
-  }
-  return [...map.entries()]
-    .sort(([a], [b]) => a - b)
-    .map(([syllables, groupIds]) => {
-      const words = materializeWords(groupIds, lex).sort((a, b) =>
-        a.localeCompare(b),
-      );
-      return { syllables, words };
-    });
-}
 
 export function RhymeFinderTool() {
   const [query, setQuery] = useState("");
@@ -96,10 +74,21 @@ export function RhymeFinderTool() {
   }, [lookupKey, rhymeReady, rhymeMode]);
 
   const groups = useMemo(() => {
-    if (!dictReady || rhymeIds.length === 0) return [];
+    if (!dictReady || !lookupKey || rhymeIds.length === 0) return [];
     void dictRevision;
-    return groupIdsBySyllables(rhymeIds);
-  }, [rhymeIds, dictReady, dictRevision]);
+    const lex = getLexicon();
+    if (!lex) return [];
+    const queryId = lex.wordToId.get(lookupKey);
+    const packed =
+      queryId !== undefined ? syllablesForId(queryId) : undefined;
+    const tokenSyllables =
+      packed ?? countWord(lookupKey).count;
+    return rankAndGroupRhymeIds({
+      ids: rhymeIds,
+      words: lex.words,
+      tokenSyllables,
+    });
+  }, [rhymeIds, dictReady, dictRevision, lookupKey]);
 
   const status = !rhymeReady
     ? "loading-index"
@@ -237,7 +226,11 @@ export function RhymeFinderTool() {
         ) : null}
       </div>
 
-      <RhymeEditorPitch />
+      <ToolEditorPitch
+        title="Don’t leave your line"
+        body="In the lyriic editor, hover or tap a word for rhymes sorted by syllable count—right beside your draft, with meter-aware highlighting when a ruler is on."
+        cta={tool.cta}
+      />
     </div>
   );
 }

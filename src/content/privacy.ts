@@ -11,7 +11,7 @@ export const PRIVACY_INTRO =
 export const PRIVACY_SECTIONS = [
   {
     h2: "What lyriic stores",
-    body: "Drafts (poem text, settings, and syllable overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, font size, and related flags) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.",
+    body: "Drafts (poem text, settings, and syllable overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.",
   },
   {
     h2: "What we do not collect",

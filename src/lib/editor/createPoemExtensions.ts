@@ -1,24 +1,20 @@
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { type Extension } from "@codemirror/state";
+import { Annotation, type Extension } from "@codemirror/state";
 import { EditorView, keymap, placeholder } from "@codemirror/view";
 
 import { syllableOverlay } from "@/lib/editor/syllableOverlay";
 import {
-  wordLookupExtension,
-  type WordLookupHandler,
-} from "@/lib/editor/wordLookup";
-import {
-  wordToolbarExtension,
-  type WordToolbarHandler,
-} from "@/lib/editor/wordToolbar";
+  wordInteractionExtension,
+  type WordInteractionHandlers,
+} from "@/lib/editor/wordInteraction";
+
+/** Marks a full-doc replace driven by the React `value` prop (not user typing). */
+export const externalValueSync = Annotation.define<boolean>();
 
 export type PoemExtensionOptions = {
-  onDocChange: (text: string) => void;
+  onDocChange: (text: string, info: { userEdit: boolean }) => void;
   onActiveLineChange: (lineIndex: number) => void;
-  onOpenWordLookup?: WordLookupHandler;
-  onWordToolbarChange?: WordToolbarHandler;
-  /** Empty-doc placeholder; defaults to a short zen prompt. */
-  placeholderText?: string;
+  onWordInteraction?: WordInteractionHandlers;
 };
 
 /**
@@ -29,15 +25,13 @@ export type PoemExtensionOptions = {
 export function createPoemExtensions({
   onDocChange,
   onActiveLineChange,
-  onOpenWordLookup,
-  onWordToolbarChange,
-  placeholderText = "Write a line…",
+  onWordInteraction,
 }: PoemExtensionOptions): Extension[] {
   return [
     history(),
     // Native browser selection (text-shaped) rather than CM's full-width blocks.
     EditorView.lineWrapping,
-    placeholder(placeholderText),
+    placeholder("Write a line…"),
     keymap.of([...defaultKeymap, ...historyKeymap]),
     EditorView.editorAttributes.of({
       class: "lyriic-poem",
@@ -53,13 +47,15 @@ export function createPoemExtensions({
       enterkeyhint: "enter",
     }),
     syllableOverlay,
-    ...(onOpenWordLookup ? [wordLookupExtension(onOpenWordLookup)] : []),
-    ...(onWordToolbarChange
-      ? [wordToolbarExtension(onWordToolbarChange)]
+    ...(onWordInteraction
+      ? [wordInteractionExtension(onWordInteraction)]
       : []),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) {
-        onDocChange(update.state.doc.toString());
+        const userEdit = !update.transactions.some((tr) =>
+          tr.annotation(externalValueSync),
+        );
+        onDocChange(update.state.doc.toString(), { userEdit });
       }
       if (update.selectionSet || update.docChanged) {
         const head = update.state.selection.main.head;

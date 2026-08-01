@@ -291,7 +291,7 @@ function keyFrom(phones, start) {
 
 /**
  * Perfect-rhyme key: phones from the last primary-stressed vowel (else last
- * secondary) through the coda. Mirrored in src/lib/rhyme/rhymeKey.ts.
+ * secondary) through the coda. Build-time only (packs store precomputed keys).
  *
  * @param {string} ipa
  * @returns {string | null}
@@ -345,7 +345,7 @@ const IPA_CLOSING_DIPHTHONGS = new Set(["aɪ", "aʊ", "ɔɪ"]);
  * End-rhyme / unstressed key: last vowel nucleus through the coda, ignoring
  * stress. Matches line-final identity (fun ↔ anyone).
  * For -ire sequences (aɪɚ / aɪə), keep the diphthong so fire ↛ butter.
- * Mirrored in src/lib/rhyme/rhymeKey.ts.
+ * Build-time only (packs store precomputed keys).
  *
  * @param {string} ipa
  * @returns {string | null}

@@ -8,7 +8,6 @@ import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
 import { PoemEditor } from "@/components/editor/PoemEditor";
 import { Button } from "@/components/ui/button";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
-import { usePrefs } from "@/hooks/usePrefs";
 import { useProjects } from "@/hooks/useProjects";
 import type { EditorSettings } from "@/lib/settings";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
@@ -19,8 +18,6 @@ const SettingsSheet = lazy(() =>
     default: m.SettingsSheet,
   })),
 );
-
-const FIRST_RUN_PLACEHOLDER = "Write a line…";
 
 function focusPoem(): void {
   const poem = document.getElementById("poem");
@@ -100,7 +97,6 @@ export function EditorShell() {
     saveStatus,
   } = useProjects();
 
-  const { prefs, markEditorHintSeen } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   // Keep the brand title on first paint / sharing; only rename after the draft
@@ -130,16 +126,6 @@ export function EditorShell() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [settingsOpen]);
-
-  useEffect(() => {
-    if (prefs.seenEditorHint) return;
-    if (active.text.trim().length === 0) return;
-    markEditorHintSeen();
-  }, [active.text, prefs.seenEditorHint, markEditorHintSeen]);
-
-  const placeholderText = prefs.seenEditorHint
-    ? "Write a line…"
-    : FIRST_RUN_PLACEHOLDER;
 
   return (
     <div className="relative flex min-h-dvh flex-1 flex-col">
@@ -183,7 +169,6 @@ export function EditorShell() {
             onSetOverride={setOverride}
             onClearOverride={clearOverride}
             documentKey={active.id}
-            placeholderText={placeholderText}
           />
         </EditorErrorBoundary>
       </main>

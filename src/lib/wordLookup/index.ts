@@ -1,9 +1,14 @@
 export {
-  clearRankedCache,
   getCachedRanked,
   rankedCacheKey,
   setCachedRanked,
 } from "./cache";
+export {
+  groupRankedBySyllables,
+  groupRhymeIdsBySyllables,
+  rankAndGroupRhymeIds,
+  type RhymeSyllableGroup,
+} from "./groupRhymes";
 export {
   POPOVER_RHYME_RANK_LIMIT,
   POPOVER_THESAURUS_RANK_LIMIT,

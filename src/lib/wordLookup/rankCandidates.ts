@@ -53,7 +53,7 @@ function normalizeInput(raw: RankCandidateInput): {
 /**
  * Rank lookup candidates for the editor popover.
  * Prefer usage matches, then meter-preserving matches, then closest syllable
- * count to the replaced token, then alpha.
+ * count to the replaced token. Ties keep input order (Zipf for packed lookups).
  * When `lineTarget` is null, `keepsMeter` is always false.
  */
 export function rankCandidates({
@@ -89,6 +89,7 @@ export function rankCandidates({
     });
   }
 
+  // Stable sort: when keys tie, keep input order (Zipf for packed lookups).
   ranked.sort((a, b) => {
     if (a.matchesUsage !== b.matchesUsage) return a.matchesUsage ? -1 : 1;
     if (a.keepsMeter !== b.keepsMeter) return a.keepsMeter ? -1 : 1;
@@ -96,7 +97,7 @@ export function rankCandidates({
     const db = Math.abs(b.syllables - tokenSyllables);
     if (da !== db) return da - db;
     if (a.syllables !== b.syllables) return a.syllables - b.syllables;
-    return a.word.localeCompare(b.word);
+    return 0;
   });
 
   return ranked;

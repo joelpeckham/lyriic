@@ -50,8 +50,3 @@ export function setCachedRanked(
     cache.delete(oldest);
   }
 }
-
-/** Test / project-switch helper. */
-export function clearRankedCache(): void {
-  cache.clear();
-}

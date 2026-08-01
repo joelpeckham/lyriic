@@ -7,7 +7,7 @@
  * Base dict|heuristic counts are memoized; overrides are layered on top
  * so threaded project overrides never pollute the cache.
  */
-import { lookupDict } from "./dict";
+import { lookupDict } from "@/lib/data/lexicon";
 import { countHeuristic } from "./heuristic";
 import { normalizeWord } from "./normalize";
 import { isValidOverrideCount, normalizeOverrideKey } from "./overrides";

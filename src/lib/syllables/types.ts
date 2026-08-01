@@ -20,9 +20,3 @@ export type LineSyllableCount = {
   perWord: WordSyllableCount[];
   tokens: WordToken[];
 };
-
-/** Future languages implement this; English is the first provider. */
-export type SyllableProvider = {
-  id: string;
-  countWord: (word: string) => WordSyllableCount;
-};

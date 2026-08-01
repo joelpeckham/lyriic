@@ -9,12 +9,10 @@ import {
 
 import { toast } from "sonner";
 
+import type { RhymeSyllableGroup } from "@/lib/wordLookup";
 import { cn } from "@/lib/utils";
 
-export type RhymeSyllableGroup = {
-  syllables: number;
-  words: string[];
-};
+export type { RhymeSyllableGroup };
 
 type FlatItem =
   | { kind: "header"; syllables: number; count: number; key: string }
