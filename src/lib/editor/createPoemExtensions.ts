@@ -7,11 +7,16 @@ import {
   wordLookupExtension,
   type WordLookupHandler,
 } from "@/lib/editor/wordLookup";
+import {
+  wordToolbarExtension,
+  type WordToolbarHandler,
+} from "@/lib/editor/wordToolbar";
 
 export type PoemExtensionOptions = {
   onDocChange: (text: string) => void;
   onActiveLineChange: (lineIndex: number) => void;
   onOpenWordLookup?: WordLookupHandler;
+  onWordToolbarChange?: WordToolbarHandler;
   /** Empty-doc placeholder; defaults to a short zen prompt. */
   placeholderText?: string;
 };
@@ -25,6 +30,7 @@ export function createPoemExtensions({
   onDocChange,
   onActiveLineChange,
   onOpenWordLookup,
+  onWordToolbarChange,
   placeholderText = "Write a line…",
 }: PoemExtensionOptions): Extension[] {
   return [
@@ -48,6 +54,9 @@ export function createPoemExtensions({
     }),
     syllableOverlay,
     ...(onOpenWordLookup ? [wordLookupExtension(onOpenWordLookup)] : []),
+    ...(onWordToolbarChange
+      ? [wordToolbarExtension(onWordToolbarChange)]
+      : []),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) {
         onDocChange(update.state.doc.toString());

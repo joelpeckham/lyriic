@@ -4,6 +4,7 @@ import { EditorView } from "@codemirror/view";
 
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
 import { WordLookupPopover } from "@/components/editor/WordLookupPopover";
+import { WordToolbarPopover } from "@/components/editor/WordToolbarPopover";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
 import {
@@ -12,9 +13,16 @@ import {
 } from "@/lib/editor/meterOverlay";
 import { getSyllableOverlay } from "@/lib/editor/syllableOverlay";
 import {
+  lookupRequestFromTarget,
   replaceWordRange,
   type WordLookupRequest,
 } from "@/lib/editor/wordLookup";
+import {
+  dismissWordToolbar,
+  setWordToolbarPopoverHovered,
+  setWordToolbarSticky,
+  type WordToolbarTarget,
+} from "@/lib/editor/wordToolbar";
 import { zenEditorTheme } from "@/lib/editor/zenTheme";
 import {
   buildMeteredLines,
@@ -29,6 +37,8 @@ type PoemEditorProps = {
   settings: EditorSettings;
   /** Active project overrides — threaded into counting + cache invalidation. */
   overrides: Record<string, number>;
+  onSetOverride: (word: string, count: number) => void;
+  onClearOverride: (word: string) => void;
   /** Stable document identity (e.g. project id) for full remount. */
   documentKey: string;
   /** Empty-doc placeholder (first-run hint vs short prompt). */
@@ -49,6 +59,8 @@ export function PoemEditor({
   onChange,
   settings,
   overrides,
+  onSetOverride,
+  onClearOverride,
   documentKey,
   placeholderText,
 }: PoemEditorProps) {
@@ -59,6 +71,9 @@ export function PoemEditor({
   const onOpenWordLookupRef = useRef<(request: WordLookupRequest) => void>(
     () => {},
   );
+  const onWordToolbarChangeRef = useRef<
+    (target: WordToolbarTarget | null) => void
+  >(() => {});
   /** Live CM document — counts stay in sync even when parent text is debounced. */
   const [liveText, setLiveText] = useState(value);
   const [activeLineIndex, setActiveLineIndex] = useState(0);
@@ -66,6 +81,8 @@ export function PoemEditor({
   const [lookupRequest, setLookupRequest] = useState<WordLookupRequest | null>(
     null,
   );
+  const [toolbarTarget, setToolbarTarget] =
+    useState<WordToolbarTarget | null>(null);
 
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
@@ -73,7 +90,11 @@ export function PoemEditor({
 
   useLayoutEffect(() => {
     onOpenWordLookupRef.current = (request) => {
+      setToolbarTarget(null);
       setLookupRequest(request);
+    };
+    onWordToolbarChangeRef.current = (target) => {
+      setToolbarTarget(target);
     };
   }, []);
 
@@ -119,6 +140,9 @@ export function PoemEditor({
           onActiveLineChange: setActiveLineIndex,
           onOpenWordLookup: (request) => {
             onOpenWordLookupRef.current(request);
+          },
+          onWordToolbarChange: (target) => {
+            onWordToolbarChangeRef.current(target);
           },
           placeholderText,
         }),
@@ -225,6 +249,33 @@ export function PoemEditor({
         {settings.showCounts ? liveCountText : ""}
       </div>
       <div ref={parentRef} className="h-full w-full" />
+      <WordToolbarPopover
+        target={toolbarTarget}
+        onClose={() => {
+          const view = viewRef.current;
+          if (view) dismissWordToolbar(view);
+          setToolbarTarget(null);
+        }}
+        onPopoverHoverChange={(hovered) => {
+          const view = viewRef.current;
+          if (view) setWordToolbarPopoverHovered(view, hovered);
+        }}
+        onStickyChange={(sticky) => {
+          const view = viewRef.current;
+          if (view) setWordToolbarSticky(view, sticky);
+        }}
+        onOpenLookup={(mode) => {
+          if (!toolbarTarget) return;
+          const request = lookupRequestFromTarget(toolbarTarget, mode);
+          const view = viewRef.current;
+          if (view) dismissWordToolbar(view);
+          setToolbarTarget(null);
+          setLookupRequest(request);
+        }}
+        onSetOverride={onSetOverride}
+        onClearOverride={onClearOverride}
+        overrides={overrides}
+      />
       <WordLookupPopover
         request={lookupRequest}
         onClose={() => setLookupRequest(null)}

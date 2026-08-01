@@ -1,0 +1,370 @@
+import { type Extension, Facet } from "@codemirror/state";
+import {
+  EditorView,
+  type PluginValue,
+  type ViewUpdate,
+  ViewPlugin,
+} from "@codemirror/view";
+
+import {
+  pointerHitsWordAnchor,
+  wordTargetAtPointer,
+  type WordTarget,
+} from "@/lib/editor/resolveWordTarget";
+
+export type WordToolbarTarget = WordTarget;
+
+export type WordToolbarHandler = (target: WordToolbarTarget | null) => void;
+
+/** Exported for tests. */
+export const HOVER_SHOW_MS = 350;
+/** Exported for tests. */
+export const HOVER_HIDE_MS = 120;
+
+/** Selector for the portaled toolbar surface (word ∪ toolbar hover target). */
+export const WORD_TOOLBAR_ATTR = "data-word-toolbar";
+
+const MOVE_CANCEL_PX = 8;
+/** Skip tap-open if the press lasted long enough to be a long-press. */
+const LONG_PRESS_SKIP_MS = 450;
+
+const wordToolbarFacet = Facet.define<
+  WordToolbarHandler,
+  WordToolbarHandler | null
+>({
+  combine(handlers) {
+    return handlers[handlers.length - 1] ?? null;
+  },
+});
+
+function emit(view: EditorView, target: WordToolbarTarget | null): void {
+  view.state.facet(wordToolbarFacet)?.(target);
+}
+
+function targetKey(target: WordToolbarTarget | null): string {
+  if (!target) return "";
+  return `${target.from}:${target.to}:${target.word}`;
+}
+
+function isInsideToolbar(target: EventTarget | null): boolean {
+  return target instanceof Element && Boolean(target.closest(`[${WORD_TOOLBAR_ATTR}]`));
+}
+
+class WordToolbarPlugin implements PluginValue {
+  private view: EditorView;
+  private showTimer: number | null = null;
+  private hideTimer: number | null = null;
+  private pendingKey = "";
+  private openKey = "";
+  private openTarget: WordToolbarTarget | null = null;
+  private popoverHovered = false;
+  /** When true, ignore mouse-leave hide (e.g. syllable override panel). */
+  private sticky = false;
+  private docListening = false;
+  private pointerDown: {
+    x: number;
+    y: number;
+    pos: number;
+    at: number;
+    moved: boolean;
+  } | null = null;
+
+  constructor(view: EditorView) {
+    this.view = view;
+    this.onPointerMove = this.onPointerMove.bind(this);
+    this.onPointerDown = this.onPointerDown.bind(this);
+    this.onPointerUp = this.onPointerUp.bind(this);
+    this.onPointerCancel = this.onPointerCancel.bind(this);
+    this.onDocumentPointerMove = this.onDocumentPointerMove.bind(this);
+    view.dom.addEventListener("pointermove", this.onPointerMove);
+    view.dom.addEventListener("pointerdown", this.onPointerDown);
+    view.dom.addEventListener("pointerup", this.onPointerUp);
+    view.dom.addEventListener("pointercancel", this.onPointerCancel);
+  }
+
+  update(update: ViewUpdate): void {
+    if (update.docChanged || update.viewportChanged) {
+      this.dismissImmediate();
+    }
+  }
+
+  destroy(): void {
+    this.clearShow();
+    this.clearHide();
+    this.detachDocumentListener();
+    this.view.dom.removeEventListener("pointermove", this.onPointerMove);
+    this.view.dom.removeEventListener("pointerdown", this.onPointerDown);
+    this.view.dom.removeEventListener("pointerup", this.onPointerUp);
+    this.view.dom.removeEventListener("pointercancel", this.onPointerCancel);
+  }
+
+  /** React popover enter/leave — part of the hover target while open. */
+  setPopoverHovered(hovered: boolean): void {
+    this.popoverHovered = hovered;
+    if (!this.openKey) return;
+    if (hovered) {
+      this.clearHide();
+    } else {
+      this.scheduleHide();
+    }
+  }
+
+  /**
+   * Pin the toolbar open (no mouse-leave dismiss). Used while the syllable
+   * override panel is active so editing isn’t interrupted by mouseout.
+   */
+  setSticky(sticky: boolean): void {
+    this.sticky = sticky;
+    if (sticky) this.clearHide();
+  }
+
+  /** Sync React-driven close with plugin open state. */
+  dismiss(): void {
+    this.dismissImmediate();
+  }
+
+  private clearShow(): void {
+    if (this.showTimer !== null) {
+      window.clearTimeout(this.showTimer);
+      this.showTimer = null;
+    }
+    this.pendingKey = "";
+  }
+
+  private clearHide(): void {
+    if (this.hideTimer !== null) {
+      window.clearTimeout(this.hideTimer);
+      this.hideTimer = null;
+    }
+  }
+
+  private attachDocumentListener(): void {
+    if (this.docListening) return;
+    document.addEventListener("pointermove", this.onDocumentPointerMove, true);
+    this.docListening = true;
+  }
+
+  private detachDocumentListener(): void {
+    if (!this.docListening) return;
+    document.removeEventListener(
+      "pointermove",
+      this.onDocumentPointerMove,
+      true,
+    );
+    this.docListening = false;
+  }
+
+  private dismissImmediate(): void {
+    this.clearShow();
+    this.clearHide();
+    this.popoverHovered = false;
+    this.sticky = false;
+    this.detachDocumentListener();
+    if (this.openKey) {
+      this.openKey = "";
+      this.openTarget = null;
+      emit(this.view, null);
+    }
+  }
+
+  private scheduleShow(target: WordToolbarTarget): void {
+    const key = targetKey(target);
+    if (key === this.openKey) {
+      this.clearHide();
+      return;
+    }
+    if (key === this.pendingKey && this.showTimer !== null) return;
+
+    this.clearShow();
+    this.clearHide();
+    this.pendingKey = key;
+    this.showTimer = window.setTimeout(() => {
+      this.showTimer = null;
+      this.pendingKey = "";
+      this.setOpen(target);
+      emit(this.view, target);
+    }, HOVER_SHOW_MS);
+  }
+
+  private scheduleHide(): void {
+    this.clearShow();
+    if (!this.openKey) return;
+    if (this.sticky || this.popoverHovered) return;
+    if (this.hideTimer !== null) return;
+    this.hideTimer = window.setTimeout(() => {
+      this.hideTimer = null;
+      this.popoverHovered = false;
+      this.detachDocumentListener();
+      this.openKey = "";
+      this.openTarget = null;
+      emit(this.view, null);
+    }, HOVER_HIDE_MS);
+  }
+
+  private setOpen(target: WordToolbarTarget): void {
+    this.openKey = targetKey(target);
+    this.openTarget = target;
+    this.attachDocumentListener();
+  }
+
+  private openNow(target: WordToolbarTarget): void {
+    this.clearShow();
+    this.clearHide();
+    this.setOpen(target);
+    emit(this.view, target);
+  }
+
+  private isPinnedWordAt(x: number, y: number): boolean {
+    if (!this.openKey || !this.openTarget) return false;
+    // Geometry first — empty line margins must not keep the pin alive via
+    // snapped document positions.
+    const geo = pointerHitsWordAnchor(x, y, this.openTarget.anchor);
+    if (geo === true) return true;
+    if (geo === false) return false;
+    // No glyph box (jsdom): fall back to precise word-under-pointer.
+    const target = wordTargetAtPointer(this.view, x, y);
+    return target !== null && targetKey(target) === this.openKey;
+  }
+
+  private onDocumentPointerMove(event: PointerEvent): void {
+    if (!this.openKey) return;
+    if (event.pointerType !== "mouse") return;
+
+    if (this.popoverHovered || isInsideToolbar(event.target)) {
+      this.clearHide();
+      return;
+    }
+
+    if (this.isPinnedWordAt(event.clientX, event.clientY)) {
+      this.clearHide();
+      return;
+    }
+
+    this.scheduleHide();
+  }
+
+  private onPointerMove(event: PointerEvent): void {
+    if (this.pointerDown) {
+      const dx = event.clientX - this.pointerDown.x;
+      const dy = event.clientY - this.pointerDown.y;
+      if (dx * dx + dy * dy > MOVE_CANCEL_PX * MOVE_CANCEL_PX) {
+        this.pointerDown.moved = true;
+        this.clearShow();
+      }
+      return;
+    }
+
+    // Hover affordance is mouse-only; touch uses tap.
+    if (event.pointerType !== "mouse") return;
+
+    // While open, pin the word — hover must not retarget. Document listener
+    // owns leave detection; editor moves over other words just schedule hide.
+    if (this.openKey) {
+      if (this.isPinnedWordAt(event.clientX, event.clientY)) {
+        this.clearHide();
+      } else if (!this.popoverHovered && !isInsideToolbar(event.target)) {
+        this.scheduleHide();
+      }
+      return;
+    }
+
+    const target = wordTargetAtPointer(
+      this.view,
+      event.clientX,
+      event.clientY,
+    );
+    if (!target) {
+      this.clearShow();
+      return;
+    }
+
+    this.scheduleShow(target);
+  }
+
+  private onPointerDown(event: PointerEvent): void {
+    if (event.button !== 0) return;
+    const target = wordTargetAtPointer(
+      this.view,
+      event.clientX,
+      event.clientY,
+    );
+    if (!target) {
+      this.pointerDown = null;
+      this.dismissImmediate();
+      return;
+    }
+    this.pointerDown = {
+      x: event.clientX,
+      y: event.clientY,
+      pos: target.from,
+      at: performance.now(),
+      moved: false,
+    };
+  }
+
+  private onPointerUp(event: PointerEvent): void {
+    const down = this.pointerDown;
+    this.pointerDown = null;
+    if (!down || event.button !== 0) return;
+
+    const dx = event.clientX - down.x;
+    const dy = event.clientY - down.y;
+    if (dx * dx + dy * dy > MOVE_CANCEL_PX * MOVE_CANCEL_PX || down.moved) {
+      return;
+    }
+    if (performance.now() - down.at >= LONG_PRESS_SKIP_MS) {
+      // Long-press owns this gesture (thesaurus).
+      return;
+    }
+
+    const target = wordTargetAtPointer(
+      this.view,
+      event.clientX,
+      event.clientY,
+    );
+    if (!target) {
+      this.dismissImmediate();
+      return;
+    }
+    this.openNow(target);
+  }
+
+  private onPointerCancel(): void {
+    this.pointerDown = null;
+  }
+}
+
+const wordToolbarPlugin = ViewPlugin.fromClass(WordToolbarPlugin);
+
+function getPlugin(view: EditorView): WordToolbarPlugin | null {
+  return view.plugin(wordToolbarPlugin);
+}
+
+/** Cancel hide while the pointer is over the portaled toolbar. */
+export function setWordToolbarPopoverHovered(
+  view: EditorView,
+  hovered: boolean,
+): void {
+  getPlugin(view)?.setPopoverHovered(hovered);
+}
+
+/** Pin toolbar open while an intentional panel (syllables) is active. */
+export function setWordToolbarSticky(
+  view: EditorView,
+  sticky: boolean,
+): void {
+  getPlugin(view)?.setSticky(sticky);
+}
+
+/** Sync React-driven close with the CM plugin open state. */
+export function dismissWordToolbar(view: EditorView): void {
+  getPlugin(view)?.dismiss();
+}
+
+/**
+ * Debounced hover + tap word toolbar bridge.
+ * Emits a word target (or null to dismiss) via the handler facet.
+ */
+export function wordToolbarExtension(onChange: WordToolbarHandler): Extension {
+  return [wordToolbarFacet.of(onChange), wordToolbarPlugin];
+}

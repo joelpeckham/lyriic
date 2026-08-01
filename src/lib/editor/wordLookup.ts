@@ -6,21 +6,15 @@ import {
   ViewPlugin,
 } from "@codemirror/view";
 
-import { wordAt } from "@/lib/editor/wordAt";
+import {
+  resolveWordTarget,
+  type WordTarget,
+} from "@/lib/editor/resolveWordTarget";
 
 export type WordLookupMode = "thesaurus" | "rhyme";
 
-export type WordLookupRequest = {
+export type WordLookupRequest = WordTarget & {
   mode: WordLookupMode;
-  from: number;
-  to: number;
-  raw: string;
-  word: string;
-  lineIndex: number;
-  /** Absolute start of the poetic line (for mapping token offsets). */
-  lineFrom: number;
-  /** Viewport coords for popover anchoring (from coordsAtPos). */
-  anchor: { left: number; top: number; bottom: number; right: number };
 };
 
 export type WordLookupHandler = (request: WordLookupRequest) => void;
@@ -41,44 +35,9 @@ function resolveRequest(
   mode: WordLookupMode,
   pos?: number,
 ): WordLookupRequest | null {
-  const sel = view.state.selection.main;
-  const from = pos !== undefined ? pos : sel.from;
-  const to = pos !== undefined ? pos : sel.to;
-  const line = view.state.doc.lineAt(from);
-  // Selection must stay on one line for word resolution.
-  if (pos === undefined && to > line.to) return null;
-
-  const resolved = wordAt(line.text, line.from, line.number - 1, from, to);
-  if (!resolved) return null;
-
-  // jsdom / offscreen: coordsAtPos may throw or return null — use a
-  // degenerate anchor so open + replace still work in tests.
-  let anchor = { left: 0, right: 0, top: 0, bottom: 0 };
-  try {
-    const start = view.coordsAtPos(resolved.from);
-    const end = view.coordsAtPos(resolved.to);
-    if (start && end) {
-      anchor = {
-        left: Math.min(start.left, end.left),
-        right: Math.max(start.right, end.right),
-        top: Math.min(start.top, end.top),
-        bottom: Math.max(start.bottom, end.bottom),
-      };
-    }
-  } catch {
-    // keep degenerate anchor
-  }
-
-  return {
-    mode,
-    from: resolved.from,
-    to: resolved.to,
-    raw: resolved.raw,
-    word: resolved.word,
-    lineIndex: resolved.lineIndex,
-    lineFrom: line.from,
-    anchor,
-  };
+  const target = resolveWordTarget(view, pos);
+  if (!target) return null;
+  return { ...target, mode };
 }
 
 function openLookup(view: EditorView, mode: WordLookupMode, pos?: number): boolean {
@@ -98,6 +57,14 @@ export function openThesaurusCommand(view: EditorView): boolean {
 /** Open rhyme lookup for the word at the current selection / caret. */
 export function openRhymeCommand(view: EditorView): boolean {
   return openLookup(view, "rhyme");
+}
+
+/** Build a lookup request from an existing word target + mode. */
+export function lookupRequestFromTarget(
+  target: WordTarget,
+  mode: WordLookupMode,
+): WordLookupRequest {
+  return { ...target, mode };
 }
 
 const wordLookupKeymap = keymap.of([
@@ -152,7 +119,6 @@ class LongPressPlugin implements PluginValue {
     if (pos === null) return;
     this.startX = event.clientX;
     this.startY = event.clientY;
-    this.startPos = pos;
     this.clearTimer();
     this.startPos = pos;
     this.timer = window.setTimeout(() => {

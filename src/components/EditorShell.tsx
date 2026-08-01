@@ -90,9 +90,6 @@ export function EditorShell() {
           <SettingsSheet
             settings={active.settings}
             onChange={setSettings}
-            overrides={active.overrides}
-            onSetOverride={setOverride}
-            onClearOverride={clearOverride}
             open={settingsOpen}
             onOpenChange={setSettingsOpen}
           />
@@ -106,6 +103,8 @@ export function EditorShell() {
             onChange={setText}
             settings={active.settings}
             overrides={active.overrides}
+            onSetOverride={setOverride}
+            onClearOverride={clearOverride}
             documentKey={active.id}
             placeholderText={placeholderText}
           />

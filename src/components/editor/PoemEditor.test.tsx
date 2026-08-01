@@ -22,6 +22,8 @@ describe("PoemEditor", () => {
         onChange={() => {}}
         settings={DEFAULT_SETTINGS}
         overrides={{}}
+        onSetOverride={() => {}}
+        onClearOverride={() => {}}
         documentKey="draft-1"
       />,
     );

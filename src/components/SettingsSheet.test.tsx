@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SettingsSheet } from "@/components/SettingsSheet";
@@ -29,17 +29,12 @@ afterEach(() => {
 function renderSheet(
   props: Partial<{
     settings: typeof DEFAULT_SETTINGS;
-    overrides: Record<string, number>;
     onChange: (next: typeof DEFAULT_SETTINGS) => void;
-    onSetOverride: (word: string, count: number) => void;
-    onClearOverride: (word: string) => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
   }> = {},
 ) {
   const onChange = props.onChange ?? vi.fn();
-  const onSetOverride = props.onSetOverride ?? vi.fn();
-  const onClearOverride = props.onClearOverride ?? vi.fn();
   const onOpenChange = props.onOpenChange ?? vi.fn();
 
   render(
@@ -47,16 +42,13 @@ function renderSheet(
       <SettingsSheet
         settings={props.settings ?? DEFAULT_SETTINGS}
         onChange={onChange}
-        overrides={props.overrides ?? {}}
-        onSetOverride={onSetOverride}
-        onClearOverride={onClearOverride}
         open={props.open ?? false}
         onOpenChange={onOpenChange}
       />
     </PrefsProvider>,
   );
 
-  return { onChange, onSetOverride, onClearOverride, onOpenChange };
+  return { onChange, onOpenChange };
 }
 
 async function openSettings(
@@ -78,40 +70,34 @@ describe("SettingsSheet", () => {
     );
   });
 
-  it("adds and clears syllable overrides through project mutators", async () => {
-    const onSetOverride = vi.fn();
-    const onClearOverride = vi.fn();
-    await openSettings({
-      overrides: { fire: 1 },
-      onSetOverride,
-      onClearOverride,
-    });
+  it("selects meter presets via radio buttons", async () => {
+    const { onChange } = await openSettings();
 
-    const list = screen.getByRole("list", { name: "Active overrides" });
-    expect(within(list).getByText(/fire/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("radio", { name: /Haiku/ }));
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Clear override for fire" }),
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ meter: "haiku" }),
     );
-    expect(onClearOverride).toHaveBeenCalledWith("fire");
-
-    fireEvent.change(screen.getByLabelText("Word"), {
-      target: { value: "Every" },
-    });
-    fireEvent.change(screen.getByLabelText("Count"), {
-      target: { value: "3" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Add" }));
-
-    expect(onSetOverride).toHaveBeenCalledWith("every", 3);
   });
 
-  it("offers quiet fire/every suggestion buttons", async () => {
-    const onSetOverride = vi.fn();
-    await openSettings({ onSetOverride });
+  it("selects font size via button group", async () => {
+    const { onChange } = await openSettings();
 
-    fireEvent.click(screen.getByRole("button", { name: "fire → 1" }));
-    expect(onSetOverride).toHaveBeenCalledWith("fire", 1);
+    fireEvent.click(screen.getByRole("button", { name: "Small" }));
+
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ fontSize: 1.25 }),
+    );
+  });
+
+  it("selects theme via button group", async () => {
+    await openSettings();
+
+    fireEvent.click(screen.getByRole("button", { name: "Dark" }));
+
+    expect(
+      screen.getByRole("button", { name: "Dark" }).getAttribute("aria-pressed"),
+    ).toBe("true");
   });
 
   it("lists keyboard shortcuts", async () => {
@@ -119,6 +105,11 @@ describe("SettingsSheet", () => {
     expect(screen.getByText("Keyboard")).toBeTruthy();
     expect(screen.getByText("Synonyms")).toBeTruthy();
     expect(screen.getByText("Rhymes")).toBeTruthy();
+  });
+
+  it("does not show syllable overrides section", async () => {
+    await openSettings();
+    expect(screen.queryByText("Syllable overrides")).toBeNull();
   });
 
   it("opens when controlled open is true", async () => {
