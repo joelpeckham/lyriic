@@ -5,14 +5,15 @@
  *   Misaki us_gold → CMUdict (primary + alts) → Misaki us_silver → WikiPron
  *
  * Outputs:
- *   src/lib/syllables/data/cmu-syllables.json
- *   src/lib/rhyme/data/rhyme-index.json  (perfect + end-rhyme indexes)
+ *   src/lib/data/packs/lexicon.bin
+ *   src/lib/data/packs/rhyme-perfect.bin
+ *   src/lib/data/packs/rhyme-end.bin
  *
  * Usage: node scripts/build-pronunciation.mjs
  * Requires: pip install wordfreq (for Zipf ranking of rhyme buckets)
  */
 
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -29,6 +30,7 @@ import {
   wikipronToIpa,
 } from "./lib/ipa.mjs";
 import { normalizeLemma } from "./lib/lemma.mjs";
+import { writePronunciationPacks } from "./lib/writePronunciationPacks.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -46,8 +48,10 @@ const misakiGoldPath = join(sourcesDir, "us_gold.json");
 const misakiSilverPath = join(sourcesDir, "us_silver.json");
 const wikipronPath = join(sourcesDir, "eng_latn_us_broad.tsv");
 
-const sylOutPath = join(root, "src/lib/syllables/data/cmu-syllables.json");
-const rhymeOutPath = join(root, "src/lib/rhyme/data/rhyme-index.json");
+const packsDir = join(root, "src/lib/data/packs");
+const lexiconOutPath = join(packsDir, "lexicon.bin");
+const perfectOutPath = join(packsDir, "rhyme-perfect.bin");
+const endOutPath = join(packsDir, "rhyme-end.bin");
 
 /**
  * @param {unknown} value
@@ -315,28 +319,25 @@ async function main() {
   const perfect = rankBuckets(buckets);
   const end = rankBuckets(bucketsEnd);
 
-  mkdirSync(dirname(sylOutPath), { recursive: true });
-  mkdirSync(dirname(rhymeOutPath), { recursive: true });
-
-  const sylPayload = `${JSON.stringify(syllables)}\n`;
-  writeFileSync(sylOutPath, sylPayload, "utf8");
-
-  const rhymePayload = `${JSON.stringify({
+  const { wordCount } = writePronunciationPacks({
+    syllables,
     byWord,
     byKey: perfect.byKey,
     byWordEnd,
     byKeyEnd: end.byKey,
-  })}\n`;
-  writeFileSync(rhymeOutPath, rhymePayload, "utf8");
+    lexiconPath: lexiconOutPath,
+    perfectPath: perfectOutPath,
+    endPath: endOutPath,
+  });
 
   console.log(
-    `Syllables: ${sylEntries} → ${sylOutPath} (${(Buffer.byteLength(sylPayload) / 1024 / 1024).toFixed(2)} MiB)`,
+    `Syllables: ${sylEntries} / ${wordCount} lexicon words`,
   );
   console.log(
     `Perfect rhymes: ${rhymeEntries} words / ${Object.keys(perfect.byKey).length} keys (${perfect.seats} seats; ${skippedNoRhyme} no-key)`,
   );
   console.log(
-    `End rhymes: ${endEntries} words / ${Object.keys(end.byKey).length} keys (${end.seats} seats) → ${rhymeOutPath} (${(Buffer.byteLength(rhymePayload) / 1024 / 1024).toFixed(2)} MiB)`,
+    `End rhymes: ${endEntries} words / ${Object.keys(end.byKey).length} keys (${end.seats} seats)`,
   );
 }
 

@@ -1,15 +1,21 @@
 /**
- * Primary syllable counts from the fused pronunciation corpus
+ * Primary syllable counts from the shared lexicon pack
  * (Misaki + CMUdict + WikiPron). Built by scripts/build-pronunciation.mjs.
  * Lazy-loaded so the main chunk stays light (heuristic until ready).
  */
+import {
+  getLexicon,
+  isLexiconReady,
+  loadLexicon,
+  __setLexiconForTests,
+  type Lexicon,
+} from "@/lib/data/lexicon";
 import { clearMemo } from "./countWord";
 
 type SyllableMap = Record<string, number>;
 
-let dataPromise: Promise<SyllableMap> | null = null;
-let map: SyllableMap | null = null;
 let revision = 0;
+let readyAnnounced = false;
 const listeners = new Set<() => void>();
 
 /** Monotonic revision bumped when the dict becomes ready or is replaced in tests. */
@@ -29,59 +35,81 @@ function notifyReady(): void {
   for (const listener of listeners) listener();
 }
 
-/** Lazy-load the embedded CMU map (separate Vite chunk). */
-export function loadDict(): Promise<SyllableMap> {
-  if (map) return Promise.resolve(map);
-  if (!dataPromise) {
-    dataPromise = import("./data/cmu-syllables.json").then((mod) => {
-      map = mod.default as SyllableMap;
-      clearMemo();
-      revision += 1;
-      notifyReady();
-      return map;
-    });
-  }
-  return dataPromise;
+function announceReady(): void {
+  clearMemo();
+  revision += 1;
+  readyAnnounced = true;
+  notifyReady();
 }
 
-/** True once the CMU map has finished loading. */
+/**
+ * Lazy-load the embedded lexicon (separate binary asset).
+ * Resolves to an empty map for API compatibility — use {@link lookupDict}.
+ */
+export function loadDict(): Promise<SyllableMap> {
+  return loadLexicon().then(() => {
+    if (!readyAnnounced) announceReady();
+    return Object.create(null) as SyllableMap;
+  });
+}
+
+/** True once the lexicon has finished loading. */
 export function isDictReady(): boolean {
-  return map !== null;
+  return isLexiconReady();
 }
 
 /** Look up the CMU-primary syllable count for a normalized word. */
 export function lookupDict(normalized: string): number | undefined {
-  if (!map) return undefined;
+  const lex = getLexicon();
+  if (!lex) return undefined;
 
-  const direct = map[normalized];
+  const direct = lookupInLex(lex, normalized);
   if (direct !== undefined) return direct;
 
   // Possessive: teacher's → teacher
   if (normalized.endsWith("'s") && normalized.length > 2) {
-    const base = normalized.slice(0, -2);
-    const count = map[base];
+    const count = lookupInLex(lex, normalized.slice(0, -2));
     if (count !== undefined) return count;
   }
 
   // Trailing apostrophe plural possessive: teachers'
   if (normalized.endsWith("'") && normalized.length > 1) {
-    const base = normalized.slice(0, -1);
-    const count = map[base];
+    const count = lookupInLex(lex, normalized.slice(0, -1));
     if (count !== undefined) return count;
   }
 
   return undefined;
 }
 
-export function dictSize(): number {
-  return map ? Object.keys(map).length : 0;
+function lookupInLex(lex: Lexicon, word: string): number | undefined {
+  const id = lex.wordToId.get(word);
+  if (id === undefined) return undefined;
+  return lex.syllables[id];
 }
 
-/** Test helper — inject a map without hitting the JSON chunk. */
+export function dictSize(): number {
+  return getLexicon()?.words.length ?? 0;
+}
+
+/** Test helper — inject a decoded lexicon without hitting the binary pack. */
+export function __setLexiconDictForTests(lex: Lexicon | null): void {
+  __setLexiconForTests(lex);
+  if (lex === null) readyAnnounced = false;
+  announceReady();
+}
+
+/** Test helper — inject a map without hitting the binary pack. */
 export function __setDictForTests(next: SyllableMap | null): void {
-  map = next;
-  dataPromise = next ? Promise.resolve(next) : null;
-  clearMemo();
-  revision += 1;
-  notifyReady();
+  if (next === null) {
+    __setLexiconDictForTests(null);
+    return;
+  }
+  const words = Object.keys(next).sort();
+  const syllables = new Uint8Array(words.length);
+  const wordToId = new Map<string, number>();
+  for (let i = 0; i < words.length; i++) {
+    wordToId.set(words[i]!, i);
+    syllables[i] = next[words[i]!] ?? 0;
+  }
+  __setLexiconDictForTests({ words, wordToId, syllables });
 }

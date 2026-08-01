@@ -22,9 +22,10 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import type { WordLookupRequest } from "@/lib/editor/wordLookup";
 import type { MeteredLine } from "@/lib/meters/types";
+import { getLexicon } from "@/lib/data/lexicon";
 import {
   loadRhymeIndex,
-  lookupRhymes,
+  lookupRhymeIds,
   type RhymeMode,
 } from "@/lib/rhyme";
 import {
@@ -34,8 +35,11 @@ import {
 } from "@/lib/thesaurus";
 import {
   getCachedRanked,
+  POPOVER_RHYME_RANK_LIMIT,
+  POPOVER_THESAURUS_RANK_LIMIT,
   preserveCasing,
   rankCandidates,
+  rankRhymeIds,
   rankedCacheKey,
   setCachedRanked,
   type RankedCandidate,
@@ -147,19 +151,35 @@ export function WordLookupPopover({
     let cancelled = false;
     const load =
       display.mode === "thesaurus"
-        ? loadThesaurus().then(() => lookupSynonyms(display.word, usage))
-        : loadRhymeIndex().then(() => lookupRhymes(display.word, rhymeMode));
+        ? loadThesaurus().then(() => {
+            const syns = lookupSynonyms(display.word, usage);
+            return rankCandidates({
+              candidates: syns,
+              tokenSyllables: syllables,
+              lineTotal,
+              lineTarget,
+              overrides,
+              limit: POPOVER_THESAURUS_RANK_LIMIT,
+            });
+          })
+        : loadRhymeIndex(rhymeMode).then(() => {
+            const ids = lookupRhymeIds(display.word, rhymeMode);
+            const lex = getLexicon();
+            if (!lex) return [] as RankedCandidate[];
+            return rankRhymeIds({
+              ids,
+              words: lex.words,
+              tokenSyllables: syllables,
+              lineTotal,
+              lineTarget,
+              overrides,
+              limit: POPOVER_RHYME_RANK_LIMIT,
+            });
+          });
 
     void load
-      .then((words) => {
+      .then((ranked) => {
         if (cancelled) return;
-        const ranked = rankCandidates({
-          candidates: words,
-          tokenSyllables: syllables,
-          lineTotal,
-          lineTarget,
-          overrides,
-        });
         setCachedRanked(cacheKey, ranked);
         setRemote({ key: cacheKey, items: ranked, error: false });
       })
@@ -184,7 +204,6 @@ export function WordLookupPopover({
     rhymeMode,
     usage,
   ]);
-
   useLayoutEffect(() => {
     if (!open || loadState !== "ready") return;
     listRef.current?.focus();

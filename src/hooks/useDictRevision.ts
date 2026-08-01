@@ -5,6 +5,7 @@ import {
   loadDict,
   subscribeDictReady,
 } from "@/lib/syllables/dict";
+import { prefetchThesaurus } from "@/lib/thesaurus";
 
 function scheduleDictLoad(start: () => void): () => void {
   if (typeof window.requestIdleCallback === "function") {
@@ -20,16 +21,19 @@ function scheduleDictLoad(start: () => void): () => void {
 }
 
 /**
- * Subscribes to CMU dict readiness so syllable overlays recount after the
- * lazy chunk loads (heuristic → dict). Schedules loadDict after idle / first
- * paint so the chunk does not contend with LCP.
+ * Subscribes to lexicon readiness so syllable overlays recount after the
+ * binary pack loads (heuristic → dict). Schedules loadDict after idle / first
+ * paint so the asset does not contend with LCP. Prefetches the thesaurus once
+ * the lexicon is ready.
  */
 export function useDictRevision(): number {
   const [revision, setRevision] = useState(getDictRevision);
 
   useEffect(() => {
     const cancelSchedule = scheduleDictLoad(() => {
-      void loadDict();
+      void loadDict().then(() => {
+        prefetchThesaurus();
+      });
     });
     const unsubscribe = subscribeDictReady(() => {
       setRevision(getDictRevision());

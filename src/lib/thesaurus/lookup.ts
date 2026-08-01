@@ -1,4 +1,13 @@
-import { createLazyJsonData, normalizeLookupKey } from "@/lib/data/lazyJson";
+import {
+  buildThesaurusByHead,
+  createLazyBinData,
+  resolveDictId,
+  usageCodeToChar,
+  type ThesaurusEntry,
+  type ThesaurusPack,
+} from "@/lib/data/dictPack";
+import { normalizeLookupKey } from "@/lib/data/lazyJson";
+import { getLexicon, loadLexicon } from "@/lib/data/lexicon";
 import { lookupForms } from "@/lib/wordLookup/lookupForms";
 
 import type { WordUsage } from "./usage";
@@ -18,32 +27,106 @@ export type ThesaurusCandidate = {
 
 const USAGE_ORDER: WordUsage[] = ["n", "v", "a", "r"];
 
-const store = createLazyJsonData<SynonymMap>(
-  () => import("./data/synonyms.json"),
+type ThesaurusRuntime = {
+  pack: ThesaurusPack;
+  /** Materialized groups for heads (lazy per head). */
+  groupsCache: Map<string, SynonymGroups>;
+};
+
+const store = createLazyBinData<ThesaurusRuntime>(
+  () =>
+    import("@/lib/data/packs/thesaurus.bin?url").then(
+      (m) => m.default as string,
+    ),
+  "thesaurus",
+  (decoded) => {
+    if (decoded.kind !== "thesaurus") {
+      throw new Error("expected thesaurus pack");
+    }
+    return { pack: decoded.data, groupsCache: new Map() };
+  },
 );
 
-/** Lazy-load the embedded synonym map (separate Vite chunk). */
-export function loadThesaurus(): Promise<SynonymMap> {
-  return store.load();
+/** Injected plain map for unit tests (avoids touching the shared lexicon). */
+let testMap: SynonymMap | null = null;
+
+/** Lazy-load the thesaurus pack (requires lexicon for id resolution). */
+export async function loadThesaurus(): Promise<SynonymMap> {
+  const lex = await loadLexicon();
+  const runtime = await store.load();
+  if (runtime.pack.byHead.size === 0) {
+    buildThesaurusByHead(runtime.pack, lex.words);
+  }
+  return Object.create(null) as SynonymMap;
+}
+
+/** Idle-prefetch thesaurus after lexicon is available. */
+export function prefetchThesaurus(): void {
+  if (typeof window === "undefined") return;
+  const start = () => {
+    void loadThesaurus();
+  };
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(start, { timeout: 4000 });
+  } else {
+    window.setTimeout(start, 50);
+  }
 }
 
 /** True once the synonym map has finished loading. */
 export function isThesaurusReady(): boolean {
-  return store.isReady();
+  return testMap !== null || (store.isReady() && getLexicon() !== null);
 }
 
-function groupsFor(data: SynonymMap, form: string): SynonymGroups | null {
-  const groups = data[form];
-  return groups && Object.keys(groups).length > 0 ? groups : null;
+function groupsFor(form: string): SynonymGroups | null {
+  if (testMap) {
+    const groups = testMap[form];
+    return groups && Object.keys(groups).length > 0 ? groups : null;
+  }
+
+  const runtime = store.get();
+  const lex = getLexicon();
+  if (!runtime || !lex) return null;
+
+  const cached = runtime.groupsCache.get(form);
+  if (cached) return Object.keys(cached).length > 0 ? cached : null;
+
+  const entry = runtime.pack.byHead.get(form);
+  if (!entry) {
+    runtime.groupsCache.set(form, {});
+    return null;
+  }
+  const groups = materializeGroups(entry, lex.words, runtime.pack.overflowWords);
+  runtime.groupsCache.set(form, groups);
+  return Object.keys(groups).length > 0 ? groups : null;
+}
+
+function materializeGroups(
+  entry: ThesaurusEntry,
+  lexWords: readonly string[],
+  overflow: readonly string[],
+): SynonymGroups {
+  const groups: SynonymGroups = {};
+  for (const { usage, synIds } of entry.usages) {
+    const ch = usageCodeToChar(usage);
+    if (!ch) continue;
+    const list: string[] = [];
+    for (const id of synIds) {
+      const w = resolveDictId(id, lexWords, overflow);
+      if (w) list.push(w);
+    }
+    if (list.length > 0) groups[ch] = list;
+  }
+  return groups;
 }
 
 /**
  * Inflectional candidates present in the map, with aggressive false stems
  * dropped when a better silent-e / -fe lemma also exists.
  */
-function dictionaryForms(data: SynonymMap, key: string): string[] {
+function dictionaryForms(key: string): string[] {
   const raw = lookupForms(key);
-  const present = raw.filter((form) => form === key || groupsFor(data, form));
+  const present = raw.filter((form) => form === key || groupsFor(form));
 
   return present.filter((form) => {
     if (form === key) return true;
@@ -77,13 +160,12 @@ export function lookupSynonyms(
   word: string,
   usage: WordUsage | null = null,
 ): ThesaurusCandidate[] {
-  const data = store.get();
-  if (!data) return [];
+  if (!testMap && (!store.get() || !getLexicon())) return [];
   const key = normalizeLookupKey(word);
   if (!key) return [];
 
-  const forms = dictionaryForms(data, key);
-  const surfaceGroups = groupsFor(data, key);
+  const forms = dictionaryForms(key);
+  const surfaceGroups = groupsFor(key);
 
   /** Best tier per synonym: true = matches requested usage. */
   const best = new Map<string, boolean>();
@@ -101,7 +183,7 @@ export function lookupSynonyms(
   }
 
   for (const form of forms) {
-    const groups = groupsFor(data, form);
+    const groups = groupsFor(form);
     if (!groups) continue;
 
     // Surface form (or missing surface): take all POS. Inflectional bases when
@@ -132,7 +214,21 @@ export function lookupSynonyms(
   ];
 }
 
-/** Test helper — inject a map without hitting the JSON chunk. */
+/** Test helper — inject a map without hitting the binary pack. */
 export function __setThesaurusDataForTests(map: SynonymMap | null): void {
-  store.__setForTests(map);
+  testMap = map;
+  if (map === null) {
+    store.__setForTests(null);
+  } else {
+    // Mark store ready without a real pack; groupsFor uses testMap.
+    store.__setForTests({
+      pack: {
+        lexWordCount: 0,
+        overflowWords: [],
+        entries: [],
+        byHead: new Map(),
+      },
+      groupsCache: new Map(),
+    });
+  }
 }

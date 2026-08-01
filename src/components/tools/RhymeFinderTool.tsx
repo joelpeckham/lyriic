@@ -10,11 +10,13 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { normalizeLookupKey } from "@/lib/data/lazyJson";
+import { getLexicon, syllablesForId } from "@/lib/data/lexicon";
 import {
   hasRhymeEntry,
+  isRhymeIndexReady,
   loadRhymeIndex,
-  lookupRhymes,
-  type RhymeIndex,
+  lookupRhymeIds,
+  materializeWords,
   type RhymeMode,
 } from "@/lib/rhyme";
 import { countWord } from "@/lib/syllables";
@@ -30,60 +32,65 @@ const EXAMPLE_WORDS = [
   "fun",
 ] as const;
 
-function groupBySyllables(words: string[]): RhymeSyllableGroup[] {
-  const map = new Map<number, string[]>();
-  for (const word of words) {
-    const { count } = countWord(word);
+function groupIdsBySyllables(ids: number[]): RhymeSyllableGroup[] {
+  const lex = getLexicon();
+  const map = new Map<number, number[]>();
+  for (const id of ids) {
+    const packed = syllablesForId(id);
+    const count =
+      packed ??
+      (lex ? countWord(lex.words[id] ?? "").count : 0);
     const list = map.get(count);
-    if (list) list.push(word);
-    else map.set(count, [word]);
+    if (list) list.push(id);
+    else map.set(count, [id]);
   }
   return [...map.entries()]
     .sort(([a], [b]) => a - b)
-    .map(([syllables, groupWords]) => ({
-      syllables,
-      words: groupWords.sort((a, b) => a.localeCompare(b)),
-    }));
+    .map(([syllables, groupIds]) => {
+      const words = materializeWords(groupIds, lex).sort((a, b) =>
+        a.localeCompare(b),
+      );
+      return { syllables, words };
+    });
 }
 
 export function RhymeFinderTool() {
   const [query, setQuery] = useState("light");
   const [rhymeMode, setRhymeMode] = useState<RhymeMode>("perfect");
-  const [index, setIndex] = useState<RhymeIndex | null>(null);
+  const [modeReady, setModeReady] = useState(false);
   const dictRevision = useDictRevision();
   const dictReady = dictRevision > 0;
-  const rhymeReady = index !== null;
 
   useEffect(() => {
     let cancelled = false;
-    void loadRhymeIndex().then((loaded) => {
-      if (!cancelled) setIndex(loaded);
+    setModeReady(false);
+    void loadRhymeIndex(rhymeMode).then(() => {
+      if (!cancelled) setModeReady(true);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [rhymeMode]);
 
   const trimmed = query.trim();
   const lookupKey = normalizeLookupKey(trimmed);
+  const rhymeReady = modeReady && isRhymeIndexReady(rhymeMode);
 
-  const { rhymes, known } = useMemo(() => {
-    if (!index || !lookupKey) {
-      return { rhymes: [] as string[], known: false };
+  const { rhymeIds, known } = useMemo(() => {
+    if (!rhymeReady || !lookupKey) {
+      return { rhymeIds: [] as number[], known: false };
     }
-    // Touch store via lookup after index is in state (same chunk).
-    void index;
     return {
-      rhymes: lookupRhymes(lookupKey, rhymeMode),
+      rhymeIds: lookupRhymeIds(lookupKey, rhymeMode),
       known: hasRhymeEntry(lookupKey, rhymeMode),
     };
-  }, [lookupKey, index, rhymeMode]);
+  }, [lookupKey, rhymeReady, rhymeMode]);
 
   const groups = useMemo(() => {
-    if (!dictReady || rhymes.length === 0) return [];
+    if (!dictReady || rhymeIds.length === 0) return [];
     void dictRevision;
-    return groupBySyllables(rhymes);
-  }, [rhymes, dictReady, dictRevision]);
+    return groupIdsBySyllables(rhymeIds);
+  }, [rhymeIds, dictReady, dictRevision]);
 
   const status = !rhymeReady
     ? "loading-index"
@@ -91,7 +98,7 @@ export function RhymeFinderTool() {
       ? "empty-query"
       : !known
         ? "unknown"
-        : rhymes.length === 0
+        : rhymeIds.length === 0
           ? "no-rhymes"
           : !dictReady
             ? "loading-dict"
@@ -207,8 +214,8 @@ export function RhymeFinderTool() {
 
         {status === "loading-dict" ? (
           <p className="text-sm text-muted-foreground">
-            Found {rhymes.length} rhyme{rhymes.length === 1 ? "" : "s"}—sorting
-            by syllable count…
+            Found {rhymeIds.length} rhyme{rhymeIds.length === 1 ? "" : "s"}
+            —sorting by syllable count…
           </p>
         ) : null}
 
@@ -216,7 +223,7 @@ export function RhymeFinderTool() {
           <RhymeWordBank
             groups={groups}
             query={trimmed}
-            totalShown={rhymes.length}
+            totalShown={rhymeIds.length}
           />
         ) : null}
       </div>

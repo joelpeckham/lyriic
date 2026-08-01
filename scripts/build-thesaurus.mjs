@@ -6,8 +6,8 @@
  * Ranking: OEWN first (Zipf within), then Wiktionary fill (Zipf), per usage.
  * Requires: pip install wordfreq
  *
- * Single-word lemmas only; headwords must exist in the syllable map.
- * Output groups synonyms by WordNet-style usage: n / v / a / r.
+ * Single-word lemmas only; headwords must exist in the shared lexicon.
+ * Output: src/lib/data/packs/thesaurus.bin (IDs into lexicon + overflow).
  *
  * Usage: node scripts/build-thesaurus.mjs
  */
@@ -18,7 +18,6 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
-  writeFileSync,
 } from "node:fs";
 import { createGunzip } from "node:zlib";
 import { dirname, join } from "node:path";
@@ -26,9 +25,11 @@ import { fileURLToPath } from "node:url";
 import { createInterface } from "node:readline";
 import { execFileSync } from "node:child_process";
 
+import { decodeLexicon } from "./lib/dictPack.mjs";
 import { ensureDownloaded } from "./lib/download.mjs";
 import { selectByFrequency, zipfFrequencies } from "./lib/frequency.mjs";
 import { normalizeLemma } from "./lib/lemma.mjs";
+import { writeThesaurusPack } from "./lib/writeThesaurusPack.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -41,9 +42,8 @@ const WIKT_URL =
 const oewnZipPath = join(sourcesDir, "english-wordnet-2025-json.zip");
 const oewnDir = join(sourcesDir, "oewn-2025");
 const wiktPath = join(sourcesDir, "kaikki-english.jsonl.gz");
-const cmuPath = join(root, "src/lib/syllables/data/cmu-syllables.json");
-const outDir = join(root, "src/lib/thesaurus/data");
-const outPath = join(outDir, "synonyms.json");
+const lexiconPath = join(root, "src/lib/data/packs/lexicon.bin");
+const outPath = join(root, "src/lib/data/packs/thesaurus.bin");
 
 /** @typedef {"n" | "v" | "a" | "r"} Usage */
 
@@ -290,8 +290,13 @@ async function main() {
   await ensureDownloaded(OEWN_URL, oewnZipPath);
   unzipOewn(oewnZipPath, oewnDir);
 
-  /** @type {Record<string, number>} */
-  const cmu = JSON.parse(readFileSync(cmuPath, "utf8"));
+  if (!existsSync(lexiconPath)) {
+    throw new Error(
+      `Missing ${lexiconPath}. Run pnpm build:pronunciation first.`,
+    );
+  }
+  const { words: lexWords } = decodeLexicon(readFileSync(lexiconPath));
+  const lexSet = new Set(lexWords);
 
   const oewn = loadOewnSynonyms(oewnDir);
 
@@ -304,7 +309,7 @@ async function main() {
   /** @type {Set<string>} */
   const toScore = new Set();
   for (const [head, byUsage] of oewn) {
-    if (!(head in cmu)) continue;
+    if (!lexSet.has(head)) continue;
     heads.add(head);
     toScore.add(head);
     for (const syns of byUsage.values()) {
@@ -312,7 +317,7 @@ async function main() {
     }
   }
   for (const [head, byUsage] of wikt) {
-    if (!(head in cmu)) continue;
+    if (!lexSet.has(head)) continue;
     heads.add(head);
     toScore.add(head);
     for (const syns of byUsage.values()) {
@@ -321,13 +326,12 @@ async function main() {
   }
 
   console.log(
-    `Ranking ${heads.size} CMU-overlap heads (${toScore.size} unique lemmas) by wordfreq…`,
+    `Ranking ${heads.size} lexicon-overlap heads (${toScore.size} unique lemmas) by wordfreq…`,
   );
   const freq = zipfFrequencies(toScore);
 
   /** @type {Record<string, Record<string, string[]>>} */
   const out = Object.create(null);
-  let synonymTotal = 0;
   let skippedHeads = 0;
 
   for (const head of heads) {
@@ -337,17 +341,14 @@ async function main() {
       continue;
     }
     out[head] = selected;
-    for (const list of Object.values(selected)) synonymTotal += list.length;
   }
 
-  mkdirSync(outDir, { recursive: true });
-  const payload = `${JSON.stringify(out)}\n`;
-  writeFileSync(outPath, payload, "utf8");
-
-  const bytes = Buffer.byteLength(payload);
-  console.log(
-    `Wrote ${Object.keys(out).length} headwords (${synonymTotal} synonyms; ${skippedHeads} empty) → ${outPath} (${(bytes / 1024 / 1024).toFixed(2)} MiB)`,
-  );
+  writeThesaurusPack({
+    lexWords,
+    synonymMap: out,
+    outPath,
+  });
+  console.log(`Skipped empty heads: ${skippedHeads}`);
 }
 
 main().catch((err) => {

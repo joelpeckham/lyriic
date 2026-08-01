@@ -1,7 +1,7 @@
 # Scripts
 
 Dictionary rebuilds download large sources into `scripts/sources/` (gitignored)
-and write committed runtime JSON under `src/lib/*/data/`.
+and write committed binary packs under `src/lib/data/packs/`.
 
 Requires Python `wordfreq` for Zipf ranking:
 
@@ -30,10 +30,11 @@ pnpm build:rhyme
 
 Writes:
 
-- `src/lib/syllables/data/cmu-syllables.json` — vowel-nucleus syllable counts
-- `src/lib/rhyme/data/rhyme-index.json` — perfect + end-rhyme indexes (IPA keys; alt pronunciations; Zipf-ranked full buckets)
+- `src/lib/data/packs/lexicon.bin` — front-coded lemmas + syllable counts
+- `src/lib/data/packs/rhyme-perfect.bin` — perfect-rhyme ID index
+- `src/lib/data/packs/rhyme-end.bin` — end-rhyme ID index
 
-Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last non-reduced vowel) through the coda. End-rhyme key = last vowel nucleus through the coda (ignores stress; fun ↔ anyone). See `scripts/lib/ipa.mjs` and `src/lib/rhyme/rhymeKey.ts`.
+Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last non-reduced vowel) through the coda. End-rhyme key = last vowel nucleus through the coda (ignores stress; fun ↔ anyone). See `scripts/lib/ipa.mjs` and `src/lib/rhyme/rhymeKey.ts`. Pack codec: `scripts/lib/dictPack.mjs`.
 
 ## Thesaurus
 
@@ -47,9 +48,10 @@ Perfect-rhyme key = IPA phones from the last primary stress (else secondary, els
 pnpm build:thesaurus
 ```
 
-Writes `src/lib/thesaurus/data/synonyms.json`. Headwords restricted to the syllable map; synonyms grouped by usage (`n` / `v` / `a` / `r`). OEWN candidates ranked first within each usage, then Wiktionary fill (no cap).
+Requires `lexicon.bin` from `build:pronunciation`. Writes `src/lib/data/packs/thesaurus.bin` (IDs into the shared lexicon plus a small overflow string table). Headwords restricted to the lexicon; synonyms grouped by usage (`n` / `v` / `a` / `r`). OEWN candidates ranked first within each usage, then Wiktionary fill (no cap).
 
 ## Other
 
+- `convert-json-to-dict-packs.mjs` — one-shot JSON → binary migration (legacy)
 - `build-seo-content.mjs` — SEO / agent markdown mirrors
 - `prerender.mjs` — static prerender for marketing routes

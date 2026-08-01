@@ -1,4 +1,6 @@
+import { syllablesForId } from "@/lib/data/lexicon";
 import { countWord } from "@/lib/syllables/countWord";
+import { normalizeOverrideKey } from "@/lib/syllables/overrides";
 
 export type RankCandidateInput =
   | string
@@ -6,6 +8,8 @@ export type RankCandidateInput =
       word: string;
       /** Prefer this candidate when sorting (e.g. matching part of speech). */
       matchesUsage?: boolean;
+      /** Optional precomputed syllable count (skips countWord). */
+      syllables?: number;
     };
 
 export type RankedCandidate = {
@@ -24,11 +28,14 @@ export type RankCandidatesInput = {
   lineTotal: number;
   lineTarget: number | null;
   overrides?: Record<string, number>;
+  /** When set, only the first N candidates (already Zipf-ordered) are ranked. */
+  limit?: number;
 };
 
 function normalizeInput(raw: RankCandidateInput): {
   word: string;
   matchesUsage: boolean;
+  syllables?: number;
 } | null {
   if (typeof raw === "string") {
     const word = raw.trim().toLowerCase();
@@ -36,7 +43,11 @@ function normalizeInput(raw: RankCandidateInput): {
   }
   const word = raw.word.trim().toLowerCase();
   if (!word) return null;
-  return { word, matchesUsage: Boolean(raw.matchesUsage) };
+  return {
+    word,
+    matchesUsage: Boolean(raw.matchesUsage),
+    syllables: raw.syllables,
+  };
 }
 
 /**
@@ -51,16 +62,20 @@ export function rankCandidates({
   lineTotal,
   lineTarget,
   overrides,
+  limit,
 }: RankCandidatesInput): RankedCandidate[] {
   const seen = new Set<string>();
   const ranked: RankedCandidate[] = [];
+  const max = limit ?? candidates.length;
 
-  for (const raw of candidates) {
-    const normalized = normalizeInput(raw);
+  for (let i = 0; i < candidates.length && ranked.length < max; i++) {
+    const normalized = normalizeInput(candidates[i]!);
     if (!normalized || seen.has(normalized.word)) continue;
     seen.add(normalized.word);
 
-    const { count } = countWord(normalized.word, overrides);
+    const count =
+      normalized.syllables ??
+      countWord(normalized.word, overrides).count;
     const newTotal = lineTotal - tokenSyllables + count;
     const keepsMeter =
       lineTarget !== null &&
@@ -85,4 +100,42 @@ export function rankCandidates({
   });
 
   return ranked;
+}
+
+/**
+ * Rank rhyme candidates from lexicon word ids (uses packed syllable counts).
+ */
+export function rankRhymeIds(input: {
+  ids: readonly number[];
+  words: readonly string[];
+  tokenSyllables: number;
+  lineTotal: number;
+  lineTarget: number | null;
+  overrides?: Record<string, number>;
+  limit?: number;
+}): RankedCandidate[] {
+  const { ids, words, overrides, limit } = input;
+  const max = limit ?? ids.length;
+  const candidates: RankCandidateInput[] = [];
+  for (let i = 0; i < ids.length && candidates.length < max; i++) {
+    const id = ids[i]!;
+    const word = words[id];
+    if (!word) continue;
+    const overrideKey = normalizeOverrideKey(word);
+    const override =
+      overrides && overrideKey ? overrides[overrideKey] : undefined;
+    if (typeof override === "number") {
+      candidates.push({ word, syllables: override });
+      continue;
+    }
+    const packed = syllablesForId(id);
+    candidates.push(
+      packed !== undefined ? { word, syllables: packed } : word,
+    );
+  }
+  return rankCandidates({
+    ...input,
+    candidates,
+    limit: undefined, // already windowed
+  });
 }
