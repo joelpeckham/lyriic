@@ -15,24 +15,25 @@ afterEach(() => {
 });
 
 describe("useSyllableOverrides", () => {
-  it("replaces the engine Map on first render", () => {
+  it("replaces the engine Map after layout on mount", () => {
     renderHook(() => useSyllableOverrides({ fire: 1 }));
+
     expect(getOverride("fire")).toBe(1);
     expect([...getOverrides().entries()]).toEqual([["fire", 1]]);
   });
 
   it("replaces the Map when switching project overrides", () => {
-    const { result, rerender } = renderHook(
+    const { rerender } = renderHook(
       ({ overrides }) => {
         useSyllableOverrides(overrides);
-        return getOverrides();
       },
       { initialProps: { overrides: { fire: 1 } as Record<string, number> } },
     );
 
-    expect(result.current.get("fire")).toBe(1);
+    expect(getOverride("fire")).toBe(1);
 
     rerender({ overrides: { every: 2 } });
+
     expect(getOverride("fire")).toBeUndefined();
     expect(getOverride("every")).toBe(2);
   });

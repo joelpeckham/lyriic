@@ -1,3 +1,5 @@
+import { useLayoutEffect } from "react";
+
 import { getOverrides, replaceOverrides } from "@/lib/syllables";
 
 function overridesMatch(
@@ -14,14 +16,22 @@ function overridesMatch(
 
 /**
  * Keep the module-level syllable override Map in sync with the active
- * project's persisted overrides. Syncs during render (not in an effect) so
- * the same pass that receives new project state also sees the fresh Map
- * before children count syllables.
+ * project's persisted overrides.
+ *
+ * Sync runs in useLayoutEffect (not during render) so React render stays
+ * pure under the Compiler. Layout timing keeps the Map coherent before
+ * paint / before children that depend on overrides are observed by the user.
+ *
+ * Hard contract: only one PoemEditor / one active project may call this
+ * hook. The module Map is a single global writer target — concurrent
+ * editors or multiple project syncs would race and corrupt counts.
  */
 export function useSyllableOverrides(
   overrides: Record<string, number>,
 ): void {
-  if (!overridesMatch(getOverrides(), overrides)) {
-    replaceOverrides(overrides);
-  }
+  useLayoutEffect(() => {
+    if (!overridesMatch(getOverrides(), overrides)) {
+      replaceOverrides(overrides);
+    }
+  }, [overrides]);
 }
