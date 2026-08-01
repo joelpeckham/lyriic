@@ -4,6 +4,7 @@
  * Formats (little-endian):
  *   lexicon.bin   magic LYXL — front-coded words + syllable bytes
  *   stress.bin    magic LYXS — packed per-syllable stress (u32 × wordCount, v2)
+ *   variants.bin  magic LYXV — sparse non-primary syl/stress alts by word id
  *   rhyme-*.bin   magic LYXP / LYXE — IPA keys + word→key + key→wordIds
  *   thesaurus.bin magic LYXT — overflow words + head/synonym id entries
  */
@@ -15,9 +16,13 @@ export const VERSION = 1;
 /** Stress pack version (u32 patterns; v1 was u16). */
 export const STRESS_PACK_VERSION = 2;
 
+/** Variants pack version (sparse alt list). */
+export const VARIANTS_PACK_VERSION = 1;
+
 export const MAGIC = {
   lexicon: "LYXL",
   stress: "LYXS",
+  variants: "LYXV",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
   thesaurus: "LYXT",
@@ -186,6 +191,77 @@ export function decodeStress(buf) {
       0;
   }
   return { packed };
+}
+
+/**
+ * Sparse syllable/stress variants (non-primary only).
+ *
+ * @param {Array<{ wordId: number, alts: Array<{ syllables: number, packedStress: number }> }>} entries
+ * @returns {Buffer}
+ */
+export function encodeVariants(entries) {
+  const header = Buffer.alloc(9);
+  magicBytes(MAGIC.variants).copy(header, 0);
+  header[4] = VARIANTS_PACK_VERSION;
+  header.writeUInt32LE(entries.length, 5);
+  /** @type {Buffer[]} */
+  const parts = [header];
+  for (const entry of entries) {
+    if (entry.alts.length === 0 || entry.alts.length > 255) {
+      throw new Error(
+        `variants entry wordId=${entry.wordId} has invalid altCount ${entry.alts.length}`,
+      );
+    }
+    const block = Buffer.alloc(4 + 1 + entry.alts.length * 5);
+    block.writeUInt32LE(entry.wordId >>> 0, 0);
+    block[4] = entry.alts.length;
+    let o = 5;
+    for (const alt of entry.alts) {
+      block[o++] = alt.syllables & 0xff;
+      block.writeUInt32LE(alt.packedStress >>> 0, o);
+      o += 4;
+    }
+    parts.push(block);
+  }
+  return Buffer.concat(parts);
+}
+
+/**
+ * @param {Uint8Array | Buffer} buf
+ * @returns {{ entries: Array<{ wordId: number, alts: Array<{ syllables: number, packedStress: number }> }> }}
+ */
+export function decodeVariants(buf) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const magic = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
+  if (magic !== MAGIC.variants) throw new Error(`bad variants magic: ${magic}`);
+  if (u8[4] !== VARIANTS_PACK_VERSION) {
+    throw new Error(`unsupported variants version: ${u8[4]}`);
+  }
+  const entryCount =
+    (u8[5] | (u8[6] << 8) | (u8[7] << 16) | (u8[8] << 24)) >>> 0;
+  let i = 9;
+  /** @type {Array<{ wordId: number, alts: Array<{ syllables: number, packedStress: number }> }>} */
+  const entries = new Array(entryCount);
+  for (let e = 0; e < entryCount; e++) {
+    if (i + 5 > u8.length) throw new Error("variants pack truncated");
+    const wordId =
+      (u8[i] | (u8[i + 1] << 8) | (u8[i + 2] << 16) | (u8[i + 3] << 24)) >>> 0;
+    i += 4;
+    const altCount = u8[i++];
+    if (i + altCount * 5 > u8.length) throw new Error("variants pack truncated");
+    /** @type {Array<{ syllables: number, packedStress: number }>} */
+    const alts = new Array(altCount);
+    for (let a = 0; a < altCount; a++) {
+      const syllables = u8[i++];
+      const packedStress =
+        (u8[i] | (u8[i + 1] << 8) | (u8[i + 2] << 16) | (u8[i + 3] << 24)) >>>
+        0;
+      i += 4;
+      alts[a] = { syllables, packedStress };
+    }
+    entries[e] = { wordId, alts };
+  }
+  return { entries };
 }
 
 /**

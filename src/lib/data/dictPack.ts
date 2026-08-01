@@ -13,8 +13,10 @@ export type {
   RhymeModeData,
   StressCode,
   StressPack,
+  SyllableVariantAlt,
   ThesaurusEntry,
   ThesaurusPack,
+  VariantsPack,
 } from "./dictPackCodec";
 
 export {

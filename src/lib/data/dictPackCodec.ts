@@ -8,9 +8,13 @@ export const DICT_PACK_VERSION = 1;
 /** Stress pack uses a dedicated version (u32 patterns; v1 was u16). */
 export const STRESS_PACK_VERSION = 2;
 
+/** Variants pack version (sparse alt list). */
+export const VARIANTS_PACK_VERSION = 1;
+
 export const DICT_MAGIC = {
   lexicon: "LYXL",
   stress: "LYXS",
+  variants: "LYXV",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
   thesaurus: "LYXT",
@@ -30,6 +34,18 @@ export type Lexicon = {
 /** Packed per-word stress patterns aligned with lexicon word ids. */
 export type StressPack = {
   packed: Uint32Array;
+};
+
+/** One non-primary syllable/stress alternate. */
+export type SyllableVariantAlt = {
+  syllables: number;
+  packedStress: number;
+};
+
+/** Sparse syllable/stress variants keyed by lexicon word id. */
+export type VariantsPack = {
+  /** wordId → non-primary alts (absent ids have no alts). */
+  byWordId: Map<number, SyllableVariantAlt[]>;
 };
 
 export type RhymeModeData = {
@@ -190,6 +206,37 @@ export function decodeStress(buf: Uint8Array): StressPack {
   return { packed };
 }
 
+export function decodeVariants(buf: Uint8Array): VariantsPack {
+  const magic = readMagic(buf);
+  if (magic !== DICT_MAGIC.variants) {
+    throw new Error(`bad variants magic: ${magic}`);
+  }
+  if (buf[4] !== VARIANTS_PACK_VERSION) {
+    throw new Error(`unsupported variants version: ${buf[4]}`);
+  }
+  const entryCount = readU32LE(buf, 5);
+  let i = 9;
+  const byWordId = new Map<number, SyllableVariantAlt[]>();
+  for (let e = 0; e < entryCount; e++) {
+    if (i + 5 > buf.length) throw new Error("variants pack truncated");
+    const wordId = readU32LE(buf, i);
+    i += 4;
+    const altCount = buf[i++]!;
+    if (i + altCount * 5 > buf.length) {
+      throw new Error("variants pack truncated");
+    }
+    const alts = new Array<SyllableVariantAlt>(altCount);
+    for (let a = 0; a < altCount; a++) {
+      const syllables = buf[i++]!;
+      const packedStress = readU32LE(buf, i);
+      i += 4;
+      alts[a] = { syllables, packedStress };
+    }
+    byWordId.set(wordId, alts);
+  }
+  return { byWordId };
+}
+
 export function decodeRhymePack(
   buf: Uint8Array,
   expectMode: "perfect" | "end",
@@ -312,6 +359,7 @@ export function buildThesaurusByHead(
 export type DictPackKind =
   | "lexicon"
   | "stress"
+  | "variants"
   | "rhyme-perfect"
   | "rhyme-end"
   | "thesaurus";
@@ -319,6 +367,7 @@ export type DictPackKind =
 export type DecodedPack =
   | { kind: "lexicon"; data: Lexicon }
   | { kind: "stress"; data: StressPack }
+  | { kind: "variants"; data: VariantsPack }
   | { kind: "rhyme-perfect"; data: RhymeModeData }
   | { kind: "rhyme-end"; data: RhymeModeData }
   | { kind: "thesaurus"; data: ThesaurusPack };
@@ -329,6 +378,8 @@ export function decodePack(kind: DictPackKind, buf: Uint8Array): DecodedPack {
       return { kind, data: decodeLexicon(buf) };
     case "stress":
       return { kind, data: decodeStress(buf) };
+    case "variants":
+      return { kind, data: decodeVariants(buf) };
     case "rhyme-perfect":
       return { kind, data: decodeRhymePack(buf, "perfect") };
     case "rhyme-end":

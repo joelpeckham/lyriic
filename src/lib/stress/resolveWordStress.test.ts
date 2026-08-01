@@ -51,6 +51,12 @@ describe("resolveWordStress", () => {
     expect(possessive.source).toBe(base.source);
   });
 
+  it("uses citation-form stress for juliet (3 syllables)", () => {
+    const result = resolveWordStress("juliet");
+    expect(result.source).toBe("dict");
+    expect(result.pattern.length).toBe(3);
+  });
+
   it("applies primary-index override", () => {
     const result = resolveWordStress("poem", { poem: 1 });
     expect(result.source).toBe("override");

@@ -3,13 +3,20 @@ import {
   targetForLine,
   type BinaryStressPattern,
 } from "./presets";
+import { fitLineSyllableVariants } from "./fitSyllableVariants";
+import {
+  applyMetricalMonosyllables,
+  flattenTokenStress,
+  stressMismatchMask,
+} from "./scanLineStress";
 import type { MeteredLine, MeteredToken, MeterStatus } from "./types";
 import type { StressCode } from "@/lib/data/dictPack";
 import { isStressReady } from "@/lib/data/stress";
-import { resolveWordStress, toBinaryStress } from "@/lib/stress";
+import { resolveWordStress } from "@/lib/stress";
 import type { LineSyllableCount, WordToken } from "@/lib/syllables/types";
 
 export type { MeteredLine, MeteredToken, MeterStatus } from "./types";
+export { stressMismatchMask } from "./scanLineStress";
 
 export type BuildMeteredLineOptions = {
   pattern: readonly number[];
@@ -18,6 +25,12 @@ export type BuildMeteredLineOptions = {
   syllableOverrides?: Record<string, number>;
 };
 
+function isBuildOptions(
+  value: readonly number[] | BuildMeteredLineOptions,
+): value is BuildMeteredLineOptions {
+  return !Array.isArray(value);
+}
+
 function stressMatches(
   actual: readonly StressCode[],
   expected: BinaryStressPattern,
@@ -25,19 +38,6 @@ function stressMatches(
   const mask = stressMismatchMask(actual, expected);
   if (mask === null) return false;
   return !mask.some(Boolean);
-}
-
-/**
- * Per-syllable mismatch flags when actual and expected lengths match;
- * otherwise null (not comparable).
- */
-export function stressMismatchMask(
-  actual: readonly StressCode[],
-  expected: BinaryStressPattern,
-): boolean[] | null {
-  if (actual.length !== expected.length) return null;
-  const binary = toBinaryStress(actual);
-  return expected.map((bit, i) => binary[i] !== bit);
 }
 
 export function buildMeteredLine(
@@ -49,14 +49,14 @@ export function buildMeteredLine(
   maybeSyllableOverrides?: Record<string, number>,
 ): MeteredLine {
   // Support legacy (pattern) and options-object call sites.
-  const options: BuildMeteredLineOptions = Array.isArray(patternOrOptions)
-    ? {
+  const options: BuildMeteredLineOptions = isBuildOptions(patternOrOptions)
+    ? patternOrOptions
+    : {
         pattern: patternOrOptions,
         stressPatterns: maybeStressPatterns,
         stressOverrides: maybeStressOverrides,
         syllableOverrides: maybeSyllableOverrides,
-      }
-    : patternOrOptions;
+      };
 
   const {
     pattern,
@@ -69,7 +69,6 @@ export function buildMeteredLine(
   const expectedStress = stressPatternForLine(stressPatterns, lineIndex);
   const tokens: MeteredToken[] = [];
   let cursor = 0;
-  const lineStress: StressCode[] = [];
 
   for (let i = 0; i < count.tokens.length; i++) {
     const token: WordToken = count.tokens[i]!;
@@ -103,11 +102,34 @@ export function buildMeteredLine(
       source: wordCount?.source ?? "heuristic",
       stress: aligned,
     });
-    lineStress.push(...aligned);
     cursor = syllableEnd;
   }
 
-  const total = count.total;
+  let total = count.total;
+
+  // Dictionary / curated alts: bend syllable counts toward the meter target.
+  if (target !== null && total !== target && total > 0) {
+    total = fitLineSyllableVariants(
+      tokens,
+      total,
+      target,
+      syllableOverrides,
+      stressOverrides,
+    );
+  }
+
+  // Poetic scansion: bend monosyllables to the meter when the count fits.
+  if (
+    expectedStress !== null &&
+    target !== null &&
+    total === target &&
+    total > 0
+  ) {
+    applyMetricalMonosyllables(tokens, expectedStress, stressOverrides);
+  }
+
+  const lineStress = flattenTokenStress(tokens);
+
   let status: MeterStatus = "none";
   if (target !== null) {
     if (total === 0 && !count.tokens.length) {

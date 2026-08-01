@@ -4,6 +4,16 @@ export {
   type BuildMeteredLineOptions,
 } from "./buildMeteredLine";
 export { buildMeteredLines } from "./buildMeteredLines";
+export {
+  applySyllableVariantFit,
+  chooseSyllableVariantFit,
+  fitLineSyllableVariants,
+} from "./fitSyllableVariants";
+export {
+  applyMetricalMonosyllables,
+  flattenTokenStress,
+  hasStressOverride,
+} from "./scanLineStress";
 export { formatMeterLabel } from "./meterLabel";
 export {
   mapSyllableToOffset,

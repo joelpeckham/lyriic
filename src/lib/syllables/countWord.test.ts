@@ -23,6 +23,10 @@ describe("countWord — ambiguous poetic defaults (CMU primary)", () => {
       source: "dict",
     });
   });
+
+  it("juliet → 3 citation (2-syl alt is meter-fit only)", () => {
+    expect(countWord("juliet")).toMatchObject({ count: 3, source: "dict" });
+  });
 });
 
 describe("countWord — hyphenated compounds (split + sum)", () => {

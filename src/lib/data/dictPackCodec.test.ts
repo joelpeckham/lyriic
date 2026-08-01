@@ -9,6 +9,7 @@ import {
   decodeRhymePack,
   decodeStress,
   decodeThesaurus,
+  decodeVariants,
   packStressPattern,
   resolveDictId,
   STRESS_PACK_MAX_SYLLABLES,
@@ -82,6 +83,30 @@ describe("dictPackCodec", () => {
       lex.syllables[poem!]!,
     );
     expect(pattern).toEqual([1, 0]);
+  });
+
+  it("decodes variants pack with fire and curated juliet alts", () => {
+    const lex = decodeLexicon(
+      new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
+    );
+    const variants = decodeVariants(
+      new Uint8Array(readFileSync(join(packsDir, "variants.bin"))),
+    );
+    expect(variants.byWordId.size).toBeGreaterThan(3_000);
+
+    const fireId = lex.wordToId.get("fire");
+    expect(fireId).toBeDefined();
+    expect(lex.syllables[fireId!]).toBe(2);
+    const fireAlts = variants.byWordId.get(fireId!);
+    expect(fireAlts).toBeDefined();
+    expect(fireAlts!.some((a) => a.syllables === 1)).toBe(true);
+
+    const julietId = lex.wordToId.get("juliet");
+    expect(julietId).toBeDefined();
+    expect(lex.syllables[julietId!]).toBe(3);
+    const julietAlts = variants.byWordId.get(julietId!);
+    expect(julietAlts).toBeDefined();
+    expect(julietAlts!.some((a) => a.syllables === 2)).toBe(true);
   });
 
   it("preserves stress for words longer than 8 syllables", () => {

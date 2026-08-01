@@ -10,7 +10,9 @@ import {
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { usePrefs } from "@/hooks/usePrefs";
 import { useStressRevision } from "@/hooks/useStressRevision";
+import { useVariantsRevision } from "@/hooks/useVariantsRevision";
 import { loadStress } from "@/lib/data/stress";
+import { loadVariants } from "@/lib/data/variants";
 import {
   createPoemExtensions,
   externalValueSync,
@@ -125,14 +127,23 @@ export function PoemEditor({
   );
   const dictRevision = useDictRevision();
   const stressPackRevision = useStressRevision();
+  const variantsPackRevision = useVariantsRevision();
 
   const needsStress =
     settings.showStress || isStressAwareMeter(settings.meter);
+  const hasMeterTarget =
+    settings.meter !== "none" &&
+    (settings.meter !== "custom" || settings.customSyllables > 0);
 
   useEffect(() => {
     if (!needsStress) return;
     void loadStress().catch(() => {});
   }, [needsStress]);
+
+  useEffect(() => {
+    if (!hasMeterTarget) return;
+    void loadVariants().catch(() => {});
+  }, [hasMeterTarget]);
 
   const lineCounts = useSyllableLineCounts(
     liveText,
@@ -161,7 +172,7 @@ export function PoemEditor({
     overrides,
   ]);
 
-  const stressRevision = `${stressOverrideRevision}|${stressPackRevision}|${dictRevision}`;
+  const stressRevision = `${stressOverrideRevision}|${stressPackRevision}|${variantsPackRevision}|${dictRevision}`;
 
   const meteredLines = useMemo(
     () => buildMeteredLines(lineCounts.counts, meterOptions, stressRevision),

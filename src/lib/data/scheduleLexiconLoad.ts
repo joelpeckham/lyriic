@@ -1,5 +1,6 @@
 import { loadLexicon } from "@/lib/data/lexicon";
 import { runWhenIdle } from "@/lib/data/runWhenIdle";
+import { loadVariants } from "@/lib/data/variants";
 import { prefetchThesaurus } from "@/lib/thesaurus/lookup";
 
 type NetworkConnection = {
@@ -30,6 +31,7 @@ export function scheduleLexiconLoad(): void {
   scheduled = true;
   runWhenIdle(() => {
     void loadLexicon().then(() => {
+      void loadVariants().catch(() => {});
       prefetchThesaurus();
     });
   }, lexiconIdleTimeoutMs());

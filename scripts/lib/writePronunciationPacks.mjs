@@ -9,6 +9,7 @@ import {
   encodeLexicon,
   encodeRhymePack,
   encodeStress,
+  encodeVariants,
   reportPackSize,
 } from "./dictPack.mjs";
 
@@ -16,24 +17,28 @@ import {
  * @param {object} input
  * @param {Record<string, number>} input.syllables
  * @param {Record<string, number>} input.stressPacked word → packed u32
+ * @param {Record<string, Array<{ syllables: number, packedStress: number }>>} [input.variantsByWord]
  * @param {Record<string, string | string[]>} input.byWord
  * @param {Record<string, string[]>} input.byKey
  * @param {Record<string, string | string[]>} input.byWordEnd
  * @param {Record<string, string[]>} input.byKeyEnd
  * @param {string} input.lexiconPath
  * @param {string} input.stressPath
+ * @param {string} input.variantsPath
  * @param {string} input.perfectPath
  * @param {string} input.endPath
  */
 export function writePronunciationPacks({
   syllables,
   stressPacked,
+  variantsByWord = {},
   byWord,
   byKey,
   byWordEnd,
   byKeyEnd,
   lexiconPath,
   stressPath,
+  variantsPath,
   perfectPath,
   endPath,
 }) {
@@ -45,6 +50,14 @@ export function writePronunciationPacks({
   for (let i = 0; i < words.length; i++) {
     sylArr[i] = syllables[words[i]] ?? 0;
     stressArr[i] = stressPacked[words[i]] ?? 0;
+  }
+
+  /** @type {Array<{ wordId: number, alts: Array<{ syllables: number, packedStress: number }> }>} */
+  const variantEntries = [];
+  for (let i = 0; i < words.length; i++) {
+    const alts = variantsByWord[words[i]];
+    if (!alts || alts.length === 0) continue;
+    variantEntries.push({ wordId: i, alts });
   }
 
   /**
@@ -83,22 +96,26 @@ export function writePronunciationPacks({
 
   const lexBuf = encodeLexicon(words, sylArr);
   const stressBuf = encodeStress(stressArr);
+  const variantsBuf = encodeVariants(variantEntries);
   const perfectBuf = buildMode(byWord, byKey, "perfect");
   const endBuf = buildMode(byWordEnd, byKeyEnd, "end");
 
   mkdirSync(dirname(lexiconPath), { recursive: true });
   mkdirSync(dirname(stressPath), { recursive: true });
+  mkdirSync(dirname(variantsPath), { recursive: true });
   mkdirSync(dirname(perfectPath), { recursive: true });
   mkdirSync(dirname(endPath), { recursive: true });
   writeFileSync(lexiconPath, lexBuf);
   writeFileSync(stressPath, stressBuf);
+  writeFileSync(variantsPath, variantsBuf);
   writeFileSync(perfectPath, perfectBuf);
   writeFileSync(endPath, endBuf);
 
   reportPackSize(`lexicon → ${lexiconPath}`, lexBuf);
   reportPackSize(`stress → ${stressPath}`, stressBuf);
+  reportPackSize(`variants → ${variantsPath}`, variantsBuf);
   reportPackSize(`rhyme-perfect → ${perfectPath}`, perfectBuf);
   reportPackSize(`rhyme-end → ${endPath}`, endBuf);
 
-  return { wordCount: words.length };
+  return { wordCount: words.length, variantEntryCount: variantEntries.length };
 }

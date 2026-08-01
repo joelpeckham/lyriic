@@ -1,6 +1,7 @@
 /**
  * Resolve per-syllable stress: override → dict → heuristic.
  * Hyphenated compounds concat part patterns (like syllable summing).
+ * Meter-fit may apply dictionary syllable alts separately.
  */
 
 import type { StressCode } from "@/lib/data/dictPack";

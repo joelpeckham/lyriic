@@ -7,6 +7,7 @@
  * Outputs:
  *   src/lib/data/packs/lexicon.bin
  *   src/lib/data/packs/stress.bin
+ *   src/lib/data/packs/variants.bin
  *   src/lib/data/packs/rhyme-perfect.bin
  *   src/lib/data/packs/rhyme-end.bin
  *
@@ -51,10 +52,15 @@ const cmuPath = join(__dirname, "cmudict.dict");
 const misakiGoldPath = join(sourcesDir, "us_gold.json");
 const misakiSilverPath = join(sourcesDir, "us_silver.json");
 const wikipronPath = join(sourcesDir, "eng_latn_us_broad.tsv");
+const poeticCompressionsPath = join(
+  __dirname,
+  "data/poetic-compressions.json",
+);
 
 const packsDir = join(root, "src/lib/data/packs");
 const lexiconOutPath = join(packsDir, "lexicon.bin");
 const stressOutPath = join(packsDir, "stress.bin");
+const variantsOutPath = join(packsDir, "variants.bin");
 const perfectOutPath = join(packsDir, "rhyme-perfect.bin");
 const endOutPath = join(packsDir, "rhyme-end.bin");
 
@@ -228,6 +234,8 @@ async function main() {
   const syllables = Object.create(null);
   /** @type {Record<string, number>} */
   const stressPacked = Object.create(null);
+  /** @type {Record<string, Array<{ syllables: number, packedStress: number }>>} */
+  const variantsByWord = Object.create(null);
   /** @type {Record<string, string | string[]>} */
   const byWord = Object.create(null);
   /** @type {Record<string, string[]>} */
@@ -254,8 +262,28 @@ async function main() {
           `stress pattern for "${word}" has ${stressPattern.length} syllables (max ${STRESS_PACK_MAX_SYLLABLES})`,
         );
       }
-      stressPacked[word] = packStressPattern(stressPattern);
+      const primaryPacked = packStressPattern(stressPattern);
+      stressPacked[word] = primaryPacked;
       stressEntries += 1;
+
+      /** @type {Map<string, { syllables: number, packedStress: number }>} */
+      const altMap = new Map();
+      for (const ipa of [entry.primary, ...entry.alts]) {
+        const altSyl = syllableCountFromIpa(ipa);
+        if (altSyl < 1) continue;
+        const altStress = stressPatternFromIpa(ipa);
+        if (altStress.length > STRESS_PACK_MAX_SYLLABLES) continue;
+        if (altStress.length !== altSyl) continue;
+        const packed = packStressPattern(altStress);
+        if (altSyl === syl && packed === primaryPacked) continue;
+        const key = `${altSyl}:${packed}`;
+        if (!altMap.has(key)) {
+          altMap.set(key, { syllables: altSyl, packedStress: packed });
+        }
+      }
+      if (altMap.size > 0) {
+        variantsByWord[word] = [...altMap.values()];
+      }
     }
 
     /** @type {string[]} */
@@ -309,6 +337,43 @@ async function main() {
     }
   }
 
+  // Curated poetic compressions (not in citation dictionaries).
+  /** @type {Record<string, Array<{ syllables: number, stress: number[] }>>} */
+  const poetic = JSON.parse(readFileSync(poeticCompressionsPath, "utf8"));
+  let poeticMerged = 0;
+  for (const [rawWord, alts] of Object.entries(poetic)) {
+    const word = normalizeLemma(rawWord);
+    if (!word || !(word in stressPacked)) continue;
+    const primarySyl = syllables[word];
+    const primaryPacked = stressPacked[word];
+    const existing = variantsByWord[word] ?? [];
+    const seen = new Set(
+      existing.map((a) => `${a.syllables}:${a.packedStress}`),
+    );
+    for (const alt of alts) {
+      if (
+        !alt ||
+        typeof alt.syllables !== "number" ||
+        !Array.isArray(alt.stress) ||
+        alt.stress.length !== alt.syllables ||
+        alt.syllables < 1 ||
+        alt.syllables > STRESS_PACK_MAX_SYLLABLES
+      ) {
+        throw new Error(`invalid poetic compression for "${word}"`);
+      }
+      const packed = packStressPattern(
+        /** @type {(0 | 1 | 2)[]} */ (alt.stress),
+      );
+      if (alt.syllables === primarySyl && packed === primaryPacked) continue;
+      const key = `${alt.syllables}:${packed}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      existing.push({ syllables: alt.syllables, packedStress: packed });
+      poeticMerged += 1;
+    }
+    if (existing.length > 0) variantsByWord[word] = existing;
+  }
+
   console.log("Ranking rhyme buckets by wordfreq…");
   const allBucketWords = [
     ...Object.values(buckets).flat(),
@@ -335,15 +400,17 @@ async function main() {
   const perfect = rankBuckets(buckets);
   const end = rankBuckets(bucketsEnd);
 
-  const { wordCount } = writePronunciationPacks({
+  const { wordCount, variantEntryCount } = writePronunciationPacks({
     syllables,
     stressPacked,
+    variantsByWord,
     byWord,
     byKey: perfect.byKey,
     byWordEnd,
     byKeyEnd: end.byKey,
     lexiconPath: lexiconOutPath,
     stressPath: stressOutPath,
+    variantsPath: variantsOutPath,
     perfectPath: perfectOutPath,
     endPath: endOutPath,
   });
@@ -352,6 +419,9 @@ async function main() {
     `Syllables: ${sylEntries} / ${wordCount} lexicon words`,
   );
   console.log(`Stress patterns: ${stressEntries} words`);
+  console.log(
+    `Syllable variants: ${variantEntryCount} words (${poeticMerged} curated alts merged)`,
+  );
   console.log(
     `Perfect rhymes: ${rhymeEntries} words / ${Object.keys(perfect.byKey).length} keys (${perfect.seats} seats; ${skippedNoRhyme} no-key)`,
   );

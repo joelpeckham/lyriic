@@ -13,6 +13,7 @@ import { WordAnchor } from "@/components/editor/WordAnchor";
 import { useClosingRetention } from "@/components/editor/useClosingRetention";
 import { useKeyedState } from "@/components/editor/useKeyedState";
 import { EndRhymesSwitch } from "@/components/rhyme/EndRhymesSwitch";
+import { useVariantsRevision } from "@/hooks/useVariantsRevision";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,10 @@ import {
 } from "@/components/ui/popover";
 import { getLexicon } from "@/lib/data/lexicon";
 import { loadStress } from "@/lib/data/stress";
+import {
+  loadVariants,
+  syllableCountsForWord,
+} from "@/lib/data/variants";
 import type {
   WordLookupMode,
   WordTarget,
@@ -86,16 +91,6 @@ type WordToolsPopoverProps = {
 
 const OVERRIDE_COUNT_MIN = 1;
 const OVERRIDE_COUNT_MAX = 8;
-
-const OVERRIDE_SUGGESTIONS = [
-  { word: "fire", counts: [1, 2] as const },
-  { word: "every", counts: [2, 3] as const },
-] as const;
-
-function suggestionFor(word: string) {
-  const key = normalizeOverrideKey(word);
-  return OVERRIDE_SUGGESTIONS.find((s) => s.word === key) ?? null;
-}
 
 function clampOverrideCount(value: number): number {
   return Math.min(
@@ -167,13 +162,20 @@ export function WordToolsPopover({
   // Lookup mode from PoemEditor wins over local actions/syllables.
   const view: Panel = display?.mode ?? panel;
 
+  // Re-render when variants.bin finishes loading so alt count chips appear.
+  useVariantsRevision();
+
   const key = display ? normalizeOverrideKey(display.word) : "";
   const hasOverride = Boolean(key && overrides[key] !== undefined);
   const hasStressOverride = Boolean(
     key && stressOverrides[key] !== undefined,
   );
   const baseline = display ? countWord(display.word, {}) : null;
-  const suggestion = display ? suggestionFor(display.word) : null;
+  const variantCounts = display
+    ? syllableCountsForWord(display.word).filter(
+        (n) => n !== baseline?.count,
+      )
+    : [];
   const displayCount = hasOverride
     ? overrides[key]!
     : (baseline?.count ?? 1);
@@ -256,6 +258,7 @@ export function WordToolsPopover({
   useEffect(() => {
     if (!open || view !== "syllables") return;
     void loadStress().catch(() => {});
+    void loadVariants().catch(() => {});
   }, [open, view]);
 
   // Drop out-of-range stress overrides when syllable count shrinks.
@@ -600,18 +603,18 @@ export function WordToolsPopover({
               ) : null}
             </div>
 
-            {suggestion ? (
+            {variantCounts.length > 0 ? (
               <div className="flex flex-wrap gap-1 px-0.5">
-                {suggestion.counts.map((count) => (
+                {variantCounts.map((count) => (
                   <Button
                     key={count}
                     type="button"
                     variant="ghost"
                     size="xs"
-                    aria-label={`${suggestion.word} → ${count}`}
+                    aria-label={`Use ${count} syllables for ${display.raw}`}
                     onClick={() => applyCount(count)}
                   >
-                    {suggestion.word} → {count}
+                    {count} syllables
                   </Button>
                 ))}
               </div>

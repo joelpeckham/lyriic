@@ -2,7 +2,8 @@
  * English syllable count: override → CMU primary dict → heuristic.
  * Hyphenated compounds are split and summed (wine-bottle → 1+2).
  * Ambiguous poetic words (fire, every, …) default to CMU primary;
- * pass overrides for user preference.
+ * pass overrides for user preference. Meter may auto-select dictionary
+ * alts via variants.bin when a line misses its target.
  *
  * Base dict|heuristic counts are memoized; overrides are layered on top
  * so threaded project overrides never pollute the cache.

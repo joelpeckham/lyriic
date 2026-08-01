@@ -1,7 +1,16 @@
-import { buildMeteredLine, type BuildMeteredLineOptions } from "./buildMeteredLine";
+import {
+  buildMeteredLine,
+  type BuildMeteredLineOptions,
+} from "./buildMeteredLine";
 import type { MeteredLine } from "./types";
 import type { BinaryStressPattern } from "./presets";
 import type { LineSyllableCount } from "@/lib/syllables/types";
+
+function isBuildOptions(
+  value: readonly number[] | BuildMeteredLineOptions,
+): value is BuildMeteredLineOptions {
+  return !Array.isArray(value);
+}
 
 type CacheEntry = {
   pattern: readonly number[];
@@ -65,9 +74,9 @@ export function buildMeteredLines(
   patternOrOptions: readonly number[] | BuildMeteredLineOptions,
   stressRevision = "",
 ): MeteredLine[] {
-  const options: BuildMeteredLineOptions = Array.isArray(patternOrOptions)
-    ? { pattern: patternOrOptions }
-    : patternOrOptions;
+  const options: BuildMeteredLineOptions = isBuildOptions(patternOrOptions)
+    ? patternOrOptions
+    : { pattern: patternOrOptions };
 
   return counts.map((count, index) =>
     getMeteredLineCached(count, index, options, stressRevision),
