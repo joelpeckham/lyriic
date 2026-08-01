@@ -21,7 +21,7 @@ import {
   normalizeOverridesRecord,
 } from "@/lib/syllables/overrides";
 
-const AUTOSAVE_MS = 300;
+export const AUTOSAVE_MS = 300;
 
 export type SaveStatus = "ok" | "error" | "idle";
 
