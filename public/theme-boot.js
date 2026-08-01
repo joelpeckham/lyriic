@@ -1,4 +1,5 @@
 (function () {
+  document.documentElement.classList.add("js");
   try {
     var raw = localStorage.getItem("lyriic.prefs.v1");
     var prefs = raw ? JSON.parse(raw) : {};
