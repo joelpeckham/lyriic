@@ -30,6 +30,19 @@ function seedProjects(names: string[]): ProjectsState {
   return state;
 }
 
+function dispatchStorageEvent(state: ProjectsState) {
+  const value = JSON.stringify(state);
+  // jsdom does not mirror StorageEvent into localStorage; seed storage first.
+  localStorage.setItem(STORAGE_KEY, value);
+  window.dispatchEvent(
+    new StorageEvent("storage", {
+      key: STORAGE_KEY,
+      newValue: value,
+      storageArea: localStorage,
+    }),
+  );
+}
+
 beforeEach(() => {
   localStorage.clear();
   vi.useFakeTimers();
@@ -74,8 +87,9 @@ describe("useProjects", () => {
     expect(result.current.active.id).toBe(firstId);
   });
 
-  it("debounces text autosave until AUTOSAVE_MS elapses", () => {
+  it("buffers text in a ref and flushes React state with persistence at AUTOSAVE_MS", () => {
     const { result } = renderHook(() => useProjects());
+    const initialText = result.current.active.text;
 
     act(() => {
       vi.advanceTimersByTime(AUTOSAVE_MS);
@@ -85,18 +99,63 @@ describe("useProjects", () => {
     act(() => {
       result.current.setText("debounced draft");
     });
-    expect(result.current.active.text).toBe("debounced draft");
+    // Keystroke-rate React updates are skipped; CM owns the live doc.
+    expect(result.current.active.text).toBe(initialText);
     expect(localStorage.getItem(STORAGE_KEY)).toBe(before);
 
     act(() => {
       vi.advanceTimersByTime(AUTOSAVE_MS - 1);
     });
+    expect(result.current.active.text).toBe(initialText);
     expect(localStorage.getItem(STORAGE_KEY)).toBe(before);
 
     act(() => {
       vi.advanceTimersByTime(1);
     });
+    expect(result.current.active.text).toBe("debounced draft");
     expect(readStored().projects[0]?.text).toBe("debounced draft");
+  });
+
+  it("reuses sibling project object identities on text flush", () => {
+    const seeded = seedProjects(["A", "B"]);
+    const { result } = renderHook(() => useProjects());
+    const siblingBefore = result.current.projects.find(
+      (p) => p.id === seeded.projects[1]!.id,
+    );
+
+    act(() => {
+      result.current.setText("only-active-changes");
+      vi.advanceTimersByTime(AUTOSAVE_MS);
+    });
+
+    const siblingAfter = result.current.projects.find(
+      (p) => p.id === seeded.projects[1]!.id,
+    );
+    expect(siblingAfter).toBe(siblingBefore);
+    expect(result.current.active.text).toBe("only-active-changes");
+  });
+
+  it("flushes buffered text before project switch and persists immediately", () => {
+    const seeded = seedProjects(["A", "B"]);
+    const { result } = renderHook(() => useProjects());
+    const firstId = seeded.projects[0]!.id;
+    const secondId = seeded.projects[1]!.id;
+
+    act(() => {
+      result.current.setText("typed-before-switch");
+    });
+    expect(result.current.active.text).toBe("text:A");
+
+    act(() => {
+      result.current.switchProject(secondId);
+    });
+    expect(result.current.active.id).toBe(secondId);
+    expect(
+      result.current.projects.find((p) => p.id === firstId)?.text,
+    ).toBe("typed-before-switch");
+    expect(readStored().projects.find((p) => p.id === firstId)?.text).toBe(
+      "typed-before-switch",
+    );
   });
 
   it("flushes create/rename/switch/delete to storage immediately", () => {
@@ -186,7 +245,7 @@ describe("useProjects", () => {
     });
   });
 
-  it("flushes latest stateRef on beforeunload before debounce", () => {
+  it("flushes buffered text on beforeunload before debounce", () => {
     const { result } = renderHook(() => useProjects());
 
     act(() => {
@@ -196,6 +255,7 @@ describe("useProjects", () => {
     act(() => {
       result.current.setText("unload-latest");
     });
+    expect(result.current.active.text).not.toBe("unload-latest");
     expect(readStored().projects[0]?.text).not.toBe("unload-latest");
 
     act(() => {
@@ -204,7 +264,7 @@ describe("useProjects", () => {
     expect(readStored().projects[0]?.text).toBe("unload-latest");
   });
 
-  it("flushes latest stateRef on pagehide before debounce", () => {
+  it("flushes buffered text on pagehide before debounce", () => {
     const { result } = renderHook(() => useProjects());
 
     act(() => {
@@ -214,11 +274,69 @@ describe("useProjects", () => {
     act(() => {
       result.current.setText("pagehide-latest");
     });
+    expect(result.current.active.text).not.toBe("pagehide-latest");
     expect(readStored().projects[0]?.text).not.toBe("pagehide-latest");
 
     act(() => {
       window.dispatchEvent(new Event("pagehide"));
     });
     expect(readStored().projects[0]?.text).toBe("pagehide-latest");
+  });
+
+  describe("cross-tab storage events", () => {
+    it("reloads remote state when there is no pending local text buffer", () => {
+      const local = seedProjects(["Local"]);
+      const { result } = renderHook(() => useProjects());
+      expect(result.current.active.name).toBe("Local");
+
+      const remoteProject = createEmptyProject("Remote");
+      remoteProject.text = "from-other-tab";
+      const remote: ProjectsState = {
+        version: 1,
+        activeId: remoteProject.id,
+        projects: [remoteProject],
+      };
+
+      act(() => {
+        dispatchStorageEvent(remote);
+      });
+
+      expect(result.current.active.id).toBe(remoteProject.id);
+      expect(result.current.active.name).toBe("Remote");
+      expect(result.current.active.text).toBe("from-other-tab");
+      // Accepting remote should not clobber storage with stale local.
+      expect(readStored().activeId).toBe(remoteProject.id);
+      expect(local.activeId).not.toBe(remoteProject.id);
+    });
+
+    it("keeps local buffered edits and re-persists when a foreign write arrives", () => {
+      seedProjects(["Local"]);
+      const { result } = renderHook(() => useProjects());
+      const localId = result.current.active.id;
+
+      act(() => {
+        result.current.setText("local-unsaved");
+      });
+      expect(result.current.active.text).toBe("text:Local");
+
+      const remoteProject = createEmptyProject("Remote");
+      remoteProject.text = "remote-clobber";
+      const remote: ProjectsState = {
+        version: 1,
+        activeId: remoteProject.id,
+        projects: [remoteProject],
+      };
+
+      act(() => {
+        dispatchStorageEvent(remote);
+      });
+
+      // Pending keystrokes win: stay on local project with buffered text applied.
+      expect(result.current.active.id).toBe(localId);
+      expect(result.current.active.text).toBe("local-unsaved");
+      expect(readStored().projects.find((p) => p.id === localId)?.text).toBe(
+        "local-unsaved",
+      );
+    });
   });
 });

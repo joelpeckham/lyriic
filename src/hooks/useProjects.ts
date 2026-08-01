@@ -11,6 +11,7 @@ import {
   getActiveProject,
   loadProjectsState,
   saveProjectsState,
+  STORAGE_KEY,
   type SaveResult,
 } from "@/lib/projects/storage";
 import type { Project, ProjectsState } from "@/lib/projects/types";
@@ -25,6 +26,30 @@ export const AUTOSAVE_MS = 300;
 
 export type SaveStatus = "ok" | "error" | "idle";
 
+type PendingText = {
+  projectId: string;
+  text: string;
+};
+
+function applyTextToProject(
+  prev: ProjectsState,
+  projectId: string,
+  text: string,
+): ProjectsState {
+  let changed = false;
+  const projects = prev.projects.map((project) => {
+    if (project.id !== projectId) return project;
+    if (project.text === text) return project;
+    changed = true;
+    return {
+      ...project,
+      text,
+      updatedAt: Date.now(),
+    };
+  });
+  return changed ? { ...prev, projects } : prev;
+}
+
 export function useProjects() {
   const [state, setState] = useState<ProjectsState>(() => {
     const { state: initial } = loadProjectsState();
@@ -34,6 +59,10 @@ export function useProjects() {
 
   const stateRef = useRef(state);
   const structuralFlushRef = useRef(false);
+  /** Skip the state-effect debounce when persist already ran for this update. */
+  const skipDebouncedPersistRef = useRef(false);
+  const pendingTextRef = useRef<PendingText | null>(null);
+  const textTimerRef = useRef<number | null>(null);
   const active = getActiveProject(state);
 
   useLayoutEffect(() => {
@@ -49,10 +78,50 @@ export function useProjects() {
     return result;
   }, []);
 
+  const clearTextTimer = useCallback(() => {
+    if (textTimerRef.current != null) {
+      window.clearTimeout(textTimerRef.current);
+      textTimerRef.current = null;
+    }
+  }, []);
+
+  /**
+   * Fold the keystroke buffer into a state snapshot and clear it.
+   * Tagged by projectId so a stale buffer never lands on the wrong draft.
+   */
+  const consumePendingText = useCallback((): ProjectsState | null => {
+    const pending = pendingTextRef.current;
+    if (!pending) return null;
+    pendingTextRef.current = null;
+    const next = applyTextToProject(
+      stateRef.current,
+      pending.projectId,
+      pending.text,
+    );
+    return next === stateRef.current ? null : next;
+  }, []);
+
+  /** Materialize buffered text into stateRef (and optionally React). */
+  const flushPendingText = useCallback(
+    (updateReact: boolean) => {
+      clearTextTimer();
+      const next = consumePendingText();
+      if (!next) return;
+      stateRef.current = next;
+      if (updateReact) setState(next);
+    },
+    [clearTextTimer, consumePendingText],
+  );
+
   useEffect(() => {
     if (structuralFlushRef.current) {
       structuralFlushRef.current = false;
       persist(stateRef.current);
+      return;
+    }
+
+    if (skipDebouncedPersistRef.current) {
+      skipDebouncedPersistRef.current = false;
       return;
     }
 
@@ -64,6 +133,8 @@ export function useProjects() {
 
   useEffect(() => {
     const flush = () => {
+      // beforeunload / pagehide / unmount: never drop keystrokes still in the buffer.
+      flushPendingText(false);
       persist(stateRef.current);
     };
     window.addEventListener("beforeunload", flush);
@@ -73,52 +144,113 @@ export function useProjects() {
       window.removeEventListener("pagehide", flush);
       flush();
     };
-  }, [persist]);
+  }, [persist, flushPendingText]);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY) return;
+
+      // Cross-tab: if this tab still has unsaved keystrokes, keep local and
+      // write back (last-writer with awareness). Otherwise accept remote.
+      if (pendingTextRef.current) {
+        flushPendingText(true);
+        skipDebouncedPersistRef.current = true;
+        persist(stateRef.current);
+        return;
+      }
+
+      clearTextTimer();
+      const { state: remote } = loadProjectsState();
+      stateRef.current = remote;
+      skipDebouncedPersistRef.current = true;
+      setState(remote);
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [clearTextTimer, flushPendingText, persist]);
 
   const commit = useCallback(
     (updater: (prev: ProjectsState) => ProjectsState, structural = false) => {
+      // Structural / settings / overrides must see the latest buffered text.
+      clearTextTimer();
+      const withText = consumePendingText();
+      if (withText) stateRef.current = withText;
+
       if (structural) structuralFlushRef.current = true;
       const prev = stateRef.current;
       const next = updater(prev);
-      if (next === prev) return;
-      // Keep stateRef current for autosave / beforeunload before paint.
+      if (next === prev) {
+        if (withText) setState(withText);
+        return;
+      }
       stateRef.current = next;
       setState(next);
     },
-    [],
+    [clearTextTimer, consumePendingText],
   );
 
   const patchActive = useCallback(
     (
       patch: Partial<Pick<Project, "text" | "settings" | "name" | "overrides">>,
     ) => {
-      commit((prev) => ({
-        ...prev,
-        projects: prev.projects.map((project) =>
-          project.id === prev.activeId
-            ? {
-                ...project,
-                ...patch,
-                settings: patch.settings
-                  ? normalizeSettings(patch.settings)
-                  : project.settings,
-                overrides: patch.overrides
-                  ? normalizeOverridesRecord(patch.overrides)
-                  : project.overrides,
-                updatedAt: Date.now(),
-              }
-            : project,
-        ),
-      }));
+      commit((prev) => {
+        let changed = false;
+        const projects = prev.projects.map((project) => {
+          if (project.id !== prev.activeId) return project;
+
+          const nextSettings = patch.settings
+            ? normalizeSettings(patch.settings)
+            : project.settings;
+          const nextOverrides = patch.overrides
+            ? normalizeOverridesRecord(patch.overrides)
+            : project.overrides;
+          const nextText = patch.text !== undefined ? patch.text : project.text;
+          const nextName = patch.name !== undefined ? patch.name : project.name;
+
+          if (
+            nextText === project.text &&
+            nextName === project.name &&
+            nextSettings === project.settings &&
+            nextOverrides === project.overrides
+          ) {
+            return project;
+          }
+
+          changed = true;
+          return {
+            ...project,
+            text: nextText,
+            name: nextName,
+            settings: nextSettings,
+            overrides: nextOverrides,
+            updatedAt: Date.now(),
+          };
+        });
+        return changed ? { ...prev, projects } : prev;
+      });
     },
     [commit],
   );
 
   const setText = useCallback(
     (text: string) => {
-      patchActive({ text });
+      const projectId = stateRef.current.activeId;
+      pendingTextRef.current = { projectId, text };
+      clearTextTimer();
+      // Same debounce boundary as persistence: one timer updates React + storage.
+      textTimerRef.current = window.setTimeout(() => {
+        textTimerRef.current = null;
+        const next = consumePendingText();
+        if (next) {
+          stateRef.current = next;
+          skipDebouncedPersistRef.current = true;
+          setState(next);
+        }
+        persist(stateRef.current);
+      }, AUTOSAVE_MS);
     },
-    [patchActive],
+    [clearTextTimer, consumePendingText, persist],
   );
 
   const setSettings = useCallback(
