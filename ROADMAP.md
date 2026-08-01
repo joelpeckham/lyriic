@@ -99,25 +99,51 @@ Presets (v1):
 
 Word-level synonym helper that respects meter.
 
+- [x] Select or long-press / shortcut (`Mod-'`) on a word → shadcn `Popover` anchored to the selection
+- [x] Local/embedded thesaurus (Moby → `synonyms.json` via `pnpm build:thesaurus`; lazy-loaded on first open)
+- [x] Show replacement options **sorted by syllable count** (ascending), with each option’s count shown subtly
+- [x] Highlight options that keep the current line on its meter target (same syllable delta as the replaced word, or that land on target)
+- [x] Clicking a synonym replaces the word in place and closes the popover
+- [x] Must stay fast: cache lookups; never block typing on the main path
+- [x] Shared word-lookup host / selection bridge for Phase 4.5 (`mode: 'thesaurus' | 'rhyme'`)
+
+## Phase 4.5 — Rhyme popover
+
+Word-level rhyme helper that reuses the Phase 4 popover shell and meter-aware ranking. **Deferred** after Phase 4.
+
+Interaction (same affordances as thesaurus; distinct shortcut / menu action):
+
 - Select or long-press / shortcut on a word → shadcn `Popover` anchored to the selection
-- Fetch synonym candidates (start with a local/embedded thesaurus; remote API only if needed later)
-- Show replacement options **sorted by syllable count** (ascending), with each option’s count shown subtly
-- Highlight options that keep the current line on its meter target (same syllable delta as the replaced word, or that land on target)
-- Clicking a synonym replaces the word in place and closes the popover
+- Show rhyme candidates with each option’s syllable count shown subtly
+- Sort by syllable count (ascending); highlight options that keep the current line on its meter target
+- Clicking a rhyme replaces the word in place and closes the popover
 - Must stay fast: cache lookups; never block typing on the main path
+
+Rhyme data (local-first):
+
+- Today’s runtime `cmu-syllables.json` stores **counts only** — phones are discarded at build time. Add a build step (extend `pnpm build:cmu` or a sibling script) that emits a compact rhyme index from `scripts/cmudict.dict` (primary pronunciation): perfect rhymes via shared stressed-vowel+coda key (ARPAbet from the last primary stress)
+- Lazy-load the rhyme index (separate chunk) so first paint stays light; heuristic / empty state when the word is OOV
+- Cap result lists; prefer common short words when many keys collide
+- Slant / near rhyme is stretch (Phase 6), not v1
+
+Shared with Phase 4:
+
+- One popover host / selection bridge in the CodeMirror canvas; thesaurus vs rhyme as modes (or sibling actions), not two divergent selection stacks
+- Replacement must be a targeted CM change (not full-doc replace) — see pre–Phase 3 I-33
 
 ## Phase 5 — Polish + deploy
 
-- Keyboard shortcuts (toggle settings, focus canvas, thesaurus)
+- Keyboard shortcuts (toggle settings, focus canvas, thesaurus, rhyme)
 - Quiet first-run microcopy
 - SEO/meta for lyriic.com, favicon
 - Vercel + custom domain (`dist` static output)
 - Lighthouse pass; no layout shift on gear/Sheet
-- Shrink CMU payload: today `cmu-syllables.json` is statically imported and lands in the main JS chunk (~1.5 MB raw / ~0.5 MB gzip). Prefer lazy `import()` / separate chunk (or gzipped asset) so first paint isn’t blocked; `pnpm build` still does not run `build:cmu` — commit the generated JSON (or add a Vercel build step if we stop vendoring it)
+- Shrink CMU payload: today `cmu-syllables.json` is statically imported and lands in the main JS chunk (~1.5 MB raw / ~0.5 MB gzip). Prefer lazy `import()` / separate chunk (or gzipped asset) so first paint isn’t blocked; `pnpm build` still does not run `build:cmu` — commit the generated JSON (or add a Vercel build step if we stop vendoring it). Apply the same lazy pattern to the Phase 4.5 rhyme index.
 
 ## Phase 6 — Stretch
 
 - Stress/accent marking for iambs
+- Slant / near-rhyme matching (extend Phase 4.5 index)
 - Export / copy plain text
 - Cloud sync / accounts for projects (optional; local-first remains default)
 - Shareable read-only links (needs backend — defer)
@@ -127,5 +153,5 @@ Word-level synonym helper that respects meter.
 ## Out of scope for now
 
 - Auth, accounts, cloud sync (local drafts only until Phase 6)
-- Thesaurus popover (Phase 4)
+- Rhyme popover (Phase 4.5)
 - CMU code-splitting / lazy load (Phase 5)

@@ -3,12 +3,17 @@ import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
+import { WordLookupPopover } from "@/components/editor/WordLookupPopover";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
 import {
   setMeterOverlayData,
   toOverlayLines,
 } from "@/lib/editor/meterOverlay";
 import { getSyllableOverlay } from "@/lib/editor/syllableOverlay";
+import {
+  replaceWordRange,
+  type WordLookupRequest,
+} from "@/lib/editor/wordLookup";
 import { zenEditorTheme } from "@/lib/editor/zenTheme";
 import {
   buildMeteredLines,
@@ -47,14 +52,26 @@ export function PoemEditor({
   const viewRef = useRef<EditorView | null>(null);
   const themeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
+  const onOpenWordLookupRef = useRef<(request: WordLookupRequest) => void>(
+    () => {},
+  );
   /** Live CM document — counts stay in sync even when parent text is debounced. */
   const [liveText, setLiveText] = useState(value);
   const [activeLineIndex, setActiveLineIndex] = useState(0);
   const [liveCountText, setLiveCountText] = useState("");
+  const [lookupRequest, setLookupRequest] = useState<WordLookupRequest | null>(
+    null,
+  );
 
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useLayoutEffect(() => {
+    onOpenWordLookupRef.current = (request) => {
+      setLookupRequest(request);
+    };
+  }, []);
 
   const overrideRevision = useMemo(
     () => overridesKey(overrides),
@@ -94,6 +111,9 @@ export function PoemEditor({
             onChangeRef.current(text);
           },
           onActiveLineChange: setActiveLineIndex,
+          onOpenWordLookup: (request) => {
+            onOpenWordLookupRef.current(request);
+          },
         }),
       ],
     });
@@ -198,6 +218,25 @@ export function PoemEditor({
         {settings.showCounts ? liveCountText : ""}
       </div>
       <div ref={parentRef} className="h-full w-full" />
+      <WordLookupPopover
+        request={lookupRequest}
+        onClose={() => setLookupRequest(null)}
+        onReplace={(from, to, insert) => {
+          const view = viewRef.current;
+          if (!view) return;
+          replaceWordRange(view, from, to, insert);
+        }}
+        onRestoreFocus={() => {
+          viewRef.current?.focus();
+        }}
+        meteredLine={
+          lookupRequest
+            ? meteredLines[lookupRequest.lineIndex]
+            : undefined
+        }
+        overrides={overrides}
+        overrideRevision={overrideRevision}
+      />
     </div>
   );
 }

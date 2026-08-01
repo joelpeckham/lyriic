@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Large PD source (~24MB); rebuild fetches if missing (`pnpm build:thesaurus`).
+# Runtime uses the committed synonyms.json artifact.
+scripts/mthesaur.txt
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

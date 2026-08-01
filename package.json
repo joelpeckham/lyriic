@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:cmu": "node scripts/build-cmu-syllables.mjs"
+    "build:cmu": "node scripts/build-cmu-syllables.mjs",
+    "build:thesaurus": "node scripts/build-thesaurus.mjs"
   },
   "dependencies": {
     "@codemirror/commands": "^6.10.4",

@@ -45,4 +45,4 @@ Vercel detects Vite automatically (`pnpm build` → `dist`). Point the productio
 
 ## Roadmap
 
-See [ROADMAP.md](./ROADMAP.md) for phases: syllable engine, editor canvas, meter rulers, and deploy polish.
+See [ROADMAP.md](./ROADMAP.md) for phases: syllable engine, editor canvas, meter rulers, thesaurus/rhyme popovers, and deploy polish.

@@ -3,10 +3,15 @@ import { type Extension } from "@codemirror/state";
 import { EditorView, keymap, placeholder } from "@codemirror/view";
 
 import { syllableOverlay } from "@/lib/editor/syllableOverlay";
+import {
+  wordLookupExtension,
+  type WordLookupHandler,
+} from "@/lib/editor/wordLookup";
 
 export type PoemExtensionOptions = {
   onDocChange: (text: string) => void;
   onActiveLineChange: (lineIndex: number) => void;
+  onOpenWordLookup?: WordLookupHandler;
 };
 
 /**
@@ -17,6 +22,7 @@ export type PoemExtensionOptions = {
 export function createPoemExtensions({
   onDocChange,
   onActiveLineChange,
+  onOpenWordLookup,
 }: PoemExtensionOptions): Extension[] {
   return [
     history(),
@@ -38,6 +44,7 @@ export function createPoemExtensions({
       enterkeyhint: "enter",
     }),
     syllableOverlay,
+    ...(onOpenWordLookup ? [wordLookupExtension(onOpenWordLookup)] : []),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) {
         onDocChange(update.state.doc.toString());
