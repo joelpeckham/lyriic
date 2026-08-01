@@ -130,7 +130,9 @@ export function useLineDocument({
     if (mod && event.key.toLowerCase() === "a") {
       event.preventDefault();
       setSelectAll(true);
-      ta.setSelectionRange(0, ta.value.length);
+      // Collapse native selection — visual highlight is the text-shaped overlay.
+      const caret = ta.selectionStart;
+      ta.setSelectionRange(caret, caret);
       return;
     }
 

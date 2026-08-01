@@ -196,41 +196,61 @@ export function TextCanvas({
               <label className="sr-only" htmlFor={lineId}>
                 {`Line ${index + 1}`}
               </label>
-              <textarea
-                ref={(el) => {
-                  lineRefs.current[index] = el;
-                }}
-                id={lineId}
-                value={line}
-                rows={1}
-                spellCheck
-                tabIndex={index === tabStopIndex ? 0 : -1}
-                placeholder={
-                  isEmptyDoc && index === 0 ? "Write a line…" : undefined
-                }
-                aria-describedby={
-                  settings.showCounts ? statusId : undefined
-                }
-                onFocus={() => setActiveLineIndex(index)}
-                onMouseDown={() => setSelectAll(false)}
-                onChange={(event) => onLineChange(index, event.target.value)}
-                onKeyDown={(event) => onLineKeyDown(index, event)}
-                onPaste={(event) => onLinePaste(index, event)}
-                onCopy={onLineCopy}
-                onCut={onLineCut}
-                className={cn(
-                  "w-full resize-none overflow-hidden bg-transparent pr-12",
-                  "whitespace-pre-wrap break-words font-[family-name:var(--font-editor)] tracking-[0.01em]",
-                  "text-foreground caret-[var(--lyriic-ink)] placeholder:text-[var(--lyriic-subtle-faint)]",
-                  "outline-none selection:bg-[var(--lyriic-selection)]",
-                  selectAll && "bg-[var(--lyriic-selection)]",
-                )}
-                style={{
-                  fontSize: fontSizeRem,
-                  lineHeight: WRAP_LEADING,
-                  minHeight: minLineHeightRem,
-                }}
-              />
+              <div className="relative min-w-0 w-full">
+                {/* Text-shaped select-all highlight (not full textarea width). */}
+                {selectAll && line.length > 0 ? (
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 pr-12 whitespace-pre-wrap break-words font-[family-name:var(--font-editor)] tracking-[0.01em]"
+                    style={{
+                      fontSize: fontSizeRem,
+                      lineHeight: WRAP_LEADING,
+                    }}
+                  >
+                    <span className="rounded-[0.12em] bg-[var(--lyriic-selection)] box-decoration-clone">
+                      {line}
+                    </span>
+                  </div>
+                ) : null}
+                <textarea
+                  ref={(el) => {
+                    lineRefs.current[index] = el;
+                  }}
+                  id={lineId}
+                  value={line}
+                  rows={1}
+                  spellCheck
+                  tabIndex={index === tabStopIndex ? 0 : -1}
+                  placeholder={
+                    isEmptyDoc && index === 0 ? "Write a line…" : undefined
+                  }
+                  aria-describedby={
+                    settings.showCounts ? statusId : undefined
+                  }
+                  onFocus={() => setActiveLineIndex(index)}
+                  onMouseDown={() => setSelectAll(false)}
+                  onChange={(event) => onLineChange(index, event.target.value)}
+                  onKeyDown={(event) => onLineKeyDown(index, event)}
+                  onPaste={(event) => onLinePaste(index, event)}
+                  onCopy={onLineCopy}
+                  onCut={onLineCut}
+                  className={cn(
+                    "relative w-full resize-none overflow-hidden bg-transparent pr-12",
+                    "whitespace-pre-wrap break-words font-[family-name:var(--font-editor)] tracking-[0.01em]",
+                    "text-foreground caret-[var(--lyriic-ink)] placeholder:text-[var(--lyriic-subtle-faint)]",
+                    "outline-none",
+                    // Whole-poem select uses a text-shaped overlay; suppress native ::selection.
+                    selectAll
+                      ? "selection:bg-transparent"
+                      : "selection:bg-[var(--lyriic-selection)]",
+                  )}
+                  style={{
+                    fontSize: fontSizeRem,
+                    lineHeight: WRAP_LEADING,
+                    minHeight: minLineHeightRem,
+                  }}
+                />
+              </div>
 
               {settings.showCounts && (
                 <LineCountOverlay
