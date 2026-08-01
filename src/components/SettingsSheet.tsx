@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Settings } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,11 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { usePrefs } from "@/hooks/usePrefs";
-import {
-  isMeterPresetId,
-  METER_PRESETS,
-  type MeterPresetId,
-} from "@/lib/meters";
+import { isMeterPresetId, METER_PRESETS } from "@/lib/meters";
 import { isThemePref, type ThemePref } from "@/lib/prefs";
 import {
   CUSTOM_SYLLABLES_MAX,
@@ -53,6 +50,67 @@ const THEME_OPTIONS: { value: ThemePref; label: string }[] = [
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
 ];
+
+function parseCustomSyllables(raw: string): number | null {
+  if (raw.trim() === "") return null;
+  const next = Number(raw);
+  if (!Number.isFinite(next)) return null;
+  return Math.round(next);
+}
+
+function clampCustomSyllables(value: number): number {
+  return Math.min(
+    CUSTOM_SYLLABLES_MAX,
+    Math.max(CUSTOM_SYLLABLES_MIN, value),
+  );
+}
+
+function CustomSyllablesInput({
+  value,
+  onCommit,
+}: {
+  value: number;
+  onCommit: (next: number) => void;
+}) {
+  const [draft, setDraft] = useState(() => String(value));
+
+  const commit = (raw: string) => {
+    const parsed = parseCustomSyllables(raw);
+    const next = clampCustomSyllables(parsed ?? value);
+    setDraft(String(next));
+    if (next !== value) onCommit(next);
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="custom-syllables">Syllables per line</Label>
+      <Input
+        id="custom-syllables"
+        type="number"
+        min={CUSTOM_SYLLABLES_MIN}
+        max={CUSTOM_SYLLABLES_MAX}
+        value={draft}
+        aria-describedby="custom-syllables-hint"
+        onChange={(event) => {
+          const raw = event.target.value;
+          setDraft(raw);
+          const parsed = parseCustomSyllables(raw);
+          if (
+            parsed !== null &&
+            parsed >= CUSTOM_SYLLABLES_MIN &&
+            parsed <= CUSTOM_SYLLABLES_MAX
+          ) {
+            onCommit(parsed);
+          }
+        }}
+        onBlur={() => commit(draft)}
+      />
+      <p id="custom-syllables-hint" className="text-muted-foreground text-xs">
+        {CUSTOM_SYLLABLES_MIN}–{CUSTOM_SYLLABLES_MAX} syllables
+      </p>
+    </div>
+  );
+}
 
 export function SettingsSheet({ settings, onChange }: SettingsSheetProps) {
   const { prefs, setTheme, setContrast } = usePrefs();
@@ -138,7 +196,7 @@ export function SettingsSheet({ settings, onChange }: SettingsSheetProps) {
               value={settings.meter}
               onValueChange={(value) => {
                 if (!isMeterPresetId(value)) return;
-                onChange({ ...settings, meter: value as MeterPresetId });
+                onChange({ ...settings, meter: value });
               }}
             >
               <SelectTrigger id="meter" className="w-full">
@@ -156,34 +214,12 @@ export function SettingsSheet({ settings, onChange }: SettingsSheetProps) {
           </div>
 
           {settings.meter === "custom" && (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="custom-syllables">Syllables per line</Label>
-              <Input
-                id="custom-syllables"
-                type="number"
-                min={CUSTOM_SYLLABLES_MIN}
-                max={CUSTOM_SYLLABLES_MAX}
-                value={settings.customSyllables}
-                aria-describedby="custom-syllables-hint"
-                onChange={(event) => {
-                  const next = Number(event.target.value);
-                  if (!Number.isFinite(next)) return;
-                  onChange({
-                    ...settings,
-                    customSyllables: Math.min(
-                      CUSTOM_SYLLABLES_MAX,
-                      Math.max(CUSTOM_SYLLABLES_MIN, Math.round(next)),
-                    ),
-                  });
-                }}
-              />
-              <p
-                id="custom-syllables-hint"
-                className="text-muted-foreground text-xs"
-              >
-                {CUSTOM_SYLLABLES_MIN}–{CUSTOM_SYLLABLES_MAX} syllables
-              </p>
-            </div>
+            <CustomSyllablesInput
+              value={settings.customSyllables}
+              onCommit={(customSyllables) =>
+                onChange({ ...settings, customSyllables })
+              }
+            />
           )}
 
           <div className="flex flex-col gap-2">
@@ -234,22 +270,7 @@ export function SettingsSheet({ settings, onChange }: SettingsSheetProps) {
             />
           </div>
 
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col gap-0.5">
-              <Label htmlFor="show-rulers">Meter rulers</Label>
-              <p id="show-rulers-hint" className="text-muted-foreground text-xs">
-                Syllable break guides on each line
-              </p>
-            </div>
-            <Switch
-              id="show-rulers"
-              checked={settings.showRulers}
-              aria-describedby="show-rulers-hint"
-              onCheckedChange={(showRulers) =>
-                onChange({ ...settings, showRulers })
-              }
-            />
-          </div>
+          {/* Phase 3: restore Meter rulers Switch and wire showRulers into the editor. */}
         </div>
       </SheetContent>
     </Sheet>
