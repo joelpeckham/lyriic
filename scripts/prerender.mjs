@@ -11,20 +11,6 @@ import { createServer } from "vite";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 
-const ROUTES = [
-  "/faq",
-  "/privacy",
-  "/tools/syllable-counter",
-  "/tools/haiku-checker",
-  "/tools/rhyme-finder",
-  "/write/haiku",
-  "/write/iambic-pentameter",
-  "/write/common-meter",
-  "/write/tanka",
-  "/write/sonnet",
-  "/write/limerick",
-];
-
 const OG_IMAGE = "https://lyriic.com/og.jpg";
 
 function routeToFile(route) {
@@ -140,7 +126,25 @@ async function main() {
   });
 
   try {
+    const { listComposedFormToolPages } = await vite.ssrLoadModule(
+      "/src/content/formCheckers/index.ts",
+    );
+    const { WRITER_PRERENDER_SLUGS } = await vite.ssrLoadModule(
+      "/src/lib/meters/seed.ts",
+    );
     const { render } = await vite.ssrLoadModule("/src/prerender/render.tsx");
+
+    const formRoutes = listComposedFormToolPages().map((page) => page.path);
+    const writerRoutes = WRITER_PRERENDER_SLUGS.map((slug) => `/write/${slug}`);
+
+    const ROUTES = [
+      "/faq",
+      "/privacy",
+      "/tools/syllable-counter",
+      "/tools/rhyme-finder",
+      ...formRoutes,
+      ...writerRoutes,
+    ];
 
     for (const route of ROUTES) {
       const result = render(route);

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { ContentPageLayout } from "@/components/pages/ContentPageLayout";
 import { ToolFaqList } from "@/components/tools/ToolFaqList";
+import { listComposedFormToolsByGroup } from "@/content/formCheckers";
 import type { ToolPageContent } from "@/content/tools";
 import { TOOL_PAGES } from "@/content/tools";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
@@ -82,6 +83,25 @@ export function ToolPage({ tool, children }: ToolPageProps) {
             </li>
           ))}
         </ul>
+        {listComposedFormToolsByGroup().map((group) => (
+          <div key={group.group} className="mt-5">
+            <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
+              {group.label}
+            </p>
+            <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+              {group.pages.map((page) => (
+                <li key={page.path}>
+                  <Link
+                    to={page.path}
+                    className="underline-offset-2 hover:text-foreground hover:underline"
+                  >
+                    {page.h1}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </nav>
     </ContentPageLayout>
   );

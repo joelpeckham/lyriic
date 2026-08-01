@@ -3,8 +3,10 @@ import { describe, expect, it } from "vitest";
 import {
   isMeterCatalogId,
   isStressAwareMeterConfig,
+  listFormCheckerMeters,
   METER_CATALOG,
   resolveMeterConfig,
+  stressExplainerIdForEntry,
 } from "./presets";
 
 describe("METER_CATALOG", () => {
@@ -39,8 +41,36 @@ describe("METER_CATALOG", () => {
     const entry = METER_CATALOG.find((e) => e.id === "eights-and-sevens");
     expect(entry?.stressPatterns?.[0]).toEqual([1, 0, 1, 0, 1, 0, 1, 0]);
     expect(entry?.stressPatterns?.[1]).toEqual([1, 0, 1, 0, 1, 0, 1]);
+    expect(entry?.footId).toBe("trochee");
+  });
+
+  it("tags stress-aware form checkers with footId and stress explainer ids", () => {
+    const forms = listFormCheckerMeters();
+    expect(forms.length).toBeGreaterThanOrEqual(28);
+    for (const entry of forms) {
+      if (entry.stressPatterns?.length) {
+        expect(entry.footId).toBeTruthy();
+        expect(stressExplainerIdForEntry(entry)).toMatch(/^[a-z]+-/);
+      } else {
+        expect(stressExplainerIdForEntry(entry)).toBeNull();
+      }
+    }
+    expect(stressExplainerIdForEntry(getEntry("iambic-pentameter"))).toBe(
+      "iamb-5",
+    );
+    expect(stressExplainerIdForEntry(getEntry("common-meter"))).toBe(
+      "iamb-8-6",
+    );
+    expect(getEntry("short-meter").pattern).toEqual([6, 6, 8, 6]);
+    expect(stressExplainerIdForEntry(getEntry("short-meter"))).toBe(
+      "iamb-6-6-8-6",
+    );
   });
 });
+
+function getEntry(id: string) {
+  return METER_CATALOG.find((entry) => entry.id === id)!;
+}
 
 describe("resolveMeterConfig", () => {
   it("resolves catalog meters", () => {

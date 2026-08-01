@@ -10,7 +10,7 @@ The data controller for lyriic is Joel Peckham, the individual maker of the site
 
 ## What stays on your device
 
-Drafts (poem text, settings, and syllable overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.
+Drafts (poem text, settings, and syllable/stress overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.
 
 ## What we do not collect
 

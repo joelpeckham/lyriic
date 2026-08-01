@@ -1,5 +1,6 @@
 import {
   buildStressFromFeet,
+  syllablesPerFoot,
   stressPatternsForCycle,
   type BinaryStressPattern,
   type CustomFootId,
@@ -41,6 +42,8 @@ export type MeterConfig = {
 /** Catalog entry shown in Settings (excludes runtime-only custom resolution). */
 export type MeterCatalogEntry = MeterConfig & {
   readonly group: MeterGroupId;
+  /** Dominant foot when stress-aware; omitted for syllable-only forms. */
+  readonly footId?: FootId;
 };
 
 /** @deprecated Use catalog string ids. Kept for gradual call-site migration. */
@@ -64,6 +67,7 @@ function accentual(
     group: "accentual",
     pattern: [stress.length],
     stressPatterns: [stress],
+    footId: foot,
     description,
     stanzaLines: stanzaLines ?? null,
   };
@@ -75,14 +79,16 @@ function ballad(
   pattern: readonly number[],
   description: string,
   stanzaLines: number | null = 4,
+  foot: FootId = "iamb",
 ): MeterCatalogEntry {
-  const stressPatterns = stressPatternsForCycle("iamb", pattern);
+  const stressPatterns = stressPatternsForCycle(foot, pattern);
   return {
     id,
     label,
     group: "ballad",
     pattern,
     stressPatterns,
+    footId: foot,
     description,
     stanzaLines,
   };
@@ -143,6 +149,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     group: "accentual",
     pattern: [10],
     stressPatterns: [buildStressFromFeet("iamb", 5)],
+    footId: "iamb",
     description: "Unrhymed iambic pentameter",
     stanzaLines: null,
   },
@@ -152,6 +159,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     group: "accentual",
     pattern: [10],
     stressPatterns: [buildStressFromFeet("iamb", 5)],
+    footId: "iamb",
     description: "14 lines of iambic pentameter",
     stanzaLines: 14,
   },
@@ -217,6 +225,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     group: "accentual",
     pattern: [10],
     stressPatterns: [buildStressFromFeet("iamb", 5)],
+    footId: "iamb",
     description: "Paired lines of iambic pentameter",
     stanzaLines: 2,
   },
@@ -230,7 +239,13 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     4,
   ),
   ballad("long-meter", "Long meter", [8, 8], "8 / 8 iambic hymn stanza", 4),
-  ballad("short-meter", "Short meter", [6, 6], "6 / 6 iambic hymn stanza", 4),
+  ballad(
+    "short-meter",
+    "Short meter",
+    [6, 6, 8, 6],
+    "6 / 6 / 8 / 6 iambic hymn stanza",
+    4,
+  ),
   {
     id: "eights-and-sevens",
     label: "8s & 7s",
@@ -238,6 +253,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     pattern: [8, 7],
     // Classic 8.7.8.7 hymn meter is trochaic (odd lines end strong).
     stressPatterns: stressPatternsForCycle("trochee", [8, 7]),
+    footId: "trochee",
     description: "8 / 7 trochaic hymn meter",
     stanzaLines: 4,
   },
@@ -247,6 +263,7 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     group: "ballad",
     pattern: [8, 6, 8, 6],
     stressPatterns: stressPatternsForCycle("iamb", [8, 6, 8, 6]),
+    footId: "iamb",
     description: "Common-meter quatrain cycle",
     stanzaLines: 4,
   },
@@ -401,6 +418,44 @@ export function stressPatternForLine(
 /** True when resolved meter validates stress as well as syllable count. */
 export function isStressAwareMeterConfig(config: MeterConfig): boolean {
   return Boolean(config.stressPatterns && config.stressPatterns.length > 0);
+}
+
+/**
+ * Stable id for shared stress-contour explainers (SEO form checkers).
+ * Examples: `iamb-5`, `iamb-8-6`, `trochee-8-7`.
+ */
+export function stressExplainerIdForEntry(
+  entry: MeterCatalogEntry,
+): string | null {
+  if (!entry.footId || !entry.stressPatterns?.length) return null;
+  if (entry.pattern.length > 1) {
+    return `${entry.footId}-${entry.pattern.join("-")}`;
+  }
+  const syllables = entry.pattern[0];
+  if (syllables === undefined) return null;
+  const perFoot = syllablesPerFoot(entry.footId);
+  if (perFoot > 0 && syllables % perFoot === 0) {
+    return `${entry.footId}-${syllables / perFoot}`;
+  }
+  return `${entry.footId}-${syllables}`;
+}
+
+/** Line slots for a form checker UI (closed forms use stanzaLines). */
+export function formCheckerLineCount(entry: MeterCatalogEntry): number {
+  if (entry.stanzaLines != null && entry.stanzaLines > 0) {
+    return entry.stanzaLines;
+  }
+  return Math.max(entry.pattern.length, 4);
+}
+
+/** Catalog meters that get SEO form-checker pages. */
+export function listFormCheckerMeters(): MeterCatalogEntry[] {
+  return METER_CATALOG.filter(
+    (entry) =>
+      entry.id !== "none" &&
+      entry.id !== "custom" &&
+      entry.pattern.length > 0,
+  );
 }
 
 /** True when a catalog/custom id resolves to a stress-aware meter. */

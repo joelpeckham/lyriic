@@ -1,21 +1,28 @@
 import { Suspense, lazy, type ComponentType, type LazyExoticComponent } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
+import { FormToolPage } from "@/components/pages/FormToolPage";
 import { ToolPage } from "@/components/pages/ToolPage";
+import {
+  getComposedFormToolPageBySlug,
+  isFormCheckerSlug,
+  meterIdFromCheckerSlug,
+} from "@/content/formCheckers";
 import { getToolBySlug } from "@/content/tools";
 
 type ToolComponent = LazyExoticComponent<ComponentType>;
 
-/** slug → lazy tool interactive (keeps each tool in its own chunk). */
+const FormCheckerLazy = lazy(() =>
+  import("@/components/tools/FormCheckerTool").then((m) => ({
+    default: m.FormCheckerTool,
+  })),
+);
+
+/** slug → lazy tool interactive (utility tools only; form checkers share one chunk). */
 export const TOOL_COMPONENTS: Record<string, ToolComponent> = {
   "syllable-counter": lazy(() =>
     import("@/components/tools/SyllableCounterTool").then((m) => ({
       default: m.SyllableCounterTool,
-    })),
-  ),
-  "haiku-checker": lazy(() =>
-    import("@/components/tools/HaikuCheckerTool").then((m) => ({
-      default: m.HaikuCheckerTool,
     })),
   ),
   "rhyme-finder": lazy(() =>
@@ -31,9 +38,32 @@ function ToolFallback() {
   );
 }
 
+function FormCheckerRoute({ meterId }: { meterId: string }) {
+  const page = getComposedFormToolPageBySlug(`${meterId}-checker`);
+  if (!page) {
+    return <Navigate to="/" replace />;
+  }
+  return (
+    <FormToolPage page={page}>
+      <Suspense fallback={<ToolFallback />}>
+        <FormCheckerLazy key={meterId} meterId={meterId} />
+      </Suspense>
+    </FormToolPage>
+  );
+}
+
 /** Single `/tools/:slug` route: SEO shell + lazy tool body. Unknown → `/`. */
 export function ToolRoute() {
   const { slug } = useParams<{ slug: string }>();
+
+  if (slug && isFormCheckerSlug(slug)) {
+    const meterId = meterIdFromCheckerSlug(slug);
+    if (!meterId) {
+      return <Navigate to="/" replace />;
+    }
+    return <FormCheckerRoute meterId={meterId} />;
+  }
+
   const tool = slug ? getToolBySlug(slug) : undefined;
   const ToolComponent = slug ? TOOL_COMPONENTS[slug] : undefined;
 

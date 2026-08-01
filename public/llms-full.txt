@@ -28,8 +28,38 @@ Drafts and preferences stay in browser local storage. Poem text is not sent to a
 ## Tools
 
 - [Syllable counter](https://lyriic.com/tools/syllable-counter) — [https://lyriic.com/tools/syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
-- [Haiku checker](https://lyriic.com/tools/haiku-checker) — [https://lyriic.com/tools/haiku-checker.md](https://lyriic.com/tools/haiku-checker.md)
 - [Rhyme finder](https://lyriic.com/tools/rhyme-finder) — [https://lyriic.com/tools/rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
+
+### Form checkers
+
+- [Iambic trimeter checker](https://lyriic.com/tools/iambic-trimeter-checker) — [https://lyriic.com/tools/iambic-trimeter-checker.md](https://lyriic.com/tools/iambic-trimeter-checker.md)
+- [Iambic tetrameter checker](https://lyriic.com/tools/iambic-tetrameter-checker) — [https://lyriic.com/tools/iambic-tetrameter-checker.md](https://lyriic.com/tools/iambic-tetrameter-checker.md)
+- [Iambic pentameter checker](https://lyriic.com/tools/iambic-pentameter-checker) — [https://lyriic.com/tools/iambic-pentameter-checker.md](https://lyriic.com/tools/iambic-pentameter-checker.md)
+- [Blank verse checker](https://lyriic.com/tools/blank-verse-checker) — [https://lyriic.com/tools/blank-verse-checker.md](https://lyriic.com/tools/blank-verse-checker.md)
+- [Sonnet checker](https://lyriic.com/tools/sonnet-checker) — [https://lyriic.com/tools/sonnet-checker.md](https://lyriic.com/tools/sonnet-checker.md)
+- [Iambic hexameter checker](https://lyriic.com/tools/iambic-hexameter-checker) — [https://lyriic.com/tools/iambic-hexameter-checker.md](https://lyriic.com/tools/iambic-hexameter-checker.md)
+- [Trochaic tetrameter checker](https://lyriic.com/tools/trochaic-tetrameter-checker) — [https://lyriic.com/tools/trochaic-tetrameter-checker.md](https://lyriic.com/tools/trochaic-tetrameter-checker.md)
+- [Trochaic octameter checker](https://lyriic.com/tools/trochaic-octameter-checker) — [https://lyriic.com/tools/trochaic-octameter-checker.md](https://lyriic.com/tools/trochaic-octameter-checker.md)
+- [Anapestic trimeter checker](https://lyriic.com/tools/anapestic-trimeter-checker) — [https://lyriic.com/tools/anapestic-trimeter-checker.md](https://lyriic.com/tools/anapestic-trimeter-checker.md)
+- [Anapestic tetrameter checker](https://lyriic.com/tools/anapestic-tetrameter-checker) — [https://lyriic.com/tools/anapestic-tetrameter-checker.md](https://lyriic.com/tools/anapestic-tetrameter-checker.md)
+- [Dactylic tetrameter checker](https://lyriic.com/tools/dactylic-tetrameter-checker) — [https://lyriic.com/tools/dactylic-tetrameter-checker.md](https://lyriic.com/tools/dactylic-tetrameter-checker.md)
+- [Dactylic hexameter checker](https://lyriic.com/tools/dactylic-hexameter-checker) — [https://lyriic.com/tools/dactylic-hexameter-checker.md](https://lyriic.com/tools/dactylic-hexameter-checker.md)
+- [Amphibrachic tetrameter checker](https://lyriic.com/tools/amphibrachic-tetrameter-checker) — [https://lyriic.com/tools/amphibrachic-tetrameter-checker.md](https://lyriic.com/tools/amphibrachic-tetrameter-checker.md)
+- [Heroic couplet checker](https://lyriic.com/tools/heroic-couplet-checker) — [https://lyriic.com/tools/heroic-couplet-checker.md](https://lyriic.com/tools/heroic-couplet-checker.md)
+- [Common meter checker](https://lyriic.com/tools/common-meter-checker) — [https://lyriic.com/tools/common-meter-checker.md](https://lyriic.com/tools/common-meter-checker.md)
+- [Long meter checker](https://lyriic.com/tools/long-meter-checker) — [https://lyriic.com/tools/long-meter-checker.md](https://lyriic.com/tools/long-meter-checker.md)
+- [Short meter checker](https://lyriic.com/tools/short-meter-checker) — [https://lyriic.com/tools/short-meter-checker.md](https://lyriic.com/tools/short-meter-checker.md)
+- [8s & 7s checker](https://lyriic.com/tools/eights-and-sevens-checker) — [https://lyriic.com/tools/eights-and-sevens-checker.md](https://lyriic.com/tools/eights-and-sevens-checker.md)
+- [Ballad stanza checker](https://lyriic.com/tools/ballad-stanza-checker) — [https://lyriic.com/tools/ballad-stanza-checker.md](https://lyriic.com/tools/ballad-stanza-checker.md)
+- [Haiku checker](https://lyriic.com/tools/haiku-checker) — [https://lyriic.com/tools/haiku-checker.md](https://lyriic.com/tools/haiku-checker.md)
+- [Senryu checker](https://lyriic.com/tools/senryu-checker) — [https://lyriic.com/tools/senryu-checker.md](https://lyriic.com/tools/senryu-checker.md)
+- [Tanka checker](https://lyriic.com/tools/tanka-checker) — [https://lyriic.com/tools/tanka-checker.md](https://lyriic.com/tools/tanka-checker.md)
+- [Katauta checker](https://lyriic.com/tools/katauta-checker) — [https://lyriic.com/tools/katauta-checker.md](https://lyriic.com/tools/katauta-checker.md)
+- [Sedoka checker](https://lyriic.com/tools/sedoka-checker) — [https://lyriic.com/tools/sedoka-checker.md](https://lyriic.com/tools/sedoka-checker.md)
+- [Cinquain checker](https://lyriic.com/tools/cinquain-checker) — [https://lyriic.com/tools/cinquain-checker.md](https://lyriic.com/tools/cinquain-checker.md)
+- [Nonet checker](https://lyriic.com/tools/nonet-checker) — [https://lyriic.com/tools/nonet-checker.md](https://lyriic.com/tools/nonet-checker.md)
+- [Etheree checker](https://lyriic.com/tools/etheree-checker) — [https://lyriic.com/tools/etheree-checker.md](https://lyriic.com/tools/etheree-checker.md)
+- [Limerick checker](https://lyriic.com/tools/limerick-checker) — [https://lyriic.com/tools/limerick-checker.md](https://lyriic.com/tools/limerick-checker.md)
 
 ## Pricing
 
@@ -50,7 +80,7 @@ Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dicti
 
 ## What are meter rulers?
 
-Optional ticks at syllable boundaries. Presets include Haiku (5/7/5), iambic pentameter (10), and common meter (8/6), or a custom target.
+Optional ticks at syllable boundaries. Choose from many meters — haiku, tanka, sonnet, iambic and trochaic lines, ballad meters, and more — or a custom syllable cycle with an optional stress foot.
 
 ## How do synonyms and rhymes work?
 
@@ -100,30 +130,6 @@ Yes. Per-line totals help match syllable counts to a melody or flow, whether you
 
 ---
 
-# Haiku checker
-
-Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.
-
-Each line shows its syllable total, a simple meter tick, and a delta when you are over or under the English teaching targets of five, seven, and five.
-
-English haiku practice varies — some poets treat the form more loosely than strict 5-7-5, and Japanese haiku is counted in on, not English syllables. Use this checker for a clear syllabic readout, then refine the image on the page.
-
-When you want live 5/7/5 ticks while you write — not only after you paste — open the lyriic editor and choose the Haiku meter ruler. Drafts stay local; nothing is sent to a server for counting.
-
-## What is a 5-7-5 haiku?
-
-In English teaching contexts, a haiku is often three lines with five syllables, then seven, then five. Traditional Japanese haiku is measured in on (sound units), which is not identical to English syllables.
-
-## Does lyriic include a haiku meter ruler?
-
-Yes. In the editor, choose the Haiku preset under meter rulers for live 5/7/5 ticks beside each line as you write.
-
-## Is my haiku uploaded?
-
-No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
-
----
-
 # Rhyme finder
 
 Browse rhymes by syllable count from a local dictionary. In the lyriic editor, hover or tap a word to open the same index beside your draft.
@@ -148,6 +154,2248 @@ No. lyriic is a meter-focused editor with dictionary helpers — not a generativ
 
 ---
 
+# Form checkers
+
+# Iambic trimeter checker
+
+Shape a draft against six-syllable iambic lines (da-DUM × 3). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+In classical Greek and Latin, “iambic trimeter” names a quantitative dialogue meter built from three iambic metra — longer, more flexible lines used in tragedy, comedy, and satyr plays, and later in Latin comedy (often called the iambic senarius).
+
+In English accentual-syllabic verse, the same name means three iambic feet per line: six syllables with stress on every even beat (da-DUM da-DUM da-DUM). Few poems stay in pure trimeter for long; the short line more often appears as the shorter half of common meter, alternating with iambic tetrameter in hymns and ballads.
+
+## Famous poems
+
+### My Papa's Waltz — Theodore Roethke
+
+We romped until the pans / Slid from the kitchen shelf;
+
+Often taught as a clear English iambic-trimeter lyric; some lines bend for speech.
+
+### The Only News I Know — Emily Dickinson
+
+The only news I know / Is bulletins all day
+
+Dickinson often works in hymn-meter shapes; many short lines scan as trimeter.
+
+### Song ('I love the jocund dance') — William Blake
+
+I love the jocund dance, / The softly breathing song,
+
+Loose trimeter with occasional extra weak syllables.
+
+### Our God, Our Help in Ages Past — Isaac Watts
+
+Our hope for years to come, / … And our eternal home.
+
+Common-meter hymn: tetrameter lines alternate with trimeter.
+
+## How iambic trimeter works
+
+English iambic trimeter is three iambs per line: six syllables with expected stress on positions 2, 4, and 6 (da-DUM da-DUM da-DUM). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+You will also meet the name in classical prosody, where Greek and Latin “iambic trimeter” is a longer quantitative dialogue line. This checker models the English accentual-syllabic teaching form only.
+
+In practice, trimeter often pairs with tetrameter in common meter and ballad stanzas. Those alternating cycles are separate meters in lyriic; here every line targets six iambic syllables.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 3-foot contour
+
+Iambic trimeter expects three da-DUM feet: six syllables with strong beats on positions 2, 4, and 6.
+
+lyriic checks this weak–strong contour when the stress pack is loaded, alongside the six-syllable line target.
+
+## Notes on this form
+
+lyriic checks a six-syllable line with an iambic (weak–strong) stress contour. English poets commonly substitute feet, add a trailing weak syllable, or loosen stress for speech — those will show as mismatches against the ideal grid.
+
+Classical Greek and Latin iambic trimeter is a different quantitative meter, not this six-syllable English teaching form. lyriic does not enforce rhyme schemes or hymn/ballad stanza shapes.
+
+## Common questions
+
+### What is iambic trimeter?
+
+In English, a line of three iambs: six syllables alternating unstressed and stressed (da-DUM × 3). It is shorter than tetrameter or pentameter and often appears as the short line in common meter.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Iambic trimeter, lyriic targets six syllables and the iambic weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Iambic trimeter meter: https://lyriic.com/write/iambic-trimeter
+
+---
+
+# Iambic tetrameter checker
+
+Shape a draft against eight syllables of rising iambs (da-DUM × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+In classical Greek and Latin, “iambic tetrameter” named a longer quantitative line built from four metra. English and other accentual-syllabic traditions reused the name for a shorter unit: four iambic feet in a row — eight syllables with a light–strong beat (da-DUM da-DUM da-DUM da-DUM).
+
+That English tetrameter became a staple of ballads, hymns, and narrative lyric. It pairs with trimeter in common (ballad) meter, fills long-meter hymn stanzas as unbroken eights, and carries whole poems on its own, from Marlowe’s pastoral invitations to Frost’s snowy woods.
+
+## Famous poems
+
+### The Passionate Shepherd to His Love — Christopher Marlowe
+
+Come live with me and be my love
+
+Opening line is a clean teaching example of four iambs.
+
+### Stopping by Woods on a Snowy Evening — Robert Frost
+
+Whose woods these are I think I know.
+
+Sustained iambic tetrameter with a tight AABA rhyme scheme lyriic does not check.
+
+### I Wandered Lonely as a Cloud — William Wordsworth
+
+I wandered lonely as a cloud
+
+Daffodil lyric often cited for tetrameter; some lines admit light substitutions.
+
+### The Lady of Shalott — Alfred, Lord Tennyson
+
+On either side the river lie
+
+Narrative stanzas lean heavily on iambic tetrameter lines.
+
+## Iambic tetrameter (8)
+
+Iambic tetrameter is four iambs in a line: eight syllables with a rising weak–strong beat (da-DUM × 4). Strong beats fall on positions 2, 4, 6, and 8.
+
+In English it is common in ballads, hymns, and lyric narrative — alone as a continuous meter, or alternating with six-syllable trimeter in common (ballad) meter. lyriic’s catalog treats each line as an open cycle of eight syllables with that iambic contour; stanza length and rhyme are left to you.
+
+When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 4-foot contour
+
+Iambic tetrameter expects four da-DUM feet: eight syllables with strong beats on positions 2, 4, 6, and 8.
+
+When the stress pack is loaded, lyriic marks that rising duple pattern from dictionary stress for each eight-syllable line.
+
+## Notes on this form
+
+lyriic targets eight syllables per line with an iambic (weak–strong) stress contour. Real poems often substitute a trochee, add a feminine ending, or vary the beat — mismatches are feedback, not a claim that every line must be perfectly regular.
+
+lyriic does not enforce rhyme schemes (couplets, In Memoriam stanzas, long-meter hymn rhyme, and so on).
+
+## Common questions
+
+### What is iambic tetrameter?
+
+In English teaching, it is a line of four iambs — eight syllables with a rising da-DUM beat on even positions (2, 4, 6, 8). Classical quantitative tetrameter was a different, longer meter; lyriic follows the accentual-syllabic English sense.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. With the stress pack loaded, the checker compares dictionary stress to the expected weak–strong pattern alongside the eight-syllable target. Open the Iambic tetrameter writer under Meter for the same rulers while you draft.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Iambic tetrameter meter: https://lyriic.com/write/iambic-tetrameter
+
+---
+
+# Iambic pentameter checker
+
+Shape a draft against ten-syllable iambic lines (da-DUM × 5). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Iambic pentameter is a line of five iambs: ten syllables with stress on every even beat (da-DUM da-DUM da-DUM da-DUM da-DUM). The name comes from Greek iambos (the foot) and pentametros (five feet).
+
+Geoffrey Chaucer brought a ten-syllable iambic line into English in the fourteenth century, drawing on French and Italian models. By the sixteenth century it was the main meter of English verse—used rhymed in sonnets and heroic couplets, and unrhymed as blank verse in drama and epic.
+
+Poets rarely stay perfectly regular. First-foot inversions, feminine endings (an extra trailing weak syllable), and other substitutions are common; the five-beat iambic feel remains the baseline.
+
+## Famous poems
+
+### Sonnet 18 — William Shakespeare
+
+Shall I compare thee to a summer’s day?
+
+Opening line is a classroom staple; the first foot is often scanned as a trochaic inversion.
+
+### Hamlet (Act 3, Scene 1) — William Shakespeare
+
+To be, or not to be, that is the question
+
+Blank verse: unrhymed iambic pentameter; the famous line ends with a feminine eleventh syllable.
+
+### Paradise Lost — John Milton
+
+Of Man’s first disobedience, and the fruit
+
+Epic blank verse built on iambic pentameter with frequent metrical variation.
+
+### The Prelude — William Wordsworth
+
+Oh there is blessing in this gentle breeze
+
+Autobiographical blank verse in iambic pentameter.
+
+## How iambic pentameter works
+
+English iambic pentameter is five iambs per line: ten syllables with expected stress on positions 2, 4, 6, 8, and 10 (da-DUM × 5). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+The same ten-syllable iambic grid underlies blank verse (unrhymed), English sonnets, and heroic couplets. Those forms add rhyme or stanza constraints; this checker only targets the open line meter.
+
+Real poems often invert the first foot, add a feminine ending, or loosen stress for speech. lyriic marks the ideal weak–strong grid from the dictionary so you can see where a draft matches or drifts.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 5-foot contour
+
+Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
+
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+
+## Notes on this form
+
+lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech-driven stress will show as mismatches against the ideal grid.
+
+Blank verse, English sonnets, and heroic couplets all use this meter under different rhyme and stanza rules. lyriic’s dedicated Blank verse, Sonnet, and Heroic couplet checkers share the same ten-syllable iambic target; this page is the open, unbounded line cycle. Rhyme schemes are not enforced.
+
+## Common questions
+
+### What is iambic pentameter?
+
+A line of five iambs: ten syllables alternating unstressed and stressed (da-DUM × 5). It is the default meter of English blank verse, many sonnets, and heroic couplets.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Iambic pentameter, lyriic targets ten syllables and the iambic weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Iambic pentameter meter: https://lyriic.com/write/iambic-pentameter
+
+---
+
+# Blank verse checker
+
+Shape a draft in unrhymed iambic pentameter (da-DUM × 5). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Blank verse is unrhymed metered poetry, almost always iambic pentameter in English. Henry Howard, Earl of Surrey, brought the form into English in the 1550s with his translation of Virgil’s Aeneid, adapting Italian versi sciolti to English speech rhythm.
+
+Christopher Marlowe and William Shakespeare made it the default for Elizabethan and Jacobean drama. John Milton then established it for non-dramatic epic in Paradise Lost (1667), calling it “English heroic verse without rhyme” and using enjambment for long, complex verse paragraphs.
+
+Later poets — Wordsworth, Tennyson, Frost, Stevens, and others — kept the ten-syllable rising line while loosening stress and syntax. Blank verse is not free verse: it keeps a regular meter while leaving rhyme aside.
+
+## Famous poems
+
+### Paradise Lost — John Milton
+
+Of Man’s first disobedience, and the fruit / Of that forbidden tree…
+
+The landmark non-dramatic blank-verse epic; Milton defends unrhymed pentameter in a prefatory note.
+
+### Hamlet (soliloquies) — William Shakespeare
+
+To be, or not to be, that is the question…
+
+Much of Shakespeare’s dialogue is blank verse; feminine endings (an extra weak syllable) are common.
+
+### Ulysses — Alfred, Lord Tennyson
+
+To strive, to seek, to find, and not to yield.
+
+Victorian dramatic monologue in sustained blank verse.
+
+### Mending Wall — Robert Frost
+
+Something there is that doesn’t love a wall…
+
+Modern conversational blank verse; stress bends toward speech.
+
+## How blank verse works
+
+Blank verse is unrhymed iambic pentameter: five iambs per line, ten syllables with expected stress on positions 2, 4, 6, 8, and 10. lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+“Blank” means without end-rhyme, not without meter. Free verse drops the regular beat; blank verse keeps it. Shakespeare’s plays and Milton’s Paradise Lost are the classic English models; later poets often loosen stress while keeping the ten-slot line.
+
+Feminine endings (an eleventh unstressed syllable), inverted first feet, and mid-line substitutions are common in the tradition. Against lyriic’s ideal grid those will read as mismatches — useful feedback, not a claim that every historical line is perfectly regular.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 5-foot contour
+
+Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
+
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+
+## Notes on this form
+
+lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Blank verse traditionally does not rhyme; lyriic does not enforce rhyme or anti-rhyme. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.
+
+stanzaLines is open: write as many lines as you like. This is not free verse — free verse drops regular meter. Sonnets and heroic couplets share the same pentameter contour but add fixed length or rhyme expectations lyriic does not model here.
+
+## Common questions
+
+### What is blank verse?
+
+Unrhymed poetry in a regular meter — in English, usually iambic pentameter: ten syllables alternating unstressed and stressed (da-DUM × 5). It is the backbone of much Shakespearean drama and Miltonic epic.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Blank verse, lyriic targets ten syllables and the iambic weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Blank verse meter: https://lyriic.com/write/blank-verse
+
+---
+
+# Sonnet checker
+
+Shape a fourteen-line draft against iambic pentameter (da-DUM × 5). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+The sonnet (Italian sonetto, “little song”) took shape in thirteenth-century Sicily and was popularized by Petrarch in the fourteenth century. Early Italian practice settled on fourteen lines with a turn of thought (volta) and a fixed rhyme pattern — typically an octave and sestet in the Petrarchan form.
+
+Thomas Wyatt and the Earl of Surrey brought the form into English in the sixteenth century. Surrey’s three-quatrain-plus-couplet shape, later associated with Shakespeare, became the dominant English teaching model: fourteen lines of iambic pentameter with a closing couplet.
+
+English classrooms usually treat the sonnet as fourteen lines of iambic pentameter plus a named rhyme scheme (Shakespearean ABAB CDCD EFEF GG, Petrarchan ABBAABBA + sestet, or Spenserian interlocking). Modern poets often keep the line count and meter while loosening or dropping rhyme.
+
+## Famous poems
+
+### Sonnet 18 (“Shall I compare thee to a summer’s day?”) — William Shakespeare
+
+Shall I compare thee to a summer’s day? / Thou art more lovely and more temperate:
+
+Classic English (Shakespearean) sonnet: three quatrains and a couplet in iambic pentameter.
+
+### Sonnet 130 (“My mistress’ eyes are nothing like the sun”) — William Shakespeare
+
+My mistress’ eyes are nothing like the sun; / Coral is far more red than her lips’ red;
+
+Anti-blazon that still follows the English rhyme and meter template.
+
+### Sonnet 43 (“How do I love thee? Let me count the ways.”) — Elizabeth Barrett Browning
+
+How do I love thee? Let me count the ways.
+
+Petrarchan structure in English; often taught for the octave–sestet turn.
+
+### When I Consider How My Light Is Spent — John Milton
+
+When I consider how my light is spent / Ere half my days in this dark world and wide,
+
+Miltonic / Petrarchan English sonnet; volta arrives later than the Italian mid-point.
+
+## How the sonnet meter works
+
+In lyriic’s catalog, a sonnet is fourteen lines of iambic pentameter: ten syllables per line with expected stress on positions 2, 4, 6, 8, and 10 (da-DUM × 5).
+
+That matches the English teaching backbone shared by Shakespearean, Petrarchan, and Spenserian sonnets. Those traditions differ mainly in rhyme scheme and where the volta falls — not in the default meter.
+
+lyriic enforces line count, syllable target, and the iambic stress contour when the stress pack is loaded. It does not score ABAB/CDCD patterns, octave–sestet splits, or theme rules.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 5-foot contour
+
+Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
+
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+
+## Notes on this form
+
+lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. Substitutions, feminine endings, and speech stress will show as mismatches against the ideal grid.
+
+lyriic does not enforce rhyme schemes (Shakespearean, Petrarchan, Spenserian), volta placement, or thematic “argument” structure — only line count, syllable target, and iambic stress.
+
+## Common questions
+
+### What does this sonnet checker require?
+
+Fourteen lines of iambic pentameter: about ten syllables each with an unstressed–stressed contour (da-DUM × 5). That matches English teaching practice for Shakespearean and many Petrarchan sonnets in English.
+
+### Does lyriic check the rhyme scheme?
+
+No. Rhyme schemes and volta placement are not modeled. Open the zen editor with the Sonnet meter for live syllable and stress rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Sonnet (iambic pentameter) meter: https://lyriic.com/write/sonnet
+
+---
+
+# Iambic hexameter checker
+
+Shape a draft against twelve-syllable iambic lines (da-DUM × 6). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+In English prosody, iambic hexameter is six iambs per line — twelve syllables with stress on every even beat. The line is often called an alexandrine, after the French twelve-syllable measure that took its name from the medieval Roman d’Alexandre.
+
+French alexandrines are primarily syllabic, with a strong medial caesura after the sixth syllable. English practice treats the line as accentual-syllabic and does not always keep that mid-line pause. Long poems wholly in the meter are uncommon; Spenser’s closing alexandrine in each Faerie Queene stanza is the best-known English use, while Drayton’s Poly-Olbion is a rare extended example.
+
+Augustan critics sometimes mocked the line as heavy or slow — Pope’s Essay on Criticism both names and enacts that complaint — yet poets still deploy it for cadence, closure, or deliberate variation beside pentameter.
+
+## Famous poems
+
+### The Faerie Queene — Edmund Spenser
+
+Fierce warres and faithfull loues shall moralize my song.
+
+Each Spenserian stanza ends with a ninth-line alexandrine (iambic hexameter) after eight pentameters.
+
+### Poly-Olbion — Michael Drayton
+
+Ye sacred Bards, that to your harps' melodious strings
+
+A long topographical poem written throughout in English alexandrines.
+
+### An Essay on Criticism — Alexander Pope
+
+That, like a wounded snake, drags its slow length along.
+
+Famous parody of the alexandrine’s “slow length” in a heroic-couplet context.
+
+### Fifine at the Fair — Robert Browning
+
+A late Victorian dramatic poem composed largely in English alexandrines.
+
+## How iambic hexameter works
+
+English iambic hexameter is six iambs per line: twelve syllables with expected stress on positions 2, 4, 6, 8, 10, and 12 (da-DUM × 6). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+In English criticism the line is frequently called an alexandrine. That name also covers the French twelve-syllable heroic line, which is syllabic and traditionally splits 6+6 at a caesura — a different system from this accentual-syllabic checker.
+
+In practice, English hexameter often appears as a closing or variant line (as in Spenser’s stanza) rather than as the sole meter of a poem. Here every line targets twelve iambic syllables.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 6-foot contour
+
+Iambic hexameter (alexandrine-style in English teaching) expects six da-DUM feet: twelve syllables with strong beats on positions 2, 4, 6, 8, 10, and 12.
+
+With the stress pack loaded, lyriic compares dictionary stress to that twelve-syllable iambic contour.
+
+## Notes on this form
+
+lyriic checks a twelve-syllable line with an iambic (weak–strong) stress contour. English poets commonly place a caesura near mid-line, substitute feet, or add a trailing weak syllable — those will show as mismatches against the ideal grid.
+
+The French classical alexandrine is a syllabic 6+6 line with an obligatory medial caesura, not identical to this English accentual-syllabic model. lyriic does not enforce caesura position, rhyme schemes, or Spenserian stanza shape.
+
+## Common questions
+
+### What is iambic hexameter?
+
+In English, a line of six iambs: twelve syllables alternating unstressed and stressed (da-DUM × 6). It is often called an alexandrine and is longer than the more common iambic pentameter line.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Iambic hexameter, lyriic targets twelve syllables and the iambic weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Iambic hexameter meter: https://lyriic.com/write/iambic-hexameter
+
+---
+
+# Trochaic tetrameter checker
+
+Shape a draft against eight-syllable trochaic lines (DUM-da × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Trochaic tetrameter is four trochees per line: a falling foot of stressed then unstressed (DUM-da), repeated four times for eight syllables in the full English teaching form. The name comes from Greek trokhaios (“running”); classical “tetrameter” counted metra differently, so Greek and Latin trochaic tetrameter is a longer quantitative line than the English eight-syllable shape.
+
+In English verse the meter often feels chant-like or song-like. Longfellow’s Song of Hiawatha is the best-known sustained English example in full (acatalectic) trochaic tetrameter. Shakespeare’s fairy and witch speeches, and many lyrics such as Blake’s “The Tyger,” commonly drop the final unstressed beat (catalectic tetrameter), ending on a strong syllable. Related traditions include medieval Latin sequences such as the Dies Irae and the Balto-Finnic Kalevala meter, which uses its own long/short syllable rules rather than English stress alone.
+
+## Famous poems
+
+### The Song of Hiawatha — Henry Wadsworth Longfellow
+
+By the shores of Gitche Gumee, / By the shining Big-Sea-Water,
+
+Sustained English epic in full trochaic tetrameter; often the classroom exemplar of the complete eight-syllable line.
+
+### The Tyger — William Blake
+
+Tyger Tyger, burning bright, / In the forests of the night;
+
+Largely catalectic trochaic tetrameter — seven syllables ending on a stress, not the full eight-beat grid.
+
+### A Midsummer Night's Dream (fairy / Puck speeches) — William Shakespeare
+
+Through the forest have I gone. / But Athenian found I none,
+
+Fairy dialogue often in catalectic trochaic tetrameter, distinct from the play’s blank-verse stretches.
+
+### Macbeth (the Weird Sisters) — William Shakespeare
+
+When shall we three meet again / In thunder, lightning, or in rain?
+
+Witch chants lean on falling trochaic rhythms, frequently catalectic.
+
+## How trochaic tetrameter works
+
+English trochaic tetrameter is four trochees per line: eight syllables with expected stress on positions 1, 3, 5, and 7 (DUM-da DUM-da DUM-da DUM-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+Catalexis — dropping the final unstressed syllable — is common in English practice, so many famous lines scan as seven syllables ending on a strong beat. This checker models the full eight-syllable teaching form; catalectic drafts will read as one syllable short.
+
+Do not confuse the English accentual-syllabic shape with classical quantitative trochaic tetrameter (longer metra) or with Kalevala meter, which follows Finnic length and alliteration rules. Those traditions are outside this checker’s grid.
+
+## Trochee (DUM-da)
+
+A trochee is a two-syllable foot with a strong beat then a light one: DUM-da. Words like “garden,” “poetry,” and “falling” often open on that falling rhythm.
+
+Repeated trochees make trochaic meter—tetrameter (eight syllables) is common in song and children’s verse; longer lines appear in hymns and narrative. English poets often drop or lighten a final weak syllable, so lines may feel truncated compared with a pure foot grid.
+
+With the stress pack loaded, lyriic marks expected strong–weak beats from dictionary stress against that trochaic contour, so you can see where the line matches or drifts.
+
+## Trochaic 4-foot contour
+
+Trochaic tetrameter expects four DUM-da feet: eight syllables with strong beats on positions 1, 3, 5, and 7.
+
+lyriic checks this falling duple contour when the stress pack is loaded. Catalectic lines that drop a final weak beat are common in the tradition and will read as short against a full eight-slot grid.
+
+## Notes on this form
+
+lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — will show as short against this full-tetrameter grid.
+
+Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.
+
+## Common questions
+
+### What is trochaic tetrameter?
+
+In English, a line of four trochees: eight syllables alternating stressed and unstressed (DUM-da × 4). Poets often omit the last weak syllable (catalexis), leaving a seven-syllable line that ends on a stress.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Trochaic tetrameter, lyriic targets eight syllables and the trochaic strong–weak contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Trochaic tetrameter meter: https://lyriic.com/write/trochaic-tetrameter
+
+---
+
+# Trochaic octameter checker
+
+Shape a draft against sixteen syllables of falling trochees (DUM-da × 8). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Trochaic octameter is a line of eight trochees: sixteen syllables with stress on the odd beats (DUM-da × 8). The falling duple rhythm is uncommon in English at this length — long enough to risk sounding like prose unless internal rhyme, caesura, or refrain keep the music audible.
+
+Edgar Allan Poe’s “The Raven” (1845) is the best-known English example. Poe described the poem as mixing full (acatalectic) octameter with shorter catalectic lines that drop a final weak syllable, so not every line is a pure sixteen-slot grid. Later narrative and ballad poets — Tennyson, Browning, Kipling, Paterson — also used long trochaic lines, often catalectic.
+
+Outside English, trochaic octameter is more at home in Polish and Czech verse, where word stress naturally favors trochaic feet. In English classrooms it is usually taught as the long falling line behind “The Raven,” with catalexis noted as a common variation.
+
+## Famous poems
+
+### The Raven — Edgar Allan Poe
+
+Once upon a midnight dreary, while I pondered, weak and weary,
+
+Classroom staple for trochaic octameter; stanzas mix full sixteen-syllable lines with shorter catalectic refrain lines.
+
+### Locksley Hall — Alfred, Lord Tennyson
+
+Comrades, leave me here a little, while as yet ’tis early morn:
+
+Long trochaic narrative lines, typically catalectic (ending on a strong beat).
+
+### Mandalay — Rudyard Kipling
+
+By the old Moulmein Pagoda, lookin’ eastward to the sea,
+
+Ballad-like long trochaic lines with a refrain; often scanned with catalectic endings.
+
+### Clancy of the Overflow — Banjo Paterson
+
+I had written him a letter which I had, for want of better
+
+Australian bush ballad built on four long trochaic octameter lines per stanza.
+
+## Trochaic octameter (16)
+
+Trochaic octameter is eight trochees in a line: sixteen syllables with a falling strong–weak beat (DUM-da × 8). Strong beats fall on the odd positions (1, 3, 5, …, 15).
+
+In English the meter is uncommon at full length. Poe’s “The Raven” made it famous, mixing complete octameter with catalectic shorter lines. lyriic’s catalog treats each line as an open cycle of sixteen syllables with that trochaic contour; stanza length and rhyme are left to you.
+
+When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+
+## Trochee (DUM-da)
+
+A trochee is a two-syllable foot with a strong beat then a light one: DUM-da. Words like “garden,” “poetry,” and “falling” often open on that falling rhythm.
+
+Repeated trochees make trochaic meter—tetrameter (eight syllables) is common in song and children’s verse; longer lines appear in hymns and narrative. English poets often drop or lighten a final weak syllable, so lines may feel truncated compared with a pure foot grid.
+
+With the stress pack loaded, lyriic marks expected strong–weak beats from dictionary stress against that trochaic contour, so you can see where the line matches or drifts.
+
+## Trochaic 8-foot contour
+
+Trochaic octameter expects eight DUM-da feet: sixteen syllables with strong beats on the odd positions (1, 3, 5, …, 15).
+
+When the stress pack is loaded, lyriic compares dictionary stress to that long falling contour.
+
+## Notes on this form
+
+lyriic targets sixteen syllables per line with a trochaic (strong–weak) stress contour. Famous poems often drop the final weak syllable (catalexis) or shorten refrain lines — those will read short or mismatched against a full eight-foot grid.
+
+lyriic does not enforce internal rhyme, refrain structure, or stanza schemes (as in “The Raven” or bush-ballad quatrains).
+
+## Common questions
+
+### What is trochaic octameter?
+
+A line of eight trochees: sixteen syllables alternating stressed and unstressed, beginning on a strong beat (DUM-da × 8). It is rare in English; Poe’s “The Raven” is the usual teaching example.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. With the stress pack loaded, the checker compares dictionary stress to the expected strong–weak pattern alongside the sixteen-syllable target. Open the Trochaic octameter writer under Meter for the same rulers while you draft.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Trochaic octameter meter: https://lyriic.com/write/trochaic-octameter
+
+---
+
+# Anapestic trimeter checker
+
+Shape a draft against nine-syllable anapestic lines (da-da-DUM × 3). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+An anapest is two unstressed syllables followed by a stressed one (da-da-DUM). In classical Greek, anapestic metres were used in marching songs and in dramatic choral entrances and exits; the name comes from Greek anapaistos, “struck back,” because the foot reverses a dactyl.
+
+In English accentual-syllabic verse, anapestic trimeter means three anapests per line — nine syllables with stress on beats 3, 6, and 9. Pure anapests are rarer in English than iambs; the jog-trot rhythm long suited light and comic verse, and after the eighteenth century it also appeared in more serious lyrics. Classroom and workshop teaching often meets the line as the longer half of a limerick (lines 1, 2, and 5).
+
+## Famous poems
+
+### Verses Supposed to Be Written by Alexander Selkirk — William Cowper
+
+I am monarch of all I survey; / I must finish my journey alone,
+
+Often cited as a sustained English anapestic-trimeter lyric; many lines open with an iamb instead of a full anapest.
+
+### There was an Old Man with a Beard — Edward Lear
+
+There was an Old Man with a beard, / Who said, “It is just as I feared!”
+
+Limerick long lines (1, 2, and 5) are commonly taught as anapestic trimeter; Lear’s own scansion is often looser.
+
+### There was a Young Lady of Norway — Edward Lear
+
+There was a Young Lady of Norway, / Who casually sat in a doorway;
+
+Another Book of Nonsense limerick; trimeter frames the A-rhyme lines around shorter dimeter middles.
+
+## How anapestic trimeter works
+
+English anapestic trimeter is three anapests per line: nine syllables with expected stress on positions 3, 6, and 9 (da-da-DUM da-da-DUM da-da-DUM). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+Anapests create a rolling, forward drive that English writers have used for comic limericks, light verse, and occasional serious lyrics. Substitutions — especially an opening iamb — are common in practice and will not match lyriic’s ideal grid.
+
+Limericks pair these longer trimeter lines with shorter anapestic dimeter lines. That five-line alternating cycle is a separate meter in lyriic; here every line targets nine anapestic syllables.
+
+## Anapest (da-da-DUM)
+
+An anapest is a three-syllable foot with two light beats then a strong one: da-da-DUM. Phrases such as “in the dark” or “intervene” show the rising triple feel.
+
+Anapestic meter builds line length by feet: trimeter is nine syllables, tetrameter twelve. The gallop suits comic and narrative verse (think limerick energy or “’Twas the night before Christmas”), though poets freely substitute iambs and other feet.
+
+When stress-aware, lyriic expects that two-weak-then-strong cycle from the dictionary and flags where spoken stress departs from the ideal grid.
+
+## Anapestic 3-foot contour
+
+Anapestic trimeter expects three da-da-DUM feet: nine syllables with strong beats on positions 3, 6, and 9.
+
+When the stress pack is loaded, lyriic marks that rising triple contour against dictionary stress for each nine-syllable line.
+
+## Notes on this form
+
+lyriic checks a nine-syllable line with an anapestic (weak–weak–strong) stress contour. English poets often open with an iamb, drop an opening weak syllable, or loosen stress for speech — those will show as mismatches against the ideal grid.
+
+Limericks mix this trimeter with shorter anapestic lines and an AABBA rhyme scheme. lyriic’s Limerick meter models that five-line cycle separately; this checker targets pure trimeter only. Rhyme is not enforced.
+
+## Common questions
+
+### What is anapestic trimeter?
+
+In English, a line of three anapests: nine syllables with two unstressed beats then a stressed one, repeated three times (da-da-DUM × 3). It is shorter than anapestic tetrameter and often appears as the long lines in a limerick.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Anapestic trimeter, lyriic targets nine syllables and the anapestic weak–weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Anapestic trimeter meter: https://lyriic.com/write/anapestic-trimeter
+
+---
+
+# Anapestic tetrameter checker
+
+Shape a draft against twelve syllables of rising anapests (da-da-DUM × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+An anapest is a three-syllable foot with two light beats then a strong one (da-da-DUM). Anapestic tetrameter stacks four of those feet in a line — twelve syllables with stresses on every third beat. The galloping pace suits comic verse, children’s narrative, and, less often, serious riding or battle scenes.
+
+English teaching examples lean on Clement Clarke Moore’s “A Visit from St. Nicholas,” Byron’s “The Destruction of Sennacherib,” and much of Dr. Seuss. Poets often drop the first light syllable (a headless or “iambic” opening) or mix in other feet, so published lines are rarely a perfect twelve-beat grid throughout.
+
+## Famous poems
+
+### A Visit from St. Nicholas — Clement Clarke Moore
+
+'Twas the night before Christmas, when all through the house
+
+Holiday classic often taught as regular anapestic tetrameter; openings may omit a leading light beat.
+
+### The Destruction of Sennacherib — Lord Byron
+
+The Assyrian came down like the wolf on the fold
+
+Serious narrative that uses the anapest’s gallop to mimic cavalry; a standard non-comic example.
+
+### Yertle the Turtle — Dr. Seuss
+
+And today the Great Yertle, that marvelous he
+
+Children’s verse with highly regular anapestic lines; Seuss often pairs a full tetrameter with a headless follow-up.
+
+### How They Brought the Good News from Ghent to Aix — Robert Browning
+
+I sprang to the stirrup, and Joris, and he;
+
+Horseback narrative frequently scanned as anapestic; lines vary with substitutions and truncations.
+
+## Anapestic tetrameter (12)
+
+Anapestic tetrameter is four anapests in a line: twelve syllables with a rising weak–weak–strong beat (da-da-DUM × 4). Strong beats fall on positions 3, 6, 9, and 12.
+
+In English it is familiar from comic and children’s verse — Moore’s Christmas poem, Seuss — and from galloping narrative such as Byron’s Sennacherib. lyriic’s catalog treats each line as an open cycle of twelve syllables with that anapestic contour; stanza length and rhyme are left to you.
+
+When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+
+## Anapest (da-da-DUM)
+
+An anapest is a three-syllable foot with two light beats then a strong one: da-da-DUM. Phrases such as “in the dark” or “intervene” show the rising triple feel.
+
+Anapestic meter builds line length by feet: trimeter is nine syllables, tetrameter twelve. The gallop suits comic and narrative verse (think limerick energy or “’Twas the night before Christmas”), though poets freely substitute iambs and other feet.
+
+When stress-aware, lyriic expects that two-weak-then-strong cycle from the dictionary and flags where spoken stress departs from the ideal grid.
+
+## Anapestic 4-foot contour
+
+Anapestic tetrameter expects four da-da-DUM feet: twelve syllables with strong beats on positions 3, 6, 9, and 12.
+
+lyriic checks this contour when the stress pack is loaded, so you can see where spoken stress matches or leaves the galloping pattern.
+
+## Notes on this form
+
+lyriic targets twelve syllables per line with an anapestic (weak–weak–strong) stress contour. Real poems often omit an opening light beat, add a feminine ending, or substitute iambs — mismatches are feedback, not a claim that every line must be perfectly regular.
+
+lyriic does not enforce rhyme schemes (couplets in Moore, Seuss rhyme, and so on).
+
+## Common questions
+
+### What is anapestic tetrameter?
+
+In English teaching, it is a line of four anapests — twelve syllables with a rising da-da-DUM beat and strong stresses on positions 3, 6, 9, and 12. The galloping rhythm is common in comic and children’s verse and appears in some serious narrative poems.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. With the stress pack loaded, the checker compares dictionary stress to the expected weak–weak–strong pattern alongside the twelve-syllable target. Open the Anapestic tetrameter writer under Meter for the same rulers while you draft.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Anapestic tetrameter meter: https://lyriic.com/write/anapestic-tetrameter
+
+---
+
+# Dactylic tetrameter checker
+
+Shape a draft against twelve-syllable dactylic lines (DUM-da-da × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Dactylic tetrameter is four dactyls per line: a falling foot of stressed then two unstressed syllables (DUM-da-da), repeated four times for twelve syllables in the full English teaching form. The dactyl takes its name from the Greek daktylos (“finger”) — one longer joint and two shorter — and in classical quantitative verse it was a long–short–short foot rather than an English stress pattern.
+
+Sustained pure dactylic tetrameter is uncommon in English; poets often truncate a final weak beat, mix in trochees or spondees, or use the rhythm in song lyrics. Classroom examples frequently cite Browning’s catalectic lines and popular lyrics that open on a clean four-dactyl stretch before the meter loosens.
+
+## Famous poems
+
+### Lucy in the Sky with Diamonds — The Beatles (John Lennon / Paul McCartney)
+
+Picture yourself in a boat on a river with
+
+Opening line is a widely cited full twelve-syllable dactylic tetrameter; later lines admit substitutions and elongations.
+
+### The Lost Leader — Robert Browning
+
+Just for a handful of silver he left us!
+
+Often scanned as dactylic tetrameter with a catalectic close — eleven syllables ending on a stress, not the full twelve-beat grid.
+
+### Famous Blue Raincoat — Leonard Cohen
+
+What can I tell you my brother my keeper
+
+Song lines lean on falling dactylic rhythm, frequently truncating before a pure fourth foot.
+
+## How dactylic tetrameter works
+
+English dactylic tetrameter is four dactyls per line: twelve syllables with expected stress on positions 1, 4, 7, and 10 (DUM-da-da DUM-da-da DUM-da-da DUM-da-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+Catalexis — dropping one or more final unstressed syllables — is common in English practice and song, so many cited lines scan as eleven syllables (or fewer) ending on a strong beat. This checker models the full twelve-syllable teaching form; catalectic drafts will read as short.
+
+Do not confuse the English accentual-syllabic shape with classical quantitative dactylic tetrameter (Alcmanian verse and related Greek/Latin metres), which counts long and short syllables. Those traditions are outside this checker’s grid.
+
+## Dactyl (DUM-da-da)
+
+A dactyl is a three-syllable foot with a strong beat then two light ones: DUM-da-da. The name comes from the Greek for “finger”—one long joint, two shorter. Words like “merrily” and “poetry” (in some pronunciations) sketch the shape.
+
+Dactylic tetrameter runs twelve syllables; classical dactylic hexameter is six feet. English “hexameter” is an approximation of a Greek and Latin quantitative form, and poets often mix in spondees or truncated endings rather than six pure dactyls.
+
+lyriic’s stress-aware view repeats the strong–weak–weak unit across the line and compares dictionary stress to that contour when the stress pack is available.
+
+## Dactylic 4-foot contour
+
+Dactylic tetrameter expects four DUM-da-da feet: twelve syllables with strong beats on positions 1, 4, 7, and 10.
+
+With the stress pack loaded, lyriic compares dictionary stress to that falling triple contour for each twelve-syllable line.
+
+## Notes on this form
+
+lyriic checks a twelve-syllable line with a dactylic (strong–weak–weak) stress contour. Catalectic lines that drop final light syllables — common in Browning and song — will show as short against this full-tetrameter grid.
+
+Classical Alcmanian / quantitative dactylic tetrameter uses length, not English stress alone. lyriic does not enforce rhyme schemes or fixed stanza shapes.
+
+## Common questions
+
+### What is dactylic tetrameter?
+
+In English, a line of four dactyls: twelve syllables with a falling DUM-da-da beat on positions 1, 4, 7, and 10. Poets often omit trailing weak syllables (catalexis), so many famous lines scan shorter than twelve.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Dactylic tetrameter, lyriic targets twelve syllables and the dactylic strong–weak–weak contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Dactylic tetrameter meter: https://lyriic.com/write/dactylic-tetrameter
+
+---
+
+# Dactylic hexameter checker
+
+Shape a draft against eighteen-syllable dactylic lines (DUM-da-da × 6). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Dactylic hexameter is the traditional meter of classical epic. In Ancient Greek and Latin, a hexameter line has six feet built from long and short syllables (quantity), not from English-style stress. Homer’s Iliad and Odyssey and Virgil’s Aeneid are the best-known models; the meter also carried didactic, pastoral, and satirical verse.
+
+Classical practice rarely fills every foot with a pure dactyl. Poets freely substitute spondees (two long syllables) in the earlier feet, and the sixth foot is typically two syllables (a spondee or trochee), so the line is more flexible than six identical DUM-da-da units.
+
+English poets sometimes approximate the epic measure with accentual-syllabic dactyls. Longfellow’s Evangeline is the familiar nineteenth-century example; even there, endings and substitutions keep the line from being six pure triple feet throughout.
+
+## Famous poems
+
+### Iliad — Homer
+
+Foundational Greek epic in quantitative dactylic hexameter; English translations rarely preserve the original meter.
+
+### Odyssey — Homer
+
+Companion Homeric epic composed in the same hexameter tradition.
+
+### Aeneid — Virgil
+
+Arma virumque canō, Troiae quī prīmus ab ōrīs
+
+Latin epic hexameter; the opening arma virumque canō is a standard classroom scansion example.
+
+### Evangeline — Henry Wadsworth Longfellow
+
+This is the forest primeval. The murmuring pines and the hemlocks,
+
+Best-known extended English poem in unrhymed dactylic hexameter; lines mix dactyls with shorter final feet.
+
+## How dactylic hexameter works
+
+lyriic’s catalog treats dactylic hexameter as six pure dactyls per line: eighteen syllables with expected stress on positions 1, 4, 7, 10, 13, and 16 (DUM-da-da × 6). There is no fixed stanza length — each line repeats that single-line cycle.
+
+Classical hexameter is a different system: quantity (long vs short), free dactyl/spondee mixing in the first four or five feet, and a typically disyllabic sixth foot. English “hexameter” poems such as Evangeline approximate the epic feel rather than match that quantitative scheme.
+
+Use the checker to practice a regular accentual grid; treat mismatches against Homer or Virgil as expected, not as errors in the classical tradition.
+
+## Dactyl (DUM-da-da)
+
+A dactyl is a three-syllable foot with a strong beat then two light ones: DUM-da-da. The name comes from the Greek for “finger”—one long joint, two shorter. Words like “merrily” and “poetry” (in some pronunciations) sketch the shape.
+
+Dactylic tetrameter runs twelve syllables; classical dactylic hexameter is six feet. English “hexameter” is an approximation of a Greek and Latin quantitative form, and poets often mix in spondees or truncated endings rather than six pure dactyls.
+
+lyriic’s stress-aware view repeats the strong–weak–weak unit across the line and compares dictionary stress to that contour when the stress pack is available.
+
+## Dactylic 6-foot contour
+
+Dactylic hexameter, as modeled here, expects six DUM-da-da feet: eighteen syllables with strong beats on positions 1, 4, 7, 10, 13, and 16. Classical hexameter often allows substitutions and a shorter final foot; lyriic’s catalog uses a regular dactylic grid.
+
+When the stress pack is loaded, lyriic checks dictionary stress against that eighteen-slot contour.
+
+## Notes on this form
+
+lyriic models English teaching hexameter as six pure dactyls: eighteen syllables with a strong–weak–weak contour. Classical Greek and Latin hexameter is quantitative, allows spondees, and usually ends in a two-syllable foot — so authentic epic lines will often mismatch this grid.
+
+lyriic does not enforce caesura position, spondee substitution, elegiac couplets (hexameter + pentameter), or rhyme.
+
+## Common questions
+
+### What is dactylic hexameter?
+
+Classically, a six-foot line of dactyls (long–short–short) used for Greek and Latin epic, with frequent spondee substitutions. In English accentual practice, it is often taught as six DUM-da-da feet — eighteen syllables with stress on beats 1, 4, 7, 10, 13, and 16.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Dactylic hexameter, lyriic targets eighteen syllables and the dactylic strong–weak–weak contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Dactylic hexameter meter: https://lyriic.com/write/dactylic-hexameter
+
+---
+
+# Amphibrachic tetrameter checker
+
+Shape a draft against twelve-syllable amphibrachic lines (da-DUM-da × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+An amphibrach is a three-syllable foot with the stress in the middle (da-DUM-da). Amphibrachic tetrameter repeats that foot four times: twelve syllables with strong beats on positions 2, 5, 8, and 11. The rocking contour is less common as a named English meter than iambs or anapests, but it turns up in song, comic verse, children’s poetry, and some narrative lyrics.
+
+Victorian and later English poets used it for storytelling lines — Samuel Woodworth’s “The Old Oaken Bucket” is a familiar classroom example — and limericks are often scanned with amphibrachic (or anapestic) feet. In song, Leonard Cohen’s “Famous Blue Raincoat” opens with clear amphibrachic tetrameter; Dr. Seuss also leans on the same rocking twelve-beat line. Polish verse has a stronger amphibrachic tradition (Staff, Mickiewicz, and others), usually with feminine endings.
+
+## Famous poems
+
+### Famous Blue Raincoat — Leonard Cohen
+
+It's four in the morning, the end of December
+
+Opening lines scan cleanly as amphibrachic tetrameter; later lines loosen for speech and song.
+
+### The Old Oaken Bucket — Samuel Woodworth
+
+How dear to my heart are the scenes of my childhood
+
+Early nineteenth-century narrative lyric often cited for English amphibrachic tetrameter.
+
+### If I Ran the Circus — Dr. Seuss (Theodor Geisel)
+
+All ready to put up the tents for my circus
+
+Children’s verse that often rides a twelve-syllable amphibrachic swing.
+
+### Regeneration — John Beaton
+
+Hay ripens. I sharpen my tapering scythe blade
+
+Contemporary formal poem built on amphibrachic tetrameter with mixed masculine and feminine endings.
+
+## How amphibrachic tetrameter works
+
+English amphibrachic tetrameter is four amphibrachs per line: twelve syllables with expected stress on positions 2, 5, 8, and 11 (da-DUM-da da-DUM-da da-DUM-da da-DUM-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
+
+The amphibrach (light–strong–light) gives a rocking, song-like swing. Poets often mix in anapests, truncate the final weak syllable, or bend stress for natural speech; those variants will diverge from this pure twelve-beat grid.
+
+Related forms include limericks (sometimes scanned amphibrachically) and anapestic tetrameter, which ends each foot on a stress instead of rocking through the middle. Those are separate meters in lyriic; here every line targets twelve amphibrachic syllables.
+
+## Amphibrach (da-DUM-da)
+
+An amphibrach is a three-syllable foot with a light–strong–light contour: da-DUM-da. Words such as “together,” “remember,” and “amazing” often sit in that rocking shape.
+
+It is less common as a named English meter than iambs or anapests, but amphibrachic lines turn up in song, limericks (under some scansions), and comic verse. Four amphibrachs make a twelve-syllable tetrameter line.
+
+When stress checking is enabled, lyriic marks the expected weak–strong–weak cycle from dictionary stress so you can hear the rocking pattern against your draft.
+
+## Amphibrachic 4-foot contour
+
+Amphibrachic tetrameter expects four da-DUM-da feet: twelve syllables with strong beats on positions 2, 5, 8, and 11 (weak–strong–weak, repeated).
+
+lyriic checks this contour when the stress pack is loaded, comparing dictionary stress to that rocking grid alongside the twelve-syllable target.
+
+## Notes on this form
+
+lyriic checks a twelve-syllable line with an amphibrachic (weak–strong–weak) stress contour. English poets commonly substitute feet, drop a final weak syllable (masculine ending), or loosen stress for speech — those will show as mismatches against the ideal grid.
+
+Limericks and some comic verse are often scanned as amphibrachic or anapestic; lyriic’s limerick meter is a separate form. This checker does not enforce rhyme schemes, stanza shapes, or song-line phrasing.
+
+## Common questions
+
+### What is amphibrachic tetrameter?
+
+In English, a line of four amphibrachs: twelve syllables with a light–strong–light foot repeated four times (da-DUM-da × 4). Expected stresses fall on syllables 2, 5, 8, and 11.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Amphibrachic tetrameter, lyriic targets twelve syllables and the amphibrachic weak–strong–weak contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Amphibrachic tetrameter meter: https://lyriic.com/write/amphibrachic-tetrameter
+
+---
+
+# Heroic couplet checker
+
+Shape a two-line draft in iambic pentameter (da-DUM × 5). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+A heroic couplet is a pair of rhyming lines in iambic pentameter — ten syllables with stress on every even beat. Geoffrey Chaucer made extensive use of the form in the fourteenth century (notably in The Canterbury Tales), adapting French and Italian models into English “riding rhyme.”
+
+The couplet became a mainstay of English verse in the Restoration and Augustan periods. John Dryden established its neoclassical polish for satire and translation; Alexander Pope perfected its balance, antithesis, and closed rhetorical unit in poems such as An Essay on Criticism and The Rape of the Lock.
+
+Closed couplets often complete a thought within the pair; open or enjambed couplets run sense across the line break. Either way, the teaching baseline remains two rhymed pentameter lines.
+
+## Famous poems
+
+### The Canterbury Tales — Geoffrey Chaucer
+
+Whan that Aprille with his shoures soote / The droghte of March hath perced to the roote,
+
+Early English mastery of rhymed iambic pentameter couplets (often called riding rhyme).
+
+### Absalom and Achitophel — John Dryden
+
+In pious times, ere priestcraft did begin, / Before polygamy was made a sin;
+
+Restoration satire that helped set the neoclassical heroic-couplet standard.
+
+### An Essay on Criticism — Alexander Pope
+
+A little learning is a dangerous thing; / Drink deep, or taste not the Pierian spring:
+
+Often cited for closed, balanced couplets and epigrammatic wit.
+
+### The Rape of the Lock — Alexander Pope
+
+What dire offence from am'rous causes springs, / What mighty contests rise from trivial things,
+
+Mock-heroic narrative built largely in polished heroic couplets.
+
+## How the heroic couplet works
+
+A heroic couplet is two successive lines of iambic pentameter that traditionally rhyme. Each line targets ten syllables with expected stress on positions 2, 4, 6, 8, and 10 (da-DUM × 5). lyriic’s catalog models that as pattern [10] with stanzaLines 2.
+
+The same pentameter grid underlies blank verse (unrhymed) and many English sonnets. What makes the couplet “heroic” in teaching terms is the paired length plus end rhyme — not a different foot or syllable count.
+
+Closed couplets often finish a thought within the pair; open couplets spill sense across the break. lyriic checks syllable and stress only; rhyme pairing and rhetorical closure are left to the writer.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 5-foot contour
+
+Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
+
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+
+## Notes on this form
+
+lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.
+
+Tradition expects the two lines to rhyme (aa). lyriic does not enforce rhyme pairing, caesura placement, or closed vs. open couplet rhetoric.
+
+## Common questions
+
+### What is a heroic couplet?
+
+A pair of rhyming lines in iambic pentameter: each line has ten syllables with a da-DUM × 5 feel. Chaucer popularized the form in English; Dryden and Pope made it the signature meter of Restoration and Augustan verse.
+
+### Does lyriic check rhyme as well as meter?
+
+No. This checker targets two ten-syllable iambic lines and the weak–strong stress contour when the stress pack is loaded. End rhyme is traditional for heroic couplets but is not enforced.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Heroic couplet meter: https://lyriic.com/write/heroic-couplet
+
+---
+
+# Common meter checker
+
+Shape a four-line draft against 8 · 6 · 8 · 6 rising iambs. Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Common metre (or common measure, often abbreviated CM) is a four-line stanza that alternates iambic tetrameter and iambic trimeter — eight syllables, then six, repeated. The pattern grew out of English and Scottish ballad and psalm traditions and became a default stanza in Protestant hymnody from the sixteenth century onward.
+
+Because so many hymns and folk tunes share the same 8.6.8.6 grid, lyrics can often be sung interchangeably across melodies. Closely related forms include ballad metre (same line lengths, looser stress and usually ABCB rhyme) and long or short metre hymn stanzas (8.8.8.8 or 6.6.8.6).
+
+## Famous poems
+
+### Amazing Grace — John Newton
+
+Amazing grace, how sweet the sound, / That saved a wretch like me!
+
+Classic CM hymn stanza; often used as a teaching example of 8.6.8.6.
+
+### A slumber did my spirit seal — William Wordsworth
+
+A slumber did my spirit seal; / I had no human fears:
+
+One of the Lucy poems; a short common-meter lyric.
+
+### Because I could not stop for Death — Emily Dickinson
+
+Because I could not stop for Death – / He kindly stopped for me –
+
+Dickinson often writes near common or ballad meter; stress and rhyme can loosen.
+
+### O Little Town of Bethlehem — Phillips Brooks
+
+O little town of Bethlehem, / How still we see thee lie!
+
+Christmas carol frequently cited for common-metre hymn shape.
+
+## Common meter (8 · 6)
+
+Common meter alternates an eight-syllable iambic line with a six-syllable one: four da-DUM feet, then three. Across a quatrain the cycle reads 8 · 6 · 8 · 6 (often labeled CM or 86.86 in hymnals).
+
+It is the shared grid of many English hymns and ballads. Strict common measure usually aims for ABAB rhyme; ballad stanza often uses ABCB with freer stress. lyriic checks the syllable and iambic stress cycle only — rhyme and tune are left to you.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic stress pattern (8 / 6)
+
+Common meter alternates an eight-syllable iambic line with a six-syllable one. The long line has strong beats on 2, 4, 6, and 8; the short line on 2, 4, and 6.
+
+When the stress pack is loaded, lyriic checks that 8 / 6 iambic contour line by line through the ballad or hymn cycle.
+
+## Notes on this form
+
+lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. Real hymns and ballads often admit substitutions — mismatches are feedback, not a claim that every published line is perfectly regular.
+
+lyriic does not enforce rhyme schemes (ABAB common measure vs ABCB ballad stanza) or tune matching between hymn texts.
+
+## Common questions
+
+### What is common meter?
+
+Common meter (CM) is a quatrain that alternates eight- and six-syllable iambic lines — tetrameter then trimeter, usually written 8.6.8.6. It is the meter of many hymns and ballads; ballad meter shares the lengths but is often less strictly iambic and typically rhymes ABCB rather than ABAB.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. With the stress pack loaded, the checker compares dictionary stress to the expected 8 / 6 iambic contour alongside the syllable targets. Open the Common meter writer under Meter for the same rulers while you draft.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Common meter meter: https://lyriic.com/write/common-meter
+
+---
+
+# Long meter checker
+
+Shape a four-line hymn stanza against 8 · 8 · 8 · 8 iambic tetrameter. Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Long metre (L.M. or LM) is the hymn-book name for a quatrain of iambic tetrameter: four lines of eight syllables, often written 8.8.8.8. The label sits beside common metre (8.6.8.6) and short metre in metrical indexes so a text can be paired with any fitting tune.
+
+English hymnody and metrical psalms made the form familiar. William Kethe’s paraphrase of Psalm 100 (“All people that on earth do dwell”), sung to Old Hundredth, and later long-meter hymns by writers such as Isaac Watts and Thomas Ken, kept the even eight-syllable lines in active use.
+
+In teaching contexts the rhythm is four rising iambs per line (da-DUM × 4). Hymnals often expect an ABAB or similar rhyme, but the meter mark itself names syllable shape first — which is what lets many L.M. texts share one tune.
+
+## Famous poems
+
+### All People That on Earth Do Dwell — William Kethe
+
+All people that on earth do dwell, / Sing to the Lord with cheerful voice.
+
+Metrical Psalm 100 from the Anglo-Genevan Psalter (1561); classic L.M. text usually sung to Old Hundredth.
+
+### Praise God, from Whom All Blessings Flow — Thomas Ken
+
+Praise God, from whom all blessings flow
+
+The Common Doxology (1674); a single long-meter stanza often sung to Old Hundredth.
+
+### When I Survey the Wondrous Cross — Isaac Watts
+
+When I survey the wondrous cross
+
+Good Friday hymn in long metre; frequently cited in hymnals as L.M. (8.8.8.8).
+
+### From All That Dwell Below the Skies — Isaac Watts
+
+From all that dwell below the skies
+
+Psalm 117 paraphrase in long metre; often closed with Ken’s doxology stanza.
+
+## Long meter (8 · 8 · 8 · 8)
+
+Long meter (L.M.) is a hymn quatrain of four eight-syllable lines — 8.8.8.8 — in iambic tetrameter. Each line expects four rising feet (da-DUM × 4), with strong beats on positions 2, 4, 6, and 8.
+
+In the lyriic catalog the cycle is stored as 8 / 8 and repeats across the four stanza lines, matching hymnal L.M. Homogeneous eights distinguish it from common meter (8 / 6) and short meter.
+
+When stress-aware checking is on, lyriic compares dictionary stress to that iambic contour line by line. Rhyme and tune choice stay yours.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic stress pattern (8 / 8)
+
+Long meter is paired eight-syllable iambic lines. Each line expects four da-DUM feet: strong beats on positions 2, 4, 6, and 8.
+
+With the stress pack loaded, lyriic marks that 8 / 8 iambic contour for the hymn stanza cycle.
+
+## Notes on this form
+
+lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. Real hymns may stretch “heavenly,” drop a syllable in singing, or substitute a foot — mismatches are feedback, not a claim that every line must be perfectly regular.
+
+lyriic does not enforce hymn rhyme schemes (ABAB, AABB, and so on) or tune pairing. Doubled long metre (L.M.D., eight lines of eight) is out of scope for this checker.
+
+## Common questions
+
+### What is long meter (L.M.)?
+
+Long meter is a four-line hymn stanza of eight syllables each — 8.8.8.8 — usually in iambic tetrameter (da-DUM × 4). Hymnals abbreviate it L.M. or LM so texts can share tunes like Old Hundredth.
+
+### How is long meter different from common meter?
+
+Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keeps eight syllables on every line (8.8.8.8). Both are typically iambic; lyriic checks syllables and stress, not rhyme.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Long meter meter: https://lyriic.com/write/long-meter
+
+---
+
+# Short meter checker
+
+Shape a four-line draft against 6 · 6 · 8 · 6 iambic syllables. Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Short meter (S.M. or SM) is one of the standard English hymn metres, alongside common meter (8.6.8.6) and long meter (8.8.8.8). In hymnals it is written 6.6.8.6: three lines of iambic trimeter with a longer iambic-tetrameter third line.
+
+The named hymn metres grew out of English ballad and psalm-singing practice and were widely formalized in the eighteenth century—Isaac Watts especially—so that a text in short meter could be sung to any matching short-meter tune.
+
+Rhyme is usually ABCB, sometimes ABAB. When a short-meter quatrain is collapsed into couplets of twelve and fourteen syllables, the result is traditionally called poulter’s measure.
+
+## Famous poems
+
+### Blest Be the Tie That Binds — John Fawcett
+
+Blest be the tie that binds / Our hearts in Christian love; / The fellowship of kindred minds / Is like to that above.
+
+Classic short-meter (6.6.8.6) hymn; often cited as the textbook S.M. example.
+
+### Come, We That Love the Lord — Isaac Watts
+
+Come, we that love the Lord, / And let our joys be known; / Join in a song with sweet accord, / And thus surround the throne.
+
+From Hymns and Spiritual Songs (1707); meter listed as 6.6.8.6 in hymnals.
+
+### A Charge to Keep I Have — Charles Wesley
+
+A charge to keep I have, / A God to glorify, / A never-dying soul to save, / And fit it for the sky.
+
+Often indexed as short meter (or double short meter in longer stanza settings).
+
+## How short meter works
+
+Hymnal short meter (S.M.) is a quatrain written 6.6.8.6: six syllables, six, eight, six, usually iambic, so that the third line has four feet and the others three. Texts in the same metre can share tunes.
+
+lyriic’s Short meter entry uses pattern [6, 6, 8, 6] with a four-line stanza, matching that teaching grid. Rhyme and tune choice stay outside the checker.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic stress pattern (6 / 6 / 8 / 6)
+
+Short meter (S.M.) is iambic 6 / 6 / 8 / 6: three-foot lines stress positions 2, 4, and 6; the eight-syllable third line adds a fourth foot with strong beats on 2, 4, 6, and 8.
+
+lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded. Rhyme schemes and tune pairing are not enforced.
+
+## Notes on this form
+
+lyriic checks the hymnal short-meter grid 6 · 6 · 8 · 6 and the iamb stress contour. Hymnal rhyme schemes (ABCB / ABAB) and tune pairing are not enforced.
+
+## Common questions
+
+### What is short meter?
+
+In English hymnody, short meter (S.M.) is a four-line stanza counted 6.6.8.6: iambic trimeter on lines 1, 2, and 4, and iambic tetrameter on line 3. lyriic’s checker uses that same syllable cycle.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For Short meter, lyriic targets 6 / 6 / 8 / 6 syllables and the iambic weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Short meter meter: https://lyriic.com/write/short-meter
+
+---
+
+# 8s & 7s checker
+
+Shape a four-line draft against 8 · 7 · 8 · 7 trochaic hymn meter. Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+In English hymnals, meter is written as syllable counts per line — 8.7.8.7 (or “8s & 7s”) means a quatrain of eight, seven, eight, and seven syllables. The same numbers appear as 8.7.8.7.D when the pattern doubles to eight lines, a common shape for longer hymn texts.
+
+Most classic 8s & 7s hymns are trochaic: a falling DUM-da beat, with the seven-syllable lines catalectic (they drop the final weak syllable and end on a stress). Hymnal indexes also list a rarer iambic 8.7.8.7; those texts do not share tunes with the trochaic set, because the stress contour has to match the music.
+
+The form became a staple of eighteenth- and nineteenth-century English hymnody precisely because tune and text could be swapped whenever syllable count and poetic foot agreed — the metrical index is the practical tool for that interchange.
+
+## Famous poems
+
+### Come, Thou Fount of Every Blessing — Robert Robinson
+
+Come, thou Fount of every blessing, / tune my heart to sing thy grace; / streams of mercy, never ceasing, / call for songs of loudest praise.
+
+Often indexed as 8.7.8.7.D; the opening quatrain is a clean trochaic 8 · 7 · 8 · 7 teaching sample.
+
+### What a Friend We Have in Jesus — Joseph Medlicott Scriven
+
+What a friend we have in Jesus, / all our sins and griefs to bear!
+
+Standard 8.7.8.7.D text, usually sung to CONVERSE; opening lines show the falling trochaic pulse.
+
+### Love Divine, All Loves Excelling — Charles Wesley
+
+Love divine, all loves excelling, / joy of heaven, to earth come down;
+
+Widely printed as 8.7.8.7.D; another staple of the trochaic eights-and-sevens family.
+
+### All for Jesus — Mary Dagworthy James
+
+All for Jesus! All for Jesus! / All my being’s ransomed powers;
+
+Cited in hymnal pedagogy as a clear 8.7.8.7 trochaic example (odd-syllable stresses).
+
+## How 8s & 7s works
+
+8s & 7s (hymnal 8.7.8.7) cycles eight- and seven-syllable lines. In the classic trochaic form lyriic models, long lines are four full trochees (DUM-da × 4); short lines are catalectic — they truncate after a final strong beat so the line ends on stress.
+
+A four-line stanza therefore reads 8 · 7 · 8 · 7. Hymnals mark 8.7.8.7.D when that quatrain doubles to eight lines; the syllable-and-stress cycle is the same, only longer. Rhyme and tune choice are outside the checker.
+
+When stress-aware checking is on, lyriic compares dictionary stress to the expected falling contour on each line length. Iambic 8.7.8.7 texts exist in some indexes but use a different beat and are not this meter’s target.
+
+## Trochee (DUM-da)
+
+A trochee is a two-syllable foot with a strong beat then a light one: DUM-da. Words like “garden,” “poetry,” and “falling” often open on that falling rhythm.
+
+Repeated trochees make trochaic meter—tetrameter (eight syllables) is common in song and children’s verse; longer lines appear in hymns and narrative. English poets often drop or lighten a final weak syllable, so lines may feel truncated compared with a pure foot grid.
+
+With the stress pack loaded, lyriic marks expected strong–weak beats from dictionary stress against that trochaic contour, so you can see where the line matches or drifts.
+
+## Trochaic stress pattern (8 / 7)
+
+Classic 8s & 7s hymn meter is trochaic: an eight-syllable line (strong on odd positions 1–7) alternating with a seven-syllable line that truncates after a final strong beat (1, 3, 5, 7). Odd lines end strong; the short line is catalectic.
+
+lyriic checks that 8 / 7 trochaic contour when the stress pack is loaded, filling then truncating the foot grid to each line length.
+
+## Notes on this form
+
+lyriic models classic trochaic 8s & 7s: eight-syllable lines with strong beats on odd positions, alternating with seven-syllable catalectic lines that end on a stress. Hymnals also index a rarer iambic 8.7.8.7 — that contour is a different meter and is not what this checker targets.
+
+lyriic does not enforce rhyme schemes, doubled (D) eight-line stanzas, or tune interchange rules from a hymnal’s metrical index.
+
+## Common questions
+
+### What is 8s & 7s hymn meter?
+
+In hymnal notation, 8.7.8.7 (8s & 7s) is a four-line stanza with eight, seven, eight, and seven syllables. The classic English form is trochaic — a falling DUM-da beat — with the short lines ending on a strong syllable. A trailing D means the pattern doubles to eight lines.
+
+### Does lyriic check stress as well as syllables?
+
+Yes. For 8s & 7s, lyriic targets the 8 / 7 syllable cycle and the trochaic stress contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with 8s & 7s meter: https://lyriic.com/write/eights-and-sevens
+
+---
+
+# Ballad stanza checker
+
+Shape a four-line draft against 8 · 6 · 8 · 6 rising iambs. Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+The ballad stanza is a four-line quatrain from English and Scottish folk song: longer lines of four stresses (often taught as iambic tetrameter) alternating with shorter lines of three (iambic trimeter). In syllable teaching terms that is 8 · 6 · 8 · 6 — the same grid as common metre.
+
+Oral ballads favored simple diction, narrative drive, and rhyme on the short lines (usually ABCB). Literary poets later adopted the stanza for storytelling verse; Samuel Taylor Coleridge’s The Rime of the Ancient Mariner is the stock classroom example, though many of its stanzas loosen stress or stretch past four lines.
+
+Critics often distinguish ballad metre from strict common measure: ballads may vary unstressed syllables and keep ABCB rhyme, while hymn CM aims for steadier iambs and often ABAB. lyriic’s Ballad stanza preset models the regular 8.6.8.6 iambic teaching form — a clean practice grid rather than every folk irregularity.
+
+## Famous poems
+
+### Sir Patrick Spens — Traditional (Scottish)
+
+I saw the new moon late yestreen / Wi' the auld moon in her arm;
+
+Classic Child ballad; often cited for the 4-stress / 3-stress quatrain shape.
+
+### The Rime of the Ancient Mariner — Samuel Taylor Coleridge
+
+All in a hot and copper sky, / The bloody Sun, at noon, / Right up above the mast did stand, / No bigger than the Moon.
+
+Literary ballad built largely on ballad stanzas; many quatrains are regular 8.6.8.6, others freer.
+
+### La Belle Dame sans Merci — John Keats
+
+O what can ail thee, knight-at-arms, / Alone and palely loitering?
+
+Romantic literary ballad in ABCB quatrains; line lengths sit near the ballad-stanza grid.
+
+### The Ballad of Reading Gaol — Oscar Wilde
+
+Later literary ballad that keeps the narrative quatrain pulse of the folk tradition.
+
+## How the ballad stanza works
+
+A ballad stanza is a quatrain of alternating iambic tetrameter and iambic trimeter: eight syllables, then six, then eight, then six. Strong beats fall on the even positions — 2, 4, 6, and 8 on long lines; 2, 4, and 6 on short ones (da-DUM × 4 / da-DUM × 3).
+
+lyriic’s catalog stores that full cycle as pattern [8, 6, 8, 6] with footId iamb and stanzaLines 4. The related Common meter entry uses pattern [8, 6] cycled across the same four-line stanza — identical syllable and stress targets.
+
+Folk tradition often rhymes only lines 2 and 4 (ABCB) and may loosen unstressed syllables. lyriic checks the syllable and iambic stress grid only; rhyme, refrain, and story are left to you.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic stress pattern (8 / 6 / 8 / 6)
+
+A ballad-stanza (common-meter quatrain) cycle is iambic 8 / 6 / 8 / 6: long lines stress even positions through eight syllables; short lines do the same through six.
+
+lyriic checks that repeating contour when the stress pack is loaded. Rhyme schemes (often ABCB or ABAB) are not enforced.
+
+## Notes on this form
+
+lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. Folk and literary ballads often admit anapests, headless lines, or looser counts — mismatches are feedback against the teaching grid, not a claim that every published stanza is perfectly regular.
+
+Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. lyriic does not enforce rhyme, refrain, or narrative content.
+
+## Common questions
+
+### What is a ballad stanza?
+
+A four-line stanza that alternates longer and shorter lines — typically four stresses then three, taught in English classrooms as 8 · 6 · 8 · 6 iambic (tetrameter / trimeter). Folk ballads often rhyme ABCB; the form is closely related to common metre in hymnody.
+
+### How is this different from common meter?
+
+Both use the same 8.6.8.6 line lengths. Ballad stanza is the folk/literary name and traditionally leans ABCB with freer stress; common meter is the hymn label, usually steadier iambs and often ABAB. In lyriic, Ballad stanza stores the full quatrain as [8,6,8,6]; Common meter stores the [8,6] couplet cycle across four lines — same targets, different catalog packaging.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Ballad stanza meter: https://lyriic.com/write/ballad-stanza
+
+---
+
+# Haiku checker
+
+Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Haiku grew out of earlier Japanese linked-verse traditions, with the opening hokku later standing alone. In English classrooms and workshops, the form is often taught as three lines totaling seventeen syllables in a 5-7-5 pattern.
+
+That English teaching shape is useful for practice, but it is not identical to Japanese counting in on (sound units), and many contemporary English haiku writers prefer a looser, image-first approach.
+
+## Famous poems
+
+### Old pond — Matsuo Bashō
+
+An old silent pond — / A frog jumps into the pond — / Splash! Silence again.
+
+Classroom staple of the pond/frog moment; English versions rarely match 5-7-5 because the original counts on, not syllables.
+
+### Crow on a bare branch — Matsuo Bashō
+
+On a bare branch / A crow has alighted — / Autumn evening.
+
+Often taught for its spare autumn image (kigo); syllable totals swing with each translator’s phrasing.
+
+### Lighting one candle — Yosa Buson
+
+Lighting one candle / with another candle — / spring evening.
+
+A spring-evening haiku frequently anthologized in English; again, translations diverge from strict 5-7-5.
+
+### This world of dew — Kobayashi Issa
+
+This world of dew / is a world of dew — / and yet, and yet…
+
+Issa’s dewdrop poem is a common teaching example of pathos within a short seasonal frame.
+
+## The 5 · 7 · 5 syllable cycle
+
+In English classrooms and workshops, a three-line poem is often taught as five syllables, then seven, then five—seventeen syllables in all. lyriic’s Haiku and Senryu meters use that same cycle for live syllable checking.
+
+Traditional Japanese haiku is measured in on (sound units, sometimes discussed as morae), not English syllables. An on is often shorter than a typical English syllable, so a 17-on Japanese poem is usually briefer than a padded 5-7-5 English draft. Many contemporary English haiku writers prefer a shorter, image-first shape rather than a strict seventeen-syllable count.
+
+Treat 5 · 7 · 5 here as a useful teaching grid: lyriic counts English syllables from the bundled dictionary and does not model Japanese on, seasonal words (kigo), or cutting words (kireji).
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. Traditional Japanese haiku is measured in on — sound units that are not the same as English syllables — so treat 5 · 7 · 5 as a useful teaching form, not a universal rule.
+
+lyriic does not enforce seasonal words (kigo) or a cutting word (kireji).
+
+## Common questions
+
+### What is a 5-7-5 haiku?
+
+In English teaching contexts, a haiku is often three lines with five syllables, then seven, then five. Traditional Japanese haiku is measured in on (sound units), which is not identical to English syllables.
+
+### Does lyriic include a haiku meter ruler?
+
+Yes. Open the Haiku writer, or choose Haiku under Meter in Settings, for live 5/7/5 ticks beside each line as you write.
+
+### Is my haiku uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Haiku meter: https://lyriic.com/write/haiku
+
+---
+
+# Senryu checker
+
+Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Senryu shares haiku’s short three-phrase shape, but it turns toward human nature rather than seasonal nature scenes. Where English haiku teaching often emphasizes image and stillness, senryu traditionally leans on irony, satire, and the foibles of everyday life.
+
+The form is named for Karai Senryū (1718–1790), an Edo-period judge of maekuzuke verse-capping contests. Selected witty entries were gathered in anthologies such as Haifū Yanagidaru (Willow Barrel). In Japanese, the count is in on (sound units), not English syllables; English workshops commonly teach the same 5-7-5 grid used for haiku practice.
+
+Unlike haiku, senryu is not expected to carry a seasonal word (kigo) or a cutting word (kireji). The difference is mainly subject and tone: people, manners, and social absurdity rather than landscape.
+
+## Famous poems
+
+### Catching the robber — Traditional (Yanagidaru)
+
+Catching him / I see the robber / is my own son.
+
+A classic anonymous senryu often cited to show the form’s ironic turn; English syllable counts vary by translation.
+
+### Hide and seek — Traditional
+
+Hide and seek / Count to three / Winter comes.
+
+Another frequently quoted piece: a child’s game opens into a darker, seasonal punchline.
+
+### From Haifū Yanagidaru — Karai Senryū (judge / tradition)
+
+Senryū’s Willow Barrel anthologies collected merchant-class wit from maekuzuke contests; many surviving verses are anonymous types rather than single-author lyrics.
+
+## The 5 · 7 · 5 syllable cycle
+
+In English classrooms and workshops, a three-line poem is often taught as five syllables, then seven, then five—seventeen syllables in all. lyriic’s Haiku and Senryu meters use that same cycle for live syllable checking.
+
+Traditional Japanese haiku is measured in on (sound units, sometimes discussed as morae), not English syllables. An on is often shorter than a typical English syllable, so a 17-on Japanese poem is usually briefer than a padded 5-7-5 English draft. Many contemporary English haiku writers prefer a shorter, image-first shape rather than a strict seventeen-syllable count.
+
+Treat 5 · 7 · 5 here as a useful teaching grid: lyriic counts English syllables from the bundled dictionary and does not model Japanese on, seasonal words (kigo), or cutting words (kireji).
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. Traditional Japanese senryu is measured in on — sound units that are not the same as English syllables — so treat 5 · 7 · 5 as a useful teaching form, not a universal rule.
+
+lyriic does not score satire, humor, or “human nature” subject matter. Senryu and haiku share the same syllable pattern here; the distinction is thematic, not metrical.
+
+## Common questions
+
+### How is senryu different from haiku?
+
+Both are often taught in English as three lines of 5-7-5 syllables. Haiku traditionally leans toward nature and seasonal reference; senryu leans toward human foibles, irony, and social observation. lyriic checks the shared syllable shape, not theme.
+
+### Does lyriic include a senryu meter ruler?
+
+Yes. Open the Senryu writer, or choose Senryu under Meter in Settings, for live 5/7/5 ticks beside each line as you write.
+
+### Is my senryu uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Senryu meter: https://lyriic.com/write/senryu
+
+---
+
+# Tanka checker
+
+Shape a five-line draft against 5 · 7 · 5 · 7 · 7. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Tanka (short song) is a form of waka and one of the oldest Japanese lyric shapes still in wide use. By the seventh century it was already central to court life — composed in contests, exchanged as love notes, and collected in anthologies such as the Man’yōshū (ca. 759), which holds thousands of tanka.
+
+Classical Japanese tanka is measured in on (sound units), usually totaling thirty-one in a 5-7-5-7-7 pattern. English teaching often presents the same counts as five lines. The upper phrase (kami-no-ku, 5-7-5) and lower phrase (shimo-no-ku, 7-7) often meet at a turn — a shift from image toward feeling — though practice varies.
+
+In the early twentieth century Masaoka Shiki revived the name tanka for a modernized waka. English-language writers use the form less than haiku, but poets such as Amy Lowell, Kenneth Rexroth, and later translators and practitioners have kept it visible.
+
+## Famous poems
+
+### The flowers withered — Ono no Komachi
+
+The flowers withered / Their color faded away / While in idle thoughts / I spent my days in the world / And the long rains were falling.
+
+Heian classic from the Kokinshū / Hyakunin Isshu tradition; English syllable counts depend on the translation.
+
+### From Tangled Hair (Midaregami) — Yosano Akiko
+
+My shiny black hair / fallen into disarray / a thousand tangles / like a thousand tangled thoughts / about my love for you.
+
+Early modern tanka that helped reopen the form to frank emotion; often taught via English five-line versions that only roughly track 5-7-5-7-7.
+
+### The Tale of Genji (embedded waka) — Murasaki Shikibu
+
+The foundational prose narrative includes hundreds of tanka exchanged as courtly and intimate verse.
+
+### English tanka experiments — Amy Lowell
+
+Early twentieth-century Imagist who wrote original English tanka; English practice often favors short-long-short-long-long rhythm over strict on equivalence.
+
+## How the tanka meter works
+
+In lyriic’s catalog, a tanka is five lines targeting 5 · 7 · 5 · 7 · 7 English syllables — the shape most English classrooms and workshops use for practice.
+
+That grid mirrors the classical Japanese on pattern and the split into an upper phrase (5-7-5) and lower phrase (7-7). Haiku’s three-line shape grew from that upper unit; tanka keeps both halves in one poem.
+
+lyriic checks syllable targets only. It does not score the thematic turn, rhyme (tanka is traditionally unrhymed), or Japanese on counting. Drafts that aim for a looser short-long English cadence will show deltas against this strict teaching grid.
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. Traditional Japanese tanka is measured in on — sound units that are not the same as English syllables — so treat 5 · 7 · 5 · 7 · 7 as a useful teaching form, not a universal rule.
+
+lyriic does not enforce the upper/lower turn (kami-no-ku / shimo-no-ku), engo (verbal associations), seasonal topics, or Japanese on counting. Contemporary English tanka often aims for thirty-one or fewer syllables with a short-long feel rather than exact counts.
+
+## Common questions
+
+### What is a 5-7-5-7-7 tanka?
+
+In English teaching contexts, a tanka is often five lines with five, seven, five, seven, and seven syllables — thirty-one in all. Traditional Japanese tanka is measured in on (sound units), which is not identical to English syllables.
+
+### Does lyriic include a tanka meter ruler?
+
+Yes. Open the Tanka writer, or choose Tanka under Meter in Settings, for live 5/7/5/7/7 ticks beside each line as you write.
+
+### Is my tanka uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Tanka meter: https://lyriic.com/write/tanka
+
+---
+
+# Katauta checker
+
+Shape a three-line draft against 5 · 7 · 7. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Katauta (片歌, “half-poem” or fragment-verse) is an early Japanese short form: three phrases, most often counted as 5-7-7. A single katauta was traditionally treated as incomplete on its own — half of an exchange — though it can stand as a complete lyric in modern English practice.
+
+When two 5-7-7 katauta are paired, they form a sedōka (5-7-7 / 5-7-7), often cast as a question-and-answer or lovers’ dialogue (mondō). Sources such as the Man’yōshū preserve these shapes; Britannica notes the form was rarely used after about the eighth century.
+
+English workshops usually teach katauta as three lines totaling nineteen syllables in a 5-7-7 pattern, sometimes allowing 5-7-5. That grid is useful for practice, but Japanese counting is in on (sound units), not English syllables, and classical pieces were often addressed to a lover.
+
+## Famous poems
+
+### Man’yōshū I:20 (opening katauta) — Princess Nukata (Nukata no Ōkimi)
+
+You ride purple fields / marked as imperial domain — / these murasaki grasses.
+
+Opening half of a celebrated sedōka: purple fields, imperial hunting grounds, and a secret sleeve-wave. English syllable counts vary widely by translation.
+
+### Untitled katauta — Robert Lee Brewer
+
+why do winter stars / shine brighter than summer stars / as if they are shards of glass?
+
+A contemporary English teaching example (Writer’s Digest) cast as a lover’s question in 5-7-7.
+
+### Kojiki / Nihon Shoki short songs — Anonymous (early chronicles)
+
+Arthur Waley and others note that a few of the shortest poems in the early chronicles already take a 5-7-7 shape — ancestors of later katauta counting practice.
+
+## How katauta works
+
+lyriic’s catalog treats katauta as three lines with syllable targets 5, then 7, then 7 — nineteen syllables total. Checks are syllable-only; there is no stress contour for this meter.
+
+English teaching materials usually prefer 5-7-7 and sometimes allow 5-7-5. Classical Japanese practice counted on and often framed the piece as half of a lovers’ exchange; two katauta make a sedōka (see lyriic’s Sedoka meter for the six-line pair).
+
+Use the checker to hit the English 5 · 7 · 7 grid. Theme (address to a lover), dialogue pairing, and Japanese on counting are outside what the tool scores.
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. Traditional Japanese katauta is measured in on — sound units that are not the same as English syllables — so treat 5 · 7 · 7 as a useful teaching form, not a universal rule.
+
+lyriic does not enforce lover-address, dialogue pairing, or sedōka structure. Pair two katauta yourself (or use the Sedoka meter) if you want the full exchange.
+
+## Common questions
+
+### What is a 5-7-7 katauta?
+
+In English teaching contexts, a katauta is three lines with five syllables, then seven, then seven. The name means “half-poem”: classically it was often one side of a paired exchange (a sedōka). Japanese counting uses on, which is not identical to English syllables.
+
+### Does lyriic include a katauta meter ruler?
+
+Yes. Open the Katauta writer, or choose Katauta under Meter in Settings, for live 5/7/7 ticks beside each line as you write.
+
+### Is my katauta uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Katauta meter: https://lyriic.com/write/katauta
+
+---
+
+# Sedoka checker
+
+Shape a six-line draft against 5 · 7 · 7 · 5 · 7 · 7 — two katauta side by side. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+Sedōka (旋頭歌, often glossed as a “head-repeating” or “head-spinning” poem) is an early waka form: two tercets of 5-7-7 on, for six phrases total. It appears in the Kojiki, Nihon Shoki, and especially the Man’yōshū (eighth century), where roughly sixty examples survive.
+
+Many sedoka read as dialogue or exchange — question and answer, or two angles on one subject — whether composed by two voices or a single author. Kakinomoto no Hitomaro is closely tied to the form; a large share of Man’yōshū sedoka come from the Hitomaro Collection.
+
+By the early Heian period the form had largely faded; imperial anthologies such as the Kokinshū keep almost none. English workshops usually teach the syllable map 5-7-7-5-7-7 as a useful practice shape, while Japanese originals count on (sound units), not English syllables.
+
+## Famous poems
+
+### Purple fields (Man’yōshū I:20) — Princess Nukata
+
+You ride purple fields / marked as imperial domain — / these murasaki grasses. / Will the groundskeeper / be so blind as not to see / as you wave your sleeves at me?
+
+Often cited as a landmark early love lyric; some readings treat the exchange with Prince Ōama as sedoka-shaped dialogue. Translations vary widely in syllable count.
+
+### Atokawa willow (Man’yōshū) — Anonymous
+
+A willow by the Atokawa / in Tōtōmi — cut again / and again, yet it grows thick. / A willow by the Atokawa / in Tōtōmi — still it stands / green beside the running stream.
+
+A refrain-style sedoka: the opening image returns at the close — the “head” repeated that gives the form its name.
+
+### Suminoe rice field (Man’yōshū 1275) — Anonymous
+
+Young man reaping / the small field at Suminoe — / is that fellow over there? / Yes, he is there, / but he reaps a private plot / so the girl he loves may see.
+
+Classic question-and-answer (mondō) texture: one katauta asks, the other answers — a common sedoka posture in the Man’yō age.
+
+## How sedoka meter works
+
+A sedoka is two katauta stacked: six lines targeting 5 · 7 · 7 · 5 · 7 · 7 English syllables. lyriic’s catalog labels this “paired katauta” and checks that syllable cycle only — syllable-only, no stress contour.
+
+In classical waka the same map is counted in on. English teaching copies the 5-7-7 twice shape; it is not a claim that every Man’yōshū sedoka matches English syllable counts in translation.
+
+Tradition often pairs the halves as dialogue, refrain, or two views of one subject. Those rhetorical habits are not scored here — only the six-line syllable grid.
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. Traditional sedoka is measured in on — sound units that are not the same as English syllables — so treat 5 · 7 · 7 · 5 · 7 · 7 as a useful teaching form, not a universal rule.
+
+lyriic does not enforce dialogue structure, refrain repetition, or theme rules. A sedoka is two katauta (5-7-7 each); related mondo exchanges by two authors are outside the checker’s scope.
+
+## Common questions
+
+### What is a sedoka?
+
+In English teaching contexts, a sedoka is six lines in two katauta: 5-7-7, then 5-7-7 again. Traditional Japanese sedōka is measured in on (sound units), which is not identical to English syllables.
+
+### Does lyriic include a sedoka meter ruler?
+
+Yes. Open the Sedoka writer, or choose Sedoka under Meter in Settings, for live 5/7/7 ticks beside each line as you write.
+
+### Is my sedoka uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Sedoka meter: https://lyriic.com/write/sedoka
+
+---
+
+# Cinquain checker
+
+Shape a five-line draft against 2 · 4 · 6 · 8 · 2. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+The American cinquain is a five-line form devised by the Imagist poet Adelaide Crapsey (1878–1914), partly as an English-language analogue to Japanese haiku and tanka. Her collection Verse (1915), published the year after her death, included twenty-eight cinquains.
+
+Crapsey’s mature shape is accentual-syllabic: five lines of 2, 4, 6, 8, and 2 syllables (twenty-two in all), often with a matching stress count of 1-2-3-4-1 and a preference for iambic movement. She titled her cinquains, treating the title almost as a sixth line.
+
+In schools, “cinquain” also names a didactic word-count exercise (noun / adjectives / gerunds / feeling / synonym). That classroom form is not the same as Crapsey’s syllable stanza, which is what lyriic checks here.
+
+## Famous poems
+
+### November Night — Adelaide Crapsey
+
+Listen… / With faint dry sound, / Like steps of passing ghosts, / The leaves, frost-crisp’d, break from the trees / And fall.
+
+Classic American cinquain from Verse (1915); often cited as the teaching example of 2-4-6-8-2.
+
+### Triad — Adelaide Crapsey
+
+These be / Three silent things: / The falling snow… the hour / Before the dawn… the mouth of one / Just dead.
+
+Compressed Imagist list poem; title and silence carry as much weight as the lines.
+
+### Snow — Adelaide Crapsey
+
+Look up… / From bleakening hills / Blows down the light, first breath / Of wintry wind… look up, and scent / The snow!
+
+Another Verse cinquain; winter imagery and an imperative opening typical of her style.
+
+## Cinquain (2 · 4 · 6 · 8 · 2)
+
+lyriic’s catalog treats the cinquain as five lines totaling twenty-two syllables: two, then four, then six, then eight, then two. Checks are syllable-only — there is no required foot or stress grid.
+
+That matches the American (Adelaide Crapsey) teaching shape. Crapsey also favored iambic movement and a 1-2-3-4-1 stress outline; those accentual aims are left to the writer here.
+
+Didactic classroom cinquains (word counts by part of speech) and later variations with reversed or mirrored syllable orders are outside this meter’s pattern.
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. lyriic checks the American (Crapsey) pattern 2 · 4 · 6 · 8 · 2 across five lines — not the classroom word-count cinquain.
+
+Crapsey often aimed for iambic stress (about 1-2-3-4-1 accents per line). This checker is syllable-only; it does not score stress, titles, or imagery rules.
+
+Variations such as reverse, mirror, butterfly, crown, and garland cinquains use other line counts or syllable orders and are not enforced here.
+
+## Common questions
+
+### What is a 2-4-6-8-2 cinquain?
+
+The American cinquain, associated with Adelaide Crapsey, is five lines with two, four, six, eight, and two syllables — twenty-two syllables in all. It is usually unrhymed and image-driven. School “cinquains” that count words by part of speech are a different exercise.
+
+### Does lyriic include a cinquain meter ruler?
+
+Yes. Open the Cinquain writer, or choose Cinquain under Meter in Settings, for live 2/4/6/8/2 ticks beside each line as you write.
+
+### Is my cinquain uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Cinquain meter: https://lyriic.com/write/cinquain
+
+---
+
+# Nonet checker
+
+Shape a nine-line draft that counts down 9 · 8 · 7 · 6 · 5 · 4 · 3 · 2 · 1. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+A nonet is a nine-line English poem whose syllable count falls by one each line: nine in the first, eight in the second, and so on down to a single syllable in the ninth. The name echoes the musical term for a group of nine players; a clear inventor or first publication date has not been established.
+
+The form spread mainly through online poetry communities and craft columns (Writer’s Digest, Shadow Poetry, and similar guides). It is usually taught as syllable-only — unmetered, any subject, rhyme optional — and is often paired in workshops with the etheree, which climbs from one syllable to ten instead of descending from nine to one.
+
+## Famous poems
+
+### Nature — Robert Lee Brewer
+
+There's a life curled in the darkness / sweating out the evening storm / beneath leaves covered with rain / …
+
+Writer’s Digest teaching nonet illustrating the 9→1 countdown; a craft example, not a canonical anthology piece.
+
+### Midnight's Breath — Shadow Poetry community example
+
+Frequently cited on form-reference sites; typical of how nonets circulate in online workshops rather than major anthologies.
+
+### Canonical nonets
+
+The form has no widely agreed canon of famous poems. Contests and teaching samples dominate; treat “famous” examples as illustrative, not authoritative.
+
+## How a nonet works
+
+A nonet is nine lines with syllable targets 9 · 8 · 7 · 6 · 5 · 4 · 3 · 2 · 1. lyriic’s catalog matches that countdown and treats the form as syllable-only — no fixed foot or stress contour.
+
+Guides agree that rhyme and theme are optional. Some writers reverse the count or stack multiple nonets; this checker models one descending stanza of nine lines.
+
+The related etheree climbs from one syllable to ten (or descends from ten to one). Choose Etheree in the catalog if you want that ten-line ladder instead.
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. A nonet is nine lines descending 9 → 1; lyriic does not require a title, centering on the page, or any particular subject.
+
+lyriic does not enforce rhyme. Tradition treats rhyme as optional and uncommon.
+
+An “upside-down” nonet (1 up to 9) is a workshop variant; this checker follows the standard descending pattern only. For 1→10, use Etheree.
+
+## Common questions
+
+### What is a nonet poem?
+
+A nonet is nine lines with a descending syllable count: nine in line one, eight in line two, and so on down to one syllable in line nine. Subject and rhyme are free; most guides treat the form as unmetered.
+
+### Does lyriic include a nonet meter ruler?
+
+Yes. Open the Nonet writer, or choose Nonet under Meter in Settings, for live 9→1 ticks beside each line as you write.
+
+### Is my nonet uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Nonet meter: https://lyriic.com/write/nonet
+
+---
+
+# Etheree checker
+
+Shape a ten-line draft against 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+The etheree is a twentieth-century American syllabic form named for Arkansas poet Etheree Taylor Armstrong (1918–1994). It is a ten-line poem in which each line’s syllable count equals its line number: one syllable on line one, two on line two, and so on through ten — fifty-five syllables in all.
+
+Teaching sources treat it as unmetered and typically unrhymed: the only fixed rule is the rising syllable ladder. Reverse etherees (10 down to 1), double etherees (1–10 then 10–1), and stacked multiples appear in workshops, but the standard single stanza remains the 1-through-10 shape.
+
+## Famous poems
+
+### Canonical scarcity
+
+Unlike haiku or the sonnet, the etheree has no fixed literary canon of widely anthologized poems. It lives mainly in workshops, online form guides, and contemporary practice pieces.
+
+### Wouldn’t Chu? — Lawrencealot
+
+Duck / Pigeon / Meadow lark / Ring-neck pheasant / swallow, sparrow, hawk…
+
+Often cited on poetry-form sites as a clear 1–10 teaching example (bird names expanding into flight).
+
+### Pain — Attributed (PoetrySoup / form guides)
+
+Pain / Pain, / My friend, / You give me / Many lessons…
+
+A frequently reprinted sample etheree in online dictionaries of the form; useful for seeing how a single opening word widens across the ladder.
+
+## How the etheree works
+
+An etheree is ten lines with syllable counts 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10 — one syllable on the first line, ten on the last, fifty-five in total. lyriic’s catalog uses that pattern with stanzaLines 10.
+
+The form is syllabic only: no required foot, stress contour, or rhyme scheme. Reverse etherees (10 down to 1) and double etherees (1–10 then 10–1) are related workshop variants outside this checker’s rising ladder.
+
+Use the live deltas to keep each line on its target count; imagery, theme, and end-rhyme stay entirely yours.
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary. The standard etheree is ten lines totaling fifty-five syllables (1 through 10). Reverse and double etherees are common variants; this checker models the rising 1–10 form only.
+
+lyriic does not enforce rhyme, meter beyond syllable length, or theme. Tradition usually leaves those free.
+
+## Common questions
+
+### What is an etheree poem?
+
+An etheree is a ten-line syllabic poem: line one has one syllable, line two has two, and so on through ten syllables on line ten (fifty-five syllables total). It is usually unrhymed and unmetered beyond that count.
+
+### Does lyriic include an etheree meter ruler?
+
+Yes. Open the Etheree writer, or choose Etheree under Meter in Settings, for live 1–10 syllable ticks beside each line as you write.
+
+### Is my etheree uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Etheree meter: https://lyriic.com/write/etheree
+
+---
+
+# Limerick checker
+
+Shape a five-line draft against 8 · 8 · 5 · 5 · 8. Same syllable engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+The limerick is a five-line comic form that appeared in English in the early eighteenth century. It is usually linked, by name, to County Limerick in Ireland and to parlour songs that invited listeners to “come to Limerick,” though the exact etymology is still debated.
+
+Edward Lear’s A Book of Nonsense (1846) made the shape famous as clean nonsense verse, often ending the fifth line on the same place-name that closed the first. Folk and club limericks kept a separate, often bawdy tradition with a punch-line twist.
+
+In English teaching, the form is described as AABBA rhyme with a bouncing anapestic (or amphibrachic) beat: longer lines with three stresses, shorter middle lines with two. Syllable counts vary in practice; lyriic’s checker uses a fixed 8 · 8 · 5 · 5 · 8 teaching shape.
+
+## Famous poems
+
+### There was an Old Man with a beard — Edward Lear
+
+There was an Old Man with a beard, / Who said, "It is just as I feared!" / Two Owls and a Hen, / Four Larks and a Wren, / Have all built their nests in my beard!
+
+From A Book of Nonsense (1846); a standard classroom example of Lear’s place-and-person nonsense limerick.
+
+### There was a Young Person of Smyrna — Edward Lear
+
+There was a Young Person of Smyrna / Whose grandmother threatened to burn her. / But she seized on the cat, / and said 'Granny, burn that! / You incongruous old woman of Smyrna!'
+
+Shows Lear’s habit of closing on the same place-word that ends line one.
+
+### The limerick packs laughs anatomical — Anonymous
+
+The limerick packs laughs anatomical / Into space that is quite economical. / But the good ones I've seen / So seldom are clean / And the clean ones so seldom are comical.
+
+A widely quoted meta-limerick on why clean examples are hard to find.
+
+### A dozen, a gross, and a score — Leigh Mercer
+
+A dozen, a gross, and a score / Plus three times the square root of four / Divided by seven / Plus five times eleven / Is nine squared and not a bit more.
+
+A mathematical limerick that reads an equation aloud in AABBA form.
+
+## How the limerick meter works
+
+lyriic’s catalog treats a limerick as five lines with syllable targets 8 · 8 · 5 · 5 · 8. That mirrors the usual teaching contour: three longer lines framing two shorter ones in the middle.
+
+Tradition also expects AABBA rhyme and a rising anapestic (or rocking amphibrachic) beat — three stresses on the long lines, two on the short. Those rules are outside this checker; only the syllable shape is scored.
+
+Published limericks often bend exact syllable counts when the bounce is clear. Use the deltas as a drafting aid, not as proof that a comic or Lear-style stanza is “wrong.”
+
+## Notes on this form
+
+Counts use English syllables from the bundled dictionary against an 8 · 8 · 5 · 5 · 8 shape — a useful teaching approximation of the long–long–short–short–long limerick contour. Real limericks often flex by a syllable or two when the anapest or amphibrach swing is clear.
+
+lyriic does not enforce the AABBA rhyme scheme, anapestic or amphibrachic stress, or comic/nonsense content.
+
+## Common questions
+
+### What syllable pattern does this limerick checker use?
+
+Five lines targeting eight, eight, five, five, and eight syllables. That matches lyriic’s Limerick catalog entry — a fixed teaching shape for the usual long–short–long contour, not a claim that every published limerick hits those exact counts.
+
+### Does lyriic check limerick rhyme or anapests?
+
+No. The checker scores syllable targets only. Traditional AABBA rhyme and the bouncing anapestic (or amphibrachic) beat are left to you; open the Limerick writer under Meter for the same live syllable ruler while you draft.
+
+### Is my limerick uploaded?
+
+No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Limerick meter: https://lyriic.com/write/limerick
+
+---
+
 # Privacy
 
 Effective August 1, 2026
@@ -160,7 +2408,7 @@ The data controller for lyriic is Joel Peckham, the individual maker of the site
 
 ## What stays on your device
 
-Drafts (poem text, settings, and syllable overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.
+Drafts (poem text, settings, and syllable/stress overrides) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.
 
 ## What we do not collect
 

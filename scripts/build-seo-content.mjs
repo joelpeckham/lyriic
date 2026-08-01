@@ -1,10 +1,14 @@
 /**
  * Generates public agent/SEO markdown mirrors from src/content modules.
  * Run: node --experimental-strip-types scripts/build-seo-content.mjs
+ *
+ * Utility tools (faq/privacy/tools.ts) load via strip-types.
+ * Form checkers load via Vite SSR so `@/` aliases resolve.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createServer } from "vite";
 
 import { FAQ_ENTRIES, FAQ_INTRO } from "../src/content/faq.ts";
 import { PRIVACY_EFFECTIVE, PRIVACY_INTRO, PRIVACY_SECTIONS } from "../src/content/privacy.ts";
@@ -17,6 +21,68 @@ const SITE = "https://lyriic.com";
 const LASTMOD = new Date().toISOString().slice(0, 10);
 
 mkdirSync(toolsDir, { recursive: true });
+
+const vite = await createServer({
+  root,
+  server: { middlewareMode: true },
+  appType: "custom",
+  logLevel: "error",
+});
+
+/** @type {{ listComposedFormToolPages: () => Array<Record<string, any>>, ZEN_EDITOR_PITCH: { cta: string } }} */
+const formCheckers = await vite.ssrLoadModule("/src/content/formCheckers/index.ts");
+const formPages = formCheckers.listComposedFormToolPages();
+const zenCta = formCheckers.ZEN_EDITOR_PITCH.cta;
+
+await vite.close();
+
+function formToolMarkdown(page) {
+  const sections = [];
+  sections.push(`# ${page.h1}\n`);
+  sections.push(`${page.intro}\n`);
+
+  if (page.history?.length) {
+    sections.push(`## A short history\n`);
+    for (const p of page.history) sections.push(`${p}\n`);
+  }
+  if (page.famousPoems?.length) {
+    sections.push(`## Famous poems\n`);
+    for (const poem of page.famousPoems) {
+      const by = poem.author ? ` — ${poem.author}` : "";
+      sections.push(`### ${poem.title}${by}\n`);
+      if (poem.excerpt) sections.push(`${poem.excerpt}\n`);
+      if (poem.note) sections.push(`${poem.note}\n`);
+    }
+  }
+  for (const explainer of [
+    page.meterExplainer,
+    page.footExplainer,
+    page.stressExplainer,
+  ]) {
+    if (!explainer) continue;
+    sections.push(`## ${explainer.title}\n`);
+    for (const p of explainer.body) sections.push(`${p}\n`);
+  }
+  if (page.formNotes?.length) {
+    sections.push(`## Notes on this form\n`);
+    for (const p of page.formNotes) sections.push(`${p}\n`);
+  }
+  sections.push(`## Common questions\n`);
+  for (const item of page.faqs) {
+    sections.push(`### ${item.q}\n\n${item.plain}\n`);
+  }
+  sections.push(`## Open the editor\n`);
+  sections.push(`${zenCta}: ${SITE}/\n`);
+  sections.push(`Open with ${page.label} meter: ${SITE}${page.writePath}\n`);
+  return sections.join("\n");
+}
+
+const formToolLinks = formPages
+  .map(
+    (page) =>
+      `- [${page.h1}](${SITE}${page.path}) — [${SITE}/tools/${page.slug}.md](${SITE}/tools/${page.slug}.md)`,
+  )
+  .join("\n");
 
 const aboutMd = `# lyriic
 
@@ -48,8 +114,11 @@ Drafts and preferences stay in browser local storage. Poem text is not sent to a
 ## Tools
 
 - [Syllable counter](${SITE}/tools/syllable-counter) — [${SITE}/tools/syllable-counter.md](${SITE}/tools/syllable-counter.md)
-- [Haiku checker](${SITE}/tools/haiku-checker) — [${SITE}/tools/haiku-checker.md](${SITE}/tools/haiku-checker.md)
 - [Rhyme finder](${SITE}/tools/rhyme-finder) — [${SITE}/tools/rhyme-finder.md](${SITE}/tools/rhyme-finder.md)
+
+### Form checkers
+
+${formToolLinks}
 
 ## Pricing
 
@@ -94,6 +163,17 @@ ${tool.cta}: ${SITE}/
   writeFileSync(join(toolsDir, `${tool.slug}.md`), md);
 }
 
+for (const page of formPages) {
+  writeFileSync(join(toolsDir, `${page.slug}.md`), formToolMarkdown(page));
+}
+
+const formLlmsLinks = formPages
+  .map(
+    (page) =>
+      `- [${page.h1}](${SITE}${page.path}): ${page.pattern.join("-")} checker — [${page.slug}.md](${SITE}/tools/${page.slug}.md)`,
+  )
+  .join("\n");
+
 const llmsTxt = `# lyriic
 
 > lyriic is a local-first web editor for writing poetry and lyrics in meter, with per-line syllable counts, optional meter rulers, and quiet rhyme/synonym helpers.
@@ -109,8 +189,11 @@ lyriic runs entirely in the browser at ${SITE}. Drafts stay on-device; there is 
 ## Tools
 
 - [Syllable counter](${SITE}/tools/syllable-counter): Per-line syllable counts — [syllable-counter.md](${SITE}/tools/syllable-counter.md)
-- [Haiku checker](${SITE}/tools/haiku-checker): 5-7-5 validator — [haiku-checker.md](${SITE}/tools/haiku-checker.md)
 - [Rhyme finder](${SITE}/tools/rhyme-finder): Local rhyming dictionary — [rhyme-finder.md](${SITE}/tools/rhyme-finder.md)
+
+### Form checkers
+
+${formLlmsLinks}
 
 ## How it works
 
@@ -142,6 +225,8 @@ ${tool.faqs.map((item) => `## ${item.q}\n\n${item.plain}`).join("\n\n")}
 `,
 ).join("\n---\n\n");
 
+const formSections = formPages.map((page) => formToolMarkdown(page)).join("\n---\n\n");
+
 const llmsFull = `${aboutMd}
 
 ---
@@ -157,6 +242,11 @@ ${FAQ_ENTRIES.map((item) => `## ${item.q}\n\n${item.plain}`).join("\n\n")}
 ${toolSections}
 ---
 
+# Form checkers
+
+${formSections}
+---
+
 # Privacy
 
 ${PRIVACY_EFFECTIVE}
@@ -168,14 +258,7 @@ ${PRIVACY_SECTIONS.map((section) => `## ${section.h2}\n\n${section.body}`).join(
 
 writeFileSync(join(publicDir, "llms-full.txt"), llmsFull);
 
-const WRITER_SLUGS = [
-  "haiku",
-  "iambic-pentameter",
-  "common-meter",
-  "tanka",
-  "sonnet",
-  "limerick",
-];
+const writerSlugs = formPages.map((page) => page.meterId);
 
 const urls = [
   { loc: `${SITE}/`, priority: "1.0", changefreq: "weekly" },
@@ -186,7 +269,12 @@ const urls = [
     priority: "0.8",
     changefreq: "monthly",
   })),
-  ...WRITER_SLUGS.map((slug) => ({
+  ...formPages.map((page) => ({
+    loc: `${SITE}${page.path}`,
+    priority: "0.8",
+    changefreq: "monthly",
+  })),
+  ...writerSlugs.map((slug) => ({
     loc: `${SITE}/write/${slug}`,
     priority: "0.7",
     changefreq: "monthly",
@@ -196,6 +284,11 @@ const urls = [
   { loc: `${SITE}/privacy.md`, priority: "0.3", changefreq: "yearly" },
   ...TOOL_PAGES.map((tool) => ({
     loc: `${SITE}/tools/${tool.slug}.md`,
+    priority: "0.4",
+    changefreq: "monthly",
+  })),
+  ...formPages.map((page) => ({
+    loc: `${SITE}/tools/${page.slug}.md`,
     priority: "0.4",
     changefreq: "monthly",
   })),
@@ -220,4 +313,6 @@ ${urls
 
 writeFileSync(join(publicDir, "sitemap.xml"), sitemap);
 
-console.log("Wrote about.md, faq.md, privacy.md, tools/*.md, llms.txt, llms-full.txt, sitemap.xml");
+console.log(
+  `Wrote about.md, faq.md, privacy.md, tools/*.md (${TOOL_PAGES.length} utility + ${formPages.length} form checkers), llms.txt, llms-full.txt, sitemap.xml`,
+);

@@ -6,16 +6,22 @@ import { renderToString } from "react-dom/server";
 import { Route, Routes, StaticRouter } from "react-router-dom";
 
 import { FaqPage } from "@/components/pages/FaqPage";
+import { FormToolPage } from "@/components/pages/FormToolPage";
 import { PrivacyPage } from "@/components/pages/PrivacyPage";
 import { ToolPage } from "@/components/pages/ToolPage";
 import { WriterSeoPage } from "@/components/pages/WriterSeoPage";
-import { HaikuCheckerTool } from "@/components/tools/HaikuCheckerTool";
+import { FormCheckerTool } from "@/components/tools/FormCheckerTool";
 import { RhymeFinderTool } from "@/components/tools/RhymeFinderTool";
 import { SyllableCounterTool } from "@/components/tools/SyllableCounterTool";
 import {
   FAQ_DESCRIPTION,
   FAQ_TITLE,
 } from "@/content/faq";
+import {
+  getComposedFormToolPageBySlug,
+  isFormCheckerSlug,
+  meterIdFromCheckerSlug,
+} from "@/content/formCheckers";
 import {
   PRIVACY_DESCRIPTION,
   PRIVACY_TITLE,
@@ -96,7 +102,20 @@ function metaForRoute(route: string): {
   }
 
   const match = /^\/tools\/([^/]+)$/.exec(route);
-  const tool = match ? getToolBySlug(match[1]!) : undefined;
+  const slug = match?.[1];
+  if (slug && isFormCheckerSlug(slug)) {
+    const page = getComposedFormToolPageBySlug(slug);
+    if (!page) {
+      throw new Error(`Unknown form checker prerender route: ${route}`);
+    }
+    return {
+      title: page.title,
+      description: page.description,
+      path: page.path,
+    };
+  }
+
+  const tool = slug ? getToolBySlug(slug) : undefined;
   if (!tool) {
     throw new Error(`Unknown prerender route: ${route}`);
   }
@@ -107,12 +126,10 @@ function metaForRoute(route: string): {
   };
 }
 
-function ToolBody({ tool }: { tool: ToolPageContent }) {
+function UtilityToolBody({ tool }: { tool: ToolPageContent }) {
   switch (tool.slug) {
     case "syllable-counter":
       return <SyllableCounterTool />;
-    case "haiku-checker":
-      return <HaikuCheckerTool />;
     case "rhyme-finder":
       return <RhymeFinderTool />;
     default:
@@ -128,7 +145,13 @@ function ToolBody({ tool }: { tool: ToolPageContent }) {
 
 function App({ route }: { route: string }) {
   const toolMatch = /^\/tools\/([^/]+)$/.exec(route);
-  const tool = toolMatch ? getToolBySlug(toolMatch[1]!) : undefined;
+  const slug = toolMatch?.[1];
+  const formPage =
+    slug && isFormCheckerSlug(slug)
+      ? getComposedFormToolPageBySlug(slug)
+      : undefined;
+  const formMeterId = slug ? meterIdFromCheckerSlug(slug) : undefined;
+  const tool = slug && !formPage ? getToolBySlug(slug) : undefined;
   const writeMatch = /^\/write\/([^/]+)$/.exec(route);
   const writeSlug = writeMatch?.[1];
 
@@ -140,8 +163,7 @@ function App({ route }: { route: string }) {
         <Route
           path="/write/:slug"
           element={
-            writeSlug &&
-            (WRITER_PRERENDER_SLUGS as readonly string[]).includes(writeSlug) ? (
+            writeSlug && WRITER_PRERENDER_SLUGS.includes(writeSlug) ? (
               <WriterSeoPage slug={writeSlug} />
             ) : null
           }
@@ -149,9 +171,13 @@ function App({ route }: { route: string }) {
         <Route
           path="/tools/:slug"
           element={
-            tool ? (
+            formPage && formMeterId ? (
+              <FormToolPage page={formPage}>
+                <FormCheckerTool meterId={formMeterId} />
+              </FormToolPage>
+            ) : tool ? (
               <ToolPage tool={tool}>
-                <ToolBody tool={tool} />
+                <UtilityToolBody tool={tool} />
               </ToolPage>
             ) : null
           }

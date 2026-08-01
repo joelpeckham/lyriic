@@ -12,7 +12,7 @@ Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dicti
 
 ## What are meter rulers?
 
-Optional ticks at syllable boundaries. Presets include Haiku (5/7/5), iambic pentameter (10), and common meter (8/6), or a custom target.
+Optional ticks at syllable boundaries. Choose from many meters — haiku, tanka, sonnet, iambic and trochaic lines, ballad meters, and more — or a custom syllable cycle with an optional stress foot.
 
 ## How do synonyms and rhymes work?
 

@@ -1,0 +1,85 @@
+# Sonnet checker
+
+Shape a fourteen-line draft against iambic pentameter (da-DUM × 5). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+
+## A short history
+
+The sonnet (Italian sonetto, “little song”) took shape in thirteenth-century Sicily and was popularized by Petrarch in the fourteenth century. Early Italian practice settled on fourteen lines with a turn of thought (volta) and a fixed rhyme pattern — typically an octave and sestet in the Petrarchan form.
+
+Thomas Wyatt and the Earl of Surrey brought the form into English in the sixteenth century. Surrey’s three-quatrain-plus-couplet shape, later associated with Shakespeare, became the dominant English teaching model: fourteen lines of iambic pentameter with a closing couplet.
+
+English classrooms usually treat the sonnet as fourteen lines of iambic pentameter plus a named rhyme scheme (Shakespearean ABAB CDCD EFEF GG, Petrarchan ABBAABBA + sestet, or Spenserian interlocking). Modern poets often keep the line count and meter while loosening or dropping rhyme.
+
+## Famous poems
+
+### Sonnet 18 (“Shall I compare thee to a summer’s day?”) — William Shakespeare
+
+Shall I compare thee to a summer’s day? / Thou art more lovely and more temperate:
+
+Classic English (Shakespearean) sonnet: three quatrains and a couplet in iambic pentameter.
+
+### Sonnet 130 (“My mistress’ eyes are nothing like the sun”) — William Shakespeare
+
+My mistress’ eyes are nothing like the sun; / Coral is far more red than her lips’ red;
+
+Anti-blazon that still follows the English rhyme and meter template.
+
+### Sonnet 43 (“How do I love thee? Let me count the ways.”) — Elizabeth Barrett Browning
+
+How do I love thee? Let me count the ways.
+
+Petrarchan structure in English; often taught for the octave–sestet turn.
+
+### When I Consider How My Light Is Spent — John Milton
+
+When I consider how my light is spent / Ere half my days in this dark world and wide,
+
+Miltonic / Petrarchan English sonnet; volta arrives later than the Italian mid-point.
+
+## How the sonnet meter works
+
+In lyriic’s catalog, a sonnet is fourteen lines of iambic pentameter: ten syllables per line with expected stress on positions 2, 4, 6, 8, and 10 (da-DUM × 5).
+
+That matches the English teaching backbone shared by Shakespearean, Petrarchan, and Spenserian sonnets. Those traditions differ mainly in rhyme scheme and where the volta falls — not in the default meter.
+
+lyriic enforces line count, syllable target, and the iambic stress contour when the stress pack is loaded. It does not score ABAB/CDCD patterns, octave–sestet splits, or theme rules.
+
+## Iamb (da-DUM)
+
+An iamb is a two-syllable foot with a light beat then a strong one: da-DUM. Everyday words such as “today,” “because,” and “away” often fall into that shape.
+
+Stack iambs and you get iambic meter. Three feet make trimeter (six syllables), four make tetrameter (eight), five make pentameter (ten)—the backbone of blank verse, sonnets, and much English lyric.
+
+When stress-aware checking is on, lyriic marks the expected weak–strong pairs from dictionary stress and compares them to the meter’s contour. Real speech bends the ideal; the marks show the target pattern, not a claim that every poem must be perfectly regular.
+
+## Iambic 5-foot contour
+
+Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
+
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+
+## Notes on this form
+
+lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. Substitutions, feminine endings, and speech stress will show as mismatches against the ideal grid.
+
+lyriic does not enforce rhyme schemes (Shakespearean, Petrarchan, Spenserian), volta placement, or thematic “argument” structure — only line count, syllable target, and iambic stress.
+
+## Common questions
+
+### What does this sonnet checker require?
+
+Fourteen lines of iambic pentameter: about ten syllables each with an unstressed–stressed contour (da-DUM × 5). That matches English teaching practice for Shakespearean and many Petrarchan sonnets in English.
+
+### Does lyriic check the rhyme scheme?
+
+No. Rhyme schemes and volta placement are not modeled. Open the zen editor with the Sonnet meter for live syllable and stress rulers beside each line.
+
+### Is my draft uploaded?
+
+No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
+
+## Open the editor
+
+Write in the zen editor: https://lyriic.com/
+
+Open with Sonnet (iambic pentameter) meter: https://lyriic.com/write/sonnet

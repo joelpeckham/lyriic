@@ -3,7 +3,11 @@ import {
   settingsForMeter,
   type EditorSettings,
 } from "@/lib/settings";
-import { getMeterCatalogEntry, isMeterCatalogId } from "./presets";
+import {
+  getMeterCatalogEntry,
+  isMeterCatalogId,
+  listFormCheckerMeters,
+} from "./presets";
 
 export type MeterSeedOverlays = Partial<
   Pick<
@@ -99,14 +103,10 @@ export function isReusableEmptyDraft(
   return targetMeter !== undefined && meter === targetMeter;
 }
 
-export const WRITER_PRERENDER_SLUGS = [
-  "haiku",
-  "iambic-pentameter",
-  "common-meter",
-  "tanka",
-  "sonnet",
-  "limerick",
-] as const;
+/** All form-checker meters get a `/write/:slug` SEO shell. */
+export const WRITER_PRERENDER_SLUGS = listFormCheckerMeters().map(
+  (entry) => entry.id,
+);
 
 export function writerPath(slug: string): string {
   return `/write/${slug}`;

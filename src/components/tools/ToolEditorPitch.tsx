@@ -10,6 +10,11 @@ type ToolEditorPitchProps = {
   cta: string;
   /** Editor destination — defaults to home; use `/write/:slug` for seeded meters. */
   to?: string;
+  /** Optional secondary text link (e.g. open with a specific meter). */
+  secondary?: {
+    label: string;
+    to: string;
+  };
 };
 
 export function ToolEditorPitch({
@@ -17,6 +22,7 @@ export function ToolEditorPitch({
   body,
   cta,
   to = "/",
+  secondary,
 }: ToolEditorPitchProps) {
   const headingId = useId();
 
@@ -34,10 +40,18 @@ export function ToolEditorPitch({
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
         {body}
       </p>
-      <p className="mt-4">
+      <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         <Button asChild>
           <Link to={to}>{cta}</Link>
         </Button>
+        {secondary ? (
+          <Link
+            to={secondary.to}
+            className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+          >
+            {secondary.label}
+          </Link>
+        ) : null}
       </p>
     </aside>
   );
