@@ -11,7 +11,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 import { handleAppShortcut } from "@/lib/shortcuts";
 
-const FIRST_RUN_PLACEHOLDER = "Write a line… ⌘' synonyms · ⌘; rhymes";
+const FIRST_RUN_PLACEHOLDER = "Write a line…";
 
 function focusPoem(): void {
   const poem = document.getElementById("poem");
