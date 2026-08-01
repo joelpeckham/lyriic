@@ -1,9 +1,7 @@
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -22,48 +20,37 @@ type PrefsContextValue = {
   setTheme: (theme: ThemePref) => void;
   setContrast: (contrast: ContrastPref) => void;
   markEditorHintSeen: () => void;
-  setPrefs: (next: AppPrefs) => void;
 };
 
 const PrefsContext = createContext<PrefsContextValue | null>(null);
 
-function commitPrefs(
-  next: AppPrefs,
-  setPrefsState: (next: AppPrefs) => void,
-): void {
-  setPrefsState(next);
-  savePrefs(next);
-}
-
 export function PrefsProvider({ children }: { children: ReactNode }) {
   const [prefs, setPrefsState] = useState<AppPrefs>(() => loadPrefs());
 
-  const setPrefs = useCallback((next: AppPrefs) => {
-    commitPrefs(next, setPrefsState);
-  }, []);
+  function setTheme(theme: ThemePref) {
+    setPrefsState((prev) => {
+      const next = { ...prev, theme };
+      savePrefs(next);
+      return next;
+    });
+  }
 
-  const setTheme = useCallback(
-    (theme: ThemePref) => {
-      commitPrefs({ ...prefs, theme }, setPrefsState);
-    },
-    [prefs],
-  );
+  function setContrast(contrast: ContrastPref) {
+    setPrefsState((prev) => {
+      const next = { ...prev, contrast };
+      savePrefs(next);
+      return next;
+    });
+  }
 
-  const setContrast = useCallback(
-    (contrast: ContrastPref) => {
-      commitPrefs({ ...prefs, contrast }, setPrefsState);
-    },
-    [prefs],
-  );
-
-  const markEditorHintSeen = useCallback(() => {
+  function markEditorHintSeen() {
     setPrefsState((prev) => {
       if (prev.seenEditorHint) return prev;
       const next = { ...prev, seenEditorHint: true };
       savePrefs(next);
       return next;
     });
-  }, []);
+  }
 
   // Single DOM apply path for prefs changes (and initial mount).
   useEffect(() => {
@@ -78,13 +65,12 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
     return () => mq.removeEventListener("change", onChange);
   }, [prefs]);
 
-  const value = useMemo(
-    () => ({ prefs, setTheme, setContrast, markEditorHintSeen, setPrefs }),
-    [prefs, setTheme, setContrast, markEditorHintSeen, setPrefs],
-  );
-
   return (
-    <PrefsContext.Provider value={value}>{children}</PrefsContext.Provider>
+    <PrefsContext.Provider
+      value={{ prefs, setTheme, setContrast, markEditorHintSeen }}
+    >
+      {children}
+    </PrefsContext.Provider>
   );
 }
 

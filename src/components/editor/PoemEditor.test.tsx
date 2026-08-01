@@ -1,4 +1,10 @@
-import { cleanup, render, renderHook, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -6,26 +12,29 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { PoemEditor } from "@/components/editor/PoemEditor";
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
-import { clearAllOverrides, setOverride } from "@/lib/syllables";
+import { openThesaurusCommand } from "@/lib/editor/wordLookup";
 import { DEFAULT_SETTINGS } from "@/lib/settings";
+import { clearAllOverrides, setOverride } from "@/lib/syllables";
+import { __setThesaurusDataForTests } from "@/lib/thesaurus/lookup";
 
 afterEach(() => {
   cleanup();
   clearAllOverrides();
+  __setThesaurusDataForTests(null);
 });
+
+const editorProps = {
+  settings: DEFAULT_SETTINGS,
+  overrides: {},
+  onSetOverride: () => {},
+  onClearOverride: () => {},
+  documentKey: "draft-1",
+} as const;
 
 describe("PoemEditor", () => {
   it("renders a single poem textbox with a11y attributes", async () => {
     const { container } = render(
-      <PoemEditor
-        value="hello"
-        onChange={() => {}}
-        settings={DEFAULT_SETTINGS}
-        overrides={{}}
-        onSetOverride={() => {}}
-        onClearOverride={() => {}}
-        documentKey="draft-1"
-      />,
+      <PoemEditor value="hello" onChange={() => {}} {...editorProps} />,
     );
 
     const content = await waitFor(() => {
@@ -42,6 +51,58 @@ describe("PoemEditor", () => {
     // Overlay host mounts even when geometry is unavailable (jsdom).
     await waitFor(() => {
       expect(container.querySelector(".lyriic-syllable-overlay")).toBeTruthy();
+    });
+  });
+
+  it("does not re-fire onChange when syncing an external value", async () => {
+    const onChange = vi.fn();
+    const { container, rerender } = render(
+      <PoemEditor value="hello" onChange={onChange} {...editorProps} />,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".cm-content")).toBeTruthy();
+    });
+    onChange.mockClear();
+
+    rerender(
+      <PoemEditor value="world" onChange={onChange} {...editorProps} />,
+    );
+
+    await waitFor(() => {
+      const view = EditorView.findFromDOM(
+        container.querySelector(".cm-content") as HTMLElement,
+      );
+      expect(view?.state.doc.toString()).toBe("world");
+    });
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("closes word lookup when the document changes", async () => {
+    __setThesaurusDataForTests({ hello: ["hi"] });
+    const { container } = render(
+      <PoemEditor value="hello world" onChange={() => {}} {...editorProps} />,
+    );
+
+    const content = await waitFor(() => {
+      const el = container.querySelector(".cm-content");
+      expect(el).toBeTruthy();
+      return el as HTMLElement;
+    });
+    const view = EditorView.findFromDOM(content);
+    expect(view).toBeTruthy();
+
+    view!.dispatch({ selection: { anchor: 1 } });
+    expect(openThesaurusCommand(view!)).toBe(true);
+
+    await waitFor(() => {
+      expect(screen.getByText("Synonyms for hello")).toBeTruthy();
+    });
+
+    view!.dispatch({ changes: { from: 11, insert: "!" } });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Synonyms for hello")).toBeNull();
     });
   });
 

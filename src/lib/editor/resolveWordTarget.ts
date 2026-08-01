@@ -97,10 +97,10 @@ export function resolveWordTarget(
 /**
  * Resolve the word under a pointer using precise hit-testing.
  *
- * CodeMirror’s default `posAtCoords` snaps to the nearest text, so empty
+ * CodeMirror’s `posAtCoords(coords, false)` estimates nearest text, so empty
  * margins before the first word / after the last word falsely hit those
- * words. We use `precise: true` and also require the pointer to sit inside
- * the word’s glyph box.
+ * words. Default (precise) mode can return null; we also require the pointer
+ * to sit inside the word’s glyph box.
  */
 export function wordTargetAtPointer(
   view: EditorView,
@@ -109,7 +109,7 @@ export function wordTargetAtPointer(
 ): WordTarget | null {
   let pos: number | null = null;
   try {
-    pos = view.posAtCoords({ x, y }, true);
+    pos = view.posAtCoords({ x, y });
   } catch {
     return null;
   }

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Compartment, EditorState } from "@codemirror/state";
+import { Annotation, Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
@@ -46,6 +46,9 @@ type PoemEditorProps = {
 };
 
 const LIVE_COUNT_DEBOUNCE_MS = 500;
+
+/** Marks a full-doc replace driven by the React `value` prop (not user typing). */
+const externalValueSync = Annotation.define<boolean>();
 
 function overridesKey(overrides: Record<string, number>): string {
   return Object.keys(overrides)
@@ -135,7 +138,8 @@ export function PoemEditor({
         ...createPoemExtensions({
           onDocChange: (text) => {
             setLiveText(text);
-            onChangeRef.current(text);
+            // Toolbar dismisses itself; lookup holds stale replace ranges.
+            setLookupRequest(null);
           },
           onActiveLineChange: setActiveLineIndex,
           onOpenWordLookup: (request) => {
@@ -145,6 +149,16 @@ export function PoemEditor({
             onWordToolbarChangeRef.current(target);
           },
           placeholderText,
+        }),
+        // Parent onChange separately so external value sync can suppress it.
+        EditorView.updateListener.of((update) => {
+          if (!update.docChanged) return;
+          if (
+            update.transactions.some((tr) => tr.annotation(externalValueSync))
+          ) {
+            return;
+          }
+          onChangeRef.current(update.state.doc.toString());
         }),
       ],
     });
@@ -173,6 +187,7 @@ export function PoemEditor({
     }
     view.dispatch({
       changes: { from: 0, to: current.length, insert: value },
+      annotations: externalValueSync.of(true),
     });
     setLiveText(value);
   }, [value]);

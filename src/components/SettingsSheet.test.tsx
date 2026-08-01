@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SettingsSheet } from "@/components/SettingsSheet";
 import { PrefsProvider } from "@/hooks/usePrefs";
-import { DEFAULT_SETTINGS } from "@/lib/settings";
+import { DEFAULT_SETTINGS, type EditorSettings } from "@/lib/settings";
 
 beforeEach(() => {
   Object.defineProperty(window, "matchMedia", {
@@ -17,7 +17,6 @@ beforeEach(() => {
       removeListener: vi.fn(),
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
     }),
   });
 });
@@ -28,27 +27,44 @@ afterEach(() => {
 
 function renderSheet(
   props: Partial<{
-    settings: typeof DEFAULT_SETTINGS;
-    onChange: (next: typeof DEFAULT_SETTINGS) => void;
+    settings: EditorSettings;
+    onChange: (next: EditorSettings) => void;
     open: boolean;
     onOpenChange: (open: boolean) => void;
   }> = {},
 ) {
   const onChange = props.onChange ?? vi.fn();
   const onOpenChange = props.onOpenChange ?? vi.fn();
+  const settings = props.settings ?? DEFAULT_SETTINGS;
+  const open = props.open ?? false;
 
-  render(
+  const view = render(
     <PrefsProvider>
       <SettingsSheet
-        settings={props.settings ?? DEFAULT_SETTINGS}
+        settings={settings}
         onChange={onChange}
-        open={props.open ?? false}
+        open={open}
         onOpenChange={onOpenChange}
       />
     </PrefsProvider>,
   );
 
-  return { onChange, onOpenChange };
+  return {
+    onChange,
+    onOpenChange,
+    rerender: (next: Partial<typeof props>) => {
+      view.rerender(
+        <PrefsProvider>
+          <SettingsSheet
+            settings={next.settings ?? settings}
+            onChange={next.onChange ?? onChange}
+            open={next.open ?? open}
+            onOpenChange={next.onOpenChange ?? onOpenChange}
+          />
+        </PrefsProvider>,
+      );
+    },
+  };
 }
 
 async function openSettings(
@@ -78,6 +94,24 @@ describe("SettingsSheet", () => {
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({ meter: "haiku" }),
     );
+  });
+
+  it("moves meter selection with arrow keys and roving tabindex", async () => {
+    const { onChange } = await openSettings();
+
+    const none = screen.getByRole("radio", { name: /None/ });
+    const haiku = screen.getByRole("radio", { name: /Haiku/ });
+
+    expect(none.tabIndex).toBe(0);
+    expect(haiku.tabIndex).toBe(-1);
+
+    none.focus();
+    fireEvent.keyDown(none, { key: "ArrowDown" });
+
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ meter: "haiku" }),
+    );
+    expect(document.activeElement).toBe(haiku);
   });
 
   it("selects font size via button group", async () => {
@@ -115,5 +149,27 @@ describe("SettingsSheet", () => {
   it("opens when controlled open is true", async () => {
     renderSheet({ open: true });
     expect(await screen.findByRole("dialog")).toBeTruthy();
+  });
+
+  it("syncs custom syllables input when value changes", async () => {
+    const custom = {
+      ...DEFAULT_SETTINGS,
+      meter: "custom" as const,
+      customSyllables: 8,
+    };
+    const { rerender } = await openSettings({ settings: custom });
+
+    const input = screen.getByLabelText("Syllables per line");
+    expect(input).toHaveProperty("value", "8");
+
+    rerender({
+      settings: { ...custom, customSyllables: 12 },
+      open: true,
+    });
+
+    expect(screen.getByLabelText("Syllables per line")).toHaveProperty(
+      "value",
+      "12",
+    );
   });
 });

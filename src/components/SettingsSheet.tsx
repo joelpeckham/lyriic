@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import {
   BookA,
   CircleSlash,
@@ -12,6 +12,7 @@ import {
   Settings,
   Sun,
   Type,
+  type LucideIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,8 +30,8 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { usePrefs } from "@/hooks/usePrefs";
-import { isMeterPresetId, METER_PRESETS, type MeterPresetId } from "@/lib/meters";
-import { isThemePref, type ThemePref } from "@/lib/prefs";
+import { METER_PRESETS, type MeterPresetId } from "@/lib/meters";
+import { type ThemePref } from "@/lib/prefs";
 import {
   CUSTOM_SYLLABLES_MAX,
   CUSTOM_SYLLABLES_MIN,
@@ -59,14 +60,14 @@ const FONT_SIZE_OPTIONS = [
 const THEME_OPTIONS: {
   value: ThemePref;
   label: string;
-  icon: typeof Sun;
+  icon: LucideIcon;
 }[] = [
   { value: "system", label: "System", icon: Monitor },
   { value: "light", label: "Light", icon: Sun },
   { value: "dark", label: "Dark", icon: Moon },
 ];
 
-const METER_ICONS: Record<MeterPresetId, typeof Hash> = {
+const METER_ICONS: Record<MeterPresetId, LucideIcon> = {
   none: CircleSlash,
   haiku: Hash,
   "iambic-pentameter": Type,
@@ -135,6 +136,56 @@ function CustomSyllablesInput({
   );
 }
 
+function SettingsToggle({
+  id,
+  label,
+  hint,
+  icon: Icon,
+  checked,
+  onCheckedChange,
+}: {
+  id: string;
+  label: string;
+  hint: string;
+  icon: LucideIcon;
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+}) {
+  const hintId = `${id}-hint`;
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex min-w-0 items-start gap-2.5">
+        <Icon
+          className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+          aria-hidden
+        />
+        <div className="flex flex-col gap-0.5">
+          <Label htmlFor={id}>{label}</Label>
+          <p id={hintId} className="text-muted-foreground text-xs">
+            {hint}
+          </p>
+        </div>
+      </div>
+      <Switch
+        id={id}
+        checked={checked}
+        aria-describedby={hintId}
+        onCheckedChange={onCheckedChange}
+      />
+    </div>
+  );
+}
+
+function meterRadioIndex(meter: MeterPresetId): number {
+  const index = METER_PRESETS.findIndex((preset) => preset.id === meter);
+  return index >= 0 ? index : 0;
+}
+
+function focusMeterRadio(group: HTMLElement, index: number) {
+  const radios = group.querySelectorAll<HTMLElement>('[role="radio"]');
+  radios[index]?.focus();
+}
+
 export function SettingsSheet({
   settings,
   onChange,
@@ -148,6 +199,35 @@ export function SettingsSheet({
   )
     ? settings.fontSize
     : DEFAULT_FONT_SIZE;
+
+  const selectedMeterIndex = meterRadioIndex(settings.meter);
+
+  const onMeterKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const { key } = event;
+    const last = METER_PRESETS.length - 1;
+    let nextIndex = selectedMeterIndex;
+
+    if (key === "ArrowDown" || key === "ArrowRight") {
+      nextIndex = (selectedMeterIndex + 1) % METER_PRESETS.length;
+    } else if (key === "ArrowUp" || key === "ArrowLeft") {
+      nextIndex =
+        (selectedMeterIndex - 1 + METER_PRESETS.length) % METER_PRESETS.length;
+    } else if (key === "Home") {
+      nextIndex = 0;
+    } else if (key === "End") {
+      nextIndex = last;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    const next = METER_PRESETS[nextIndex];
+    if (!next) return;
+    if (next.id !== settings.meter) {
+      onChange({ ...settings, meter: next.id });
+    }
+    focusMeterRadio(event.currentTarget, nextIndex);
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -185,10 +265,7 @@ export function SettingsSheet({
                       aria-label={option.label}
                       aria-pressed={selected}
                       className={cn(selected && "bg-muted text-foreground")}
-                      onClick={() => {
-                        if (!isThemePref(option.value)) return;
-                        setTheme(option.value);
-                      }}
+                      onClick={() => setTheme(option.value)}
                     >
                       <Icon data-icon="inline-start" />
                       {option.label}
@@ -198,31 +275,16 @@ export function SettingsSheet({
               </ButtonGroup>
             </div>
 
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex min-w-0 items-start gap-2.5">
-                <Contrast
-                  className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                  aria-hidden
-                />
-                <div className="flex flex-col gap-0.5">
-                  <Label htmlFor="higher-contrast">Higher contrast</Label>
-                  <p
-                    id="higher-contrast-hint"
-                    className="text-muted-foreground text-xs"
-                  >
-                    Stronger subtle text and borders across the app
-                  </p>
-                </div>
-              </div>
-              <Switch
-                id="higher-contrast"
-                checked={prefs.contrast === "more"}
-                aria-describedby="higher-contrast-hint"
-                onCheckedChange={(checked) =>
-                  setContrast(checked ? "more" : "default")
-                }
-              />
-            </div>
+            <SettingsToggle
+              id="higher-contrast"
+              label="Higher contrast"
+              hint="Stronger subtle text and borders across the app"
+              icon={Contrast}
+              checked={prefs.contrast === "more"}
+              onCheckedChange={(checked) =>
+                setContrast(checked ? "more" : "default")
+              }
+            />
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
@@ -275,6 +337,7 @@ export function SettingsSheet({
               role="radiogroup"
               aria-labelledby="meter-label"
               className="flex flex-col gap-1.5"
+              onKeyDown={onMeterKeyDown}
             >
               {METER_PRESETS.map((preset) => {
                 const Icon = METER_ICONS[preset.id];
@@ -285,6 +348,7 @@ export function SettingsSheet({
                     type="button"
                     role="radio"
                     aria-checked={selected}
+                    tabIndex={selected ? 0 : -1}
                     className={cn(
                       "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-colors",
                       "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
@@ -292,10 +356,9 @@ export function SettingsSheet({
                         ? "border-border bg-muted text-foreground"
                         : "border-transparent hover:bg-muted/60",
                     )}
-                    onClick={() => {
-                      if (!isMeterPresetId(preset.id)) return;
-                      onChange({ ...settings, meter: preset.id });
-                    }}
+                    onClick={() =>
+                      onChange({ ...settings, meter: preset.id })
+                    }
                   >
                     <Icon
                       className="mt-0.5 size-4 shrink-0 text-muted-foreground"
@@ -317,6 +380,7 @@ export function SettingsSheet({
 
           {settings.meter === "custom" && (
             <CustomSyllablesInput
+              key={settings.customSyllables}
               value={settings.customSyllables}
               onCommit={(customSyllables) =>
                 onChange({ ...settings, customSyllables })
@@ -326,57 +390,27 @@ export function SettingsSheet({
 
           <Separator />
 
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex min-w-0 items-start gap-2.5">
-              <Hash
-                className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                aria-hidden
-              />
-              <div className="flex flex-col gap-0.5">
-                <Label htmlFor="show-counts">Syllable counts</Label>
-                <p
-                  id="show-counts-hint"
-                  className="text-muted-foreground text-xs"
-                >
-                  Show a count at the end of each line
-                </p>
-              </div>
-            </div>
-            <Switch
-              id="show-counts"
-              checked={settings.showCounts}
-              aria-describedby="show-counts-hint"
-              onCheckedChange={(showCounts) =>
-                onChange({ ...settings, showCounts })
-              }
-            />
-          </div>
+          <SettingsToggle
+            id="show-counts"
+            label="Syllable counts"
+            hint="Show a count at the end of each line"
+            icon={Hash}
+            checked={settings.showCounts}
+            onCheckedChange={(showCounts) =>
+              onChange({ ...settings, showCounts })
+            }
+          />
 
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex min-w-0 items-start gap-2.5">
-              <Ruler
-                className="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                aria-hidden
-              />
-              <div className="flex flex-col gap-0.5">
-                <Label htmlFor="show-rulers">Meter rulers</Label>
-                <p
-                  id="show-rulers-hint"
-                  className="text-muted-foreground text-xs"
-                >
-                  Tick marks at syllable boundaries under each line
-                </p>
-              </div>
-            </div>
-            <Switch
-              id="show-rulers"
-              checked={settings.showRulers}
-              aria-describedby="show-rulers-hint"
-              onCheckedChange={(showRulers) =>
-                onChange({ ...settings, showRulers })
-              }
-            />
-          </div>
+          <SettingsToggle
+            id="show-rulers"
+            label="Meter rulers"
+            hint="Tick marks at syllable boundaries under each line"
+            icon={Ruler}
+            checked={settings.showRulers}
+            onCheckedChange={(showRulers) =>
+              onChange({ ...settings, showRulers })
+            }
+          />
 
           <Separator />
 

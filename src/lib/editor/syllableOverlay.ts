@@ -27,9 +27,9 @@ function tickClass(syllable: number, target: number | null): string {
  * Syllable counts + meter rulers on the editor host (sibling of `.cm-editor`).
  * Meter data comes from `setMeterOverlayData`; positions use `coordsAtPos`.
  *
- * On `docChanged`, skip redraw so stale totals/tokens are not painted at new
- * positions — React pushes fresh meter data and calls `redraw` in the same turn
- * when live editor text drives counting.
+ * On `docChanged`, clear overlay DOM immediately so stale ticks/counts do not
+ * linger at old geometry. React then pushes fresh meter data and calls
+ * `redraw` when live editor text drives counting.
  */
 export const syllableOverlay = ViewPlugin.fromClass(
   class {
@@ -65,8 +65,11 @@ export const syllableOverlay = ViewPlugin.fromClass(
       if (!this.dom.isConnected) {
         this.mount(update.view);
       }
-      // I-11: avoid painting stale meter data after a doc edit; React redraws.
-      if (update.docChanged) return;
+      // Clear stale geometry; React redraws with fresh meter data.
+      if (update.docChanged) {
+        this.dom.replaceChildren();
+        return;
+      }
       if (update.viewportChanged || update.geometryChanged) {
         this.draw(update.view);
       }
