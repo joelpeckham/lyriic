@@ -7,6 +7,7 @@ Built for [lyriic.com](https://lyriic.com) on Vercel.
 ## Stack
 
 - Vite + React + TypeScript
+- CodeMirror 6 (poem canvas)
 - Tailwind CSS + [shadcn/ui](https://ui.shadcn.com)
 - pnpm
 

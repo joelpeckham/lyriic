@@ -2,7 +2,7 @@ import type { MeterStatus } from "./types";
 
 /**
  * Shared screen-reader / aria-describedby phrasing for a line’s meter status.
- * Used by TextCanvas (live region) and LineCountOverlay (per-line status).
+ * Used by PoemEditor (live region) and the syllable overlay.
  */
 export function formatMeterLabel(
   total: number,

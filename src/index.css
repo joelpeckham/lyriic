@@ -241,6 +241,46 @@ html[data-contrast="more"].dark {
   }
 }
 
+/* Syllable counts: sibling of .cm-editor so CM does not own the overlay DOM. */
+.lyriic-syllable-overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+}
+
+.lyriic-count {
+  position: absolute;
+  box-sizing: border-box;
+  padding-top: 0.375rem;
+  text-align: right;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 0.75rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transition: color 120ms ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.lyriic-count--exact {
+  color: var(--lyriic-match);
+}
+
+.lyriic-count--over {
+  color: var(--lyriic-over);
+}
+
+.lyriic-count--subtle {
+  color: var(--lyriic-subtle);
+}
+
+.lyriic-count__target {
+  color: var(--lyriic-subtle-faint);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/70;

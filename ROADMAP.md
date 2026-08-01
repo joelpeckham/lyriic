@@ -5,7 +5,7 @@ English-first meter writing tool. Syllable API stays language-agnostic so other 
 ## Architecture
 
 ```
-TextCanvas → tokenizer → dict lookup / heuristic → memo cache → counts + rulers
+PoemEditor (CodeMirror) → tokenizer → dict lookup / heuristic → memo cache → counts + rulers
 Settings Sheet → meter preset → rulers
 ```
 
@@ -42,17 +42,17 @@ Performance budget:
 
 - [x] Invalidate O(changed lines) via `countLinesIncremental`
 - [x] Per-word memo cache
-- [x] Syllable numbers as overlay siblings (avoid layout thrash on the textarea)
+- [x] Syllable numbers as overlay siblings (avoid layout thrash on the editor text)
 - [x] Smoke-test ~500-line documents (`countLinesIncremental`)
 
 - [x] Tests: dictionary hits, heuristics, edge cases (`the`, `fire`, `poem`, `rhythm`, hyphenates, overrides)
 
 ## Phase 2 — Editor canvas + drafts
 
-- [x] Distraction-free large-font multiline editor (one field per hard line; soft-wrap within the line, extra gap between poetic lines)
+- [x] Distraction-free large-font multiline editor
 - [x] Per-line syllable total at line end (subtle)
 - [x] Hard newlines = poetic lines (Enter starts a new metered line)
-- [x] Overlay scroll sync with textarea (counts stay aligned while scrolling)
+- [x] Overlay scroll sync (counts stay aligned while scrolling)
 - [x] O(changed lines) invalidation + overlay siblings for counts
 - [x] Smoke-test ~500-line documents
 - [x] **Multiple drafts / projects** persisted in `localStorage`:
@@ -67,8 +67,18 @@ Performance budget:
 
 - [x] App-wide theme (system / light / dark) + higher-contrast setting (`lyriic.prefs.v1`)
 - [x] `prefers-contrast` / `prefers-reduced-motion` / `forced-colors` CSS
-- [x] Contrast tokens for subtle text; editor keyboard (roving tabindex, focus ring, cross-line keys)
+- [x] Contrast tokens for subtle text; editor keyboard (focus ring, native cross-line keys)
 - [x] Landmarks, draft naming, meter SR status, save-error live region
+
+## Pre–Phase 3 — Editor architecture pivot
+
+Multi-textarea (one field per hard line) delivered zen soft-wrap vs poetic-line spacing, but forced custom selection/hit-testing. Migrated before rulers:
+
+- [x] CodeMirror 6 poem canvas (hard line = `.cm-line`; soft-wrap leading vs poetic gap via CSS)
+- [x] Native multi-line selection, undo, IME, copy/cut/paste
+- [x] Syllable counts as `ViewPlugin` overlays via `coordsAtPos` (non-reflowing)
+- [x] Single tab stop into the poem; skip-link + meter `aria-live` preserved
+- [x] Removed multi-textarea document emulation (`useLineDocument`, custom `LineRange`, mirror-div caret geometry)
 
 ## Phase 3 — Meter presets + rulers (current)
 

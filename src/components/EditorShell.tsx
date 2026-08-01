@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { ProjectSwitcher } from "@/components/ProjectSwitcher";
 import { SettingsSheet } from "@/components/SettingsSheet";
-import { TextCanvas } from "@/components/editor/TextCanvas";
+import { PoemEditor } from "@/components/editor/PoemEditor";
 import { useProjects } from "@/hooks/useProjects";
 import { useSyllableOverrides } from "@/hooks/useSyllableOverrides";
 
@@ -55,7 +55,7 @@ export function EditorShell() {
       </header>
 
       <main className="relative z-10 flex min-h-0 flex-1 flex-col">
-        <TextCanvas
+        <PoemEditor
           key={active.id}
           value={active.text}
           onChange={setText}
