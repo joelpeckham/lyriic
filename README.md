@@ -1,6 +1,6 @@
 # lyriic
 
-A zen text editor for writing in meter. Large-font canvas and subtle per-line syllable counts; meter rulers are planned for a later phase.
+A zen text editor for writing in meter. Large-font canvas, subtle per-line syllable counts, optional meter rulers, and quiet per-draft syllable overrides for ambiguous words.
 
 Built for [lyriic.com](https://lyriic.com) on Vercel.
 
@@ -35,7 +35,7 @@ pnpm build:cmu
 
 ## Syllable counting
 
-Defaults follow the [CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict) **primary** pronunciation (count phones with stress digits). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Call `setOverride(word, count)` to prefer an alternate count for ambiguous words (e.g. poetic `fire` as 1).
+Defaults follow the [CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict) **primary** pronunciation (count phones with stress digits). Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Prefer an alternate count for ambiguous words (e.g. poetic `fire` as 1) via Settings → Syllable overrides; overrides persist with the active draft.
 
 CMUdict is © Carnegie Mellon University; use is unrestricted for research and commercial purposes. Acknowledgment requested on redistribute.
 

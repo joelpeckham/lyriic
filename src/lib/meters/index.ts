@@ -2,6 +2,11 @@ export { buildMeteredLine } from "./buildMeteredLine";
 export { buildMeteredLines } from "./buildMeteredLines";
 export { formatMeterLabel } from "./meterLabel";
 export {
+  mapSyllableToOffset,
+  rulerSyllableCount,
+  type SyllableOffsetToken,
+} from "./mapSyllableToOffset";
+export {
   getMeterPreset,
   isMeterPresetId,
   METER_PRESETS,

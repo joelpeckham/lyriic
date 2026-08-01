@@ -5,6 +5,10 @@ import {
 } from "@codemirror/view";
 
 import { getMeterOverlay } from "@/lib/editor/meterOverlay";
+import {
+  mapSyllableToOffset,
+  rulerSyllableCount,
+} from "@/lib/meters/mapSyllableToOffset";
 import type { MeterStatus } from "@/lib/meters";
 
 function statusClass(status: MeterStatus): string {
@@ -13,9 +17,19 @@ function statusClass(status: MeterStatus): string {
   return "lyriic-count--subtle";
 }
 
+function tickClass(syllable: number, target: number | null): string {
+  if (target !== null && syllable === target) return "lyriic-ruler-tick--target";
+  if (target !== null && syllable > target) return "lyriic-ruler-tick--over";
+  return "lyriic-ruler-tick";
+}
+
 /**
- * Syllable totals on the editor host (sibling of `.cm-editor`).
+ * Syllable counts + meter rulers on the editor host (sibling of `.cm-editor`).
  * Meter data comes from `setMeterOverlayData`; positions use `coordsAtPos`.
+ *
+ * On `docChanged`, skip redraw so stale totals/tokens are not painted at new
+ * positions — React pushes fresh meter data and calls `redraw` in the same turn
+ * when live editor text drives counting.
  */
 export const syllableOverlay = ViewPlugin.fromClass(
   class {
@@ -51,11 +65,9 @@ export const syllableOverlay = ViewPlugin.fromClass(
       if (!this.dom.isConnected) {
         this.mount(update.view);
       }
-      if (
-        update.docChanged ||
-        update.viewportChanged ||
-        update.geometryChanged
-      ) {
+      // I-11: avoid painting stale meter data after a doc edit; React redraws.
+      if (update.docChanged) return;
+      if (update.viewportChanged || update.geometryChanged) {
         this.draw(update.view);
       }
     }
@@ -66,8 +78,8 @@ export const syllableOverlay = ViewPlugin.fromClass(
     }
 
     draw(view: EditorView) {
-      const { showCounts, lines } = getMeterOverlay(view);
-      if (!showCounts) {
+      const { showCounts, showRulers, lines } = getMeterOverlay(view);
+      if (!showCounts && !showRulers) {
         this.dom.replaceChildren();
         return;
       }
@@ -93,35 +105,60 @@ export const syllableOverlay = ViewPlugin.fromClass(
         const total = overlay.total;
         if (total <= 0 && !overlay.lineHasText) continue;
 
-        let coords: { top: number } | null = null;
+        let lineCoords: { top: number; bottom: number } | null = null;
         try {
-          coords = view.coordsAtPos(line.from);
+          const coords = view.coordsAtPos(line.from);
+          if (coords) lineCoords = coords;
         } catch {
           // jsdom lacks Range.getClientRects; skip geometry in tests.
           continue;
         }
-        if (!coords) continue;
+        if (!lineCoords) continue;
 
-        const top = coords.top - hostRect.top;
+        const top = lineCoords.top - hostRect.top;
         if (top + 24 < 0 || top > hostRect.height) continue;
 
-        const el = document.createElement("span");
-        el.className = `lyriic-count ${statusClass(overlay.status)}`;
-        el.style.top = `${top}px`;
-        el.style.left = `${left}px`;
-        el.style.width = `${width}px`;
+        if (showRulers && overlay.tokens.length > 0) {
+          const tickCount = rulerSyllableCount(total, overlay.target);
+          for (let s = 1; s <= tickCount; s++) {
+            const offset = mapSyllableToOffset(overlay.tokens, s);
+            if (offset === null) continue;
+            const pos = Math.min(line.from + offset, line.to);
+            let tickCoords: { left: number; bottom: number } | null = null;
+            try {
+              tickCoords = view.coordsAtPos(pos);
+            } catch {
+              continue;
+            }
+            if (!tickCoords) continue;
 
-        if (overlay.target !== null && total > 0) {
-          el.append(document.createTextNode(String(total)));
-          const target = document.createElement("span");
-          target.className = "lyriic-count__target";
-          target.textContent = `/${overlay.target}`;
-          el.append(target);
-        } else {
-          el.textContent = String(total);
+            const tick = document.createElement("span");
+            tick.className = tickClass(s, overlay.target);
+            tick.style.left = `${tickCoords.left - hostRect.left}px`;
+            tick.style.top = `${tickCoords.bottom - hostRect.top}px`;
+            frag.append(tick);
+          }
         }
 
-        frag.append(el);
+        if (showCounts) {
+          const el = document.createElement("span");
+          el.className = `lyriic-count ${statusClass(overlay.status)}`;
+          el.style.top = `${top}px`;
+          el.style.left = `${left}px`;
+          el.style.width = `${width}px`;
+
+          if (overlay.target !== null && total > 0) {
+            el.append(document.createTextNode(String(total)));
+            const target = document.createElement("span");
+            target.className = "lyriic-count__target";
+            target.textContent = `/${overlay.target}`;
+            el.append(target);
+          } else {
+            el.textContent = String(total);
+          }
+
+          frag.append(el);
+        }
       }
 
       this.dom.replaceChildren(frag);

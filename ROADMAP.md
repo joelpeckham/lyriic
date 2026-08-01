@@ -80,21 +80,20 @@ Multi-textarea (one field per hard line) delivered zen soft-wrap vs poetic-line 
 - [x] Single tab stop into the poem; skip-link + meter `aria-live` preserved
 - [x] Removed multi-textarea document emulation (`useLineDocument`, custom `LineRange`, mirror-div caret geometry)
 
-## Phase 3 — Meter presets + rulers (current)
+## Phase 3 — Meter presets + rulers
 
 Settings Sheet (gear, top-right): meter type, show/hide counts, show/hide rulers, font size; appearance (theme / contrast) is app-wide.
 
 Presets (v1):
 
-- None (counts only)
-- Haiku (5 / 7 / 5)
-- Iambic pentameter (10 syllables; stress later)
-- Common meter / ballad (8 / 6)
-- Custom N syllables per line
+- [x] None (counts only)
+- [x] Haiku (5 / 7 / 5)
+- [x] Iambic pentameter (10 syllables; stress later)
+- [x] Common meter / ballad (8 / 6)
+- [x] Custom N syllables per line
 
-Rulers: tick marks at cumulative syllable boundaries that track word positions; understated, not a HUD. Add shadcn pieces only as needed (`slider`, `tooltip`).
-
-Ambiguous-word overrides (quiet UI): let the user set preferred counts for words like `fire` / `every` (defaults stay CMU primary). Wire to the existing override API; store with the active project.
+- [x] Rulers: tick marks at cumulative syllable boundaries that track word positions; understated, not a HUD
+- [x] Ambiguous-word overrides (quiet UI): preferred counts for words like `fire` / `every` (defaults stay CMU primary); wired to project override API + localStorage
 
 ## Phase 4 — Thesaurus popover
 
@@ -128,7 +127,5 @@ Word-level synonym helper that respects meter.
 ## Out of scope for now
 
 - Auth, accounts, cloud sync (local drafts only until Phase 6)
-- Override preference UI (Phase 3; persistence already ships with projects)
-- Working meter rulers (Phase 3)
 - Thesaurus popover (Phase 4)
 - CMU code-splitting / lazy load (Phase 5)

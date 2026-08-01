@@ -13,6 +13,8 @@ export function EditorShell() {
     active,
     setText,
     setSettings,
+    setOverride,
+    clearOverride,
     switchProject,
     createProject,
     renameProject,
@@ -51,7 +53,13 @@ export function EditorShell() {
             onRename={renameProject}
             onDelete={deleteProject}
           />
-          <SettingsSheet settings={active.settings} onChange={setSettings} />
+          <SettingsSheet
+            settings={active.settings}
+            onChange={setSettings}
+            overrides={active.overrides}
+            onSetOverride={setOverride}
+            onClearOverride={clearOverride}
+          />
         </nav>
       </header>
 

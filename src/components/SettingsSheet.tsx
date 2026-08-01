@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings } from "lucide-react";
+import { Settings, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,10 +32,17 @@ import {
   FONT_SIZE_MIN,
   type EditorSettings,
 } from "@/lib/settings";
+import {
+  isValidOverrideCount,
+  normalizeOverrideKey,
+} from "@/lib/syllables/overrides";
 
 type SettingsSheetProps = {
   settings: EditorSettings;
   onChange: (next: EditorSettings) => void;
+  overrides: Record<string, number>;
+  onSetOverride: (word: string, count: number) => void;
+  onClearOverride: (word: string) => void;
 };
 
 const FONT_SIZE_OPTIONS = [
@@ -50,6 +57,15 @@ const THEME_OPTIONS: { value: ThemePref; label: string }[] = [
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
 ];
+
+/** Quiet ambiguity shortcuts — not an encyclopedia. */
+const OVERRIDE_SUGGESTIONS = [
+  { word: "fire", counts: [1, 2] as const },
+  { word: "every", counts: [2, 3] as const },
+] as const;
+
+const OVERRIDE_COUNT_MIN = 1;
+const OVERRIDE_COUNT_MAX = 8;
 
 function parseCustomSyllables(raw: string): number | null {
   if (raw.trim() === "") return null;
@@ -112,7 +128,145 @@ function CustomSyllablesInput({
   );
 }
 
-export function SettingsSheet({ settings, onChange }: SettingsSheetProps) {
+function SyllableOverridesSection({
+  overrides,
+  onSetOverride,
+  onClearOverride,
+}: {
+  overrides: Record<string, number>;
+  onSetOverride: (word: string, count: number) => void;
+  onClearOverride: (word: string) => void;
+}) {
+  const [wordDraft, setWordDraft] = useState("");
+  const [countDraft, setCountDraft] = useState("2");
+
+  const entries = Object.entries(overrides).sort(([a], [b]) =>
+    a.localeCompare(b),
+  );
+
+  const addOverride = () => {
+    const key = normalizeOverrideKey(wordDraft);
+    const count = Number(countDraft);
+    if (!key || !isValidOverrideCount(count)) return;
+    const clamped = Math.min(
+      OVERRIDE_COUNT_MAX,
+      Math.max(OVERRIDE_COUNT_MIN, Math.floor(count)),
+    );
+    onSetOverride(key, clamped);
+    setWordDraft("");
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-0.5">
+        <p className="text-sm font-medium">Syllable overrides</p>
+        <p
+          id="overrides-hint"
+          className="text-muted-foreground text-xs"
+        >
+          Dictionary defaults apply. Override when a word should scan
+          differently (e.g. fire, every).
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5" aria-label="Common ambiguities">
+        {OVERRIDE_SUGGESTIONS.map((suggestion) =>
+          suggestion.counts.map((count) => (
+            <Button
+              key={`${suggestion.word}-${count}`}
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs text-muted-foreground"
+              onClick={() => onSetOverride(suggestion.word, count)}
+            >
+              {suggestion.word} → {count}
+            </Button>
+          )),
+        )}
+      </div>
+
+      {entries.length > 0 ? (
+        <ul className="flex flex-col gap-1.5" aria-label="Active overrides">
+          {entries.map(([word, count]) => (
+            <li
+              key={word}
+              className="flex items-center justify-between gap-2 text-sm"
+            >
+              <span className="font-[family-name:var(--font-ui)] tabular-nums">
+                {word}{" "}
+                <span className="text-muted-foreground">· {count}</span>
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-7 text-muted-foreground"
+                aria-label={`Clear override for ${word}`}
+                onClick={() => onClearOverride(word)}
+              >
+                <X className="size-3.5" />
+              </Button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      <div className="flex items-end gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <Label htmlFor="override-word">Word</Label>
+          <Input
+            id="override-word"
+            value={wordDraft}
+            aria-describedby="overrides-hint"
+            placeholder="fire"
+            onChange={(event) => setWordDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                addOverride();
+              }
+            }}
+          />
+        </div>
+        <div className="flex w-16 flex-col gap-1.5">
+          <Label htmlFor="override-count">Count</Label>
+          <Input
+            id="override-count"
+            type="number"
+            min={OVERRIDE_COUNT_MIN}
+            max={OVERRIDE_COUNT_MAX}
+            value={countDraft}
+            onChange={(event) => setCountDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                addOverride();
+              }
+            }}
+          />
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          className="mb-px"
+          onClick={addOverride}
+        >
+          Add
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export function SettingsSheet({
+  settings,
+  onChange,
+  overrides,
+  onSetOverride,
+  onClearOverride,
+}: SettingsSheetProps) {
   const { prefs, setTheme, setContrast } = usePrefs();
 
   const fontValue = FONT_SIZE_OPTIONS.some(
@@ -270,7 +424,30 @@ export function SettingsSheet({ settings, onChange }: SettingsSheetProps) {
             />
           </div>
 
-          {/* Phase 3: restore Meter rulers Switch and wire showRulers into the editor. */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col gap-0.5">
+              <Label htmlFor="show-rulers">Meter rulers</Label>
+              <p id="show-rulers-hint" className="text-muted-foreground text-xs">
+                Tick marks at syllable boundaries under each line
+              </p>
+            </div>
+            <Switch
+              id="show-rulers"
+              checked={settings.showRulers}
+              aria-describedby="show-rulers-hint"
+              onCheckedChange={(showRulers) =>
+                onChange({ ...settings, showRulers })
+              }
+            />
+          </div>
+
+          <Separator />
+
+          <SyllableOverridesSection
+            overrides={overrides}
+            onSetOverride={onSetOverride}
+            onClearOverride={onClearOverride}
+          />
         </div>
       </SheetContent>
     </Sheet>

@@ -271,6 +271,10 @@ html[data-contrast="more"].dark {
 
 .lyriic-count--over {
   color: var(--lyriic-over);
+  /* Non-color cue (WCAG 1.4.1) — weight + underline, not color alone. */
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
 .lyriic-count--subtle {
@@ -279,6 +283,29 @@ html[data-contrast="more"].dark {
 
 .lyriic-count__target {
   color: var(--lyriic-subtle-faint);
+}
+
+/* Meter rulers: short ticks under syllable boundaries (sibling overlay). */
+.lyriic-ruler-tick,
+.lyriic-ruler-tick--target,
+.lyriic-ruler-tick--over {
+  position: absolute;
+  width: 1px;
+  height: 0.45rem;
+  margin-left: -0.5px;
+  background: var(--lyriic-ruler);
+  opacity: 0.45;
+  pointer-events: none;
+  transform: translateY(0.1rem);
+}
+
+.lyriic-ruler-tick--target {
+  height: 0.6rem;
+  opacity: 0.75;
+}
+
+.lyriic-ruler-tick--over {
+  opacity: 0.28;
 }
 
 @layer base {

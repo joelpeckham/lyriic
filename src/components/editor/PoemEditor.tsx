@@ -47,6 +47,8 @@ export function PoemEditor({
   const viewRef = useRef<EditorView | null>(null);
   const themeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
+  /** Live CM document — counts stay in sync even when parent text is debounced. */
+  const [liveText, setLiveText] = useState(value);
   const [activeLineIndex, setActiveLineIndex] = useState(0);
   const [liveCountText, setLiveCountText] = useState("");
 
@@ -60,7 +62,7 @@ export function PoemEditor({
   );
 
   const lineCounts = useSyllableLineCounts(
-    value,
+    liveText,
     documentKey,
     overrideRevision,
     overrides,
@@ -87,7 +89,10 @@ export function PoemEditor({
       extensions: [
         themeComp.of(zenEditorTheme(settings.fontSize)),
         ...createPoemExtensions({
-          onDocChange: (text) => onChangeRef.current(text),
+          onDocChange: (text) => {
+            setLiveText(text);
+            onChangeRef.current(text);
+          },
           onActiveLineChange: setActiveLineIndex,
         }),
       ],
@@ -111,10 +116,14 @@ export function PoemEditor({
     const view = viewRef.current;
     if (!view) return;
     const current = view.state.doc.toString();
-    if (current === value) return;
+    if (current === value) {
+      setLiveText((prev) => (prev === value ? prev : value));
+      return;
+    }
     view.dispatch({
       changes: { from: 0, to: current.length, insert: value },
     });
+    setLiveText(value);
   }, [value]);
 
   // Font size → theme compartment.
@@ -134,10 +143,16 @@ export function PoemEditor({
     if (!view) return;
     setMeterOverlayData(view, {
       showCounts: settings.showCounts,
+      showRulers: settings.showRulers,
       lines: toOverlayLines(meteredLines, lineCounts.lines),
     });
     getSyllableOverlay(view)?.redraw(view);
-  }, [meteredLines, lineCounts.lines, settings.showCounts]);
+  }, [
+    meteredLines,
+    lineCounts.lines,
+    settings.showCounts,
+    settings.showRulers,
+  ]);
 
   const safeActiveLineIndex = Math.min(
     activeLineIndex,

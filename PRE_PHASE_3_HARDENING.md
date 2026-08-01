@@ -172,4 +172,6 @@ Completed via parallel Grok 4.5 worktree agents, merged on `main`:
 | B | I-02, I-04, I-05, I-10, I-12, I-14 | Done |
 | Follow-up | I-03 completeness (thread overrides; skip module memo when overrides passed) | Done |
 
-Still open for later waves: I-07, I-11, I-13, I-15, I-16, I-19–I-22, I-24–I-34 (see lists above).
+Phase 3 closed: I-01 (rulers), I-07 (override UI), I-11 (skip stale redraw on docChanged + liveText), I-13 (over non-color cue), I-15 (`countLine` tests), I-16 (SettingsSheet smoke), I-28 (boundaries docs).
+
+Still open for later waves: I-19–I-22, I-24–I-27, I-29–I-34 (see lists above).
