@@ -38,9 +38,6 @@ importers:
       react-dom:
         specifier: ^19.2.8
         version: 19.2.8(react@19.2.8)
-      shadcn:
-        specifier: ^4.16.1
-        version: 4.16.1(typescript@6.0.3)
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -93,6 +90,9 @@ importers:
       oxlint:
         specifier: ^1.75.0
         version: 1.76.0
+      shadcn:
+        specifier: ^4.16.1
+        version: 4.16.1(typescript@6.0.3)
       typescript:
         specifier: ~6.0.2
         version: 6.0.3
