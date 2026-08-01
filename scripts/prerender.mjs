@@ -2,8 +2,8 @@
  * Prerender content routes into dist/ after vite build.
  * Skips "/" so the SEO shell in index.html is preserved.
  */
-import { spawn } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { execSync, spawn } from "node:child_process";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
@@ -58,7 +58,18 @@ function routeToFile(route) {
   return join(dist, trimmed, "index.html");
 }
 
+function ensureChromium() {
+  const executable = chromium.executablePath();
+  if (existsSync(executable)) return;
+  console.log("Playwright Chromium missing; installing…");
+  execSync("pnpm exec playwright install chromium", {
+    cwd: root,
+    stdio: "inherit",
+  });
+}
+
 async function main() {
+  ensureChromium();
   const preview = startPreview();
   let browser;
   try {

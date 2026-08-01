@@ -27,7 +27,7 @@ pnpm preview
 pnpm lint
 ```
 
-`pnpm build` regenerates SEO/agent files (`llms.txt`, markdown mirrors, sitemap), builds the app, then prerenders `/faq`, `/privacy`, and `/tools/*` (requires Playwright Chromium: `pnpm exec playwright install chromium`).
+`pnpm build` regenerates SEO/agent files (`llms.txt`, markdown mirrors, sitemap), builds the app, then prerenders `/faq`, `/privacy`, and `/tools/*`. Prerender installs Playwright Chromium automatically when missing.
 
 Rebuild pronunciation packs (shared lexicon + perfect/end rhyme indexes). Downloads Misaki and WikiPron into `scripts/sources/` when missing; requires `pip install wordfreq`:
 
