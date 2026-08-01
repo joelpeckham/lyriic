@@ -63,7 +63,7 @@ export function EndRhymesSwitch({
               type="button"
               className={cn(
                 "inline-flex shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none",
-                "hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/60",
+                "hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/80",
                 compact ? "size-5" : "size-6",
               )}
               aria-label="About end rhymes"

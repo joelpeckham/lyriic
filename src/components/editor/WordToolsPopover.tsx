@@ -709,7 +709,7 @@ export function WordToolsPopover({
                     </Button>
                   ) : null}
                 </div>
-                <p className="text-muted-foreground text-[0.65rem] leading-snug">
+                <p className="text-muted-foreground text-xs leading-snug">
                   Tap a syllable to move primary stress
                 </p>
                 <div
@@ -815,7 +815,7 @@ export function WordToolsPopover({
                       aria-label={label}
                       className={[
                         "flex w-full items-baseline justify-between gap-2 rounded-md px-1.5 py-1 text-left text-sm",
-                        "outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+                        "outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
                         selected ? "bg-muted" : "hover:bg-muted/70",
                         candidate.keepsMeter ? "font-medium" : "font-normal",
                       ].join(" ")}

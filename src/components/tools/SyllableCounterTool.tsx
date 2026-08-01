@@ -224,10 +224,8 @@ function SyllableLineRow({
                   <span
                     key={`${word.word}-${wordIndex}`}
                     className={cn(
-                      "inline-flex items-baseline gap-1",
-                      word.source === "heuristic"
-                        ? "text-[var(--lyriic-over)]"
-                        : "text-muted-foreground",
+                      "inline-flex items-baseline gap-1 text-muted-foreground",
+                      word.source === "heuristic" && "italic",
                     )}
                     title={
                       word.source === "heuristic"

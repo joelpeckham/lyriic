@@ -4,7 +4,7 @@ Paste a stanza or type line by line. See totals and per-word beats from the same
 
 Each line shows a syllable total, with a per-word breakdown so you can spot where a beat runs short or long. Try the haiku, iambic, or lyric samples to get a feel for the readout.
 
-Counts prefer the primary pronunciation from a fused US dictionary (Misaki, CMUdict, WikiPron). Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in a warmer tint).
+Counts prefer the primary pronunciation from a fused US dictionary (Misaki, CMUdict, WikiPron). Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in italics).
 
 For live counts beside the cursor, meter rulers, and per-draft overrides, open the full editor — nothing leaves your device.
 

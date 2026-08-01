@@ -29,7 +29,7 @@ export function AppHeader({
         to="/"
         className={cn(
           brandClass,
-          "transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/80 focus-visible:outline-none",
+          "transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/80 focus-visible:outline-none",
         )}
       >
         lyriic

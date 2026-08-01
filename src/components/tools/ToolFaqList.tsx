@@ -27,7 +27,7 @@ export function ToolFaqList({ faqs, path }: ToolFaqListProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <h2 className="mt-12 font-[family-name:var(--font-ui)] text-lg font-medium text-foreground">
+      <h2 className="mt-12 font-[family-name:var(--font-brand)] text-lg tracking-tight text-foreground">
         Common questions
       </h2>
       <dl className="mt-6 space-y-6 font-[family-name:var(--font-ui)]">

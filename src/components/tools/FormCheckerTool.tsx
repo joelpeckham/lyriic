@@ -122,7 +122,7 @@ function StressTicks({
           <span
             key={index}
             className={cn(
-              "inline-block text-[0.65rem] leading-none transition-colors duration-200",
+              "inline-block text-xs leading-none transition-colors duration-200",
               mismatch
                 ? "text-[var(--lyriic-over)]"
                 : beat === 1
@@ -152,7 +152,7 @@ function MeterStatus({
     <div className="text-center">
       <p
         className={cn(
-          "font-[family-name:var(--font-brand)] text-3xl tracking-[0.18em] tabular-nums transition-colors duration-300 sm:text-4xl",
+          "font-[family-name:var(--font-brand)] text-3xl tracking-tight tabular-nums transition-colors duration-200 sm:text-4xl",
           allOk ? "text-foreground" : "text-muted-foreground",
         )}
         aria-hidden="true"
@@ -169,7 +169,7 @@ function MeterStatus({
       <p
         aria-live="polite"
         className={cn(
-          "mt-2 font-[family-name:var(--font-ui)] text-sm transition-colors duration-300",
+          "mt-2 font-[family-name:var(--font-ui)] text-sm transition-colors duration-200",
           allOk ? "text-foreground" : "text-muted-foreground",
         )}
       >
@@ -283,10 +283,9 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
 
       <div
         className={cn(
-          "mt-8 rounded-xl px-4 py-6 transition-[background-color,box-shadow] duration-300 sm:px-7 sm:py-8",
+          "mt-8 rounded-xl border border-border/70 px-4 py-6 transition-colors duration-200 sm:px-7 sm:py-8",
           "bg-[color-mix(in_oklch,var(--lyriic-wash-b),transparent_35%)]",
-          allOk &&
-            "shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--lyriic-match),transparent_72%)]",
+          allOk && "border-[var(--lyriic-match)]/40",
         )}
       >
         <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -324,7 +323,7 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
                     >
                       {result.empty ? "—" : result.count}
                     </span>
-                    <span className="mt-1 text-[0.65rem] tracking-wide text-muted-foreground uppercase">
+                    <span className="mt-1 text-xs tracking-wide text-muted-foreground uppercase">
                       /{result.target}
                     </span>
                   </div>

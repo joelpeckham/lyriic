@@ -112,7 +112,7 @@ export function FormToolPage({ page, children }: FormToolPageProps) {
                   ) : null}
                 </p>
                 {poem.excerpt ? (
-                  <p className="mt-1 whitespace-pre-line italic">
+                  <p className="mt-1 whitespace-pre-line font-[family-name:var(--font-editor)] text-base leading-[1.7] italic">
                     {poem.excerpt}
                   </p>
                 ) : null}

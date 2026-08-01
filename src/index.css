@@ -360,10 +360,12 @@ html[data-contrast="more"].dark {
 
   body {
     @apply m-0 min-h-full bg-background text-foreground;
-    background-image:
-      radial-gradient(ellipse 90% 60% at 15% 10%, var(--lyriic-wash-a), transparent 55%),
-      radial-gradient(ellipse 70% 50% at 90% 80%, var(--lyriic-wash-b), transparent 50%),
-      linear-gradient(165deg, var(--lyriic-wash-c), var(--background) 45%, var(--lyriic-wash-a));
+    background-image: linear-gradient(
+      165deg,
+      var(--lyriic-wash-c),
+      var(--background) 45%,
+      var(--lyriic-wash-a)
+    );
     background-attachment: fixed;
   }
 

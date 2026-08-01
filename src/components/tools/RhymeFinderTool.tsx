@@ -170,9 +170,10 @@ export function RhymeFinderTool() {
                 onClick={() => setQuery(word)}
                 className={cn(
                   "font-[family-name:var(--font-editor)] text-foreground/80 underline-offset-4",
-                  "outline-none transition-colors hover:text-foreground hover:underline",
-                  "focus-visible:underline focus-visible:text-foreground",
-                  active && "text-foreground underline",
+                  "outline-none transition-colors hover:text-foreground hover:underline hover:decoration-[var(--lyriic-ruler)]",
+                  "focus-visible:underline focus-visible:text-foreground focus-visible:decoration-[var(--lyriic-ruler)]",
+                  active &&
+                    "text-foreground underline decoration-[var(--lyriic-ruler)]",
                 )}
                 aria-pressed={active}
               >
@@ -196,8 +197,8 @@ export function RhymeFinderTool() {
 
         {status === "empty-query" ? (
           <p className="text-sm text-muted-foreground">
-            Type a word—or pick one above—and we’ll gather rhymes from the
-            on-device dictionary.
+            Type a word—or pick one above—and rhymes load from the on-device
+            dictionary.
           </p>
         ) : null}
 
@@ -242,7 +243,7 @@ export function RhymeFinderTool() {
       </div>
 
       <ToolEditorPitch
-        title="Don’t leave your line"
+        title="Rhymes beside the draft"
         body="In the lyriic editor, hover or tap a word for rhymes sorted by syllable count—right beside your draft, with meter-aware highlighting when a ruler is on."
         cta={tool.cta}
       />

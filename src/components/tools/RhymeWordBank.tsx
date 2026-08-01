@@ -78,7 +78,7 @@ export function RhymeWordBank({
                       "rounded-md px-2 py-1 text-left font-[family-name:var(--font-editor)] text-[0.95rem] leading-snug text-foreground sm:text-base",
                       "transition-colors outline-none",
                       "hover:bg-[var(--lyriic-selection)] hover:text-[var(--lyriic-ink)]",
-                      "focus-visible:ring-2 focus-visible:ring-ring/70",
+                      "focus-visible:ring-3 focus-visible:ring-ring/80",
                       isCopied &&
                         "bg-[var(--lyriic-selection)] text-[var(--lyriic-ink)]",
                     )}

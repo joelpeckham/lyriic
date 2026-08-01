@@ -9,7 +9,7 @@ type AppFooterProps = {
 };
 
 const linkClass =
-  "underline-offset-2 transition-colors hover:text-foreground hover:underline focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-ring/80 focus-visible:outline-none";
+  "underline-offset-2 transition-colors hover:text-foreground hover:underline focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/80 focus-visible:outline-none";
 
 export function AppFooter({
   variant = "flow",

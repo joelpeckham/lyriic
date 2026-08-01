@@ -25,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -252,7 +253,7 @@ function MeterPicker({
       >
         {filtered.map((group) => (
           <div key={group.group} className="flex flex-col gap-1">
-            <p className="px-1 text-[0.7rem] font-medium tracking-wide text-muted-foreground uppercase">
+            <p className="px-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
               {group.label}
             </p>
             {group.entries.map((entry) => {
@@ -322,11 +323,14 @@ export function SettingsSheet({
       <SheetContent side="right" className="gap-0 overflow-hidden">
         <SheetHeader className="shrink-0">
           <SheetTitle>Settings</SheetTitle>
+          <SheetDescription>Preferences stay on this device.</SheetDescription>
         </SheetHeader>
 
         <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pb-6">
           <div className="flex flex-col gap-4">
-            <p className="text-sm font-medium">Appearance</p>
+            <p className="text-xs tracking-wide text-muted-foreground uppercase">
+              Appearance
+            </p>
 
             <div className="flex flex-col gap-2">
               <Label id="theme-label">Theme</Label>

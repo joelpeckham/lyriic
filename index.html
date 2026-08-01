@@ -72,18 +72,19 @@
       }
     </script>
     <style>
-      /* Match app background so the SEO shell does not flash a white page.
-         Unlayered so it wins over Tailwind @layer utilities. Drive dark via
-         html.dark (theme-boot / prefs) — not only prefers-color-scheme, or
-         Settings → Dark leaves a light html/body paint. */
+      /* Match stone-50 paper so the SEO shell does not flash white.
+         Use background-color (not the background shorthand) so src/index.css
+         can still layer the paper wash + grain once it loads. Unlayered so
+         the flash wins over Tailwind @layer utilities. Drive dark via
+         html.dark (theme-boot / prefs) — not only prefers-color-scheme. */
       html,
       body {
         margin: 0;
-        background: #f7f3eb;
+        background-color: #fafaf9;
       }
       html.dark,
       html.dark body {
-        background: #1a1814;
+        background-color: oklch(0.216 0.006 56);
       }
       html.js #root .seo-shell {
         display: none;
@@ -94,23 +95,23 @@
         margin: 0 auto;
         padding: 2.5rem 1rem;
         font-family: Georgia, "Times New Roman", serif;
-        color: #2a2620;
+        color: oklch(0.268 0.007 34);
         line-height: 1.55;
       }
       #root .seo-shell a {
         color: inherit;
       }
       html.dark #root .seo-shell {
-        color: #ebe6dc;
+        color: oklch(0.985 0.001 106);
       }
       /* No-JS: theme-boot never runs, so fall back to OS preference. */
       @media (prefers-color-scheme: dark) {
         html:not(.js),
         html:not(.js) body {
-          background: #1a1814;
+          background-color: oklch(0.216 0.006 56);
         }
         html:not(.js) #root .seo-shell {
-          color: #ebe6dc;
+          color: oklch(0.985 0.001 106);
         }
       }
     </style>
