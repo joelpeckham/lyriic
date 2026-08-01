@@ -1,13 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BookA, Hash, Music2, RotateCcw } from "lucide-react";
 
+import { WordAnchor } from "@/components/editor/WordAnchor";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Popover,
-  PopoverAnchor,
   PopoverContent,
   PopoverDescription,
   PopoverHeader,
@@ -79,7 +79,6 @@ export function WordToolbarPopover({
   const hasOverride = Boolean(key && overrides[key] !== undefined);
   /** Dictionary / heuristic baseline — ignores project overrides. */
   const baseline = target ? countWord(target.word, {}) : null;
-  const effective = target ? countWord(target.word, overrides) : null;
   const suggestion = target ? suggestionFor(target.word) : null;
 
   const displayCount = hasOverride
@@ -108,25 +107,14 @@ export function WordToolbarPopover({
     setCountDraft(String(displayCount));
   }, [displayCount, targetIdentity]);
 
-  function commitCount(raw: string): void {
+  function applyCount(raw: string | number): void {
     if (!target || !key || !baseline) return;
-    const parsed = Number(raw);
+    const parsed = typeof raw === "number" ? raw : Number(raw);
     if (!Number.isFinite(parsed) || !isValidOverrideCount(parsed)) {
       setCountDraft(String(displayCount));
       return;
     }
     const next = clampOverrideCount(parsed);
-    setCountDraft(String(next));
-    if (next === baseline.count) {
-      if (hasOverride) onClearOverride(key);
-      return;
-    }
-    onSetOverride(key, next);
-  }
-
-  function setCount(count: number): void {
-    if (!target || !key || !baseline) return;
-    const next = clampOverrideCount(count);
     setCountDraft(String(next));
     if (next === baseline.count) {
       if (hasOverride) onClearOverride(key);
@@ -142,20 +130,7 @@ export function WordToolbarPopover({
         if (!next) onClose();
       }}
     >
-      {target ? (
-        <PopoverAnchor asChild>
-          <span
-            aria-hidden
-            className="pointer-events-none fixed z-40"
-            style={{
-              left: target.anchor.left,
-              top: target.anchor.top,
-              width: Math.max(1, target.anchor.right - target.anchor.left),
-              height: Math.max(1, target.anchor.bottom - target.anchor.top),
-            }}
-          />
-        </PopoverAnchor>
-      ) : null}
+      {target ? <WordAnchor anchor={target.anchor} /> : null}
       <PopoverContent
         align="center"
         side="bottom"
@@ -218,7 +193,7 @@ export function WordToolbarPopover({
           </ButtonGroup>
         ) : null}
 
-        {view === "syllables" && target && baseline && effective ? (
+        {view === "syllables" && target && baseline ? (
           <>
             <PopoverHeader className="gap-0.5 px-0.5">
               <PopoverTitle className="text-xs font-medium tracking-wide text-muted-foreground">
@@ -247,11 +222,11 @@ export function WordToolbarPopover({
                 aria-label={`Syllable count for ${target.raw}`}
                 className="h-8 w-16 tabular-nums"
                 onChange={(event) => setCountDraft(event.target.value)}
-                onBlur={() => commitCount(countDraft)}
+                onBlur={() => applyCount(countDraft)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
                     event.preventDefault();
-                    commitCount(countDraft);
+                    applyCount(countDraft);
                   }
                 }}
               />
@@ -278,7 +253,7 @@ export function WordToolbarPopover({
                     variant="ghost"
                     size="xs"
                     aria-label={`${suggestion.word} → ${count}`}
-                    onClick={() => setCount(count)}
+                    onClick={() => applyCount(count)}
                   >
                     {suggestion.word} → {count}
                   </Button>
