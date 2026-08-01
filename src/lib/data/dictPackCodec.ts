@@ -5,17 +5,31 @@
 
 export const DICT_PACK_VERSION = 1;
 
+/** Stress pack uses a dedicated version (u32 patterns; v1 was u16). */
+export const STRESS_PACK_VERSION = 2;
+
 export const DICT_MAGIC = {
   lexicon: "LYXL",
+  stress: "LYXS",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
   thesaurus: "LYXT",
 } as const;
 
+/** Max syllables encodable in a packed u32 (2 bits each). */
+export const STRESS_PACK_MAX_SYLLABLES = 16;
+
+export type StressCode = 0 | 1 | 2;
+
 export type Lexicon = {
   words: string[];
   wordToId: Map<string, number>;
   syllables: Uint8Array;
+};
+
+/** Packed per-word stress patterns aligned with lexicon word ids. */
+export type StressPack = {
+  packed: Uint32Array;
 };
 
 export type RhymeModeData = {
@@ -121,6 +135,59 @@ export function decodeLexicon(buf: Uint8Array): Lexicon {
     wordToId.set(words[i]!, i);
   }
   return { words, wordToId, syllables: new Uint8Array(syllables) };
+}
+
+/** Pack stress codes into a u32 (2 bits per syllable, low → high index). */
+export function packStressPattern(pattern: readonly StressCode[]): number {
+  if (pattern.length > STRESS_PACK_MAX_SYLLABLES) {
+    throw new Error(
+      `stress pattern exceeds max syllables (${STRESS_PACK_MAX_SYLLABLES}): ${pattern.length}`,
+    );
+  }
+  let packed = 0;
+  for (let i = 0; i < pattern.length; i++) {
+    const code = pattern[i]! & 3;
+    packed |= (code === 3 ? 0 : code) << (i * 2);
+  }
+  return packed >>> 0;
+}
+
+/** Unpack a u32 stress pattern for `syllableCount` syllables. */
+export function unpackStressPattern(
+  packed: number,
+  syllableCount: number,
+): StressCode[] {
+  const n = Math.min(
+    Math.max(0, syllableCount | 0),
+    STRESS_PACK_MAX_SYLLABLES,
+  );
+  const out = new Array<StressCode>(n);
+  for (let i = 0; i < n; i++) {
+    const code = (packed >>> (i * 2)) & 3;
+    out[i] = (code === 3 ? 0 : code) as StressCode;
+  }
+  return out;
+}
+
+export function decodeStress(buf: Uint8Array): StressPack {
+  const magic = readMagic(buf);
+  if (magic !== DICT_MAGIC.stress) {
+    throw new Error(`bad stress magic: ${magic}`);
+  }
+  if (buf[4] !== STRESS_PACK_VERSION) {
+    throw new Error(`unsupported stress version: ${buf[4]}`);
+  }
+  const count = readU32LE(buf, 5);
+  const need = 9 + count * 4;
+  if (buf.length < need) {
+    throw new Error("stress pack truncated");
+  }
+  const packed = new Uint32Array(count);
+  for (let i = 0; i < count; i++) {
+    const o = 9 + i * 4;
+    packed[i] = readU32LE(buf, o);
+  }
+  return { packed };
 }
 
 export function decodeRhymePack(
@@ -244,12 +311,14 @@ export function buildThesaurusByHead(
 
 export type DictPackKind =
   | "lexicon"
+  | "stress"
   | "rhyme-perfect"
   | "rhyme-end"
   | "thesaurus";
 
 export type DecodedPack =
   | { kind: "lexicon"; data: Lexicon }
+  | { kind: "stress"; data: StressPack }
   | { kind: "rhyme-perfect"; data: RhymeModeData }
   | { kind: "rhyme-end"; data: RhymeModeData }
   | { kind: "thesaurus"; data: ThesaurusPack };
@@ -258,6 +327,8 @@ export function decodePack(kind: DictPackKind, buf: Uint8Array): DecodedPack {
   switch (kind) {
     case "lexicon":
       return { kind, data: decodeLexicon(buf) };
+    case "stress":
+      return { kind, data: decodeStress(buf) };
     case "rhyme-perfect":
       return { kind, data: decodeRhymePack(buf, "perfect") };
     case "rhyme-end":

@@ -9,6 +9,8 @@ import {
 } from "@/components/editor/WordToolsPopover";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { usePrefs } from "@/hooks/usePrefs";
+import { useStressRevision } from "@/hooks/useStressRevision";
+import { loadStress } from "@/lib/data/stress";
 import {
   createPoemExtensions,
   externalValueSync,
@@ -30,6 +32,7 @@ import {
   buildMeteredLines,
   formatMeterLabel,
   getMeterPreset,
+  isStressAwareMeter,
   type MeteredLine,
 } from "@/lib/meters";
 import type { EditorSettings } from "@/lib/settings";
@@ -42,6 +45,9 @@ type PoemEditorProps = {
   overrides: Record<string, number>;
   onSetOverride: (word: string, count: number) => void;
   onClearOverride: (word: string) => void;
+  stressOverrides: Record<string, number>;
+  onSetStressOverride: (word: string, primaryIndex: number) => void;
+  onClearStressOverride: (word: string) => void;
   /** Stable document identity (e.g. project id) for full remount. */
   documentKey: string;
 };
@@ -71,6 +77,9 @@ export function PoemEditor({
   overrides,
   onSetOverride,
   onClearOverride,
+  stressOverrides,
+  onSetStressOverride,
+  onClearStressOverride,
   documentKey,
 }: PoemEditorProps) {
   const { prefs } = usePrefs();
@@ -110,7 +119,20 @@ export function PoemEditor({
     () => overridesKey(overrides),
     [overrides],
   );
+  const stressOverrideRevision = useMemo(
+    () => overridesKey(stressOverrides),
+    [stressOverrides],
+  );
   const dictRevision = useDictRevision();
+  const stressPackRevision = useStressRevision();
+
+  const needsStress =
+    settings.showStress || isStressAwareMeter(settings.meter);
+
+  useEffect(() => {
+    if (!needsStress) return;
+    void loadStress().catch(() => {});
+  }, [needsStress]);
 
   const lineCounts = useSyllableLineCounts(
     liveText,
@@ -120,14 +142,30 @@ export function PoemEditor({
     dictRevision,
   );
 
-  const pattern = useMemo((): readonly number[] => {
-    if (settings.meter === "custom") return [settings.customSyllables];
-    return getMeterPreset(settings.meter).pattern;
-  }, [settings.meter, settings.customSyllables]);
+  const meterOptions = useMemo(() => {
+    const preset = getMeterPreset(settings.meter);
+    const pattern =
+      settings.meter === "custom"
+        ? [settings.customSyllables]
+        : preset.pattern;
+    return {
+      pattern,
+      stressPatterns: preset.stressPatterns,
+      stressOverrides,
+      syllableOverrides: overrides,
+    };
+  }, [
+    settings.meter,
+    settings.customSyllables,
+    stressOverrides,
+    overrides,
+  ]);
+
+  const stressRevision = `${stressOverrideRevision}|${stressPackRevision}|${dictRevision}`;
 
   const meteredLines = useMemo(
-    () => buildMeteredLines(lineCounts.counts, pattern),
-    [lineCounts.counts, pattern],
+    () => buildMeteredLines(lineCounts.counts, meterOptions, stressRevision),
+    [lineCounts.counts, meterOptions, stressRevision],
   );
   useLayoutEffect(() => {
     meteredLinesRef.current = meteredLines;
@@ -209,6 +247,7 @@ export function PoemEditor({
     setMeterOverlayData(view, {
       showCounts: settings.showCounts,
       showRulers: settings.showRulers,
+      showStress: settings.showStress,
       lines: meteredLines,
       textLines: lineCounts.lines,
     });
@@ -218,6 +257,7 @@ export function PoemEditor({
     lineCounts.lines,
     settings.showCounts,
     settings.showRulers,
+    settings.showStress,
   ]);
 
   const safeActiveLineIndex = Math.min(
@@ -299,11 +339,15 @@ export function PoemEditor({
         }}
         onSetOverride={onSetOverride}
         onClearOverride={onClearOverride}
+        onSetStressOverride={onSetStressOverride}
+        onClearStressOverride={onClearStressOverride}
         meteredLine={
           wordTarget ? meteredLines[wordTarget.lineIndex] : undefined
         }
         overrides={overrides}
         overrideRevision={overrideRevision}
+        stressOverrides={stressOverrides}
+        stressOverrideRevision={stressOverrideRevision}
       />
     </div>
   );

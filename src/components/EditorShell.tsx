@@ -90,6 +90,8 @@ export function EditorShell() {
     setSettings,
     setOverride,
     clearOverride,
+    setStressOverride,
+    clearStressOverride,
     switchProject,
     createProject,
     renameProject,
@@ -168,6 +170,9 @@ export function EditorShell() {
             overrides={active.overrides}
             onSetOverride={setOverride}
             onClearOverride={clearOverride}
+            stressOverrides={active.stressOverrides}
+            onSetStressOverride={setStressOverride}
+            onClearStressOverride={clearStressOverride}
             documentKey={active.id}
           />
         </EditorErrorBoundary>

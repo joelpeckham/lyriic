@@ -12,6 +12,7 @@ import {
   Settings,
   Sun,
   Type,
+  Waves,
   type LucideIcon,
 } from "lucide-react";
 
@@ -412,6 +413,17 @@ export function SettingsSheet({
             }
           />
 
+          <SettingsToggle
+            id="show-stress"
+            label="Stress marks"
+            hint="Dots under stressed syllables in each word"
+            icon={Waves}
+            checked={settings.showStress}
+            onCheckedChange={(showStress) =>
+              onChange({ ...settings, showStress })
+            }
+          />
+
           <Separator />
 
           <div className="flex flex-col gap-3">
@@ -423,7 +435,8 @@ export function SettingsSheet({
               <p className="text-sm font-medium">Word tools</p>
             </div>
             <p className="text-sm text-muted-foreground">
-              Hover or tap a word for synonyms, rhymes, and syllable overrides.
+              Hover or tap a word for synonyms, rhymes, and syllable or stress
+              overrides.
             </p>
           </div>
 

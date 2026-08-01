@@ -25,12 +25,14 @@ import {
   PopoverTitle,
 } from "@/components/ui/popover";
 import { getLexicon } from "@/lib/data/lexicon";
+import { loadStress } from "@/lib/data/stress";
 import type {
   WordLookupMode,
   WordTarget,
 } from "@/lib/editor/wordInteraction";
 import type { MeteredLine } from "@/lib/meters/types";
 import { loadRhymeQuery, queryRhymeIds } from "@/lib/rhyme";
+import { primaryStressIndex, resolveWordStress } from "@/lib/stress";
 import { countWord } from "@/lib/syllables/countWord";
 import {
   isValidOverrideCount,
@@ -52,6 +54,7 @@ import {
   setCachedRanked,
   type RankedCandidate,
 } from "@/lib/wordLookup";
+import { cn } from "@/lib/utils";
 
 export type WordToolsTarget = WordTarget & {
   /** When set, show thesaurus/rhyme instead of actions/syllables. */
@@ -72,9 +75,13 @@ type WordToolsPopoverProps = {
   onRestoreFocus: () => void;
   onSetOverride: (word: string, count: number) => void;
   onClearOverride: (word: string) => void;
+  onSetStressOverride: (word: string, primaryIndex: number) => void;
+  onClearStressOverride: (word: string) => void;
   meteredLine: MeteredLine | undefined;
   overrides: Record<string, number>;
   overrideRevision: string;
+  stressOverrides: Record<string, number>;
+  stressOverrideRevision: string;
 };
 
 const OVERRIDE_COUNT_MIN = 1;
@@ -126,18 +133,23 @@ export function WordToolsPopover({
   onRestoreFocus,
   onSetOverride,
   onClearOverride,
+  onSetStressOverride,
+  onClearStressOverride,
   meteredLine,
   overrides,
   overrideRevision,
+  stressOverrides,
+  stressOverrideRevision,
 }: WordToolsPopoverProps) {
   const listId = useId();
   const listRef = useRef<HTMLDivElement>(null);
   const open = target !== null;
   const display = useClosingRetention(target);
-  const retainedMetered = useClosingRetention(
-    target ? { meteredLine } : null,
-  );
-  const displayMetered = retainedMetered?.meteredLine;
+  // Pass the line ref directly — wrapping in a new `{ meteredLine }` each
+  // render makes useClosingRetention setState forever (Object.is fails).
+  const displayMetered =
+    useClosingRetention(target !== null ? (meteredLine ?? null) : null) ??
+    undefined;
 
   const targetIdentity = display
     ? `${display.from}:${display.to}:${display.word}`
@@ -146,16 +158,20 @@ export function WordToolsPopover({
     ? `${display.mode}:${targetIdentity}`
     : "";
 
-  const defaultPanel: Panel = display?.mode ?? "actions";
-  const [panel, setPanel] = useKeyedState<Panel>(
-    targetIdentity,
-    defaultPanel,
-  );
+  // Fresh open returns to the tool picker (before paint). Leave panel alone on
+  // close so the exit animation can still show syllables.
+  const [panel, setPanel] = useState<Panel>("actions");
+  useLayoutEffect(() => {
+    if (open) setPanel("actions");
+  }, [open]);
   // Lookup mode from PoemEditor wins over local actions/syllables.
   const view: Panel = display?.mode ?? panel;
 
   const key = display ? normalizeOverrideKey(display.word) : "";
   const hasOverride = Boolean(key && overrides[key] !== undefined);
+  const hasStressOverride = Boolean(
+    key && stressOverrides[key] !== undefined,
+  );
   const baseline = display ? countWord(display.word, {}) : null;
   const suggestion = display ? suggestionFor(display.word) : null;
   const displayCount = hasOverride
@@ -165,6 +181,15 @@ export function WordToolsPopover({
     targetIdentity,
     String(displayCount),
   );
+
+  const stressResolved = display
+    ? resolveWordStress(display.word, stressOverrides, overrides)
+    : null;
+  const selectedPrimaryIndex =
+    stressResolved != null
+      ? (primaryStressIndex(stressResolved.pattern) ?? 0)
+      : 0;
+  const stressSyllableCount = stressResolved?.pattern.length ?? displayCount;
 
   const [includeEndRhymes, setIncludeEndRhymes] = useKeyedState(
     lookupIdentity,
@@ -227,6 +252,29 @@ export function WordToolsPopover({
     onStickyChangeRef.current(sticky);
     return () => onStickyChangeRef.current(false);
   }, [sticky]);
+
+  useEffect(() => {
+    if (!open || view !== "syllables") return;
+    void loadStress().catch(() => {});
+  }, [open, view]);
+
+  // Drop out-of-range stress overrides when syllable count shrinks.
+  useEffect(() => {
+    if (!open || view !== "syllables" || !key || !hasStressOverride) return;
+    const idx = stressOverrides[key];
+    if (typeof idx === "number" && idx >= displayCount) {
+      onClearStressOverride(key);
+    }
+  }, [
+    open,
+    view,
+    key,
+    hasStressOverride,
+    stressOverrides,
+    displayCount,
+    onClearStressOverride,
+    stressOverrideRevision,
+  ]);
 
   useEffect(() => {
     if (
@@ -312,11 +360,33 @@ export function WordToolsPopover({
     }
     const next = clampOverrideCount(parsed);
     setCountDraft(String(next));
+    if (hasStressOverride && stressOverrides[key]! >= next) {
+      onClearStressOverride(key);
+    }
     if (next === baseline.count) {
       if (hasOverride) onClearOverride(key);
       return;
     }
     onSetOverride(key, next);
+  }
+
+  function applyStress(index: number): void {
+    if (!open || !display || !key || stressSyllableCount < 1) return;
+    const next = Math.min(
+      Math.max(0, Math.floor(index)),
+      stressSyllableCount - 1,
+    );
+    const dictPrimary = resolveWordStress(display.word, {}, overrides);
+    const dictIndex = primaryStressIndex(dictPrimary.pattern);
+    if (
+      dictIndex !== null &&
+      next === dictIndex &&
+      dictPrimary.source !== "override"
+    ) {
+      if (hasStressOverride) onClearStressOverride(key);
+      return;
+    }
+    onSetStressOverride(key, next);
   }
 
   function applyCandidate(candidate: RankedCandidate): void {
@@ -390,7 +460,9 @@ export function WordToolsPopover({
   const contentClass =
     view === "actions"
       ? "w-auto gap-0 border-0 bg-transparent p-0 shadow-none ring-0"
-      : "w-56 gap-1.5 p-1.5";
+      : view === "syllables"
+        ? "w-60 gap-1.5 p-1.5"
+        : "w-56 gap-1.5 p-1.5";
 
   return (
     <Popover
@@ -432,7 +504,7 @@ export function WordToolsPopover({
         {view === "actions" && display ? (
           <ButtonGroup
             aria-label={`Word actions for ${display.raw}`}
-            className="[&_[data-slot=button]]:bg-popover [&_[data-slot=button]]:hover:bg-muted dark:[&_[data-slot=button]]:bg-popover dark:[&_[data-slot=button]]:hover:bg-muted"
+            className="[&_[data-slot=button]]:bg-popover [&_[data-slot=button]]:hover:bg-muted dark:[&_[data-slot=button]]:border-[color-mix(in_oklch,var(--popover-foreground)_25%,var(--popover))] dark:[&_[data-slot=button]]:bg-popover dark:[&_[data-slot=button]]:hover:bg-muted"
           >
             <ButtonGroup>
               <Button
@@ -510,8 +582,17 @@ export function WordToolsPopover({
                   type="button"
                   variant="ghost"
                   size="xs"
-                  aria-label={`Clear override for ${key}`}
-                  onClick={() => onClearOverride(key)}
+                  aria-label={`Clear syllable override for ${key}`}
+                  onClick={() => {
+                    onClearOverride(key);
+                    if (
+                      hasStressOverride &&
+                      baseline &&
+                      stressOverrides[key]! >= baseline.count
+                    ) {
+                      onClearStressOverride(key);
+                    }
+                  }}
                 >
                   <RotateCcw data-icon="inline-start" />
                   Reset
@@ -533,6 +614,59 @@ export function WordToolsPopover({
                     {suggestion.word} → {count}
                   </Button>
                 ))}
+              </div>
+            ) : null}
+
+            {stressSyllableCount > 0 ? (
+              <div className="flex flex-col gap-1.5 px-0.5 pt-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide">
+                    Stress
+                  </p>
+                  {hasStressOverride ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="xs"
+                      aria-label={`Clear stress override for ${key}`}
+                      onClick={() => onClearStressOverride(key)}
+                    >
+                      <RotateCcw data-icon="inline-start" />
+                      Reset
+                    </Button>
+                  ) : null}
+                </div>
+                <p className="text-muted-foreground text-[0.65rem] leading-snug">
+                  Tap a syllable to move primary stress
+                </p>
+                <div
+                  role="radiogroup"
+                  aria-label={`Primary stress for ${display.raw}`}
+                  className="flex flex-wrap gap-1"
+                >
+                  {Array.from({ length: stressSyllableCount }, (_, index) => {
+                    const selected = index === selectedPrimaryIndex;
+                    return (
+                      <Button
+                        key={index}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        variant={selected ? "secondary" : "ghost"}
+                        size="xs"
+                        className={cn(
+                          "min-w-7 tabular-nums",
+                          selected && "font-semibold",
+                        )}
+                        aria-label={`Syllable ${index + 1}${selected ? ", stressed" : ""}`}
+                        onClick={() => applyStress(index)}
+                      >
+                        {selected ? "ˈ" : "˘"}
+                        {index + 1}
+                      </Button>
+                    );
+                  })}
+                </div>
               </div>
             ) : null}
           </>

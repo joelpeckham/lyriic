@@ -44,6 +44,37 @@ export function mapSyllableToOffset(
   return null;
 }
 
+/**
+ * Midpoint of a 1-based syllable’s char span (for stress marks).
+ * Uses the same linear interpolation as boundary ticks.
+ */
+export function mapSyllableMidpointToOffset(
+  tokens: readonly SyllableOffsetToken[],
+  syllable: number,
+): number | null {
+  if (!Number.isFinite(syllable) || syllable < 1) return null;
+
+  for (const token of tokens) {
+    if (token.syllables <= 0) continue;
+    if (syllable <= token.syllableStart || syllable > token.syllableEnd) {
+      continue;
+    }
+
+    const span = token.end - token.start;
+    if (token.syllables === 1) {
+      return token.start + Math.floor(span / 2);
+    }
+
+    const within = syllable - token.syllableStart;
+    const startFrac = (within - 1) / token.syllables;
+    const endFrac = within / token.syllables;
+    const midFrac = (startFrac + endFrac) / 2;
+    return token.start + Math.floor(span * midFrac);
+  }
+
+  return null;
+}
+
 /** Highest syllable index to place ticks for (at least written total; include target when set). */
 export function rulerSyllableCount(
   total: number,

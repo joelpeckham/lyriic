@@ -6,6 +6,8 @@ export type Project = {
   text: string;
   settings: EditorSettings;
   overrides: Record<string, number>;
+  /** 0-based primary stress index per normalized word key. */
+  stressOverrides: Record<string, number>;
   updatedAt: number;
 };
 

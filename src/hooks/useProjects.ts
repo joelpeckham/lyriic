@@ -11,6 +11,9 @@ import {
 import type { ProjectsState } from "@/lib/projects/types";
 import { normalizeSettings, type EditorSettings } from "@/lib/settings";
 import {
+  isValidStressOverride,
+} from "@/lib/stress/overrides";
+import {
   isValidOverrideCount,
   normalizeOverrideKey,
 } from "@/lib/syllables/overrides";
@@ -235,6 +238,43 @@ export function useProjects() {
     }));
   }
 
+  function setStressOverride(word: string, primaryIndex: number) {
+    const key = normalizeOverrideKey(word);
+    if (!key || !isValidStressOverride(primaryIndex)) return;
+    commit((prev) => ({
+      ...prev,
+      projects: prev.projects.map((project) => {
+        if (project.id !== prev.activeId) return project;
+        return {
+          ...project,
+          stressOverrides: {
+            ...project.stressOverrides,
+            [key]: Math.floor(primaryIndex),
+          },
+          updatedAt: Date.now(),
+        };
+      }),
+    }));
+  }
+
+  function clearStressOverride(word: string) {
+    const key = normalizeOverrideKey(word);
+    if (!key) return;
+    commit((prev) => ({
+      ...prev,
+      projects: prev.projects.map((project) => {
+        if (project.id !== prev.activeId) return project;
+        if (!(key in project.stressOverrides)) return project;
+        const { [key]: _removed, ...rest } = project.stressOverrides;
+        return {
+          ...project,
+          stressOverrides: rest,
+          updatedAt: Date.now(),
+        };
+      }),
+    }));
+  }
+
   function switchProject(id: string) {
     commit((prev) => {
       if (!prev.projects.some((p) => p.id === id) || prev.activeId === id) {
@@ -291,6 +331,8 @@ export function useProjects() {
     setSettings,
     setOverride,
     clearOverride,
+    setStressOverride,
+    clearStressOverride,
     switchProject,
     createProject,
     renameProject,

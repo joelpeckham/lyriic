@@ -4,6 +4,7 @@ export type EditorSettings = {
   meter: MeterPresetId;
   showCounts: boolean;
   showRulers: boolean;
+  showStress: boolean;
   customSyllables: number;
 };
 
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: EditorSettings = {
   meter: "none",
   showCounts: true,
   showRulers: false,
+  showStress: false,
   customSyllables: 8,
 };
 
@@ -50,6 +52,10 @@ export function normalizeSettings(raw: unknown): EditorSettings {
       typeof s.showRulers === "boolean"
         ? s.showRulers
         : DEFAULT_SETTINGS.showRulers,
+    showStress:
+      typeof s.showStress === "boolean"
+        ? s.showStress
+        : DEFAULT_SETTINGS.showStress,
     customSyllables,
   };
 }

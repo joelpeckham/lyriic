@@ -391,6 +391,100 @@ export function syllableCountFromIpa(ipa) {
 }
 
 /**
+ * Per-syllable stress codes from IPA (0 unstressed, 1 primary, 2 secondary).
+ * Unmarked multi-syllable IPA gets primary on the last non-reduced oral
+ * nucleus (aligned with rhymeKeyFromIpa). Secondary-only patterns promote
+ * the last secondary to primary.
+ *
+ * @param {string} ipa
+ * @returns {(0 | 1 | 2)[]}
+ */
+export function stressPatternFromIpa(ipa) {
+  const phones = tokenizeIpa(ipa);
+  /** @type {(0 | 1 | 2)[]} */
+  const pattern = [];
+  /** @type {number[]} phone index of each vowel nucleus */
+  const vowelPhoneIdx = [];
+  for (let i = 0; i < phones.length; i++) {
+    if (phones[i].isVowel) {
+      pattern.push(phones[i].stress);
+      vowelPhoneIdx.push(i);
+    }
+  }
+  if (pattern.length > 1 && pattern.every((s) => s === 0)) {
+    // Match rhyme unmarked heuristic: last non-reduced oral nucleus.
+    let primarySyl = -1;
+    for (let s = pattern.length - 1; s >= 0; s -= 1) {
+      const p = phones[vowelPhoneIdx[s]];
+      if (
+        p &&
+        !IPA_REDUCED.has(p.phone) &&
+        !IPA_SYLLABIC.has(p.phone)
+      ) {
+        primarySyl = s;
+        break;
+      }
+    }
+    if (primarySyl === -1) primarySyl = pattern.length - 1;
+    pattern[primarySyl] = 1;
+  } else if (pattern.length > 0 && !pattern.some((s) => s === 1)) {
+    // Secondary-only: promote last secondary to primary.
+    for (let s = pattern.length - 1; s >= 0; s -= 1) {
+      if (pattern[s] === 2) {
+        pattern[s] = 1;
+        break;
+      }
+    }
+  }
+  return pattern;
+}
+
+/** Max syllables encodable in a packed u32 (2 bits each). */
+export const STRESS_PACK_MAX_SYLLABLES = 16;
+
+/**
+ * Pack stress codes into a u32 (2 bits per syllable, low → high index).
+ * Throws if the pattern exceeds {@link STRESS_PACK_MAX_SYLLABLES}.
+ *
+ * @param {readonly (0 | 1 | 2)[]} pattern
+ * @returns {number}
+ */
+export function packStressPattern(pattern) {
+  if (pattern.length > STRESS_PACK_MAX_SYLLABLES) {
+    throw new Error(
+      `stress pattern exceeds max syllables (${STRESS_PACK_MAX_SYLLABLES}): ${pattern.length}`,
+    );
+  }
+  let packed = 0;
+  for (let i = 0; i < pattern.length; i++) {
+    const code = pattern[i] & 3;
+    packed |= (code === 3 ? 0 : code) << (i * 2);
+  }
+  return packed >>> 0;
+}
+
+/**
+ * Unpack a u32 stress pattern for `syllableCount` syllables.
+ *
+ * @param {number} packed
+ * @param {number} syllableCount
+ * @returns {(0 | 1 | 2)[]}
+ */
+export function unpackStressPattern(packed, syllableCount) {
+  const n = Math.min(
+    Math.max(0, syllableCount | 0),
+    STRESS_PACK_MAX_SYLLABLES,
+  );
+  /** @type {(0 | 1 | 2)[]} */
+  const out = new Array(n);
+  for (let i = 0; i < n; i++) {
+    const code = (packed >>> (i * 2)) & 3;
+    out[i] = /** @type {0 | 1 | 2} */ (code === 3 ? 0 : code);
+  }
+  return out;
+}
+
+/**
  * True when every nucleus is reduced or syllabic (weak-form reading).
  *
  * @param {string} ipa

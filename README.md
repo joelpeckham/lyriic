@@ -1,6 +1,6 @@
 # lyriic
 
-A zen text editor for writing in meter. Large-font canvas, subtle per-line syllable counts, optional meter rulers, and quiet per-draft syllable overrides for ambiguous words.
+A zen text editor for writing in meter. Large-font canvas, subtle per-line syllable counts, optional meter rulers and stress marks, and quiet per-draft syllable/stress overrides for ambiguous words.
 
 Built for [lyriic.com](https://lyriic.com) on Vercel.
 

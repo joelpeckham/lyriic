@@ -3,6 +3,7 @@
  *
  * Formats (little-endian):
  *   lexicon.bin   magic LYXL — front-coded words + syllable bytes
+ *   stress.bin    magic LYXS — packed per-syllable stress (u32 × wordCount, v2)
  *   rhyme-*.bin   magic LYXP / LYXE — IPA keys + word→key + key→wordIds
  *   thesaurus.bin magic LYXT — overflow words + head/synonym id entries
  */
@@ -11,8 +12,12 @@ import { brotliCompressSync, constants as zlibConstants, gzipSync } from "node:z
 
 export const VERSION = 1;
 
+/** Stress pack version (u32 patterns; v1 was u16). */
+export const STRESS_PACK_VERSION = 2;
+
 export const MAGIC = {
   lexicon: "LYXL",
+  stress: "LYXS",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
   thesaurus: "LYXT",
@@ -139,6 +144,48 @@ export function decodeLexicon(buf) {
   const syllables = u8.subarray(afterWords, afterWords + count);
   if (syllables.length !== count) throw new Error("lexicon syllables truncated");
   return { words, syllables: new Uint8Array(syllables) };
+}
+
+/**
+ * @param {number[]} packedStress parallel u32 packed patterns (wordCount)
+ * @returns {Buffer}
+ */
+export function encodeStress(packedStress) {
+  const count = packedStress.length;
+  const header = Buffer.alloc(9);
+  magicBytes(MAGIC.stress).copy(header, 0);
+  header[4] = STRESS_PACK_VERSION;
+  header.writeUInt32LE(count, 5);
+  const body = Buffer.alloc(count * 4);
+  for (let i = 0; i < count; i++) {
+    body.writeUInt32LE(packedStress[i] >>> 0, i * 4);
+  }
+  return Buffer.concat([header, body]);
+}
+
+/**
+ * @param {Uint8Array | Buffer} buf
+ * @returns {{ packed: Uint32Array }}
+ */
+export function decodeStress(buf) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const magic = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
+  if (magic !== MAGIC.stress) throw new Error(`bad stress magic: ${magic}`);
+  if (u8[4] !== STRESS_PACK_VERSION) {
+    throw new Error(`unsupported stress version: ${u8[4]}`);
+  }
+  const count =
+    (u8[5] | (u8[6] << 8) | (u8[7] << 16) | (u8[8] << 24)) >>> 0;
+  const need = 9 + count * 4;
+  if (u8.length < need) throw new Error("stress pack truncated");
+  const packed = new Uint32Array(count);
+  for (let i = 0; i < count; i++) {
+    const o = 9 + i * 4;
+    packed[i] =
+      (u8[o] | (u8[o + 1] << 8) | (u8[o + 2] << 16) | (u8[o + 3] << 24)) >>>
+      0;
+  }
+  return { packed };
 }
 
 /**

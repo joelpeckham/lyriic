@@ -5,6 +5,7 @@ import {
 } from "@codemirror/view";
 
 import {
+  mapSyllableMidpointToOffset,
   mapSyllableToOffset,
   rulerSyllableCount,
 } from "@/lib/meters/mapSyllableToOffset";
@@ -13,6 +14,7 @@ import type { MeteredLine, MeterStatus } from "@/lib/meters";
 export type MeterOverlayState = {
   showCounts: boolean;
   showRulers: boolean;
+  showStress: boolean;
   /** Metered lines — tokens used as-is for ruler geometry. */
   lines: readonly MeteredLine[];
   textLines: readonly string[];
@@ -21,6 +23,7 @@ export type MeterOverlayState = {
 const EMPTY: MeterOverlayState = {
   showCounts: false,
   showRulers: false,
+  showStress: false,
   lines: [],
   textLines: [],
 };
@@ -42,6 +45,7 @@ export function setMeterOverlayData(
 function statusClass(status: MeterStatus): string {
   if (status === "exact") return "lyriic-count--exact";
   if (status === "over") return "lyriic-count--over";
+  if (status === "stress") return "lyriic-count--stress";
   return "lyriic-count--subtle";
 }
 
@@ -52,8 +56,9 @@ function tickClass(syllable: number, target: number | null): string {
 }
 
 /**
- * Syllable counts + meter rulers on the editor host (sibling of `.cm-editor`).
- * Meter data comes from `setMeterOverlayData`; positions use `coordsAtPos`.
+ * Syllable counts + meter rulers + stress marks on the editor host
+ * (sibling of `.cm-editor`). Meter data comes from `setMeterOverlayData`;
+ * positions use `coordsAtPos`.
  *
  * On `docChanged`, clear overlay DOM immediately so stale ticks/counts do not
  * linger at old geometry. React then pushes fresh meter data and calls
@@ -117,8 +122,9 @@ export const syllableOverlay = ViewPlugin.fromClass(
     }
 
     draw(view: EditorView) {
-      const { showCounts, showRulers, lines, textLines } = getMeterOverlay(view);
-      if (!showCounts && !showRulers) {
+      const { showCounts, showRulers, showStress, lines, textLines } =
+        getMeterOverlay(view);
+      if (!showCounts && !showRulers && !showStress) {
         this.dom.replaceChildren();
         return;
       }
@@ -177,6 +183,34 @@ export const syllableOverlay = ViewPlugin.fromClass(
             tick.style.left = `${tickCoords.left - hostRect.left}px`;
             tick.style.top = `${tickCoords.bottom - hostRect.top}px`;
             frag.append(tick);
+          }
+        }
+
+        if (showStress && overlay.tokens.length > 0) {
+          for (const token of overlay.tokens) {
+            for (let i = 0; i < token.stress.length; i++) {
+              if (token.stress[i] === 0) continue;
+              const syllable = token.syllableStart + i + 1;
+              const offset = mapSyllableMidpointToOffset(
+                overlay.tokens,
+                syllable,
+              );
+              if (offset === null) continue;
+              const pos = Math.min(line.from + offset, line.to);
+              let markCoords: { left: number; bottom: number } | null = null;
+              try {
+                markCoords = view.coordsAtPos(pos);
+              } catch {
+                continue;
+              }
+              if (!markCoords) continue;
+
+              const mark = document.createElement("span");
+              mark.className = "lyriic-stress-mark";
+              mark.style.left = `${markCoords.left - hostRect.left}px`;
+              mark.style.top = `${markCoords.bottom - hostRect.top}px`;
+              frag.append(mark);
+            }
           }
         }
 

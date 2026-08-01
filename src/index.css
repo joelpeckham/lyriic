@@ -284,6 +284,11 @@ html[data-contrast="more"].dark {
   color: var(--lyriic-subtle);
 }
 
+.lyriic-count--stress {
+  color: var(--lyriic-subtle);
+  font-style: italic;
+}
+
 .lyriic-count__target {
   color: var(--lyriic-subtle-faint);
 }
@@ -309,6 +314,19 @@ html[data-contrast="more"].dark {
 
 .lyriic-ruler-tick--over {
   opacity: 0.28;
+}
+
+/* Stress marks: quiet dots at syllable midpoints under the line. */
+.lyriic-stress-mark {
+  position: absolute;
+  width: 0.22rem;
+  height: 0.22rem;
+  margin-left: -0.11rem;
+  border-radius: 999px;
+  background: var(--lyriic-ruler);
+  opacity: 0.55;
+  pointer-events: none;
+  transform: translateY(0.28rem);
 }
 
 @layer base {

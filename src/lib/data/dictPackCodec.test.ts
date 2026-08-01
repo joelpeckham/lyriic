@@ -7,8 +7,12 @@ import { describe, expect, it } from "vitest";
 import {
   decodeLexicon,
   decodeRhymePack,
+  decodeStress,
   decodeThesaurus,
+  packStressPattern,
   resolveDictId,
+  STRESS_PACK_MAX_SYLLABLES,
+  unpackStressPattern,
 } from "./dictPackCodec";
 
 const packsDir = join(dirname(fileURLToPath(import.meta.url)), "packs");
@@ -62,4 +66,56 @@ describe("dictPackCodec", () => {
     );
     expect(syns).toEqual(expect.arrayContaining(["death"]));
   });
+
+  it("decodes stress pack aligned with lexicon", () => {
+    const lex = decodeLexicon(
+      new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
+    );
+    const stress = decodeStress(
+      new Uint8Array(readFileSync(join(packsDir, "stress.bin"))),
+    );
+    expect(stress.packed.length).toBe(lex.words.length);
+    const poem = lex.wordToId.get("poem");
+    expect(poem).toBeDefined();
+    const pattern = unpackStressPattern(
+      stress.packed[poem!]!,
+      lex.syllables[poem!]!,
+    );
+    expect(pattern).toEqual([1, 0]);
+  });
+
+  it("preserves stress for words longer than 8 syllables", () => {
+    const lex = decodeLexicon(
+      new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
+    );
+    const stress = decodeStress(
+      new Uint8Array(readFileSync(join(packsDir, "stress.bin"))),
+    );
+    const long = lex.words.find((w, i) => (lex.syllables[i] ?? 0) > 8);
+    expect(long).toBeDefined();
+    const id = lex.wordToId.get(long!)!;
+    const syl = lex.syllables[id]!;
+    expect(syl).toBeLessThanOrEqual(STRESS_PACK_MAX_SYLLABLES);
+    const pattern = unpackStressPattern(stress.packed[id]!, syl);
+    expect(pattern.length).toBe(syl);
+    expect(pattern.some((s) => s === 1)).toBe(true);
+  });
+
+  it("round-trips packed stress patterns including 9+ syllables", () => {
+    const pattern = [0, 1, 2, 0, 1, 0, 2, 0, 1] as const;
+    const packed = packStressPattern(pattern);
+    expect(unpackStressPattern(packed, 9)).toEqual([...pattern]);
+  });
+
+  it("clamps illegal stress code 3 to 0 on unpack", () => {
+    // Manually set syllable 0 bits to 0b11 (= 3).
+    expect(unpackStressPattern(0b11, 1)).toEqual([0]);
+  });
+
+  it("rejects patterns beyond max syllables", () => {
+    const tooLong = new Array(STRESS_PACK_MAX_SYLLABLES + 1).fill(0);
+    tooLong[0] = 1;
+    expect(() => packStressPattern(tooLong)).toThrow(/max syllables/);
+  });
 });
+

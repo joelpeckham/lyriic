@@ -8,35 +8,43 @@ import { dirname } from "node:path";
 import {
   encodeLexicon,
   encodeRhymePack,
+  encodeStress,
   reportPackSize,
 } from "./dictPack.mjs";
 
 /**
  * @param {object} input
  * @param {Record<string, number>} input.syllables
+ * @param {Record<string, number>} input.stressPacked word → packed u32
  * @param {Record<string, string | string[]>} input.byWord
  * @param {Record<string, string[]>} input.byKey
  * @param {Record<string, string | string[]>} input.byWordEnd
  * @param {Record<string, string[]>} input.byKeyEnd
  * @param {string} input.lexiconPath
+ * @param {string} input.stressPath
  * @param {string} input.perfectPath
  * @param {string} input.endPath
  */
 export function writePronunciationPacks({
   syllables,
+  stressPacked,
   byWord,
   byKey,
   byWordEnd,
   byKeyEnd,
   lexiconPath,
+  stressPath,
   perfectPath,
   endPath,
 }) {
   const words = Object.keys(byWord).sort();
   const wordIndex = new Map(words.map((w, i) => [w, i]));
   const sylArr = new Uint8Array(words.length);
+  /** @type {number[]} */
+  const stressArr = new Array(words.length);
   for (let i = 0; i < words.length; i++) {
     sylArr[i] = syllables[words[i]] ?? 0;
+    stressArr[i] = stressPacked[words[i]] ?? 0;
   }
 
   /**
@@ -74,17 +82,21 @@ export function writePronunciationPacks({
   }
 
   const lexBuf = encodeLexicon(words, sylArr);
+  const stressBuf = encodeStress(stressArr);
   const perfectBuf = buildMode(byWord, byKey, "perfect");
   const endBuf = buildMode(byWordEnd, byKeyEnd, "end");
 
   mkdirSync(dirname(lexiconPath), { recursive: true });
+  mkdirSync(dirname(stressPath), { recursive: true });
   mkdirSync(dirname(perfectPath), { recursive: true });
   mkdirSync(dirname(endPath), { recursive: true });
   writeFileSync(lexiconPath, lexBuf);
+  writeFileSync(stressPath, stressBuf);
   writeFileSync(perfectPath, perfectBuf);
   writeFileSync(endPath, endBuf);
 
   reportPackSize(`lexicon → ${lexiconPath}`, lexBuf);
+  reportPackSize(`stress → ${stressPath}`, stressBuf);
   reportPackSize(`rhyme-perfect → ${perfectPath}`, perfectBuf);
   reportPackSize(`rhyme-end → ${endPath}`, endBuf);
 

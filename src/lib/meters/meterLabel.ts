@@ -15,10 +15,12 @@ export function formatMeterLabel(
   const phrase =
     status === "exact"
       ? ", on meter"
-      : status === "over"
-        ? ", over target"
-        : status === "under"
-          ? ", under target"
-          : "";
+      : status === "stress"
+        ? ", stress off meter"
+        : status === "over"
+          ? ", over target"
+          : status === "under"
+            ? ", under target"
+            : "";
   return `${total} of ${target} syllables${phrase}`;
 }

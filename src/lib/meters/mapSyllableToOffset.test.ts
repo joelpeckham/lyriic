@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  mapSyllableMidpointToOffset,
   mapSyllableToOffset,
   rulerSyllableCount,
   type SyllableOffsetToken,
@@ -69,3 +70,22 @@ describe("rulerSyllableCount", () => {
     expect(rulerSyllableCount(4, 10)).toBe(10);
   });
 });
+
+describe("mapSyllableMidpointToOffset", () => {
+  it("places single-syllable midpoint at half the token span", () => {
+    const tokens = [
+      tok({ start: 0, end: 4, syllables: 1, syllableStart: 0, syllableEnd: 1 }),
+    ];
+    expect(mapSyllableMidpointToOffset(tokens, 1)).toBe(2);
+  });
+
+  it("interpolates midpoints inside multi-syllable words", () => {
+    // "poem" 0..4, 2 syllables → mid of [0,2) = 1, mid of [2,4) = 3
+    const tokens = [
+      tok({ start: 0, end: 4, syllables: 2, syllableStart: 0, syllableEnd: 2 }),
+    ];
+    expect(mapSyllableMidpointToOffset(tokens, 1)).toBe(1);
+    expect(mapSyllableMidpointToOffset(tokens, 2)).toBe(3);
+  });
+});
+

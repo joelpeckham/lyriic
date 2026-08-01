@@ -11,6 +11,7 @@ import {
   normalizeSettings,
 } from "@/lib/settings";
 import { readJson, writeJson } from "@/lib/storageJson";
+import { normalizeStressOverridesRecord } from "@/lib/stress/overrides";
 import { normalizeOverridesRecord } from "@/lib/syllables/overrides";
 import type { Project, ProjectsState } from "./types";
 
@@ -42,6 +43,7 @@ export function createEmptyProject(name = "Untitled"): Project {
     text: "",
     settings: { ...DEFAULT_SETTINGS },
     overrides: {},
+    stressOverrides: {},
     updatedAt: now,
   };
 }
@@ -71,6 +73,7 @@ function normalizeProject(raw: unknown): Project | null {
     text: p.text,
     settings: normalizeSettings(p.settings),
     overrides: normalizeOverridesRecord(p.overrides),
+    stressOverrides: normalizeStressOverridesRecord(p.stressOverrides),
     updatedAt: p.updatedAt,
   };
 }

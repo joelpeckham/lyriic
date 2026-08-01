@@ -6,6 +6,7 @@
  *
  * Outputs:
  *   src/lib/data/packs/lexicon.bin
+ *   src/lib/data/packs/stress.bin
  *   src/lib/data/packs/rhyme-perfect.bin
  *   src/lib/data/packs/rhyme-end.bin
  *
@@ -25,7 +26,10 @@ import {
   isReducedRhymeKey,
   isWeakIpa,
   misakiToIpa,
+  packStressPattern,
   rhymeKeyFromIpa,
+  STRESS_PACK_MAX_SYLLABLES,
+  stressPatternFromIpa,
   syllableCountFromIpa,
   wikipronToIpa,
 } from "./lib/ipa.mjs";
@@ -50,6 +54,7 @@ const wikipronPath = join(sourcesDir, "eng_latn_us_broad.tsv");
 
 const packsDir = join(root, "src/lib/data/packs");
 const lexiconOutPath = join(packsDir, "lexicon.bin");
+const stressOutPath = join(packsDir, "stress.bin");
 const perfectOutPath = join(packsDir, "rhyme-perfect.bin");
 const endOutPath = join(packsDir, "rhyme-end.bin");
 
@@ -221,6 +226,8 @@ async function main() {
 
   /** @type {Record<string, number>} */
   const syllables = Object.create(null);
+  /** @type {Record<string, number>} */
+  const stressPacked = Object.create(null);
   /** @type {Record<string, string | string[]>} */
   const byWord = Object.create(null);
   /** @type {Record<string, string[]>} */
@@ -231,6 +238,7 @@ async function main() {
   const bucketsEnd = Object.create(null);
 
   let sylEntries = 0;
+  let stressEntries = 0;
   let rhymeEntries = 0;
   let endEntries = 0;
   let skippedNoRhyme = 0;
@@ -240,6 +248,14 @@ async function main() {
     if (syl >= 1) {
       syllables[word] = syl;
       sylEntries += 1;
+      const stressPattern = stressPatternFromIpa(entry.primary);
+      if (stressPattern.length > STRESS_PACK_MAX_SYLLABLES) {
+        throw new Error(
+          `stress pattern for "${word}" has ${stressPattern.length} syllables (max ${STRESS_PACK_MAX_SYLLABLES})`,
+        );
+      }
+      stressPacked[word] = packStressPattern(stressPattern);
+      stressEntries += 1;
     }
 
     /** @type {string[]} */
@@ -321,11 +337,13 @@ async function main() {
 
   const { wordCount } = writePronunciationPacks({
     syllables,
+    stressPacked,
     byWord,
     byKey: perfect.byKey,
     byWordEnd,
     byKeyEnd: end.byKey,
     lexiconPath: lexiconOutPath,
+    stressPath: stressOutPath,
     perfectPath: perfectOutPath,
     endPath: endOutPath,
   });
@@ -333,6 +351,7 @@ async function main() {
   console.log(
     `Syllables: ${sylEntries} / ${wordCount} lexicon words`,
   );
+  console.log(`Stress patterns: ${stressEntries} words`);
   console.log(
     `Perfect rhymes: ${rhymeEntries} words / ${Object.keys(perfect.byKey).length} keys (${perfect.seats} seats; ${skippedNoRhyme} no-key)`,
   );

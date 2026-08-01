@@ -11,13 +11,17 @@ import {
 export type {
   Lexicon,
   RhymeModeData,
+  StressCode,
+  StressPack,
   ThesaurusEntry,
   ThesaurusPack,
 } from "./dictPackCodec";
 
 export {
   buildThesaurusByHead,
+  packStressPattern,
   resolveDictId,
+  unpackStressPattern,
   usageCodeToChar,
 } from "./dictPackCodec";
 
@@ -44,11 +48,16 @@ export function createLazyBinData<T>(
       if (data) return Promise.resolve(data);
       if (!dataPromise) {
         dataPromise = (async () => {
-          const url = await urlLoader();
-          const buffer = await fetchBinary(url);
-          const decoded = await decodePackAsync(kind, buffer);
-          data = project(decoded);
-          return data;
+          try {
+            const url = await urlLoader();
+            const buffer = await fetchBinary(url);
+            const decoded = await decodePackAsync(kind, buffer);
+            data = project(decoded);
+            return data;
+          } catch (err) {
+            dataPromise = null;
+            throw err;
+          }
         })();
       }
       return dataPromise;
