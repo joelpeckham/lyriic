@@ -9,12 +9,18 @@ import {
   mapSyllableToOffset,
   rulerSyllableCount,
 } from "@/lib/meters/mapSyllableToOffset";
-import type { MeteredLine, MeterStatus } from "@/lib/meters";
+import type { StressCode } from "@/lib/data/dictPack";
+import {
+  stressMismatchMask,
+  type MeteredLine,
+  type MeterStatus,
+} from "@/lib/meters";
 
 export type MeterOverlayState = {
   showCounts: boolean;
   showRulers: boolean;
   showStress: boolean;
+  showMeterBreaks: boolean;
   /** Metered lines — tokens used as-is for ruler geometry. */
   lines: readonly MeteredLine[];
   textLines: readonly string[];
@@ -24,6 +30,7 @@ const EMPTY: MeterOverlayState = {
   showCounts: false,
   showRulers: false,
   showStress: false,
+  showMeterBreaks: false,
   lines: [],
   textLines: [],
 };
@@ -53,6 +60,45 @@ function tickClass(syllable: number, target: number | null): string {
   if (target !== null && syllable === target) return "lyriic-ruler-tick--target";
   if (target !== null && syllable > target) return "lyriic-ruler-tick--over";
   return "lyriic-ruler-tick";
+}
+
+/** Flatten token stress for line-level comparison. */
+function flattenStress(line: MeteredLine): StressCode[] {
+  const out: StressCode[] = [];
+  for (const token of line.tokens) {
+    out.push(...token.stress);
+  }
+  return out;
+}
+
+/**
+ * Mismatch mask when the line is comparable (count matches target and
+ * expected stress length aligns); otherwise null.
+ */
+function lineStressMismatchMask(line: MeteredLine): boolean[] | null {
+  if (
+    line.expectedStress === null ||
+    line.target === null ||
+    line.total !== line.target
+  ) {
+    return null;
+  }
+  return stressMismatchMask(flattenStress(line), line.expectedStress);
+}
+
+function lineHasStressMismatch(line: MeteredLine): boolean {
+  const mask = lineStressMismatchMask(line);
+  return mask !== null && mask.some(Boolean);
+}
+
+/** Keep overlay geometry on this doc line (avoids coords at line.to → next line). */
+function posOnLine(
+  lineFrom: number,
+  lineTo: number,
+  offset: number,
+): number {
+  if (lineTo <= lineFrom) return lineFrom;
+  return Math.min(lineFrom + Math.max(0, offset), lineTo - 1);
 }
 
 /**
@@ -122,9 +168,17 @@ export const syllableOverlay = ViewPlugin.fromClass(
     }
 
     draw(view: EditorView) {
-      const { showCounts, showRulers, showStress, lines, textLines } =
-        getMeterOverlay(view);
-      if (!showCounts && !showRulers && !showStress) {
+      const {
+        showCounts,
+        showRulers,
+        showStress,
+        showMeterBreaks,
+        lines,
+        textLines,
+      } = getMeterOverlay(view);
+      const showMismatchMarks =
+        showMeterBreaks && lines.some(lineHasStressMismatch);
+      if (!showCounts && !showRulers && !showStress && !showMismatchMarks) {
         this.dom.replaceChildren();
         return;
       }
@@ -151,25 +205,24 @@ export const syllableOverlay = ViewPlugin.fromClass(
         const lineHasText = (textLines[lineNo - 1] ?? "").length > 0;
         if (total <= 0 && !lineHasText) continue;
 
-        let lineCoords: { top: number; bottom: number } | null = null;
-        try {
-          const coords = view.coordsAtPos(line.from);
-          if (coords) lineCoords = coords;
-        } catch {
-          // jsdom lacks Range.getClientRects; skip geometry in tests.
+        // Cull using the full soft-wrapped block — not just line.from coords
+        // (which are null/off-screen when only a continuation row is visible).
+        const block = view.lineBlockAt(line.from);
+        const blockClientTop = view.documentTop + block.top;
+        const blockClientBottom = view.documentTop + block.bottom;
+        if (
+          blockClientBottom < hostRect.top ||
+          blockClientTop > hostRect.bottom
+        ) {
           continue;
         }
-        if (!lineCoords) continue;
-
-        const top = lineCoords.top - hostRect.top;
-        if (top + 24 < 0 || top > hostRect.height) continue;
 
         if (showRulers && overlay.tokens.length > 0) {
           const tickCount = rulerSyllableCount(total, overlay.target);
           for (let s = 1; s <= tickCount; s++) {
             const offset = mapSyllableToOffset(overlay.tokens, s);
             if (offset === null) continue;
-            const pos = Math.min(line.from + offset, line.to);
+            const pos = posOnLine(line.from, line.to, offset);
             let tickCoords: { left: number; bottom: number } | null = null;
             try {
               tickCoords = view.coordsAtPos(pos);
@@ -186,18 +239,29 @@ export const syllableOverlay = ViewPlugin.fromClass(
           }
         }
 
-        if (showStress && overlay.tokens.length > 0) {
+        const mismatchMask = lineStressMismatchMask(overlay);
+        const hasMismatches =
+          mismatchMask !== null && mismatchMask.some(Boolean);
+        // Full weak/strong contour when stress marks are on, or when this
+        // line breaks meter and meter-break highlighting is enabled.
+        const showPattern =
+          showStress || (showMeterBreaks && hasMismatches);
+        if (showPattern && overlay.tokens.length > 0) {
           for (const token of overlay.tokens) {
             for (let i = 0; i < token.stress.length; i++) {
-              if (token.stress[i] === 0) continue;
-              const syllable = token.syllableStart + i + 1;
+              const syllableIndex = token.syllableStart + i;
+              const isMismatch =
+                showMeterBreaks && mismatchMask?.[syllableIndex] === true;
+              const isStressed = token.stress[i] !== 0;
+
+              const syllable = syllableIndex + 1;
               const offset = mapSyllableMidpointToOffset(
                 overlay.tokens,
                 syllable,
               );
               if (offset === null) continue;
-              const pos = Math.min(line.from + offset, line.to);
-              let markCoords: { left: number; bottom: number } | null = null;
+              const pos = posOnLine(line.from, line.to, offset);
+              let markCoords: { left: number; top: number } | null = null;
               try {
                 markCoords = view.coordsAtPos(pos);
               } catch {
@@ -206,18 +270,42 @@ export const syllableOverlay = ViewPlugin.fromClass(
               if (!markCoords) continue;
 
               const mark = document.createElement("span");
-              mark.className = "lyriic-stress-mark";
+              const classes = ["lyriic-stress-mark"];
+              if (!isStressed) classes.push("lyriic-stress-mark--weak");
+              if (isMismatch) classes.push("lyriic-stress-mark--off");
+              mark.className = classes.join(" ");
+              // Match WordToolsPopover: ˈ stressed, ˘ unstressed.
+              mark.textContent = isStressed ? "ˈ" : "˘";
               mark.style.left = `${markCoords.left - hostRect.left}px`;
-              mark.style.top = `${markCoords.bottom - hostRect.top}px`;
+              mark.style.top = `${markCoords.top - hostRect.top}px`;
               frag.append(mark);
             }
           }
         }
 
         if (showCounts) {
+          // Prefer the first visible visual row for count vertical align.
+          let countTop = blockClientTop - hostRect.top;
+          try {
+            const startCoords = view.coordsAtPos(line.from);
+            if (startCoords) {
+              countTop = startCoords.top - hostRect.top;
+            } else {
+              const visiblePos = Math.max(line.from, from);
+              const visibleCoords = view.coordsAtPos(
+                posOnLine(line.from, line.to, visiblePos - line.from),
+              );
+              if (visibleCoords) {
+                countTop = visibleCoords.top - hostRect.top;
+              }
+            }
+          } catch {
+            // jsdom / missing geometry — keep block-based top.
+          }
+
           const el = document.createElement("span");
           el.className = `lyriic-count ${statusClass(overlay.status)}`;
-          el.style.top = `${top}px`;
+          el.style.top = `${countTop}px`;
           el.style.left = `${left}px`;
           el.style.width = `${width}px`;
 

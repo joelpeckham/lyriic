@@ -1,4 +1,8 @@
-export { buildMeteredLine, type BuildMeteredLineOptions } from "./buildMeteredLine";
+export {
+  buildMeteredLine,
+  stressMismatchMask,
+  type BuildMeteredLineOptions,
+} from "./buildMeteredLine";
 export { buildMeteredLines } from "./buildMeteredLines";
 export { formatMeterLabel } from "./meterLabel";
 export {

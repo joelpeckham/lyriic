@@ -5,6 +5,8 @@ export type EditorSettings = {
   showCounts: boolean;
   showRulers: boolean;
   showStress: boolean;
+  /** Highlight syllables that break a stress-aware meter pattern. */
+  showMeterBreaks: boolean;
   customSyllables: number;
 };
 
@@ -16,6 +18,7 @@ export const DEFAULT_SETTINGS: EditorSettings = {
   showCounts: true,
   showRulers: false,
   showStress: false,
+  showMeterBreaks: true,
   customSyllables: 8,
 };
 
@@ -56,6 +59,10 @@ export function normalizeSettings(raw: unknown): EditorSettings {
       typeof s.showStress === "boolean"
         ? s.showStress
         : DEFAULT_SETTINGS.showStress,
+    showMeterBreaks:
+      typeof s.showMeterBreaks === "boolean"
+        ? s.showMeterBreaks
+        : DEFAULT_SETTINGS.showMeterBreaks,
     customSyllables,
   };
 }

@@ -248,6 +248,7 @@ export function PoemEditor({
       showCounts: settings.showCounts,
       showRulers: settings.showRulers,
       showStress: settings.showStress,
+      showMeterBreaks: settings.showMeterBreaks,
       lines: meteredLines,
       textLines: lineCounts.lines,
     });
@@ -258,6 +259,7 @@ export function PoemEditor({
     settings.showCounts,
     settings.showRulers,
     settings.showStress,
+    settings.showMeterBreaks,
   ]);
 
   const safeActiveLineIndex = Math.min(

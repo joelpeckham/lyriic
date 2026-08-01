@@ -91,7 +91,7 @@
   --lyriic-ink: oklch(0.268 0.007 34);
   --lyriic-selection: oklch(0.82 0.006 48 / 0.7);
   --lyriic-match: oklch(0.4 0.012 56);
-  --lyriic-over: oklch(0.5 0.12 45);
+  --lyriic-over: oklch(0.36 0.14 40);
   --lyriic-ruler: oklch(0.55 0.01 56);
   --lyriic-subtle: oklch(0.48 0.012 58);
   --lyriic-subtle-faint: oklch(0.55 0.01 58);
@@ -293,40 +293,59 @@ html[data-contrast="more"].dark {
   color: var(--lyriic-subtle-faint);
 }
 
-/* Meter rulers: short ticks under syllable boundaries (sibling overlay). */
+/* Meter rulers: short ticks inside the visual line box (bottom leading). */
 .lyriic-ruler-tick,
 .lyriic-ruler-tick--target,
 .lyriic-ruler-tick--over {
   position: absolute;
   width: 1px;
-  height: 0.45rem;
+  height: 0.4rem;
   margin-left: -0.5px;
   background: var(--lyriic-ruler);
   opacity: 0.45;
   pointer-events: none;
-  transform: translateY(0.1rem);
+  /* Sit just above the line-box bottom so soft-wraps do not collide. */
+  transform: translateY(calc(-100% - 0.05rem));
 }
 
 .lyriic-ruler-tick--target {
-  height: 0.6rem;
+  height: 0.55rem;
   opacity: 0.75;
 }
 
 .lyriic-ruler-tick--over {
-  opacity: 0.28;
+  width: 1.5px;
+  margin-left: -0.75px;
+  height: 0.5rem;
+  background: var(--lyriic-over);
+  opacity: 1;
 }
 
-/* Stress marks: quiet dots at syllable midpoints under the line. */
+/* Stress marks: ˈ / ˘ in the top leading of this visual line. */
 .lyriic-stress-mark {
   position: absolute;
-  width: 0.22rem;
-  height: 0.22rem;
-  margin-left: -0.11rem;
-  border-radius: 999px;
-  background: var(--lyriic-ruler);
-  opacity: 0.55;
+  color: var(--lyriic-ruler);
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0.7;
   pointer-events: none;
-  transform: translateY(0.28rem);
+  user-select: none;
+  /* Inside the line box (not the gap above) so wraps/next lines stay clear. */
+  transform: translate(-50%, 0.08em);
+}
+
+.lyriic-stress-mark--weak {
+  opacity: 0.55;
+}
+
+.lyriic-stress-mark--off,
+.lyriic-stress-mark--weak.lyriic-stress-mark--off {
+  color: var(--lyriic-over);
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 1;
 }
 
 @layer base {

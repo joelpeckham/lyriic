@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { countLine } from "@/lib/syllables";
-import { buildMeteredLine } from "./buildMeteredLine";
+import { buildMeteredLine, stressMismatchMask } from "./buildMeteredLine";
 import { getMeterPreset } from "./presets";
 
 describe("buildMeteredLine", () => {
@@ -41,6 +41,10 @@ describe("buildMeteredLine", () => {
       stressOverrides: { poem: 0 },
     });
     expect(mismatch.status).toBe("stress");
+    expect(stressMismatchMask(mismatch.tokens[0]!.stress, [0, 1])).toEqual([
+      true,
+      true,
+    ]);
 
     const match = buildMeteredLine(count, 0, {
       pattern: [2],
@@ -48,6 +52,25 @@ describe("buildMeteredLine", () => {
       stressOverrides: { poem: 1 },
     });
     expect(match.status).toBe("exact");
+    expect(stressMismatchMask(match.tokens[0]!.stress, [0, 1])).toEqual([
+      false,
+      false,
+    ]);
+  });
+
+  it("stressMismatchMask returns null when lengths differ", () => {
+    expect(stressMismatchMask([0, 1], [0, 1, 0])).toBeNull();
+    expect(stressMismatchMask([1], [0, 1])).toBeNull();
+  });
+
+  it("stressMismatchMask flags only mismatched syllables", () => {
+    // Secondary stress (2) counts as stressed in binary comparison.
+    expect(stressMismatchMask([0, 2, 1, 0], [0, 1, 0, 1])).toEqual([
+      false,
+      false,
+      true,
+      true,
+    ]);
   });
 
   it("treats a as unstressed so iambic match is possible", () => {

@@ -22,12 +22,22 @@ function stressMatches(
   actual: readonly StressCode[],
   expected: BinaryStressPattern,
 ): boolean {
-  if (actual.length !== expected.length) return false;
+  const mask = stressMismatchMask(actual, expected);
+  if (mask === null) return false;
+  return !mask.some(Boolean);
+}
+
+/**
+ * Per-syllable mismatch flags when actual and expected lengths match;
+ * otherwise null (not comparable).
+ */
+export function stressMismatchMask(
+  actual: readonly StressCode[],
+  expected: BinaryStressPattern,
+): boolean[] | null {
+  if (actual.length !== expected.length) return null;
   const binary = toBinaryStress(actual);
-  for (let i = 0; i < expected.length; i++) {
-    if (binary[i] !== expected[i]) return false;
-  }
-  return true;
+  return expected.map((bit, i) => binary[i] !== bit);
 }
 
 export function buildMeteredLine(

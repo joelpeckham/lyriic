@@ -1,5 +1,6 @@
 import { useState, type KeyboardEvent } from "react";
 import {
+  CircleDot,
   CircleSlash,
   Contrast,
   Hash,
@@ -416,11 +417,22 @@ export function SettingsSheet({
           <SettingsToggle
             id="show-stress"
             label="Stress marks"
-            hint="Dots under stressed syllables in each word"
+            hint="ˈ and ˘ marks above stressed and unstressed syllables"
             icon={Waves}
             checked={settings.showStress}
             onCheckedChange={(showStress) =>
               onChange({ ...settings, showStress })
+            }
+          />
+
+          <SettingsToggle
+            id="show-meter-breaks"
+            label="Meter breaks"
+            hint="On stress-aware meters, mark syllables that break the pattern"
+            icon={CircleDot}
+            checked={settings.showMeterBreaks}
+            onCheckedChange={(showMeterBreaks) =>
+              onChange({ ...settings, showMeterBreaks })
             }
           />
 
