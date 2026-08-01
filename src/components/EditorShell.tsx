@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { AppFooter } from "@/components/AppFooter";
+import { AppHeader } from "@/components/AppHeader";
 import { ProjectSwitcher } from "@/components/ProjectSwitcher";
 import { SettingsSheet } from "@/components/SettingsSheet";
 import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
@@ -78,30 +79,28 @@ export function EditorShell() {
         Skip to poem
       </a>
 
-      <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-4 p-4">
-        <h1 className="font-[family-name:var(--font-brand)] text-lg tracking-[0.18em] text-foreground/80 uppercase">
-          lyriic
-        </h1>
-        <nav
-          aria-label="Draft and settings"
-          className="pointer-events-auto flex shrink-0 items-center gap-1"
-        >
-          <ProjectSwitcher
-            projects={projects}
-            activeId={active.id}
-            onSwitch={switchProject}
-            onCreate={() => createProject()}
-            onRename={renameProject}
-            onDelete={deleteProject}
-          />
-          <SettingsSheet
-            settings={active.settings}
-            onChange={setSettings}
-            open={settingsOpen}
-            onOpenChange={setSettingsOpen}
-          />
-        </nav>
-      </header>
+      <AppHeader
+        variant="overlay"
+        brandAs="heading"
+        actions={
+          <nav aria-label="Draft and settings" className="contents">
+            <ProjectSwitcher
+              projects={projects}
+              activeId={active.id}
+              onSwitch={switchProject}
+              onCreate={() => createProject()}
+              onRename={renameProject}
+              onDelete={deleteProject}
+            />
+            <SettingsSheet
+              settings={active.settings}
+              onChange={setSettings}
+              open={settingsOpen}
+              onOpenChange={setSettingsOpen}
+            />
+          </nav>
+        }
+      />
 
       <main className="relative z-10 flex min-h-0 flex-1 flex-col">
         <EditorErrorBoundary key={active.id}>
