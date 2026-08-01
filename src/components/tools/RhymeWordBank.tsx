@@ -12,14 +12,12 @@ export type RhymeSyllableGroup = {
 type RhymeWordBankProps = {
   groups: RhymeSyllableGroup[];
   query: string;
-  truncated: boolean;
   totalShown: number;
 };
 
 export function RhymeWordBank({
   groups,
   query,
-  truncated,
   totalShown,
 }: RhymeWordBankProps) {
   const listId = useId();
@@ -43,8 +41,7 @@ export function RhymeWordBank({
   return (
     <div className="space-y-5">
       <p className="text-sm text-[var(--lyriic-subtle)]">
-        {totalShown}
-        {truncated ? "+" : ""} rhyme{totalShown === 1 ? "" : "s"} for “{query}”
+        {totalShown} rhyme{totalShown === 1 ? "" : "s"} for “{query}”
         <span className="text-muted-foreground"> · click to copy</span>
       </p>
 

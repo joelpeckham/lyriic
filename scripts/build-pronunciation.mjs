@@ -1,12 +1,12 @@
 /**
- * Fuse US pronunciation sources and rebuild syllable + perfect-rhyme artifacts.
+ * Fuse US pronunciation sources and rebuild syllable + rhyme artifacts.
  *
  * Preference order per word:
  *   Misaki us_gold → CMUdict (primary + alts) → Misaki us_silver → WikiPron
  *
  * Outputs:
  *   src/lib/syllables/data/cmu-syllables.json
- *   src/lib/rhyme/data/rhyme-index.json
+ *   src/lib/rhyme/data/rhyme-index.json  (perfect + end-rhyme indexes)
  *
  * Usage: node scripts/build-pronunciation.mjs
  * Requires: pip install wordfreq (for Zipf ranking of rhyme buckets)
@@ -20,6 +20,7 @@ import { ensureDownloaded } from "./lib/download.mjs";
 import { selectByFrequency, zipfFrequencies } from "./lib/frequency.mjs";
 import {
   arpabetToIpa,
+  endRhymeKeyFromIpa,
   misakiToIpa,
   rhymeKeyFromIpa,
   syllableCountFromIpa,
@@ -45,9 +46,6 @@ const wikipronPath = join(sourcesDir, "eng_latn_us_broad.tsv");
 
 const sylOutPath = join(root, "src/lib/syllables/data/cmu-syllables.json");
 const rhymeOutPath = join(root, "src/lib/rhyme/data/rhyme-index.json");
-
-/** Cap rhyme candidates per key; runtime UI may show fewer. */
-const MAX_PER_BUCKET = 80;
 
 /**
  * @param {unknown} value
@@ -214,9 +212,14 @@ async function main() {
   const byWord = Object.create(null);
   /** @type {Record<string, string[]>} */
   const buckets = Object.create(null);
+  /** @type {Record<string, string | string[]>} */
+  const byWordEnd = Object.create(null);
+  /** @type {Record<string, string[]>} */
+  const bucketsEnd = Object.create(null);
 
   let sylEntries = 0;
   let rhymeEntries = 0;
+  let endEntries = 0;
   let skippedNoRhyme = 0;
 
   for (const [word, entry] of merged) {
@@ -229,34 +232,62 @@ async function main() {
     /** @type {string[]} */
     const keys = [];
     const keySeen = new Set();
+    /** @type {string[]} */
+    const endKeys = [];
+    const endSeen = new Set();
     for (const ipa of [entry.primary, ...entry.alts]) {
       const key = rhymeKeyFromIpa(ipa);
-      if (!key || keySeen.has(key)) continue;
-      keySeen.add(key);
-      keys.push(key);
-      if (!(key in buckets)) buckets[key] = [];
-      buckets[key].push(word);
+      if (key && !keySeen.has(key)) {
+        keySeen.add(key);
+        keys.push(key);
+        if (!(key in buckets)) buckets[key] = [];
+        buckets[key].push(word);
+      }
+      const endKey = endRhymeKeyFromIpa(ipa);
+      if (endKey && !endSeen.has(endKey)) {
+        endSeen.add(endKey);
+        endKeys.push(endKey);
+        if (!(endKey in bucketsEnd)) bucketsEnd[endKey] = [];
+        bucketsEnd[endKey].push(word);
+      }
     }
     if (keys.length === 0) {
       skippedNoRhyme += 1;
-      continue;
+    } else {
+      byWord[word] = keys.length === 1 ? keys[0] : keys;
+      rhymeEntries += 1;
     }
-    byWord[word] = keys.length === 1 ? keys[0] : keys;
-    rhymeEntries += 1;
+    if (endKeys.length > 0) {
+      byWordEnd[word] = endKeys.length === 1 ? endKeys[0] : endKeys;
+      endEntries += 1;
+    }
   }
 
   console.log("Ranking rhyme buckets by wordfreq…");
-  const allBucketWords = Object.values(buckets).flat();
+  const allBucketWords = [
+    ...Object.values(buckets).flat(),
+    ...Object.values(bucketsEnd).flat(),
+  ];
   const freq = zipfFrequencies(allBucketWords);
 
-  /** @type {Record<string, string[]>} */
-  const byKey = Object.create(null);
-  let bucketSeats = 0;
-  for (const [key, words] of Object.entries(buckets)) {
-    const selected = selectByFrequency(words, freq, MAX_PER_BUCKET);
-    byKey[key] = selected;
-    bucketSeats += selected.length;
+  /**
+   * @param {Record<string, string[]>} raw
+   * @returns {{ byKey: Record<string, string[]>, seats: number }}
+   */
+  function rankBuckets(raw) {
+    /** @type {Record<string, string[]>} */
+    const byKey = Object.create(null);
+    let seats = 0;
+    for (const [key, words] of Object.entries(raw)) {
+      const selected = selectByFrequency(words, freq);
+      byKey[key] = selected;
+      seats += selected.length;
+    }
+    return { byKey, seats };
   }
+
+  const perfect = rankBuckets(buckets);
+  const end = rankBuckets(bucketsEnd);
 
   mkdirSync(dirname(sylOutPath), { recursive: true });
   mkdirSync(dirname(rhymeOutPath), { recursive: true });
@@ -264,14 +295,22 @@ async function main() {
   const sylPayload = `${JSON.stringify(syllables)}\n`;
   writeFileSync(sylOutPath, sylPayload, "utf8");
 
-  const rhymePayload = `${JSON.stringify({ byWord, byKey })}\n`;
+  const rhymePayload = `${JSON.stringify({
+    byWord,
+    byKey: perfect.byKey,
+    byWordEnd,
+    byKeyEnd: end.byKey,
+  })}\n`;
   writeFileSync(rhymeOutPath, rhymePayload, "utf8");
 
   console.log(
     `Syllables: ${sylEntries} → ${sylOutPath} (${(Buffer.byteLength(sylPayload) / 1024 / 1024).toFixed(2)} MiB)`,
   );
   console.log(
-    `Rhymes: ${rhymeEntries} words / ${Object.keys(byKey).length} keys (${bucketSeats} seats; ${skippedNoRhyme} no-key) → ${rhymeOutPath} (${(Buffer.byteLength(rhymePayload) / 1024 / 1024).toFixed(2)} MiB)`,
+    `Perfect rhymes: ${rhymeEntries} words / ${Object.keys(perfect.byKey).length} keys (${perfect.seats} seats; ${skippedNoRhyme} no-key)`,
+  );
+  console.log(
+    `End rhymes: ${endEntries} words / ${Object.keys(end.byKey).length} keys (${end.seats} seats) → ${rhymeOutPath} (${(Buffer.byteLength(rhymePayload) / 1024 / 1024).toFixed(2)} MiB)`,
   );
 }
 

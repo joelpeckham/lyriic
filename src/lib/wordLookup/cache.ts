@@ -11,9 +11,12 @@ export function rankedCacheKey(parts: {
   lineTarget: number | null;
   tokenSyllables: number;
   overrideRevision: string;
+  /** Perfect vs end rhyme; ignored for thesaurus. */
+  rhymeMode?: "perfect" | "end";
 }): CacheKey {
   return [
     parts.mode,
+    parts.rhymeMode ?? "perfect",
     parts.word,
     parts.lineTotal,
     parts.lineTarget ?? "none",

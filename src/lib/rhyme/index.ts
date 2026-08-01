@@ -1,7 +1,13 @@
 export {
+  hasRhymeEntry,
   isRhymeIndexReady,
   loadRhymeIndex,
   lookupRhymes,
   type RhymeIndex,
+  type RhymeMode,
 } from "./lookup";
-export { rhymeKeyFromIpa, rhymeKeyFromPhones } from "./rhymeKey";
+export {
+  endRhymeKeyFromIpa,
+  rhymeKeyFromIpa,
+  rhymeKeyFromPhones,
+} from "./rhymeKey";

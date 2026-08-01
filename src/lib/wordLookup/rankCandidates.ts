@@ -14,7 +14,7 @@ export type RankCandidatesInput = {
   lineTotal: number;
   lineTarget: number | null;
   overrides?: Record<string, number>;
-  /** Max rows to return after sort (default 24). */
+  /** Max rows after sort; omit to return the full ranked list. */
   limit?: number;
 };
 
@@ -30,7 +30,7 @@ export function rankCandidates({
   lineTotal,
   lineTarget,
   overrides,
-  limit = 24,
+  limit,
 }: RankCandidatesInput): RankedCandidate[] {
   const seen = new Set<string>();
   const ranked: RankedCandidate[] = [];
@@ -58,5 +58,5 @@ export function rankCandidates({
     return a.word.localeCompare(b.word);
   });
 
-  return ranked.slice(0, limit);
+  return limit === undefined ? ranked : ranked.slice(0, limit);
 }

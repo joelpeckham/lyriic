@@ -252,6 +252,19 @@ export function tokenizeIpa(ipa) {
 }
 
 /**
+ * @param {{ phone: string, stress: 0 | 1 | 2, isVowel: boolean }[]} phones
+ * @param {number} start
+ * @returns {string | null}
+ */
+function keyFrom(phones, start) {
+  if (start === -1) return null;
+  return phones
+    .slice(start)
+    .map((p) => p.phone)
+    .join("");
+}
+
+/**
  * Perfect-rhyme key: phones from the last primary-stressed vowel (else last
  * secondary) through the coda. Mirrored in src/lib/rhyme/rhymeKey.ts.
  *
@@ -298,11 +311,23 @@ export function rhymeKeyFromIpa(ipa) {
       }
     }
   }
-  if (start === -1) return null;
-  return phones
-    .slice(start)
-    .map((p) => p.phone)
-    .join("");
+  return keyFrom(phones, start);
+}
+
+/**
+ * End-rhyme / unstressed key: last vowel nucleus through the coda, ignoring
+ * stress. Matches line-final identity (fun ↔ anyone).
+ * Mirrored in src/lib/rhyme/rhymeKey.ts.
+ *
+ * @param {string} ipa
+ * @returns {string | null}
+ */
+export function endRhymeKeyFromIpa(ipa) {
+  const phones = tokenizeIpa(ipa);
+  for (let i = phones.length - 1; i >= 0; i -= 1) {
+    if (phones[i].isVowel) return keyFrom(phones, i);
+  }
+  return null;
 }
 
 /**

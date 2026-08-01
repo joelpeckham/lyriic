@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { rhymeKeyFromIpa, rhymeKeyFromPhones } from "./rhymeKey";
+import {
+  endRhymeKeyFromIpa,
+  rhymeKeyFromIpa,
+  rhymeKeyFromPhones,
+} from "./rhymeKey";
 
 describe("rhymeKeyFromIpa", () => {
   it("shares a key for perfect rhymes (rhyme / time / lime)", () => {
@@ -45,6 +49,18 @@ describe("rhymeKeyFromIpa", () => {
   it("returns null when no vowel", () => {
     expect(rhymeKeyFromIpa("")).toBeNull();
     expect(rhymeKeyFromIpa("ʃ")).toBeNull();
+  });
+});
+
+describe("endRhymeKeyFromIpa", () => {
+  it("uses the last nucleus ignoring stress (fun ↔ anyone)", () => {
+    expect(endRhymeKeyFromIpa("fˈʌn")).toBe("ʌn");
+    expect(endRhymeKeyFromIpa("ˈɛniwʌn")).toBe("ʌn");
+  });
+
+  it("differs from perfect rhyme on early-stressed words", () => {
+    expect(rhymeKeyFromIpa("ˈɛniwʌn")).toBe("ɛniwʌn");
+    expect(endRhymeKeyFromIpa("ˈɛniwʌn")).toBe("ʌn");
   });
 });
 

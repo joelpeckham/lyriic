@@ -18,9 +18,15 @@ import {
   PopoverHeader,
   PopoverTitle,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import type { WordLookupRequest } from "@/lib/editor/wordLookup";
 import type { MeteredLine } from "@/lib/meters/types";
-import { loadRhymeIndex, lookupRhymes } from "@/lib/rhyme";
+import {
+  loadRhymeIndex,
+  lookupRhymes,
+  type RhymeMode,
+} from "@/lib/rhyme";
 import { loadThesaurus, lookupSynonyms } from "@/lib/thesaurus";
 import {
   getCachedRanked,
@@ -72,6 +78,7 @@ export function WordLookupPopover({
   const listId = useId();
   const listRef = useRef<HTMLDivElement>(null);
   const [remote, setRemote] = useState<RemoteState | null>(null);
+  const [rhymeMode, setRhymeMode] = useState<RhymeMode>("perfect");
   const open = request !== null;
   const display = useClosingRetention(request);
   const meteredRef = useRef(meteredLine);
@@ -97,6 +104,7 @@ export function WordLookupPopover({
   const cacheKey = display
     ? rankedCacheKey({
         mode: display.mode,
+        rhymeMode: display.mode === "rhyme" ? rhymeMode : undefined,
         word: display.word,
         lineTotal,
         lineTarget,
@@ -125,7 +133,7 @@ export function WordLookupPopover({
     const load =
       display.mode === "thesaurus"
         ? loadThesaurus().then(() => lookupSynonyms(display.word))
-        : loadRhymeIndex().then(() => lookupRhymes(display.word));
+        : loadRhymeIndex().then(() => lookupRhymes(display.word, rhymeMode));
 
     void load
       .then((words) => {
@@ -158,6 +166,7 @@ export function WordLookupPopover({
     lineTotal,
     lineTarget,
     overrides,
+    rhymeMode,
   ]);
 
   useLayoutEffect(() => {
@@ -222,7 +231,9 @@ export function WordLookupPopover({
     : "Couldn’t load rhymes.";
   const description = isThesaurus
     ? "Choose a synonym. Options are sorted by syllable count. Meter-matching options are marked."
-    : "Choose a rhyme to copy. Options are sorted by syllable count. Meter-matching options are marked.";
+    : rhymeMode === "end"
+      ? "Choose an end rhyme to copy. Matches the final syllable even when stress differs. Sorted by syllable count."
+      : "Choose a perfect rhyme to copy. Options are sorted by syllable count. Meter-matching options are marked.";
 
   return (
     <Popover
@@ -256,6 +267,32 @@ export function WordLookupPopover({
             {description}
           </PopoverDescription>
         </PopoverHeader>
+
+        {!isThesaurus && display ? (
+          <ButtonGroup
+            aria-label="Rhyme type"
+            className="px-0.5"
+          >
+            <Button
+              type="button"
+              size="xs"
+              variant={rhymeMode === "perfect" ? "secondary" : "ghost"}
+              aria-pressed={rhymeMode === "perfect"}
+              onClick={() => setRhymeMode("perfect")}
+            >
+              Perfect
+            </Button>
+            <Button
+              type="button"
+              size="xs"
+              variant={rhymeMode === "end" ? "secondary" : "ghost"}
+              aria-pressed={rhymeMode === "end"}
+              onClick={() => setRhymeMode("end")}
+            >
+              End
+            </Button>
+          </ButtonGroup>
+        ) : null}
 
         {loadState === "loading" ? (
           <p className="px-1.5 py-2 text-sm text-muted-foreground">Loading…</p>

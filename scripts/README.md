@@ -31,9 +31,9 @@ pnpm build:rhyme
 Writes:
 
 - `src/lib/syllables/data/cmu-syllables.json` — vowel-nucleus syllable counts
-- `src/lib/rhyme/data/rhyme-index.json` — perfect-rhyme index (IPA keys; alt pronunciations; Zipf-ranked buckets, max 80)
+- `src/lib/rhyme/data/rhyme-index.json` — perfect + end-rhyme indexes (IPA keys; alt pronunciations; Zipf-ranked full buckets)
 
-Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last vowel) through the coda. See `scripts/lib/ipa.mjs` and `src/lib/rhyme/rhymeKey.ts`.
+Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last non-reduced vowel) through the coda. End-rhyme key = last vowel nucleus through the coda (ignores stress; fun ↔ anyone). See `scripts/lib/ipa.mjs` and `src/lib/rhyme/rhymeKey.ts`.
 
 ## Thesaurus
 

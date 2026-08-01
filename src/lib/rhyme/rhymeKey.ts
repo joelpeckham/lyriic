@@ -114,6 +114,14 @@ function tokenizeIpa(ipa: string): IpaPhone[] {
   return phones;
 }
 
+function keyFrom(phones: IpaPhone[], start: number): string | null {
+  if (start === -1) return null;
+  return phones
+    .slice(start)
+    .map((p) => p.phone)
+    .join("");
+}
+
 /** Perfect-rhyme key from a stress-marked IPA string. */
 export function rhymeKeyFromIpa(ipa: string): string | null {
   const phones = tokenizeIpa(ipa);
@@ -155,11 +163,19 @@ export function rhymeKeyFromIpa(ipa: string): string | null {
       }
     }
   }
-  if (start === -1) return null;
-  return phones
-    .slice(start)
-    .map((p) => p.phone)
-    .join("");
+  return keyFrom(phones, start);
+}
+
+/**
+ * End-rhyme / unstressed key: last vowel nucleus through the coda, ignoring
+ * stress (fun ↔ anyone). Mirrored in scripts/lib/ipa.mjs.
+ */
+export function endRhymeKeyFromIpa(ipa: string): string | null {
+  const phones = tokenizeIpa(ipa);
+  for (let i = phones.length - 1; i >= 0; i -= 1) {
+    if (phones[i]?.isVowel) return keyFrom(phones, i);
+  }
+  return null;
 }
 
 /**

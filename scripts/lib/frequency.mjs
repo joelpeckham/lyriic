@@ -51,10 +51,11 @@ export function zipfFrequencies(words) {
 
 /**
  * Sort lemmas by descending Zipf, then shorter, then alpha.
+ * Pass `limit` to cap results; omit for the full ranked list.
  *
  * @param {string[]} words
  * @param {Map<string, number>} freq
- * @param {number} limit
+ * @param {number} [limit]
  * @returns {string[]}
  */
 export function selectByFrequency(words, freq, limit) {
@@ -73,5 +74,6 @@ export function selectByFrequency(words, freq, limit) {
     if (a.length !== b.length) return a.length - b.length;
     return a.localeCompare(b);
   });
+  if (limit === undefined || limit === Number.POSITIVE_INFINITY) return clean;
   return clean.slice(0, limit);
 }

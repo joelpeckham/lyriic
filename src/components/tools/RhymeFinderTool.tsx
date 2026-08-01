@@ -5,14 +5,20 @@ import {
   RhymeWordBank,
   type RhymeSyllableGroup,
 } from "@/components/tools/RhymeWordBank";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { normalizeLookupKey } from "@/lib/data/lazyJson";
-import { loadRhymeIndex, lookupRhymes, type RhymeIndex } from "@/lib/rhyme";
+import {
+  hasRhymeEntry,
+  loadRhymeIndex,
+  lookupRhymes,
+  type RhymeIndex,
+  type RhymeMode,
+} from "@/lib/rhyme";
 import { countWord } from "@/lib/syllables";
 import { cn } from "@/lib/utils";
-
-const RESULT_LIMIT = 60;
 
 const EXAMPLE_WORDS = [
   "light",
@@ -21,6 +27,7 @@ const EXAMPLE_WORDS = [
   "river",
   "alone",
   "fire",
+  "fun",
 ] as const;
 
 function groupBySyllables(words: string[]): RhymeSyllableGroup[] {
@@ -41,6 +48,7 @@ function groupBySyllables(words: string[]): RhymeSyllableGroup[] {
 
 export function RhymeFinderTool() {
   const [query, setQuery] = useState("light");
+  const [rhymeMode, setRhymeMode] = useState<RhymeMode>("perfect");
   const [index, setIndex] = useState<RhymeIndex | null>(null);
   const dictRevision = useDictRevision();
   const dictReady = dictRevision > 0;
@@ -59,17 +67,17 @@ export function RhymeFinderTool() {
   const trimmed = query.trim();
   const lookupKey = normalizeLookupKey(trimmed);
 
-  const { rhymes, known, truncated } = useMemo(() => {
+  const { rhymes, known } = useMemo(() => {
     if (!index || !lookupKey) {
-      return { rhymes: [] as string[], known: false, truncated: false };
+      return { rhymes: [] as string[], known: false };
     }
-    const all = lookupRhymes(lookupKey);
+    // Touch store via lookup after index is in state (same chunk).
+    void index;
     return {
-      rhymes: all.slice(0, RESULT_LIMIT),
-      known: index.byWord[lookupKey] !== undefined,
-      truncated: all.length > RESULT_LIMIT,
+      rhymes: lookupRhymes(lookupKey, rhymeMode),
+      known: hasRhymeEntry(lookupKey, rhymeMode),
     };
-  }, [lookupKey, index]);
+  }, [lookupKey, index, rhymeMode]);
 
   const groups = useMemo(() => {
     if (!dictReady || rhymes.length === 0) return [];
@@ -111,6 +119,34 @@ export function RhymeFinderTool() {
           />
         </label>
 
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <ButtonGroup aria-label="Rhyme type">
+            <Button
+              type="button"
+              size="sm"
+              variant={rhymeMode === "perfect" ? "secondary" : "outline"}
+              aria-pressed={rhymeMode === "perfect"}
+              onClick={() => setRhymeMode("perfect")}
+            >
+              Perfect
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={rhymeMode === "end" ? "secondary" : "outline"}
+              aria-pressed={rhymeMode === "end"}
+              onClick={() => setRhymeMode("end")}
+            >
+              End rhyme
+            </Button>
+          </ButtonGroup>
+          <p className="text-sm text-muted-foreground">
+            {rhymeMode === "perfect"
+              ? "Stress-matched endings (gun, begun)."
+              : "Final syllable only (fun ↔ anyone)."}
+          </p>
+        </div>
+
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-sm">
           <span className="text-muted-foreground">Try</span>
           {EXAMPLE_WORDS.map((word) => {
@@ -135,7 +171,11 @@ export function RhymeFinderTool() {
         </div>
       </div>
 
-      <div className="mt-8 min-h-[8rem]" aria-live="polite" aria-busy={status === "loading-index" || status === "loading-dict"}>
+      <div
+        className="mt-8 min-h-[8rem]"
+        aria-live="polite"
+        aria-busy={status === "loading-index" || status === "loading-dict"}
+      >
         {status === "loading-index" ? (
           <p className="text-sm text-muted-foreground">
             Opening the local rhyme index…
@@ -167,8 +207,7 @@ export function RhymeFinderTool() {
 
         {status === "loading-dict" ? (
           <p className="text-sm text-muted-foreground">
-            Found {rhymes.length}
-            {truncated ? "+" : ""} rhyme{rhymes.length === 1 ? "" : "s"}—sorting
+            Found {rhymes.length} rhyme{rhymes.length === 1 ? "" : "s"}—sorting
             by syllable count…
           </p>
         ) : null}
@@ -177,7 +216,6 @@ export function RhymeFinderTool() {
           <RhymeWordBank
             groups={groups}
             query={trimmed}
-            truncated={truncated}
             totalShown={rhymes.length}
           />
         ) : null}
