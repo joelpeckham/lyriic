@@ -11,7 +11,6 @@ export function buildMeteredLine(
 ): MeteredLine {
   const target = targetForLine(pattern, lineIndex);
   const tokens: MeteredToken[] = [];
-  const boundaries = [0];
   let cursor = 0;
 
   for (let i = 0; i < count.tokens.length; i++) {
@@ -31,7 +30,6 @@ export function buildMeteredLine(
       source: wordCount?.source ?? "heuristic",
     });
     cursor = syllableEnd;
-    boundaries.push(cursor);
   }
 
   const total = count.total;
@@ -48,5 +46,5 @@ export function buildMeteredLine(
     }
   }
 
-  return { total, target, status, tokens, boundaries };
+  return { total, target, status, tokens };
 }

@@ -20,10 +20,4 @@ export type MeteredLine = {
   target: number | null;
   status: MeterStatus;
   tokens: MeteredToken[];
-  /**
-   * Cumulative syllable ends after each token (and 0 at the start).
-   * Equivalent to `[0, ...tokens.map(t => t.syllableEnd)]`.
-   * Ruler tick geometry uses token spans via `mapSyllableToOffset`, not this array.
-   */
-  boundaries: number[];
 };

@@ -9,7 +9,6 @@ function metered(
   return {
     target: null,
     tokens: [],
-    boundaries: [0],
     ...partial,
   };
 }
@@ -34,7 +33,6 @@ describe("toOverlayLines", () => {
               source: "dict",
             },
           ],
-          boundaries: [0, 2],
         }),
         metered({ total: 0, status: "none" }),
         metered({ total: 8, target: 7, status: "over" }),
