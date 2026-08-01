@@ -239,7 +239,15 @@ export function PoemEditor({
     viewRef.current = view;
     view.focus();
 
+    // Literata loads with font-display:swap — remasure so the drawn caret
+    // tracks the real glyph box after the fallback → webfont swap.
+    let cancelled = false;
+    void document.fonts.ready.then(() => {
+      if (!cancelled) view.requestMeasure();
+    });
+
     return () => {
+      cancelled = true;
       view.destroy();
       viewRef.current = null;
     };

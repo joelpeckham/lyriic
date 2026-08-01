@@ -1,6 +1,11 @@
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { Annotation, type Extension } from "@codemirror/state";
-import { EditorView, keymap, placeholder } from "@codemirror/view";
+import {
+  drawSelection,
+  EditorView,
+  keymap,
+  placeholder,
+} from "@codemirror/view";
 
 import { syllableOverlay } from "@/lib/editor/syllableOverlay";
 import {
@@ -29,7 +34,9 @@ export function createPoemExtensions({
 }: PoemExtensionOptions): Extension[] {
   return [
     history(),
-    // Native browser selection (text-shaped) rather than CM's full-width blocks.
+    // Drawn caret/selection: Firefox parks the native caret at the top of tall
+    // empty line boxes (WRAP_LEADING), so it floats above the placeholder.
+    drawSelection(),
     EditorView.lineWrapping,
     placeholder("Write a line…"),
     keymap.of([...defaultKeymap, ...historyKeymap]),

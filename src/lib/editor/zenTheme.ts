@@ -60,6 +60,12 @@ export function zenEditorTheme(fontSizeRem: number) {
       ".cm-content ::selection": {
         backgroundColor: "var(--lyriic-selection)",
       },
+      "&.cm-focused .cm-selectionBackground": {
+        backgroundColor: "var(--lyriic-selection)",
+      },
+      ".cm-selectionBackground": {
+        backgroundColor: "var(--lyriic-selection)",
+      },
       ".cm-cursor, .cm-dropCursor": {
         borderLeftColor: "var(--lyriic-ink)",
       },
