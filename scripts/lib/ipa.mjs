@@ -17,7 +17,27 @@ const MISAKI_TO_IPA = [
 ];
 
 /** Multi-character IPA phones (longest first for tokenization). */
-const IPA_MULTI = ["aɪ", "aʊ", "oʊ", "eɪ", "ɔɪ", "dʒ", "tʃ"];
+const IPA_MULTI = [
+  "aɪ",
+  "aʊ",
+  "oʊ",
+  "eɪ",
+  "ɔɪ",
+  "dʒ",
+  "tʃ",
+  "n̩",
+  "l̩",
+  "m̩",
+  "ŋ̩",
+  "ɹ̩",
+  "r̩",
+];
+
+/** Reduced vowels — unmarked keys prefer a fuller nucleus when present. */
+const IPA_REDUCED = new Set(["ə", "ɚ"]);
+
+/** Syllabic consonants count as nuclei for syllables, not as rhyme anchors. */
+const IPA_SYLLABIC = new Set(["n̩", "l̩", "m̩", "ŋ̩", "ɹ̩", "r̩"]);
 
 const IPA_VOWELS = new Set([
   "ə",
@@ -40,6 +60,16 @@ const IPA_VOWELS = new Set([
   "ɔɪ",
   "a",
   "ɒ",
+  // WikiPron broad often uses ASCII mid vowels.
+  "e",
+  "o",
+  // Syllabic consonants (WikiPron).
+  "n̩",
+  "l̩",
+  "m̩",
+  "ŋ̩",
+  "ɹ̩",
+  "r̩",
 ]);
 
 const ARPABET_VOWELS = {
@@ -89,8 +119,11 @@ const ARPABET_CONSONANTS = {
 
 const ARPABET_STRESS_RE = /^([A-Z]+)(\d?)$/;
 
-/** Strip WikiPron narrow-IPA decoration. */
-const WIKIPRON_STRIP_RE = /[\u0300-\u036fː͜͡]/g;
+/** Combining vertical line below — syllabic consonant mark (keep). */
+const SYLLABIC_MARK = "\u0329";
+
+/** Strip WikiPron narrow-IPA decoration (not syllabic mark). */
+const WIKIPRON_STRIP_RE = /[\u0300-\u0328\u032a-\u036fː͜͡]/g;
 
 /**
  * @param {string} ps
@@ -136,7 +169,29 @@ export function arpabetToIpa(arpaTokens) {
  * @returns {string}
  */
 export function wikipronToIpa(phonesSpaceSeparated) {
-  return phonesSpaceSeparated.replace(/ /g, "").replace(WIKIPRON_STRIP_RE, "");
+  let s = phonesSpaceSeparated.replace(/ /g, "").replaceAll("g", "ɡ");
+  // Protect syllabic marks from the diacritic strip, then restore.
+  /** @type {string[]} */
+  const reserved = [];
+  s = s.replace(
+    new RegExp(`([nlmŋrɹ])${SYLLABIC_MARK}`, "g"),
+    (full) => {
+      reserved.push(full);
+      return `\0${reserved.length - 1}\0`;
+    },
+  );
+  s = s.replace(WIKIPRON_STRIP_RE, "");
+  s = s.replace(/\0(\d+)\0/g, (_, idx) => reserved[Number(idx)] ?? "");
+  return s;
+}
+
+/**
+ * @param {string} ipa
+ * @returns {string}
+ */
+function canonicalizeIpa(ipa) {
+  // ASCII g (WikiPron) → IPA voiced velar stop used by CMU mapping.
+  return ipa.replaceAll("g", "ɡ");
 }
 
 /**
@@ -144,12 +199,13 @@ export function wikipronToIpa(phonesSpaceSeparated) {
  * @returns {{ phone: string, stress: 0 | 1 | 2, isVowel: boolean }[]}
  */
 export function tokenizeIpa(ipa) {
+  const text = canonicalizeIpa(ipa);
   /** @type {{ phone: string, stress: 0 | 1 | 2, isVowel: boolean }[]} */
   const phones = [];
   let pending = /** @type {0 | 1 | 2} */ (0);
   let i = 0;
-  while (i < ipa.length) {
-    const ch = ipa[i];
+  while (i < text.length) {
+    const ch = text[i];
     if (ch === "ˈ") {
       pending = 1;
       i += 1;
@@ -167,10 +223,19 @@ export function tokenizeIpa(ipa) {
 
     let matched = null;
     for (const multi of IPA_MULTI) {
-      if (ipa.startsWith(multi, i)) {
+      if (text.startsWith(multi, i)) {
         matched = multi;
         break;
       }
+    }
+    // Base + combining syllabic mark not listed as a multi (defensive).
+    if (
+      !matched &&
+      ch &&
+      "nlmŋrɹ".includes(ch) &&
+      text[i + 1] === SYLLABIC_MARK
+    ) {
+      matched = `${ch}${SYLLABIC_MARK}`;
     }
     const phone = matched ?? ch;
     i += phone.length;
@@ -211,7 +276,21 @@ export function rhymeKeyFromIpa(ipa) {
     }
   }
   if (start === -1) {
-    // Unmarked transcriptions (some WikiPron): use last vowel nucleus.
+    // Unmarked (WikiPron): prefer last non-reduced oral nucleus so trailing
+    // schwa / syllabic consonants do not own the key (banana → ænə, not ə).
+    for (let i = phones.length - 1; i >= 0; i -= 1) {
+      const p = phones[i];
+      if (
+        p.isVowel &&
+        !IPA_REDUCED.has(p.phone) &&
+        !IPA_SYLLABIC.has(p.phone)
+      ) {
+        start = i;
+        break;
+      }
+    }
+  }
+  if (start === -1) {
     for (let i = phones.length - 1; i >= 0; i -= 1) {
       if (phones[i].isVowel) {
         start = i;

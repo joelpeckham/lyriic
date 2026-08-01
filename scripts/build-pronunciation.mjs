@@ -178,7 +178,11 @@ function mergeSources(gold, cmu, silver, wikipron) {
     if (!gold.has(word) && !cmu.has(word) && silver.has(word)) {
       add(silver.get(word));
     }
-    for (const ipa of (wikipron.get(word) ?? []).slice(0, 3)) add(ipa);
+    // WikiPron only when no higher-quality source contributed. Stressless
+    // broad IPA must not pollute Misaki/CMU rhyme keys as alternate buckets.
+    if (ipas.length === 0) {
+      for (const ipa of (wikipron.get(word) ?? []).slice(0, 3)) add(ipa);
+    }
 
     if (ipas.length === 0) continue;
     merged.set(word, { primary: ipas[0], alts: ipas.slice(1) });

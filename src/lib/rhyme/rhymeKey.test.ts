@@ -21,8 +21,25 @@ describe("rhymeKeyFromIpa", () => {
     expect(rhymeKeyFromIpa("həˌloʊ")).toBe("oʊ");
   });
 
-  it("falls back to last vowel when unmarked", () => {
+  it("falls back to last vowel when unmarked and monosyllabic", () => {
     expect(rhymeKeyFromIpa("kæt")).toBe("æt");
+  });
+
+  it("treats WikiPron ASCII e as a vowel nucleus", () => {
+    expect(rhymeKeyFromIpa("eɹ")).toBe("eɹ");
+  });
+
+  it("skips trailing schwa when unmarked (banana)", () => {
+    expect(rhymeKeyFromIpa("bənænə")).toBe("ænə");
+  });
+
+  it("normalizes ASCII g to IPA ɡ in keys", () => {
+    expect(rhymeKeyFromIpa("tæg")).toBe(rhymeKeyFromIpa("tæɡ"));
+    expect(rhymeKeyFromIpa("tæg")).toBe("æɡ");
+  });
+
+  it("treats syllabic consonants as nuclei", () => {
+    expect(rhymeKeyFromIpa("tɪzn̩t")).toBe("ɪzn̩t");
   });
 
   it("returns null when no vowel", () => {

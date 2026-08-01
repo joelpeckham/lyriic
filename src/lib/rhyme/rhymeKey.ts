@@ -1,9 +1,28 @@
 /**
  * Perfect-rhyme key from IPA (last primary-stressed vowel, else last
- * secondary, else last vowel). Mirrored in scripts/lib/ipa.mjs — keep in sync.
+ * secondary, else last non-reduced vowel). Mirrored in scripts/lib/ipa.mjs —
+ * keep in sync.
  */
 
-const IPA_MULTI = ["aɪ", "aʊ", "oʊ", "eɪ", "ɔɪ", "dʒ", "tʃ"] as const;
+const IPA_MULTI = [
+  "aɪ",
+  "aʊ",
+  "oʊ",
+  "eɪ",
+  "ɔɪ",
+  "dʒ",
+  "tʃ",
+  "n̩",
+  "l̩",
+  "m̩",
+  "ŋ̩",
+  "ɹ̩",
+  "r̩",
+] as const;
+
+const IPA_REDUCED = new Set(["ə", "ɚ"]);
+
+const IPA_SYLLABIC = new Set(["n̩", "l̩", "m̩", "ŋ̩", "ɹ̩", "r̩"]);
 
 const IPA_VOWELS = new Set([
   "ə",
@@ -26,16 +45,31 @@ const IPA_VOWELS = new Set([
   "ɔɪ",
   "a",
   "ɒ",
+  "e",
+  "o",
+  "n̩",
+  "l̩",
+  "m̩",
+  "ŋ̩",
+  "ɹ̩",
+  "r̩",
 ]);
+
+const SYLLABIC_MARK = "\u0329";
 
 type IpaPhone = { phone: string; stress: 0 | 1 | 2; isVowel: boolean };
 
+function canonicalizeIpa(ipa: string): string {
+  return ipa.replaceAll("g", "ɡ");
+}
+
 function tokenizeIpa(ipa: string): IpaPhone[] {
+  const text = canonicalizeIpa(ipa);
   const phones: IpaPhone[] = [];
   let pending: 0 | 1 | 2 = 0;
   let i = 0;
-  while (i < ipa.length) {
-    const ch = ipa[i];
+  while (i < text.length) {
+    const ch = text[i];
     if (ch === "ˈ") {
       pending = 1;
       i += 1;
@@ -53,10 +87,18 @@ function tokenizeIpa(ipa: string): IpaPhone[] {
 
     let matched: string | null = null;
     for (const multi of IPA_MULTI) {
-      if (ipa.startsWith(multi, i)) {
+      if (text.startsWith(multi, i)) {
         matched = multi;
         break;
       }
+    }
+    if (
+      !matched &&
+      ch &&
+      "nlmŋrɹ".includes(ch) &&
+      text[i + 1] === SYLLABIC_MARK
+    ) {
+      matched = `${ch}${SYLLABIC_MARK}`;
     }
     const phone = matched ?? ch ?? "";
     i += phone.length;
@@ -87,6 +129,19 @@ export function rhymeKeyFromIpa(ipa: string): string | null {
     for (let i = phones.length - 1; i >= 0; i -= 1) {
       const p = phones[i];
       if (p?.isVowel && p.stress === 2) {
+        start = i;
+        break;
+      }
+    }
+  }
+  if (start === -1) {
+    for (let i = phones.length - 1; i >= 0; i -= 1) {
+      const p = phones[i];
+      if (
+        p?.isVowel &&
+        !IPA_REDUCED.has(p.phone) &&
+        !IPA_SYLLABIC.has(p.phone)
+      ) {
         start = i;
         break;
       }
