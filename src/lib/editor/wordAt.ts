@@ -1,5 +1,4 @@
 import { tokenizeLine } from "@/lib/syllables/tokenize";
-import type { WordToken } from "@/lib/syllables/types";
 
 export type WordAtResult = {
   /** Absolute document positions. */
@@ -9,8 +8,6 @@ export type WordAtResult = {
   word: string;
   /** 0-based line index. */
   lineIndex: number;
-  /** Line-local token (offsets relative to the line). */
-  token: WordToken;
 };
 
 /**
@@ -44,7 +41,6 @@ export function wordAt(
       raw: token.raw,
       word: token.word,
       lineIndex,
-      token,
     };
   }
 
@@ -66,6 +62,5 @@ export function wordAt(
     raw: token.raw,
     word: token.word,
     lineIndex,
-    token,
   };
 }

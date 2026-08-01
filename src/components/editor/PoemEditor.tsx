@@ -8,12 +8,10 @@ import { WordToolbarPopover } from "@/components/editor/WordToolbarPopover";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { createPoemExtensions } from "@/lib/editor/createPoemExtensions";
 import {
+  getSyllableOverlay,
   setMeterOverlayData,
-  toOverlayLines,
-} from "@/lib/editor/meterOverlay";
-import { getSyllableOverlay } from "@/lib/editor/syllableOverlay";
+} from "@/lib/editor/syllableOverlay";
 import {
-  lookupRequestFromTarget,
   replaceWordRange,
   type WordLookupRequest,
 } from "@/lib/editor/wordLookup";
@@ -28,6 +26,7 @@ import {
   buildMeteredLines,
   formatMeterLabel,
   getMeterPreset,
+  type MeteredLine,
 } from "@/lib/meters";
 import type { EditorSettings } from "@/lib/settings";
 
@@ -57,6 +56,15 @@ function overridesKey(overrides: Record<string, number>): string {
     .join("|");
 }
 
+function tokenSyllablesFor(
+  metered: readonly MeteredLine[],
+  target: Pick<WordLookupRequest, "lineIndex" | "from" | "lineFrom">,
+): number {
+  const line = metered[target.lineIndex];
+  const localStart = target.from - target.lineFrom;
+  return line?.tokens.find((t) => t.start === localStart)?.syllables ?? 0;
+}
+
 export function PoemEditor({
   value,
   onChange,
@@ -71,6 +79,7 @@ export function PoemEditor({
   const viewRef = useRef<EditorView | null>(null);
   const themeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
+  const meteredLinesRef = useRef<readonly MeteredLine[]>([]);
   const onOpenWordLookupRef = useRef<(request: WordLookupRequest) => void>(
     () => {},
   );
@@ -94,7 +103,10 @@ export function PoemEditor({
   useLayoutEffect(() => {
     onOpenWordLookupRef.current = (request) => {
       setToolbarTarget(null);
-      setLookupRequest(request);
+      setLookupRequest({
+        ...request,
+        tokenSyllables: tokenSyllablesFor(meteredLinesRef.current, request),
+      });
     };
     onWordToolbarChangeRef.current = (target) => {
       setToolbarTarget(target);
@@ -124,6 +136,7 @@ export function PoemEditor({
     () => buildMeteredLines(lineCounts.counts, pattern),
     [lineCounts.counts, pattern],
   );
+  meteredLinesRef.current = meteredLines;
 
   // Create / destroy the editor once per mount (parent remounts on documentKey).
   useEffect(() => {
@@ -210,7 +223,8 @@ export function PoemEditor({
     setMeterOverlayData(view, {
       showCounts: settings.showCounts,
       showRulers: settings.showRulers,
-      lines: toOverlayLines(meteredLines, lineCounts.lines),
+      lines: meteredLines,
+      textLines: lineCounts.lines,
     });
     getSyllableOverlay(view)?.redraw(view);
   }, [
@@ -281,7 +295,11 @@ export function PoemEditor({
         }}
         onOpenLookup={(mode) => {
           if (!toolbarTarget) return;
-          const request = lookupRequestFromTarget(toolbarTarget, mode);
+          const request: WordLookupRequest = {
+            ...toolbarTarget,
+            mode,
+            tokenSyllables: tokenSyllablesFor(meteredLines, toolbarTarget),
+          };
           const view = viewRef.current;
           if (view) dismissWordToolbar(view);
           setToolbarTarget(null);

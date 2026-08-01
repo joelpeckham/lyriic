@@ -11,22 +11,24 @@ import {
   wordTargetAtPointer,
   type WordTarget,
 } from "@/lib/editor/resolveWordTarget";
+import { openWordLookup } from "@/lib/editor/wordLookup";
 
+/** Alias kept for WordToolbarPopover imports. */
 export type WordToolbarTarget = WordTarget;
 
-export type WordToolbarHandler = (target: WordToolbarTarget | null) => void;
+export type WordToolbarHandler = (target: WordTarget | null) => void;
 
 /** Exported for tests. */
 export const HOVER_SHOW_MS = 350;
 /** Exported for tests. */
 export const HOVER_HIDE_MS = 120;
+/** Long-press thesaurus + tap-skip threshold (one timer story). */
+export const LONG_PRESS_MS = 500;
 
 /** Selector for the portaled toolbar surface (word ∪ toolbar hover target). */
 export const WORD_TOOLBAR_ATTR = "data-word-toolbar";
 
 const MOVE_CANCEL_PX = 8;
-/** Skip tap-open if the press lasted long enough to be a long-press. */
-const LONG_PRESS_SKIP_MS = 450;
 
 const wordToolbarFacet = Facet.define<
   WordToolbarHandler,
@@ -37,11 +39,11 @@ const wordToolbarFacet = Facet.define<
   },
 });
 
-function emit(view: EditorView, target: WordToolbarTarget | null): void {
+function emit(view: EditorView, target: WordTarget | null): void {
   view.state.facet(wordToolbarFacet)?.(target);
 }
 
-function targetKey(target: WordToolbarTarget | null): string {
+function targetKey(target: WordTarget | null): string {
   if (!target) return "";
   return `${target.from}:${target.to}:${target.word}`;
 }
@@ -50,17 +52,23 @@ function isInsideToolbar(target: EventTarget | null): boolean {
   return target instanceof Element && Boolean(target.closest(`[${WORD_TOOLBAR_ATTR}]`));
 }
 
-class WordToolbarPlugin implements PluginValue {
+/**
+ * Shared pointer/gesture plugin: hover + tap toolbar, long-press thesaurus.
+ * One MOVE_CANCEL_PX and one LONG_PRESS_MS for tap vs long-press.
+ */
+class WordPointerPlugin implements PluginValue {
   private view: EditorView;
   private showTimer: number | null = null;
   private hideTimer: number | null = null;
+  private longPressTimer: number | null = null;
   private pendingKey = "";
   private openKey = "";
-  private openTarget: WordToolbarTarget | null = null;
+  private openTarget: WordTarget | null = null;
   private popoverHovered = false;
   /** When true, ignore mouse-leave hide (e.g. syllable override panel). */
   private sticky = false;
   private docListening = false;
+  private suppressTap = false;
   private pointerDown: {
     x: number;
     y: number;
@@ -91,6 +99,7 @@ class WordToolbarPlugin implements PluginValue {
   destroy(): void {
     this.clearShow();
     this.clearHide();
+    this.clearLongPress();
     this.detachDocumentListener();
     this.view.dom.removeEventListener("pointermove", this.onPointerMove);
     this.view.dom.removeEventListener("pointerdown", this.onPointerDown);
@@ -138,6 +147,13 @@ class WordToolbarPlugin implements PluginValue {
     }
   }
 
+  private clearLongPress(): void {
+    if (this.longPressTimer !== null) {
+      window.clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+  }
+
   private attachDocumentListener(): void {
     if (this.docListening) return;
     document.addEventListener("pointermove", this.onDocumentPointerMove, true);
@@ -157,6 +173,7 @@ class WordToolbarPlugin implements PluginValue {
   private dismissImmediate(): void {
     this.clearShow();
     this.clearHide();
+    this.clearLongPress();
     this.popoverHovered = false;
     this.sticky = false;
     this.detachDocumentListener();
@@ -167,7 +184,7 @@ class WordToolbarPlugin implements PluginValue {
     }
   }
 
-  private scheduleShow(target: WordToolbarTarget): void {
+  private scheduleShow(target: WordTarget): void {
     const key = targetKey(target);
     if (key === this.openKey) {
       this.clearHide();
@@ -201,13 +218,13 @@ class WordToolbarPlugin implements PluginValue {
     }, HOVER_HIDE_MS);
   }
 
-  private setOpen(target: WordToolbarTarget): void {
+  private setOpen(target: WordTarget): void {
     this.openKey = targetKey(target);
     this.openTarget = target;
     this.attachDocumentListener();
   }
 
-  private openNow(target: WordToolbarTarget): void {
+  private openNow(target: WordTarget): void {
     this.clearShow();
     this.clearHide();
     this.setOpen(target);
@@ -249,6 +266,7 @@ class WordToolbarPlugin implements PluginValue {
       const dy = event.clientY - this.pointerDown.y;
       if (dx * dx + dy * dy > MOVE_CANCEL_PX * MOVE_CANCEL_PX) {
         this.pointerDown.moved = true;
+        this.clearLongPress();
         this.clearShow();
       }
       return;
@@ -283,6 +301,9 @@ class WordToolbarPlugin implements PluginValue {
 
   private onPointerDown(event: PointerEvent): void {
     if (event.button !== 0) return;
+    this.clearLongPress();
+    this.suppressTap = false;
+
     const target = wordTargetAtPointer(
       this.view,
       event.clientX,
@@ -300,20 +321,28 @@ class WordToolbarPlugin implements PluginValue {
       at: performance.now(),
       moved: false,
     };
+    this.longPressTimer = window.setTimeout(() => {
+      this.longPressTimer = null;
+      const down = this.pointerDown;
+      this.pointerDown = null;
+      this.suppressTap = true;
+      if (!down) return;
+      openWordLookup(this.view, "thesaurus", down.pos);
+    }, LONG_PRESS_MS);
   }
 
   private onPointerUp(event: PointerEvent): void {
+    this.clearLongPress();
     const down = this.pointerDown;
     this.pointerDown = null;
-    if (!down || event.button !== 0) return;
+    if (this.suppressTap || !down || event.button !== 0) return;
 
     const dx = event.clientX - down.x;
     const dy = event.clientY - down.y;
     if (dx * dx + dy * dy > MOVE_CANCEL_PX * MOVE_CANCEL_PX || down.moved) {
       return;
     }
-    if (performance.now() - down.at >= LONG_PRESS_SKIP_MS) {
-      // Long-press owns this gesture (thesaurus).
+    if (performance.now() - down.at >= LONG_PRESS_MS) {
       return;
     }
 
@@ -330,14 +359,16 @@ class WordToolbarPlugin implements PluginValue {
   }
 
   private onPointerCancel(): void {
+    this.clearLongPress();
     this.pointerDown = null;
+    this.suppressTap = false;
   }
 }
 
-const wordToolbarPlugin = ViewPlugin.fromClass(WordToolbarPlugin);
+const wordPointerPlugin = ViewPlugin.fromClass(WordPointerPlugin);
 
-function getPlugin(view: EditorView): WordToolbarPlugin | null {
-  return view.plugin(wordToolbarPlugin);
+function getPlugin(view: EditorView): WordPointerPlugin | null {
+  return view.plugin(wordPointerPlugin);
 }
 
 /** Cancel hide while the pointer is over the portaled toolbar. */
@@ -362,9 +393,9 @@ export function dismissWordToolbar(view: EditorView): void {
 }
 
 /**
- * Debounced hover + tap word toolbar bridge.
+ * Debounced hover + tap word toolbar + long-press thesaurus bridge.
  * Emits a word target (or null to dismiss) via the handler facet.
  */
 export function wordToolbarExtension(onChange: WordToolbarHandler): Extension {
-  return [wordToolbarFacet.of(onChange), wordToolbarPlugin];
+  return [wordToolbarFacet.of(onChange), wordPointerPlugin];
 }

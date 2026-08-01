@@ -45,10 +45,7 @@ describe("wordTargetAtPointer", () => {
     vi.spyOn(view, "posAtCoords").mockReturnValue(null);
 
     expect(wordTargetAtPointer(view, 12, 12)).toBeNull();
-    expect(view.posAtCoords).toHaveBeenCalledWith(
-      { x: 12, y: 12 },
-      true,
-    );
+    expect(view.posAtCoords).toHaveBeenCalledWith({ x: 12, y: 12 });
   });
 
   it("resolves a word when precise coords hit a document position", () => {
