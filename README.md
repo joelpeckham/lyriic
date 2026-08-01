@@ -2,7 +2,8 @@
 
 A zen text editor for writing in meter. Large-font canvas, subtle per-line syllable counts, optional meter rulers and stress marks, and quiet per-draft syllable/stress overrides for ambiguous words.
 
-Built for [lyriic.com](https://lyriic.com) on Vercel.
+Built for [lyriic.com](https://lyriic.com)
+Write-up on my blog: [I meant to write a song but built a local-first lyric editor instead.](https://jpeckham.com/projects/lyriic/)
 
 ## Stack
 
@@ -59,8 +60,3 @@ Offline dictionaries are built from:
 - [`wordfreq`](https://pypi.org/project/wordfreq/) — MIT (build-time ranking only)
 
 See [scripts/README.md](scripts/README.md) for rebuild details.
-
-## Deploy
-
-Vercel detects Vite automatically (`pnpm build` → `dist`). Security headers and CSP live in `vercel.json`. Point the production domain to `lyriic.com` in the Vercel dashboard (DNS). No env vars are required for the client-only editor.
-
