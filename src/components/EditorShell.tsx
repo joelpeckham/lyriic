@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { AppFooter } from "@/components/AppFooter";
 import { ProjectSwitcher } from "@/components/ProjectSwitcher";
 import { SettingsSheet } from "@/components/SettingsSheet";
 import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
 import { PoemEditor } from "@/components/editor/PoemEditor";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { usePrefs } from "@/hooks/usePrefs";
 import { useProjects } from "@/hooks/useProjects";
+import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 import { handleAppShortcut } from "@/lib/shortcuts";
 
 const FIRST_RUN_PLACEHOLDER = "Write a line… ⌘' synonyms · ⌘; rhymes";
@@ -33,9 +36,16 @@ export function EditorShell() {
   const { prefs, markEditorHintSeen } = usePrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  useEffect(() => {
-    document.title = `${active.name} · lyriic`;
-  }, [active.name]);
+  const pageTitle =
+    active.name.trim() && active.name.trim() !== "Untitled"
+      ? `${active.name.trim()} · lyriic`
+      : SITE_TITLE;
+
+  useDocumentMeta({
+    title: pageTitle,
+    description: SITE_DESCRIPTION,
+    path: "/",
+  });
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -112,11 +122,13 @@ export function EditorShell() {
         <output
           aria-live="polite"
           aria-atomic="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-20 block px-4 py-3 text-center font-[family-name:var(--font-ui)] text-sm text-[var(--lyriic-over)]"
+          className="pointer-events-none absolute inset-x-0 bottom-8 z-20 block px-4 py-3 text-center font-[family-name:var(--font-ui)] text-sm text-[var(--lyriic-over)]"
         >
           Couldn’t save draft. Storage may be full or unavailable.
         </output>
       ) : null}
+
+      <AppFooter variant="overlay" />
     </div>
   );
 }
