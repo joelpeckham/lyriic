@@ -1,15 +1,5 @@
-import { afterEach, describe, expect, it } from "vitest";
-import {
-  clearAllOverrides,
-  countLine,
-  countLinesIncremental,
-  replaceOverrides,
-  setOverride,
-} from "@/lib/syllables";
-
-afterEach(() => {
-  clearAllOverrides();
-});
+import { describe, expect, it } from "vitest";
+import { countLine, countLinesIncremental } from "@/lib/syllables";
 
 describe("project override isolation", () => {
   it("same text yields different totals via threaded project overrides", () => {
@@ -25,13 +15,9 @@ describe("project override isolation", () => {
     expect(backToA.counts[0]?.total).toBe(projectA.counts[0]?.total);
   });
 
-  it("threaded overrides ignore a stale module Map from another project", () => {
+  it("threaded empty overrides are independent of other project records", () => {
     const text = "a fire";
-    // Simulate prior project still resident in the module Map (layout sync pending).
-    setOverride("fire", 1);
-    expect(countLine(text).total).toBe(2);
-
-    // New project with empty overrides must count correctly on first call.
+    expect(countLine(text, { fire: 1 }).total).toBe(2);
     expect(countLine(text, {}).total).toBe(1 + 2);
     expect(countLinesIncremental(text, null, null, {}).counts[0]?.total).toBe(
       1 + 2,
@@ -58,17 +44,5 @@ describe("project override isolation", () => {
     });
     expect(invalidated.counts[0]?.total).toBe(2 + 1);
     expect(invalidated.counts[0]).not.toBe(first.counts[0]);
-  });
-
-  it("module Map swap still works for non-threaded callers", () => {
-    const text = "a fire burns";
-
-    replaceOverrides({});
-    const projectA = countLinesIncremental(text, null, null);
-    expect(projectA.counts[0]?.total).toBe(countLine(text).total);
-
-    replaceOverrides({ fire: 1 });
-    const projectB = countLinesIncremental(text, null, null);
-    expect(projectB.counts[0]?.total).toBe(projectA.counts[0]!.total - 1);
   });
 });

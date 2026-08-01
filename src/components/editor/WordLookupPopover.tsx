@@ -7,9 +7,9 @@ import {
   type KeyboardEvent,
 } from "react";
 
+import { WordAnchor } from "@/components/editor/WordAnchor";
 import {
   Popover,
-  PopoverAnchor,
   PopoverContent,
   PopoverDescription,
   PopoverHeader,
@@ -28,11 +28,8 @@ import {
   type RankedCandidate,
 } from "@/lib/wordLookup";
 
-/** Optional until editor request threading lands; prefer when present. */
-type LookupRequest = WordLookupRequest & { tokenSyllables?: number };
-
 type WordLookupPopoverProps = {
-  request: LookupRequest | null;
+  request: WordLookupRequest | null;
   onClose: () => void;
   onReplace: (from: number, to: number, insert: string) => void;
   onRestoreFocus: () => void;
@@ -42,7 +39,7 @@ type WordLookupPopoverProps = {
 };
 
 function resolveTokenSyllables(
-  request: LookupRequest,
+  request: WordLookupRequest,
   meteredLine: MeteredLine | undefined,
 ): number {
   if (typeof request.tokenSyllables === "number") {
@@ -215,20 +212,7 @@ export function WordLookupPopover({
         }
       }}
     >
-      {request ? (
-        <PopoverAnchor asChild>
-          <span
-            aria-hidden
-            className="pointer-events-none fixed z-40"
-            style={{
-              left: request.anchor.left,
-              top: request.anchor.top,
-              width: Math.max(1, request.anchor.right - request.anchor.left),
-              height: Math.max(1, request.anchor.bottom - request.anchor.top),
-            }}
-          />
-        </PopoverAnchor>
-      ) : null}
+      {request ? <WordAnchor anchor={request.anchor} /> : null}
       <PopoverContent
         align="start"
         side="bottom"

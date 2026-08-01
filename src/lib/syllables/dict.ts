@@ -3,7 +3,7 @@
  * Built by scripts/build-cmu-syllables.mjs from cmusphinx/cmudict.
  * Lazy-loaded so the main chunk stays light (heuristic until ready).
  */
-import { clearMemo } from "./memo";
+import { clearMemo } from "./countWord";
 
 type SyllableMap = Record<string, number>;
 

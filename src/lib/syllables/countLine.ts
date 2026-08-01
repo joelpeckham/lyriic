@@ -4,7 +4,7 @@ import type { LineSyllableCount } from "./types";
 
 export function countLine(
   line: string,
-  overrides?: Record<string, number>,
+  overrides: Record<string, number> = {},
 ): LineSyllableCount {
   const tokens = tokenizeLine(line);
   const perWord = tokens.map((token) => countWord(token.word, overrides));
@@ -15,7 +15,7 @@ export function countLine(
 
 export function countLines(
   text: string,
-  overrides?: Record<string, number>,
+  overrides: Record<string, number> = {},
 ): LineSyllableCount[] {
   return text.split("\n").map((line) => countLine(line, overrides));
 }
@@ -32,7 +32,7 @@ export function countLinesIncremental(
   text: string,
   prevLines: string[] | null,
   prevCounts: LineSyllableCount[] | null,
-  overrides?: Record<string, number>,
+  overrides: Record<string, number> = {},
 ): { lines: string[]; counts: LineSyllableCount[] } {
   const lines = text.split("\n");
 

@@ -2,25 +2,30 @@
  * English syllable count: override → CMU primary dict → heuristic.
  * Hyphenated compounds are split and summed (wine-bottle → 1+2).
  * Ambiguous poetic words (fire, every, …) default to CMU primary;
- * use setOverride() for user preference.
+ * pass overrides for user preference.
+ *
+ * Base dict|heuristic counts are memoized; overrides are layered on top
+ * so threaded project overrides never pollute the cache.
  */
 import { lookupDict } from "./dict";
 import { countHeuristic } from "./heuristic";
-import { getMemo, setMemo } from "./memo";
-import { getOverride, normalizeOverrideKey } from "./overrides";
+import { normalizeWord } from "./normalize";
+import { isValidOverrideCount, normalizeOverrideKey } from "./overrides";
 import type { SyllableSource, WordSyllableCount } from "./types";
 
-function normalizePart(part: string): string {
-  return part
-    .toLowerCase()
-    .replace(/['\u2019]/g, "'")
-    .replace(/[^\p{L}']/gu, "");
-}
-
-function countSimple(normalized: string): {
+type BaseCount = {
   count: number;
   source: Exclude<SyllableSource, "override">;
-} {
+};
+
+/** Memo for dict/heuristic only — never stores override results. */
+const baseMemo = new Map<string, BaseCount>();
+
+export function clearMemo(): void {
+  baseMemo.clear();
+}
+
+function countSimple(normalized: string): BaseCount {
   const dictCount = lookupDict(normalized);
   if (dictCount !== undefined) {
     return { count: dictCount, source: "dict" };
@@ -28,63 +33,52 @@ function countSimple(normalized: string): {
   return { count: countHeuristic(normalized), source: "heuristic" };
 }
 
+function baseCount(normalized: string): BaseCount {
+  const cached = baseMemo.get(normalized);
+  if (cached) return cached;
+  const result = countSimple(normalized);
+  baseMemo.set(normalized, result);
+  return result;
+}
+
 function resolveOverride(
   word: string,
-  overrides?: Record<string, number>,
+  overrides: Record<string, number>,
 ): number | undefined {
-  if (overrides !== undefined) {
-    const key = normalizeOverrideKey(word);
-    if (!key) return undefined;
-    return overrides[key];
-  }
-  return getOverride(word);
+  const key = normalizeOverrideKey(word);
+  if (!key) return undefined;
+  const count = overrides[key];
+  if (!isValidOverrideCount(count)) return undefined;
+  return Math.floor(count);
 }
 
 /**
  * Count syllables in a word (or hyphenated compound).
  * `word` should already be roughly normalized; punctuation is stripped.
  *
- * When `overrides` is provided, resolve against that record and skip the
- * module memo (so project-scoped counts never leak via cache). When omitted,
- * use the module Map + memo (unit tests / setOverride callers).
+ * Overrides are always threaded (default `{}`). Invalid override values
+ * are ignored via isValidOverrideCount.
  */
 export function countWord(
   word: string,
-  overrides?: Record<string, number>,
+  overrides: Record<string, number> = {},
 ): WordSyllableCount {
   const display = word;
-  const memoKey = word.toLowerCase().replace(/['\u2019]/g, "'");
-  const useModuleMemo = overrides === undefined;
-
-  if (useModuleMemo) {
-    const cached = getMemo(memoKey);
-    if (cached) {
-      return { ...cached, word: display };
-    }
-  }
+  const memoKey = normalizeWord(word, { keepHyphen: true });
 
   const override = resolveOverride(memoKey, overrides);
   if (override !== undefined) {
-    const result: WordSyllableCount = {
-      word: display,
-      count: override,
-      source: "override",
-    };
-    if (useModuleMemo) setMemo(memoKey, result);
-    return result;
+    return { word: display, count: override, source: "override" };
   }
 
   // Hyphenated compound: split + sum
   if (memoKey.includes("-")) {
-    const parts = memoKey.split("-").map(normalizePart).filter(Boolean);
+    const parts = memoKey
+      .split("-")
+      .map((part) => normalizeWord(part))
+      .filter(Boolean);
     if (parts.length === 0) {
-      const result: WordSyllableCount = {
-        word: display,
-        count: 0,
-        source: "heuristic",
-      };
-      if (useModuleMemo) setMemo(memoKey, result);
-      return result;
+      return { word: display, count: 0, source: "heuristic" };
     }
 
     let total = 0;
@@ -97,33 +91,23 @@ export function countWord(
         anyOverride = true;
         continue;
       }
-      const { count, source } = countSimple(part);
+      const { count, source } = baseCount(part);
       total += count;
       if (source !== "dict") allDict = false;
     }
 
-    const result: WordSyllableCount = {
+    return {
       word: display,
       count: total,
       source: anyOverride ? "override" : allDict ? "dict" : "heuristic",
     };
-    if (useModuleMemo) setMemo(memoKey, result);
-    return result;
   }
 
-  const normalized = normalizePart(memoKey);
+  const normalized = normalizeWord(memoKey);
   if (!normalized) {
-    const result: WordSyllableCount = {
-      word: display,
-      count: 0,
-      source: "heuristic",
-    };
-    if (useModuleMemo) setMemo(memoKey, result);
-    return result;
+    return { word: display, count: 0, source: "heuristic" };
   }
 
-  const { count, source } = countSimple(normalized);
-  const result: WordSyllableCount = { word: display, count, source };
-  if (useModuleMemo) setMemo(memoKey, result);
-  return result;
+  const { count, source } = baseCount(normalized);
+  return { word: display, count, source };
 }
