@@ -31,7 +31,7 @@ export const FAQ_ENTRIES: FaqEntry[] = [
   {
     q: "How do synonyms and rhymes work?",
     plain:
-      "Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Suggestions are sorted by syllable count and highlighted when they match your meter target. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for perfect rhymes).",
+      "Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Synonyms prefer the matching part of speech from local context, then meter fit and syllable count; rhymes sort by syllable count. Meter-matching options are highlighted. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for perfect rhymes).",
   },
   {
     q: "Where does the dictionary data come from?",

@@ -36,6 +36,23 @@ describe("rankCandidates", () => {
     expect(ranked[0]?.keepsMeter).toBe(true);
   });
 
+  it("prefers usage matches over meter and syllable distance", () => {
+    const ranked = rankCandidates({
+      candidates: [
+        { word: "gains", matchesUsage: false },
+        { word: "domains", matchesUsage: true },
+        { word: "stay", matchesUsage: true },
+      ],
+      tokenSyllables: 2,
+      lineTotal: 8,
+      lineTarget: 7,
+      overrides: { gains: 1, domains: 2, stay: 1 },
+    });
+    // gains keeps meter (8-2+1=7) but wrong usage; domains/stay match usage
+    expect(ranked[0]?.matchesUsage).toBe(true);
+    expect(ranked.map((r) => r.word)).toEqual(["domains", "stay", "gains"]);
+  });
+
   it("flags same-syllable and land-on-target candidates", () => {
     // line total 8, target 10, replacing 1-syllable word → need +2 to land
     const ranked = rankCandidates({
@@ -49,7 +66,6 @@ describe("rankCandidates", () => {
     const byWord = Object.fromEntries(ranked.map((r) => [r.word, r]));
     // cat: 1 syllable → preserves total → keepsMeter
     expect(byWord.cat.keepsMeter).toBe(true);
-    // silent: typically 2 → newTotal 9 ≠ 10, not same as token → false
     // fire with override 1 → keeps
     expect(byWord.fire.keepsMeter).toBe(true);
   });
@@ -66,15 +82,14 @@ describe("rankCandidates", () => {
     expect(ranked[0]?.keepsMeter).toBe(true);
   });
 
-  it("dedupes and respects limit", () => {
+  it("dedupes candidates", () => {
     const ranked = rankCandidates({
       candidates: ["Cat", "cat", "dog", "bird"],
       tokenSyllables: 1,
       lineTotal: 1,
       lineTarget: null,
-      limit: 2,
     });
-    expect(ranked).toHaveLength(2);
     expect(ranked.filter((r) => r.word === "cat")).toHaveLength(1);
+    expect(ranked.length).toBe(3);
   });
 });

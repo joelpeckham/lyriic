@@ -47,7 +47,7 @@ Perfect-rhyme key = IPA phones from the last primary stress (else secondary, els
 pnpm build:thesaurus
 ```
 
-Writes `src/lib/thesaurus/data/synonyms.json`. Headwords restricted to the syllable map; OEWN candidates ranked first, then Wiktionary fill (max 60 single-word lemmas).
+Writes `src/lib/thesaurus/data/synonyms.json`. Headwords restricted to the syllable map; synonyms grouped by usage (`n` / `v` / `a` / `r`). OEWN candidates ranked first within each usage, then Wiktionary fill (no cap).
 
 ## Other
 

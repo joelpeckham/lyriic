@@ -18,6 +18,8 @@ export type WordTarget = {
   lineIndex: number;
   /** Absolute start of the poetic line (for mapping token offsets). */
   lineFrom: number;
+  /** Full poetic line text (for usage / POS heuristics). */
+  lineText: string;
   anchor: WordAnchor;
 };
 
@@ -90,6 +92,7 @@ export function resolveWordTarget(
     word: resolved.word,
     lineIndex: resolved.lineIndex,
     lineFrom: line.from,
+    lineText: line.text,
     anchor,
   };
 }

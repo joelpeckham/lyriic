@@ -27,7 +27,11 @@ import {
   lookupRhymes,
   type RhymeMode,
 } from "@/lib/rhyme";
-import { loadThesaurus, lookupSynonyms } from "@/lib/thesaurus";
+import {
+  detectUsage,
+  loadThesaurus,
+  lookupSynonyms,
+} from "@/lib/thesaurus";
 import {
   getCachedRanked,
   preserveCasing,
@@ -101,11 +105,22 @@ export function WordLookupPopover({
   const lineTotal = displayMetered?.total ?? 0;
   const lineTarget = displayMetered?.target ?? null;
 
+  const usage =
+    display?.mode === "thesaurus"
+      ? detectUsage(
+          display.word,
+          display.lineText,
+          display.from - display.lineFrom,
+          display.to - display.lineFrom,
+        )
+      : null;
+
   const cacheKey = display
     ? rankedCacheKey({
         mode: display.mode,
         rhymeMode: display.mode === "rhyme" ? rhymeMode : undefined,
         word: display.word,
+        usage: display.mode === "thesaurus" ? usage : undefined,
         lineTotal,
         lineTarget,
         tokenSyllables: syllables,
@@ -132,7 +147,7 @@ export function WordLookupPopover({
     let cancelled = false;
     const load =
       display.mode === "thesaurus"
-        ? loadThesaurus().then(() => lookupSynonyms(display.word))
+        ? loadThesaurus().then(() => lookupSynonyms(display.word, usage))
         : loadRhymeIndex().then(() => lookupRhymes(display.word, rhymeMode));
 
     void load
@@ -167,6 +182,7 @@ export function WordLookupPopover({
     lineTarget,
     overrides,
     rhymeMode,
+    usage,
   ]);
 
   useLayoutEffect(() => {
@@ -230,7 +246,7 @@ export function WordLookupPopover({
     ? "Couldn’t load thesaurus."
     : "Couldn’t load rhymes.";
   const description = isThesaurus
-    ? "Choose a synonym. Options are sorted by syllable count. Meter-matching options are marked."
+    ? "Choose a synonym. Matching part of speech comes first, then meter fit and syllable count."
     : rhymeMode === "end"
       ? "Choose an end rhyme to copy. Matches the final syllable even when stress differs. Sorted by syllable count."
       : "Choose a perfect rhyme to copy. Options are sorted by syllable count. Meter-matching options are marked.";
