@@ -336,6 +336,7 @@ export function SettingsSheet({
             <div
               role="radiogroup"
               aria-labelledby="meter-label"
+              tabIndex={-1}
               className="flex flex-col gap-1.5"
               onKeyDown={onMeterKeyDown}
             >

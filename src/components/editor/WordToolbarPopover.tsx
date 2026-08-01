@@ -84,7 +84,14 @@ export function WordToolbarPopover({
   const displayCount = hasOverride
     ? overrides[key]!
     : (baseline?.count ?? 1);
-  const [countDraft, setCountDraft] = useState(() => String(displayCount));
+  const [countDraftState, setCountDraftState] = useState({
+    id: "",
+    value: "1",
+  });
+  const countDraft =
+    countDraftState.id === targetIdentity
+      ? countDraftState.value
+      : String(displayCount);
 
   const onStickyChangeRef = useRef(onStickyChange);
   useLayoutEffect(() => {
@@ -92,20 +99,14 @@ export function WordToolbarPopover({
   }, [onStickyChange]);
 
   useEffect(() => {
-    if (!open) {
-      setPanel({ id: "", view: "actions" });
-    }
-  }, [open]);
-
-  useEffect(() => {
     const sticky = open && view === "syllables";
     onStickyChangeRef.current(sticky);
     return () => onStickyChangeRef.current(false);
   }, [open, view]);
 
-  useEffect(() => {
-    setCountDraft(String(displayCount));
-  }, [displayCount, targetIdentity]);
+  function setCountDraft(value: string): void {
+    setCountDraftState({ id: targetIdentity, value });
+  }
 
   function applyCount(raw: string | number): void {
     if (!target || !key || !baseline) return;

@@ -136,7 +136,9 @@ export function PoemEditor({
     () => buildMeteredLines(lineCounts.counts, pattern),
     [lineCounts.counts, pattern],
   );
-  meteredLinesRef.current = meteredLines;
+  useLayoutEffect(() => {
+    meteredLinesRef.current = meteredLines;
+  }, [meteredLines]);
 
   // Create / destroy the editor once per mount (parent remounts on documentKey).
   useEffect(() => {
