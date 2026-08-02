@@ -17,7 +17,7 @@ export const ABOUT_ORIGIN_URL = "https://jpeckham.com/projects/lyriic/";
 export type AboutPoem = {
   /** Short UI label above the poem. */
   label: string;
-  /** Plain-language summary for accessibility (not shown as marketing prose). */
+  /** Plain-language subtitle under the label (SEO + human readable). */
   summary: string;
   /** Full poem text (newline-separated lines). */
   text: string;
@@ -66,16 +66,16 @@ export const ABOUT_HERO: AboutPoem = {
 
 /** Why we built it — hand-counting broke the draft. */
 export const ABOUT_WHY: AboutPoem = {
-  label: "Why",
+  label: "A failed poem",
   summary:
-    "Hand-counting syllables broke drafting, so the tally sits quietly beside the line.",
+    "Hand-counting syllables broke my zen. So I built a tool to help me count.",
   text: [
-    "I counted by tapping my fingers for hours;",
-    "The poem grew legs and ran off to the flowers.",
-    "A digit now loiters beside every line,",
-    "And I draft at a canter—no knuckle-count shrine.",
+    "I counted. Tapping, rapping, jabs on every jot.",
+    "And then above my head appeared a bulb, a thought.",
+    "The verse can wait a sec. Now let me write some code.",
+    "Machines append a count. And now I cant't be slowed.",
   ].join("\n"),
-  settings: aboutMeterSettings("anapestic-tetrameter"),
+  settings: aboutMeterSettings("iambic-hexameter"),
 };
 
 /**

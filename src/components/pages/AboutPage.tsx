@@ -22,13 +22,25 @@ import {
 } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-/** Chapter heading (Why, What it does). */
+/** Quiet chapter eyebrow (What it does). */
 const groupLabelClass =
   "font-[family-name:var(--font-brand)] text-sm tracking-[0.12em] text-foreground/75 uppercase sm:text-base";
 
-/** Quiet label sitting directly above a verse sample. */
+/** Large display poem label. */
 const poemLabelClass =
-  "font-[family-name:var(--font-ui)] text-[0.6875rem] tracking-[0.14em] text-muted-foreground uppercase";
+  "font-[family-name:var(--font-brand)] tracking-[-0.02em] text-foreground";
+
+/** Chapter-lead size (Why, Stance). */
+const poemLabelLeadClass =
+  "text-[2rem] leading-none sm:text-[2.25rem]";
+
+/** Feature-block size under “What it does”. */
+const poemLabelFeatureClass =
+  "text-[2rem] leading-none sm:text-[2.25rem]";
+
+/** Quiet subtitle under the label — SEO + human context. */
+const poemSummaryClass =
+  "mt-3 max-w-xl font-[family-name:var(--font-ui)] text-base leading-relaxed text-muted-foreground text-pretty sm:mt-4 sm:text-lg";
 
 function Reveal({
   children,
@@ -88,7 +100,7 @@ function Reveal({
       className={cn(
         phase === "wait" && "opacity-0",
         phase === "in" &&
-          "motion-safe:animate-[lyriic-section-in_0.55s_ease-out_both]",
+        "motion-safe:animate-[lyriic-section-in_0.55s_ease-out_both]",
         className,
       )}
       onAnimationEnd={(event) => {
@@ -104,18 +116,28 @@ function Reveal({
 
 function PoemSection({
   poem,
-  hideLabel = false,
+  lead = false,
 }: {
   poem: AboutPoem;
-  /** When the chapter already supplies a heavier heading. */
-  hideLabel?: boolean;
+  /** Larger display type for chapter-lead poems. */
+  lead?: boolean;
 }) {
+  const labelId = `about-label-${poem.label.toLowerCase().replace(/\s+/g, "-")}`;
+
   return (
-    <section aria-label={poem.label}>
-      {hideLabel ? null : <p className={poemLabelClass}>{poem.label}</p>}
-      <p className="sr-only">{poem.summary}</p>
+    <section aria-labelledby={labelId}>
+      <h2
+        id={labelId}
+        className={cn(
+          poemLabelClass,
+          lead ? poemLabelLeadClass : poemLabelFeatureClass,
+        )}
+      >
+        {poem.label}
+      </h2>
+      <p className={poemSummaryClass}>{poem.summary}</p>
       <AboutPoemEditor
-        className={hideLabel ? undefined : "mt-2"}
+        className="mt-6 sm:mt-8"
         text={poem.text}
         settings={poem.settings}
         documentKey={`about-${poem.label}`}
@@ -160,7 +182,7 @@ export function AboutPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-        {/* Hero — brand first, annotated verse as the visual. */}
+        {/* Hero — brand first, then subtitle context, then annotated verse. */}
         <section className="flex min-h-[calc(100dvh-5.5rem)] flex-col justify-center py-10 sm:py-14">
           <h1
             className={cn(
@@ -170,6 +192,15 @@ export function AboutPage() {
           >
             lyriic
           </h1>
+
+          <p
+            className={cn(
+              "mt-5 max-w-md font-[family-name:var(--font-ui)] text-base leading-relaxed text-muted-foreground text-pretty sm:mt-6 sm:text-lg",
+              "motion-safe:animate-[lyriic-section-in_0.7s_ease-out_0.12s_both]",
+            )}
+          >
+            {ABOUT_HERO.summary}
+          </p>
 
           <div className="mt-8 sm:mt-10">
             <AboutPoemEditor
@@ -197,9 +228,9 @@ export function AboutPage() {
         <div className="space-y-24 sm:space-y-32">
           <Reveal>
             <div id="why">
-              <p className={groupLabelClass}>Why</p>
-              <div className="mt-6">
-                <PoemSection poem={ABOUT_WHY} hideLabel />
+              <p className={groupLabelClass}>Why we built it</p>
+              <div className="mt-10 space-y-16 sm:mt-12 sm:space-y-24">
+                <PoemSection poem={ABOUT_WHY} lead />
               </div>
               <p className="mt-12 font-[family-name:var(--font-ui)] text-sm text-muted-foreground sm:mt-14">
                 <a
@@ -217,7 +248,7 @@ export function AboutPage() {
           <Reveal>
             <div>
               <p className={groupLabelClass}>What it does</p>
-              <div className="mt-8 space-y-10 sm:space-y-12">
+              <div className="mt-10 space-y-16 sm:mt-12 sm:space-y-24">
                 {ABOUT_FEATURES.map((poem) => (
                   <PoemSection key={poem.label} poem={poem} />
                 ))}
@@ -226,7 +257,7 @@ export function AboutPage() {
           </Reveal>
 
           <Reveal>
-            <PoemSection poem={ABOUT_STANCE} />
+            <PoemSection poem={ABOUT_STANCE} lead />
           </Reveal>
 
           <Reveal>
@@ -260,9 +291,9 @@ export function AboutPage() {
             </section>
           </Reveal>
         </div>
-      </main>
+      </main >
 
       <AppFooter variant="flow" />
-    </div>
+    </div >
   );
 }
