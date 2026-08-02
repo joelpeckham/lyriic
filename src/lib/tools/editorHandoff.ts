@@ -2,9 +2,11 @@
  * One-shot SEO-tool → editor draft handoff (sessionStorage).
  *
  * ## Write side (tools)
- * Call `stashToolDraft(text)` in the click handler before navigating to `/` or
- * `/write/:meter`. Only stash when the user has real text that is not still a
- * stock sample (`shouldCarryToolText`).
+ * Prefer `continueToEditor({ text, samples })` (see `continueToEditor.ts`) in
+ * click handlers before navigating to `/` or `/write/:meter`. It stashes only
+ * when the user has real text that is not still a stock sample
+ * (`shouldCarryToolText`). Tools should also `registerToolHandoffSource` so FAQ
+ * continue links can stash the same way.
  *
  * ## Read side (editor)
  * Call `consumeToolDraft()` once on EditorShell mount (via `useToolHandoff`).

@@ -1,5 +1,7 @@
 /** Thin helpers for getting draft text out of the local-first editor. */
 
+import { METER_CATALOG } from "@/lib/meters/presets";
+
 export async function copyText(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
@@ -69,13 +71,20 @@ export function formatRelativeUpdatedAt(
   });
 }
 
-/** Secondary draft-list line: verse preview, else relative time. */
+/**
+ * Secondary draft-list line: verse preview, else empty cue.
+ * Prefer optional meter label; otherwise relative time.
+ */
 export function draftListSecondary(
   text: string,
   updatedAt: number,
   now = Date.now(),
+  meterLabel?: string,
 ): string {
-  return firstVerseLine(text) ?? formatRelativeUpdatedAt(updatedAt, now);
+  const preview = firstVerseLine(text);
+  if (preview) return preview;
+  const detail = meterLabel?.trim() || formatRelativeUpdatedAt(updatedAt, now);
+  return `Empty · ${detail}`;
 }
 
 /** Date/time stub used when creating a new draft from the switcher. */
@@ -86,4 +95,38 @@ export function defaultDraftName(now = Date.now()): string {
     hour: "numeric",
     minute: "2-digit",
   });
+}
+
+/** Locale stubs from `defaultDraftName` — short month/day + clock time. */
+const DEFAULT_DRAFT_NAME_RE =
+  /^(?:[\p{L}.]+\s+\d{1,2}|\d{1,2}\.?\s+[\p{L}.]+),?\s+\d{1,2}:\d{2}(?:\s*[AaPp]\.?[Mm]\.?)?$/u;
+
+const PLACEHOLDER_SEED_LABELS = new Set<string>([
+  "Untitled",
+  "None", // legacy catalog label
+  ...METER_CATALOG.map((entry) => entry.label),
+]);
+
+/**
+ * True for auto-assigned draft titles that soft-rename may replace:
+ * Untitled, meter/form seed labels, and datetime stubs from `defaultDraftName`.
+ */
+export function isPlaceholderDraftName(name: string): boolean {
+  const trimmed = name.trim();
+  if (!trimmed) return true;
+  if (PLACEHOLDER_SEED_LABELS.has(trimmed)) return true;
+  return DEFAULT_DRAFT_NAME_RE.test(trimmed);
+}
+
+/**
+ * Soft title from first verse when the current name is still a placeholder.
+ * Returns null when the name should stay as-is.
+ */
+export function softDraftNameFromText(
+  currentName: string,
+  text: string,
+): string | null {
+  if (!isPlaceholderDraftName(currentName)) return null;
+  if (!text.trim()) return null;
+  return firstVerseLine(text);
 }

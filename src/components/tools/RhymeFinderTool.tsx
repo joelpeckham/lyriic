@@ -293,7 +293,7 @@ export function RhymeFinderTool() {
 
       <ToolEditorPitch
         title="Rhymes beside the draft"
-        body="In the lyriic editor, hover or tap a word for rhymes sorted by syllable count—right beside your draft, with meter-aware highlighting when a ruler is on."
+        body="In the lyriic editor, hover or tap a word for rhymes sorted by syllable count—right beside your draft, with meter-aware highlighting when a ruler is on. Your finder query does not carry over."
         cta={tool.cta}
       />
     </div>

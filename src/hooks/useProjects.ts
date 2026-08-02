@@ -4,6 +4,7 @@ import { isReusableEmptyDraft } from "@/lib/meters/seed";
 import {
   defaultDraftName,
   downloadTextFile,
+  softDraftNameFromText,
 } from "@/lib/projects/exportDraft";
 import {
   createEmptyProject,
@@ -43,9 +44,16 @@ function applyTextToProject(
     if (project.id !== projectId) return project;
     if (project.text === text) return project;
     changed = true;
+    const wasEmpty = project.text.trim().length === 0;
+    const nowHasText = text.trim().length > 0;
+    const softName =
+      wasEmpty && nowHasText
+        ? softDraftNameFromText(project.name, text)
+        : null;
     return {
       ...project,
       text,
+      ...(softName ? { name: softName } : {}),
       updatedAt: Date.now(),
     };
   });
@@ -337,8 +345,9 @@ export function useProjects() {
       if (current.text.trim().length === 0) {
         return applyTextToProject(prev, current.id, text);
       }
+      const softName = softDraftNameFromText("Untitled", text);
       const project = {
-        ...createEmptyProject("Untitled", current.settings),
+        ...createEmptyProject(softName ?? "Untitled", current.settings),
         text,
         updatedAt: Date.now(),
       };

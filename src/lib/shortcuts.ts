@@ -4,6 +4,23 @@ export function isModKey(event: KeyboardEvent): boolean {
   return event.metaKey || event.ctrlKey;
 }
 
+function isApplePlatform(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const uaData = (
+    navigator as Navigator & {
+      userAgentData?: { platform?: string };
+    }
+  ).userAgentData;
+  const platform =
+    typeof uaData?.platform === "string"
+      ? uaData.platform
+      : navigator.platform;
+  return /Mac|iPhone|iPod|iPad/i.test(platform);
+}
+
+const MOD_GLYPH = isApplePlatform() ? "⌘" : "Ctrl";
+const SHIFT_GLYPH = isApplePlatform() ? "⇧" : "Shift";
+
 /**
  * Handle global app shortcuts. Returns true if the event was consumed.
  * - Mod-, → toggle settings
@@ -47,11 +64,25 @@ export function handleAppShortcut(
   return false;
 }
 
-/** Display labels for Settings → Keyboard (Mac-first; fine for v1). */
+/** Shared Word tools sentence for Settings + FAQ. */
+export const WORD_TOOLS_HINT =
+  "Tap a word for tools. Long-press for synonyms.";
+
+/** Display labels for Settings → Keyboard (platform-correct Mod glyph). */
 export const SHORTCUT_HINTS = [
-  { action: "Settings", keys: "⌘ + ," },
-  { action: "Focus poem", keys: "⌘ + ." },
-  { action: "Synonyms", keys: "⌘ + '" },
-  { action: "Rhymes", keys: "⌘ + ;" },
-  { action: "Syllables", keys: "⌘ + ⇧ + '" },
+  { action: "Settings", keys: `${MOD_GLYPH} + ,` },
+  { action: "Focus poem", keys: `${MOD_GLYPH} + .` },
+  { action: "Synonyms", keys: `${MOD_GLYPH} + '` },
+  { action: "Rhymes", keys: `${MOD_GLYPH} + ;` },
+  {
+    action: "Syllables",
+    keys: `${MOD_GLYPH} + ${SHIFT_GLYPH} + '`,
+  },
 ] as const;
+
+/** Word-tool shortcuts only (surfaced next to the Word tools section). */
+export const WORD_TOOL_SHORTCUT_HINTS = SHORTCUT_HINTS.filter((hint) =>
+  hint.action === "Synonyms" ||
+  hint.action === "Rhymes" ||
+  hint.action === "Syllables",
+);

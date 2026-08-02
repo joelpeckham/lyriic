@@ -17,10 +17,19 @@ export type MeterGroupId =
 
 export const METER_GROUP_LABELS: Record<MeterGroupId, string> = {
   free: "General",
-  accentual: "Accentual-syllabic",
-  ballad: "Song / ballad",
+  accentual: "Feet & stress",
+  ballad: "Song forms",
   syllable: "Syllable forms",
 };
+
+/** Quick-pick strip for Settings (catalog ids, order matters). */
+export const POPULAR_METER_IDS = [
+  "none",
+  "haiku",
+  "common-meter",
+  "iambic-pentameter",
+  "sonnet",
+] as const;
 
 export type RhymeScheme = {
   readonly id: string;
@@ -136,7 +145,7 @@ function scheme(
 export const METER_CATALOG: readonly MeterCatalogEntry[] = [
   {
     id: "none",
-    label: "None",
+    label: "Free verse",
     group: "free",
     pattern: [],
     description: "Syllable counts only",
@@ -575,7 +584,7 @@ export function overlaysForMeterSeed(config: MeterConfig): {
   return {
     showCounts: true,
     showRulers: config.pattern.length > 0,
-    showStress: true,
+    showStress: stressAware,
     showMeterBreaks: stressAware,
     showRhymeScheme: hasRhyme,
   };

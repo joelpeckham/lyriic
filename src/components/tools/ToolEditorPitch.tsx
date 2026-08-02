@@ -6,17 +6,22 @@ import { Button } from "@/components/ui/button";
 type ToolEditorPitchProps = {
   title: string;
   body: string;
-  /** Label for the editor CTA — typically `tool.cta`. */
+  /** Label for the editor CTA — typically draft-aware from the parent. */
   cta: string;
   /** Editor destination — defaults to home; use `/write/:slug` for seeded meters. */
   to?: string;
-  /** Optional secondary text link (e.g. blank canvas). */
+  /** Optional secondary text link (e.g. blank canvas). Never stashes. */
   secondary?: {
     label: string;
     to: string;
   };
-  /** Runs before navigation (e.g. stash tool draft into sessionStorage). */
-  onNavigate?: () => void;
+  /**
+   * Runs before primary CTA navigation only (e.g. stash tool draft).
+   * Not wired to the secondary “blank canvas” link.
+   */
+  onPrimaryNavigate?: () => void;
+  /** Optional muted line under the primary button (e.g. on-device carry hint). */
+  carryHint?: string;
 };
 
 export function ToolEditorPitch({
@@ -25,7 +30,8 @@ export function ToolEditorPitch({
   cta,
   to = "/",
   secondary,
-  onNavigate,
+  onPrimaryNavigate,
+  carryHint,
 }: ToolEditorPitchProps) {
   const headingId = useId();
 
@@ -45,20 +51,24 @@ export function ToolEditorPitch({
       </p>
       <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         <Button asChild>
-          <Link to={to} onClick={onNavigate}>
+          <Link to={to} onClick={onPrimaryNavigate}>
             {cta}
           </Link>
         </Button>
         {secondary ? (
           <Link
             to={secondary.to}
-            onClick={onNavigate}
             className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
           >
             {secondary.label}
           </Link>
         ) : null}
       </p>
+      {carryHint ? (
+        <p className="mt-2 max-w-prose text-sm text-muted-foreground">
+          {carryHint}
+        </p>
+      ) : null}
     </aside>
   );
 }

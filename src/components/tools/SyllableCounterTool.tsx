@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
@@ -8,9 +8,11 @@ import { useDictRevision } from "@/hooks/useDictRevision";
 import { countLines } from "@/lib/syllables";
 import type { LineSyllableCount } from "@/lib/syllables/types";
 import {
-  shouldCarryToolText,
-  stashToolDraft,
-} from "@/lib/tools/editorHandoff";
+  CARRY_HINT,
+  continueToEditor,
+  registerToolHandoffSource,
+} from "@/lib/tools/continueToEditor";
+import { shouldCarryToolText } from "@/lib/tools/editorHandoff";
 import { cn } from "@/lib/utils";
 
 const tool = getToolBySlug("syllable-counter")!;
@@ -69,8 +71,13 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
     ? "Open this draft in the editor"
     : tool.cta;
   const handoffNavigate = () => {
-    if (carryDraft) stashToolDraft(text);
+    continueToEditor({ text, samples: SAMPLE_TEXTS });
   };
+
+  useEffect(() => {
+    registerToolHandoffSource({ text, samples: SAMPLE_TEXTS });
+    return () => registerToolHandoffSource(null);
+  }, [text]);
 
   const clearAll = () => {
     setText("");
@@ -218,7 +225,8 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
         title="Count here. Write in the editor."
         body="This page gives you totals. In the full lyriic editor, syllable counts sit beside every line while you draft — with meter rulers for haiku, iambic pentameter, and dozens of other forms, plus quiet overrides when a word (say fire) should count as one beat instead of two. Drafts stay on your device."
         cta={editorCta}
-        onNavigate={handoffNavigate}
+        onPrimaryNavigate={handoffNavigate}
+        carryHint={carryDraft ? CARRY_HINT : undefined}
       />
     </div>
   );

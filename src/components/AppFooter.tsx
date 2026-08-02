@@ -32,7 +32,7 @@ export function AppFooter({
         className={cn(
           "mx-auto flex w-fit flex-wrap items-center justify-center gap-x-3 gap-y-1",
           variant === "overlay" &&
-            "pointer-events-auto cursor-default opacity-35 transition-opacity hover:opacity-100 focus-within:opacity-100",
+            "pointer-events-auto cursor-default opacity-55 transition-opacity hover:opacity-100 focus-within:opacity-100",
         )}
       >
         <Link to="/tools/syllable-counter" className={linkClass}>

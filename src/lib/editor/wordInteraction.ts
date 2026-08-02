@@ -35,8 +35,8 @@ export type WordInteractionHandlers = {
 
 /** Exported for tests. */
 export const HOVER_SHOW_MS = 350;
-/** Exported for tests. */
-export const HOVER_HIDE_MS = 120;
+/** Grace for mouse travel from word → toolbar. Exported for tests. */
+export const HOVER_HIDE_MS = 280;
 /** Long-press thesaurus + tap-skip threshold (one timer story). */
 export const LONG_PRESS_MS = 550;
 

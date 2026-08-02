@@ -23,11 +23,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getMeterCatalogEntry } from "@/lib/meters/presets";
 import {
   copyText,
   countPoemLines,
@@ -74,6 +76,10 @@ export function ProjectSwitcher({
   const renameInputRef = useRef<HTMLInputElement>(null);
   const renameInputId = useId();
   const suppressMenuFocusRestore = useRef(false);
+
+  const sortedProjects = [...projects].sort(
+    (a, b) => b.updatedAt - a.updatedAt,
+  );
 
   const active = projects.find((p) => p.id === activeId) ?? projects[0];
   const canDelete = projects.length > 1;
@@ -147,7 +153,7 @@ export function ProjectSwitcher({
             }
           }}
         >
-          {projects.map((project) => (
+          {sortedProjects.map((project) => (
             <DropdownMenuItem
               key={project.id}
               onSelect={() => onSwitch(project.id)}
@@ -157,7 +163,12 @@ export function ProjectSwitcher({
               <span className="min-w-0 flex-1">
                 <span className="block truncate">{project.name}</span>
                 <span className="block truncate text-xs text-muted-foreground">
-                  {draftListSecondary(project.text, project.updatedAt)}
+                  {draftListSecondary(
+                    project.text,
+                    project.updatedAt,
+                    Date.now(),
+                    getMeterCatalogEntry(project.settings.meter).label,
+                  )}
                 </span>
               </span>
               {project.id === activeId ? (
@@ -170,6 +181,8 @@ export function ProjectSwitcher({
           ))}
 
           <DropdownMenuSeparator />
+
+          <DropdownMenuLabel className="font-normal">Export</DropdownMenuLabel>
 
           <DropdownMenuItem
             onSelect={() => {
@@ -191,6 +204,10 @@ export function ProjectSwitcher({
             Download .txt
           </DropdownMenuItem>
 
+          <div className="px-1.5 py-1 text-xs text-muted-foreground">
+            Autosaved in this browser.
+          </div>
+
           <DropdownMenuSeparator />
 
           <DropdownMenuItem onSelect={onCreate}>
@@ -206,7 +223,22 @@ export function ProjectSwitcher({
           <DropdownMenuItem
             variant="destructive"
             disabled={!canDelete}
-            onSelect={openDelete}
+            title={!canDelete ? "Keep at least one draft." : undefined}
+            aria-label={
+              canDelete
+                ? "Delete this draft"
+                : "Delete this draft. Keep at least one draft."
+            }
+            className={
+              !canDelete ? "data-disabled:pointer-events-auto" : undefined
+            }
+            onSelect={(event) => {
+              if (!canDelete) {
+                event.preventDefault();
+                return;
+              }
+              openDelete();
+            }}
           >
             <Trash2 className="size-4" />
             Delete this draft

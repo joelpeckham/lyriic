@@ -22,6 +22,13 @@ export type PoemExtensionOptions = {
   onWordInteraction?: WordInteractionHandlers;
 };
 
+/** Device-aware secondary empty-state hint (hover vs tap). */
+function toolsPlaceholderHint(): string {
+  if (typeof window === "undefined") return "tap a word for tools";
+  const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  return fine ? "hover a word for tools" : "tap a word for tools";
+}
+
 /**
  * Minimal CodeMirror extensions for the lyriic poem canvas.
  * No language packages — plain text with soft wrap and zen chrome.
@@ -32,6 +39,7 @@ export function createPoemExtensions({
   onActiveLineChange,
   onWordInteraction,
 }: PoemExtensionOptions): Extension[] {
+  const toolsHint = toolsPlaceholderHint();
   return [
     history(),
     // Drawn caret/selection: Firefox parks the native caret at the top of tall
@@ -46,8 +54,8 @@ export function createPoemExtensions({
       primary.textContent = "Write a line…";
       const hint = document.createElement("span");
       hint.className = "lyriic-placeholder-hint";
-      hint.textContent = "     then tap a word for tools";
-      el.append(primary, document.createTextNode(" "), hint);
+      hint.textContent = toolsHint;
+      el.append(primary, document.createElement("br"), hint);
       return el;
     }),
     keymap.of([...defaultKeymap, ...historyKeymap]),
@@ -60,7 +68,7 @@ export function createPoemExtensions({
       spellcheck: "true",
       "aria-label": "Poem",
       "aria-multiline": "true",
-      "aria-placeholder": "Write a line… tap a word for tools",
+      "aria-placeholder": `Write a line… ${toolsHint}`,
       autocapitalize: "sentences",
       autocorrect: "on",
       enterkeyhint: "enter",

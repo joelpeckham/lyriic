@@ -41,6 +41,17 @@ describe("parseMeterSeed", () => {
 });
 
 describe("settingsFromMeterSeed", () => {
+  it("defaults syllable forms without stress overlays", () => {
+    const settings = settingsFromMeterSeed({
+      meterId: "haiku",
+      overlays: {},
+    });
+    expect(settings?.meter).toBe("haiku");
+    expect(settings?.showStress).toBe(false);
+    expect(settings?.showMeterBreaks).toBe(false);
+    expect(settings?.showRulers).toBe(true);
+  });
+
   it("applies overlay overrides on top of defaults", () => {
     const settings = settingsFromMeterSeed({
       meterId: "haiku",

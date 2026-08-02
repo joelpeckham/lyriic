@@ -92,9 +92,11 @@ describe("settingsForMeter", () => {
     expect(next?.rhymeSchemeId).toBeNull();
   });
 
-  it("seeds syllable forms without meter breaks", () => {
+  it("seeds syllable forms without stress overlays", () => {
     const next = settingsForMeter("haiku");
+    expect(next?.showCounts).toBe(true);
     expect(next?.showRulers).toBe(true);
+    expect(next?.showStress).toBe(false);
     expect(next?.showMeterBreaks).toBe(false);
   });
 

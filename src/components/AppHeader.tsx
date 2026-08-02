@@ -42,8 +42,9 @@ export function AppHeader({
         "flex items-start justify-between gap-4",
         // Overlay: let clicks pass through empty chrome into verse; only the
         // brand and action controls capture hits (and own cursor:default).
+        // Rest faded while writing; full opacity on hover / focus-within.
         variant === "overlay" &&
-          "pointer-events-none absolute inset-x-0 top-0 z-20 pt-[max(1rem,env(safe-area-inset-top,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-4 pl-[max(1rem,env(safe-area-inset-left,0px))]",
+          "pointer-events-none absolute inset-x-0 top-0 z-20 pt-[max(1rem,env(safe-area-inset-top,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-4 pl-[max(1rem,env(safe-area-inset-left,0px))] opacity-45 transition-opacity hover:opacity-100 focus-within:opacity-100",
         variant === "flow" && "p-4",
         className,
       )}

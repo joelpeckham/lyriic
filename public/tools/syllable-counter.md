@@ -28,4 +28,4 @@ Yes, when you continue with a draft you edited here (not an untouched sample). l
 
 ## Open the editor
 
-Continue in the editor with live counts: https://lyriic.com/
+Open the editor: https://lyriic.com/

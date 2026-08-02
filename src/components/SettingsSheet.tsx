@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   BookOpen,
   ChevronDown,
@@ -38,7 +39,10 @@ import { usePrefs } from "@/hooks/usePrefs";
 import {
   CUSTOM_FOOT_IDS,
   FOOT_LABELS,
+  getMeterCatalogEntry,
+  isStressAwareMeterConfig,
   listMeterCatalogByGroup,
+  POPULAR_METER_IDS,
   resolveMeterConfig,
   rhymeSchemesForMeter,
   type CustomFootId,
@@ -56,14 +60,22 @@ import {
   type EditorSettings,
 } from "@/lib/settings";
 import { applyMeterChoice } from "@/lib/settings/applyMeterChoice";
-import { SHORTCUT_HINTS } from "@/lib/shortcuts";
+import {
+  SHORTCUT_HINTS,
+  WORD_TOOL_SHORTCUT_HINTS,
+  WORD_TOOLS_HINT,
+} from "@/lib/shortcuts";
 import { cn } from "@/lib/utils";
+
+export type SettingsFocusSection = "overlays" | null;
 
 type SettingsSheetProps = {
   settings: EditorSettings;
   onChange: (next: EditorSettings) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Scroll to a section when the sheet opens (e.g. meter chip long-press). */
+  focusSection?: SettingsFocusSection;
 };
 
 const FONT_SIZE_OPTIONS = [
@@ -98,6 +110,7 @@ function SettingsToggle({
   icon: Icon,
   checked,
   onCheckedChange,
+  disabled,
 }: {
   id: string;
   label: string;
@@ -105,10 +118,16 @@ function SettingsToggle({
   icon: LucideIcon;
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
+  disabled?: boolean;
 }) {
   const hintId = `${id}-hint`;
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div
+      className={cn(
+        "flex items-center justify-between gap-4",
+        disabled && "opacity-50",
+      )}
+    >
       <div className="flex min-w-0 items-start gap-2.5">
         <Icon
           className="mt-0.5 size-4 shrink-0 text-muted-foreground"
@@ -124,10 +143,45 @@ function SettingsToggle({
       <Switch
         id={id}
         checked={checked}
+        disabled={disabled}
         aria-describedby={hintId}
         onCheckedChange={onCheckedChange}
       />
     </div>
+  );
+}
+
+function MeterEntryButton({
+  entry,
+  selected,
+  onSelect,
+}: {
+  entry: { id: string; label: string; description: string };
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      className={cn(
+        "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors",
+        "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
+        selected
+          ? "border-border bg-muted text-foreground"
+          : "border-transparent hover:bg-muted/60",
+      )}
+      onClick={onSelect}
+    >
+      <span className="flex min-w-0 flex-col gap-0.5">
+        <span className="text-sm font-medium">{entry.label}</span>
+        {entry.description ? (
+          <span className="text-muted-foreground text-xs">
+            {entry.description}
+          </span>
+        ) : null}
+      </span>
+    </button>
   );
 }
 
@@ -327,6 +381,10 @@ function MeterPicker({
 }) {
   const [query, setQuery] = useState("");
   const groups = useMemo(() => listMeterCatalogByGroup(), []);
+  const popular = useMemo(
+    () => POPULAR_METER_IDS.map((id) => getMeterCatalogEntry(id)),
+    [],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -343,6 +401,8 @@ function MeterPicker({
       }))
       .filter((group) => group.entries.length > 0);
   }, [groups, query]);
+
+  const searching = query.trim().length > 0;
 
   return (
     <div className="flex flex-col gap-3">
@@ -366,38 +426,35 @@ function MeterPicker({
         aria-labelledby="meter-label"
         className="flex max-h-64 flex-col gap-3 overflow-y-auto pr-0.5"
       >
+        {!searching ? (
+          <div className="flex flex-col gap-1">
+            <p className="px-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+              Popular
+            </p>
+            {popular.map((entry) => (
+              <MeterEntryButton
+                key={`popular-${entry.id}`}
+                entry={entry}
+                selected={settings.meter === entry.id}
+                onSelect={() => onChange(applyMeterChoice(settings, entry.id))}
+              />
+            ))}
+          </div>
+        ) : null}
+
         {filtered.map((group) => (
           <div key={group.group} className="flex flex-col gap-1">
             <p className="px-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
               {group.label}
             </p>
-            {group.entries.map((entry) => {
-              const selected = settings.meter === entry.id;
-              return (
-                <button
-                  key={entry.id}
-                  type="button"
-                  aria-pressed={selected}
-                  className={cn(
-                    "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors",
-                    "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
-                    selected
-                      ? "border-border bg-muted text-foreground"
-                      : "border-transparent hover:bg-muted/60",
-                  )}
-                  onClick={() => onChange(applyMeterChoice(settings, entry.id))}
-                >
-                  <span className="flex min-w-0 flex-col gap-0.5">
-                    <span className="text-sm font-medium">{entry.label}</span>
-                    {entry.description ? (
-                      <span className="text-muted-foreground text-xs">
-                        {entry.description}
-                      </span>
-                    ) : null}
-                  </span>
-                </button>
-              );
-            })}
+            {group.entries.map((entry) => (
+              <MeterEntryButton
+                key={entry.id}
+                entry={entry}
+                selected={settings.meter === entry.id}
+                onSelect={() => onChange(applyMeterChoice(settings, entry.id))}
+              />
+            ))}
           </div>
         ))}
         {filtered.length === 0 ? (
@@ -424,6 +481,7 @@ export function SettingsSheet({
   onChange,
   open,
   onOpenChange,
+  focusSection = null,
 }: SettingsSheetProps) {
   const { prefs, setTheme, setContrast, setFontSize } = usePrefs();
   const [appearanceOpen, setAppearanceOpen] = useState(false);
@@ -434,9 +492,35 @@ export function SettingsSheet({
     ? prefs.fontSize
     : DEFAULT_FONT_SIZE;
 
+  const meterConfig = useMemo(
+    () =>
+      resolveMeterConfig({
+        meter: settings.meter,
+        customPattern: settings.customPattern,
+        customFoot: settings.customFoot,
+        customRhymePattern: settings.customRhymePattern,
+      }),
+    [
+      settings.meter,
+      settings.customPattern,
+      settings.customFoot,
+      settings.customRhymePattern,
+    ],
+  );
+  const stressAware = isStressAwareMeterConfig(meterConfig);
   const hasRhymeOverlay =
     rhymeSchemesForMeter(settings.meter, settings.customRhymePattern).length >
     0;
+
+  useEffect(() => {
+    if (!open || focusSection !== "overlays") return;
+    const timer = window.setTimeout(() => {
+      document
+        .getElementById("settings-overlays")
+        ?.scrollIntoView({ block: "start", behavior: "smooth" });
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [open, focusSection]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -481,7 +565,7 @@ export function SettingsSheet({
 
           <Separator />
 
-          <div className="flex flex-col gap-4">
+          <div id="settings-overlays" className="flex flex-col gap-4">
             <p className="text-xs tracking-wide text-muted-foreground uppercase">
               Overlays
             </p>
@@ -489,7 +573,7 @@ export function SettingsSheet({
             <SettingsToggle
               id="show-counts"
               label="Syllable counts"
-              hint="Show a count at the end of each line"
+              hint="Count at the end of each line"
               icon={Hash}
               checked={settings.showCounts}
               onCheckedChange={(showCounts) =>
@@ -500,7 +584,7 @@ export function SettingsSheet({
             <SettingsToggle
               id="show-rulers"
               label="Meter rulers"
-              hint="Tick marks at syllable boundaries under each line"
+              hint="Tick marks at syllable boundaries"
               icon={Ruler}
               checked={settings.showRulers}
               onCheckedChange={(showRulers) =>
@@ -508,33 +592,37 @@ export function SettingsSheet({
               }
             />
 
-            <SettingsToggle
-              id="show-stress"
-              label="Stress marks"
-              hint="ˈ and ˘ marks above stressed and unstressed syllables"
-              icon={Waves}
-              checked={settings.showStress}
-              onCheckedChange={(showStress) =>
-                onChange({ ...settings, showStress })
-              }
-            />
+            {stressAware ? (
+              <>
+                <SettingsToggle
+                  id="show-stress"
+                  label="Stress marks"
+                  hint="Marks above stressed and unstressed syllables"
+                  icon={Waves}
+                  checked={settings.showStress}
+                  onCheckedChange={(showStress) =>
+                    onChange({ ...settings, showStress })
+                  }
+                />
 
-            <SettingsToggle
-              id="show-meter-breaks"
-              label="Meter breaks"
-              hint="On stress-aware meters, mark syllables that break the pattern"
-              icon={CircleDot}
-              checked={settings.showMeterBreaks}
-              onCheckedChange={(showMeterBreaks) =>
-                onChange({ ...settings, showMeterBreaks })
-              }
-            />
+                <SettingsToggle
+                  id="show-meter-breaks"
+                  label="Meter breaks"
+                  hint="Highlight syllables that break the pattern"
+                  icon={CircleDot}
+                  checked={settings.showMeterBreaks}
+                  onCheckedChange={(showMeterBreaks) =>
+                    onChange({ ...settings, showMeterBreaks })
+                  }
+                />
+              </>
+            ) : null}
 
             {hasRhymeOverlay ? (
               <SettingsToggle
                 id="show-rhyme-scheme"
                 label="Rhyme scheme"
-                hint="Solid green = perfect, green ring = end, dashed ring = slant, red = no rhyme"
+                hint="Dots mark how each line fits the scheme"
                 icon={Music2}
                 checked={settings.showRhymeScheme}
                 onCheckedChange={(showRhymeScheme) =>
@@ -662,22 +750,9 @@ export function SettingsSheet({
               />
               <p className="text-sm font-medium">Word tools</p>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Tap or long-press a word for synonyms. Hover or tap for tools —
-              rhymes, syllables, and stress overrides.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <Keyboard
-                className="size-4 text-muted-foreground"
-                aria-hidden
-              />
-              <p className="text-sm font-medium">Keyboard</p>
-            </div>
+            <p className="text-sm text-muted-foreground">{WORD_TOOLS_HINT}</p>
             <ul className="flex flex-col gap-2 text-sm">
-              {SHORTCUT_HINTS.map((hint) => {
+              {WORD_TOOL_SHORTCUT_HINTS.map((hint) => {
                 const Icon =
                   SHORTCUT_ICONS[hint.action as keyof typeof SHORTCUT_ICONS];
                 return (
@@ -697,6 +772,48 @@ export function SettingsSheet({
               })}
             </ul>
           </div>
+
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <Keyboard
+                className="size-4 text-muted-foreground"
+                aria-hidden
+              />
+              <p className="text-sm font-medium">Keyboard</p>
+            </div>
+            <ul className="flex flex-col gap-2 text-sm">
+              {SHORTCUT_HINTS.filter(
+                (hint) =>
+                  hint.action === "Settings" || hint.action === "Focus poem",
+              ).map((hint) => {
+                const Icon =
+                  SHORTCUT_ICONS[hint.action as keyof typeof SHORTCUT_ICONS];
+                return (
+                  <li
+                    key={hint.action}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <span className="flex items-center gap-2 text-muted-foreground">
+                      {Icon ? (
+                        <Icon className="size-3.5 shrink-0" aria-hidden />
+                      ) : null}
+                      {hint.action}
+                    </span>
+                    <Kbd>{hint.keys}</Kbd>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          <p className="text-muted-foreground text-xs">
+            <Link
+              to="/faq"
+              className="underline-offset-2 hover:text-foreground hover:underline"
+            >
+              FAQ
+            </Link>
+          </p>
         </div>
       </SheetContent>
     </Sheet>

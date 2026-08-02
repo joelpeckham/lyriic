@@ -7,8 +7,20 @@ import {
   WRAP_LEADING,
 } from "@/lib/editor/constants";
 
+/** Slightly tighter poetic gap when rulers and stress marks are off. */
+const LINE_GAP_COMPACT_REM = 1.35;
+
+export type ZenThemeOptions = {
+  /** Reduce line gap when meter rulers + stress overlays are off. */
+  compactLineGap?: boolean;
+};
+
 /** Font-size-dependent zen theme for the poem canvas. */
-export function zenEditorTheme(fontSizeRem: number) {
+export function zenEditorTheme(
+  fontSizeRem: number,
+  options: ZenThemeOptions = {},
+) {
+  const lineGap = options.compactLineGap ? LINE_GAP_COMPACT_REM : LINE_GAP_REM;
   return EditorView.theme(
     {
       "&": {
@@ -55,7 +67,7 @@ export function zenEditorTheme(fontSizeRem: number) {
         /* Count gutter + rhyme-dot slot — em so it tracks editor font-size
            (overlay sizes gutters with the same constants × contentDOM.fontSize). */
         paddingRight: `${COUNT_GUTTER_REM + RHYME_GUTTER_REM}em`,
-        paddingBottom: `${LINE_GAP_REM}rem`,
+        paddingBottom: `${lineGap}rem`,
         letterSpacing: "0.01em",
       },
       ".cm-line:last-child": {
@@ -74,14 +86,20 @@ export function zenEditorTheme(fontSizeRem: number) {
         borderLeftColor: "var(--lyriic-ink)",
       },
       ".cm-placeholder": {
-        color: "var(--lyriic-subtle-faint)",
+        color: "var(--lyriic-subtle)",
         fontStyle: "normal",
       },
+      ".lyriic-placeholder-primary": {
+        color: "var(--lyriic-subtle)",
+      },
       ".lyriic-placeholder-hint": {
-        fontSize: "0.6em",
+        display: "inline-block",
+        marginTop: "0.15em",
+        fontSize: "0.72em",
         fontFamily: "var(--font-ui)",
-        letterSpacing: "0.01em",
-        opacity: "0.85",
+        letterSpacing: "0.02em",
+        color: "var(--lyriic-subtle-faint)",
+        opacity: "1",
         verticalAlign: "baseline",
       },
       /* Strip code-editor chrome */

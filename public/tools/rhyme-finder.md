@@ -32,4 +32,4 @@ This page is for browsing rhymes. The editor keeps rhyme lookup beside your draf
 
 ## Open the editor
 
-Continue in the editor with rhyme lookup: https://lyriic.com/
+Write with rhyme lookup in the editor: https://lyriic.com/

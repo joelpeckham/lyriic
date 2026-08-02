@@ -16,7 +16,7 @@ Optional ticks at syllable boundaries. Choose from many meters — haiku, tanka,
 
 ## How do synonyms and rhymes work?
 
-Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Synonyms prefer the matching part of speech from local context, then meter fit and syllable count; rhymes sort by syllable count. Optional End and Slant toggles add stress-ignoring end rhymes and family slant near rhymes (including one-segment coda add/drop). Meter-matching options are highlighted. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for pronunciation and rhymes).
+Tap a word for tools. Long-press for synonyms. Keyboard shortcuts for synonyms, rhymes, and syllables are listed in Settings. Synonyms prefer the matching part of speech from local context, then meter fit and syllable count; rhymes sort by syllable count. Optional End and Slant toggles add stress-ignoring end rhymes and family slant near rhymes. Meter-matching options are highlighted. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for pronunciation and rhymes).
 
 ## Where does the dictionary data come from?
 

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import type { ToolFaq } from "@/content/tools";
 import { SITE_URL } from "@/lib/seo";
+import { continueToEditor } from "@/lib/tools/continueToEditor";
 
 type ToolFaqListProps = {
   faqs: ToolFaq[];
@@ -45,6 +46,7 @@ export function ToolFaqList({ faqs, path }: ToolFaqListProps) {
                   {" "}
                   <Link
                     to={item.href}
+                    onClick={() => continueToEditor()}
                     className="text-foreground underline-offset-2 hover:underline"
                   >
                     {item.hrefLabel ?? item.href}

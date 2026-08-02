@@ -7,6 +7,8 @@ import {
   draftListSecondary,
   firstVerseLine,
   formatRelativeUpdatedAt,
+  isPlaceholderDraftName,
+  softDraftNameFromText,
 } from "./exportDraft";
 
 describe("draftFilename", () => {
@@ -41,12 +43,25 @@ describe("formatRelativeUpdatedAt", () => {
 });
 
 describe("draftListSecondary", () => {
-  it("prefers verse preview over relative time", () => {
+  it("prefers verse preview over empty cue", () => {
     const now = Date.now();
     expect(draftListSecondary("first line\nsecond", now - 60_000, now)).toBe(
       "first line",
     );
-    expect(draftListSecondary("  \n  ", now - 60_000, now)).toBe("1m ago");
+  });
+
+  it("shows Empty · relative time when no verse", () => {
+    const now = Date.now();
+    expect(draftListSecondary("  \n  ", now - 60_000, now)).toBe(
+      "Empty · 1m ago",
+    );
+  });
+
+  it("accepts optional meter label for empty drafts", () => {
+    const now = Date.now();
+    expect(
+      draftListSecondary("  \n  ", now - 60_000, now, "Haiku"),
+    ).toBe("Empty · Haiku");
   });
 });
 
@@ -55,5 +70,37 @@ describe("defaultDraftName", () => {
     expect(defaultDraftName(Date.UTC(2026, 7, 1, 18, 30)).length).toBeGreaterThan(
       0,
     );
+  });
+});
+
+describe("isPlaceholderDraftName", () => {
+  it("detects Untitled, seed labels, and datetime stubs", () => {
+    expect(isPlaceholderDraftName("Untitled")).toBe(true);
+    expect(isPlaceholderDraftName("  ")).toBe(true);
+    expect(isPlaceholderDraftName("Haiku")).toBe(true);
+    expect(isPlaceholderDraftName("Sonnet (iambic pentameter)")).toBe(true);
+    expect(isPlaceholderDraftName("Free verse")).toBe(true);
+    expect(
+      isPlaceholderDraftName(defaultDraftName(Date.UTC(2026, 7, 1, 18, 30))),
+    ).toBe(true);
+  });
+
+  it("does not treat user-chosen names as placeholders", () => {
+    expect(isPlaceholderDraftName("My sonnet")).toBe(false);
+    expect(isPlaceholderDraftName("River song")).toBe(false);
+  });
+});
+
+describe("softDraftNameFromText", () => {
+  it("renames placeholders from the first verse line", () => {
+    expect(softDraftNameFromText("Untitled", "\n  soft rain  \nfalls")).toBe(
+      "soft rain",
+    );
+    expect(softDraftNameFromText("Haiku", "an old pond")).toBe("an old pond");
+  });
+
+  it("leaves user names alone", () => {
+    expect(softDraftNameFromText("My poem", "new first line")).toBeNull();
+    expect(softDraftNameFromText("Untitled", "   ")).toBeNull();
   });
 });

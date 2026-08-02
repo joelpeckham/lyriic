@@ -10,6 +10,7 @@ import {
 /**
  * When the user picks a meter in Settings, enable sensible overlays.
  * Choosing "none" leaves overlay toggles as-is (user may still want counts).
+ * Stress overlays turn on only for stress-aware meters.
  */
 export function applyMeterChoice(
   settings: EditorSettings,
@@ -37,8 +38,9 @@ export function applyMeterChoice(
     ...next,
     showCounts: true,
     showRulers: config.pattern.length > 0,
-    showStress: true,
-    showMeterBreaks: stressAware ? true : next.showMeterBreaks,
+    // Syllable-only forms stay quiet; stress-aware picks seed marks + breaks.
+    showStress: stressAware,
+    showMeterBreaks: stressAware,
     showRhymeScheme: hasRhyme ? true : next.showRhymeScheme,
   };
 }

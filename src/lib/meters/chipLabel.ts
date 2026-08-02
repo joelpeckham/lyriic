@@ -10,7 +10,7 @@ export function formatCustomPatternDashes(
 
 /**
  * Header meter chip label + aria.
- * Custom shows the cycle; closed forms use “line N · M-line form”
+ * Custom shows the cycle; closed forms keep the form name with N/M progress
  * so overshoot never looks like a failing grade.
  */
 export function formatActiveMeterChip(
@@ -20,8 +20,8 @@ export function formatActiveMeterChip(
 ): { label: string; ariaLabel: string } {
   if (meterId === "none") {
     return {
-      label: "Choose meter",
-      ariaLabel: "Choose meter. Opens settings to pick a meter.",
+      label: "Free verse",
+      ariaLabel: "Free verse. Opens settings to pick a meter.",
     };
   }
 
@@ -37,10 +37,10 @@ export function formatActiveMeterChip(
   const entry = getMeterCatalogEntry(meterId);
   const stanzaLines = entry.stanzaLines ?? null;
   if (stanzaLines != null && stanzaLines > 0 && writtenLines > 0) {
-    const label = `line ${writtenLines} · ${stanzaLines}-line form`;
+    const label = `${entry.label} · ${writtenLines}/${stanzaLines}`;
     return {
       label,
-      ariaLabel: `${entry.label}, ${label}. Open settings to change.`,
+      ariaLabel: `${entry.label}, line ${writtenLines} of ${stanzaLines}. Open settings to change.`,
     };
   }
 

@@ -168,6 +168,7 @@ export function PoemEditor({
   const hasMeterTarget = meterConfig.pattern.length > 0;
   const needsRhyme =
     settings.showRhymeScheme && activeRhymeScheme !== null;
+  const compactLineGap = !settings.showRulers && !settings.showStress;
 
   // Retry failed pack loads; createLazyBinData clears its promise on error.
   useEffect(() => {
@@ -272,7 +273,7 @@ export function PoemEditor({
     const state = EditorState.create({
       doc: value,
       extensions: [
-        themeComp.of(zenEditorTheme(prefs.fontSize)),
+        themeComp.of(zenEditorTheme(prefs.fontSize, { compactLineGap })),
         ...createPoemExtensions({
           onDocChange: (text, { userEdit }) => {
             setLiveText(text);
@@ -329,16 +330,16 @@ export function PoemEditor({
     setLiveText(value);
   }, [value]);
 
-  // Font size → theme compartment.
+  // Font size / line-gap → theme compartment.
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
     view.dispatch({
       effects: themeCompartment.current.reconfigure(
-        zenEditorTheme(prefs.fontSize),
+        zenEditorTheme(prefs.fontSize, { compactLineGap }),
       ),
     });
-  }, [prefs.fontSize]);
+  }, [prefs.fontSize, compactLineGap]);
 
   // Push meter overlay data into the editor plugin.
   useEffect(() => {
@@ -371,9 +372,16 @@ export function PoemEditor({
     Math.max(0, lineCounts.lines.length - 1),
   );
 
-  // Debounced polite announcement for the focused line's meter status.
+  // Debounced polite announcement when any meter overlay is on.
+  const anyMeterOverlay =
+    settings.showCounts ||
+    settings.showRulers ||
+    settings.showStress ||
+    settings.showMeterBreaks ||
+    needsRhyme;
+
   useEffect(() => {
-    if (!settings.showCounts) return;
+    if (!anyMeterOverlay) return;
     const metered = meteredLines[safeActiveLineIndex];
     if (!metered) return;
     const line = lineCounts.lines[safeActiveLineIndex] ?? "";
@@ -391,7 +399,7 @@ export function PoemEditor({
     safeActiveLineIndex,
     meteredLines,
     lineCounts.lines,
-    settings.showCounts,
+    anyMeterOverlay,
   ]);
 
   function closeWordUi(): void {
@@ -413,7 +421,7 @@ export function PoemEditor({
       }}
     >
       <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {settings.showCounts ? liveCountText : ""}
+        {anyMeterOverlay ? liveCountText : ""}
       </div>
       <div ref={parentRef} className="min-h-0 w-full flex-1" />
       <RhymeDotTooltip containerRef={parentRef} />

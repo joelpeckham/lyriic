@@ -1,3 +1,6 @@
+// Relative import: SEO build loads this module via strip-types (no `@/` alias).
+import { WORD_TOOLS_HINT } from "../lib/shortcuts.ts";
+
 export type FaqEntry = {
   q: string;
   plain: string;
@@ -30,8 +33,7 @@ export const FAQ_ENTRIES: FaqEntry[] = [
   },
   {
     q: "How do synonyms and rhymes work?",
-    plain:
-      "Hover or tap a word in the editor to open synonyms, rhymes, and syllable tools. Synonyms prefer the matching part of speech from local context, then meter fit and syllable count; rhymes sort by syllable count. Optional End and Slant toggles add stress-ignoring end rhymes and family slant near rhymes (including one-segment coda add/drop). Meter-matching options are highlighted. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for pronunciation and rhymes).",
+    plain: `${WORD_TOOLS_HINT} Keyboard shortcuts for synonyms, rhymes, and syllables are listed in Settings. Synonyms prefer the matching part of speech from local context, then meter fit and syllable count; rhymes sort by syllable count. Optional End and Slant toggles add stress-ignoring end rhymes and family slant near rhymes. Meter-matching options are highlighted. Dictionaries ship with the app (Open English WordNet and Wiktionary for synonyms; Misaki, CMUdict, and WikiPron for pronunciation and rhymes).`,
   },
   {
     q: "Where does the dictionary data come from?",

@@ -50,6 +50,7 @@ export {
   METER_CATALOG,
   METER_GROUP_LABELS,
   METER_PRESETS,
+  POPULAR_METER_IDS,
   overlaysForMeterSeed,
   resolveMeterConfig,
   resolveRhymeScheme,

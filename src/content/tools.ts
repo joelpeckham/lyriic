@@ -57,7 +57,7 @@ export const TOOL_PAGES: ToolPageContent[] = [
         hrefLabel: "Continue in the editor",
       },
     ],
-    cta: "Continue in the editor with live counts",
+    cta: "Open the editor",
   },
   {
     path: "/tools/rhyme-finder",
@@ -99,10 +99,10 @@ export const TOOL_PAGES: ToolPageContent[] = [
         plain:
           "This page is for browsing rhymes. The editor keeps rhyme lookup beside your draft while you write, with live syllable counts and optional meter rulers. Your finder query does not carry over — open the editor when you are ready to draft.",
         href: "/",
-        hrefLabel: "Continue in the editor",
+        hrefLabel: "Open the editor",
       },
     ],
-    cta: "Continue in the editor with rhyme lookup",
+    cta: "Write with rhyme lookup in the editor",
   },
 ];
 

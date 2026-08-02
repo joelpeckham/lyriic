@@ -7,7 +7,7 @@ import {
   type KeyboardEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { BookA, Copy, Hash, Music2, RotateCcw } from "lucide-react";
+import { BookA, ChevronLeft, Copy, Hash, Music2, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 import { WordAnchor } from "@/components/editor/WordAnchor";
@@ -86,6 +86,20 @@ const coarseTouchTarget =
   "[@media(pointer:coarse)]:size-10 [@media(pointer:coarse)]:min-h-10 [@media(pointer:coarse)]:min-w-10";
 const coarseChipTarget =
   "[@media(pointer:coarse)]:h-10 [@media(pointer:coarse)]:min-h-10 [@media(pointer:coarse)]:min-w-10 [@media(pointer:coarse)]:px-3";
+/** Actions toolbar: icon-only on fine pointer; labeled under icon on coarse. */
+const coarseActionButton =
+  "[@media(pointer:coarse)]:h-auto [@media(pointer:coarse)]:min-h-10 [@media(pointer:coarse)]:w-auto [@media(pointer:coarse)]:min-w-12 [@media(pointer:coarse)]:flex-col [@media(pointer:coarse)]:gap-0.5 [@media(pointer:coarse)]:px-2 [@media(pointer:coarse)]:py-1.5";
+const coarseActionLabel =
+  "hidden text-[10px] font-medium leading-none tracking-wide [@media(pointer:coarse)]:inline";
+const coarseRowTarget =
+  "[@media(pointer:coarse)]:min-h-10";
+
+function isCoarsePointer(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(pointer: coarse)").matches
+  );
+}
 
 export type WordToolsTarget = WordTarget & {
   /** When set, open that panel directly (shortcut / long-press). */
@@ -152,7 +166,7 @@ export function WordToolsPopover({
   target,
   onClose,
   onStickyChange,
-  onOpenLookup,
+  onOpenLookup: _onOpenLookup,
   onReplace,
   onRestoreFocus,
   onSetOverride,
@@ -178,9 +192,6 @@ export function WordToolsPopover({
     undefined;
 
   const targetIdentity = wordTargetKey(display);
-  const lookupIdentity = display?.mode
-    ? `${display.mode}:${targetIdentity}`
-    : "";
 
   // Fresh open returns to the tool picker. Leave panel alone on close so the
   // exit animation can still show syllables.
@@ -197,8 +208,15 @@ export function WordToolsPopover({
       setIncludeSlantRhymes(false);
     }
   }
-  // Lookup mode from PoemEditor wins over local actions/syllables.
+  // Direct open (shortcut / long-press) sets `mode` and Esc-dismisses.
+  // Actions-toolbar opens use local `panel` so Esc/back can return to actions.
+  const openedFromActions = !display?.mode;
   const view: Panel = display?.mode ?? panel;
+  const lookupMode =
+    view === "thesaurus" || view === "rhyme" ? view : null;
+  const lookupIdentity = lookupMode
+    ? `${lookupMode}:${targetIdentity}`
+    : "";
 
   // Re-render when variants.bin finishes loading so alt count chips appear.
   useVariantsRevision();
@@ -221,6 +239,11 @@ export function WordToolsPopover({
   const displayCount = hasOverride
     ? overrides[key]!
     : (meteredToken?.syllables ?? baseline?.count ?? 1);
+  const isMeterFit =
+    !hasOverride &&
+    !!meteredToken &&
+    !!baseline &&
+    meteredToken.syllables !== baseline.count;
   const [countDraft, setCountDraft] = useKeyedState(
     targetIdentity,
     String(displayCount),
@@ -438,6 +461,7 @@ export function WordToolsPopover({
   }, [open, loadState, lookupIdentity, view]);
 
   // Focus the syllable count when the syllables panel opens (shortcut or chip).
+  // Skip on coarse pointers so the soft keyboard doesn't jump up immediately.
   const syllablesFocusKey =
     open && view === "syllables" ? targetIdentity : "";
   const prevSyllablesFocusKey = useRef("");
@@ -448,6 +472,7 @@ export function WordToolsPopover({
     }
     if (prevSyllablesFocusKey.current === syllablesFocusKey) return;
     prevSyllablesFocusKey.current = syllablesFocusKey;
+    if (isCoarsePointer()) return;
     syllableCountRef.current?.focus();
   }, [syllablesFocusKey]);
 
@@ -520,15 +545,20 @@ export function WordToolsPopover({
     onRestoreFocus();
   }
 
-  /** Escape ladder: syllables → actions → dismiss (captures even when CM focused). */
+  /** Escape ladder: actions-opened panels → actions → dismiss (captures even when CM focused). */
   function handleEscape(): boolean {
     if (!open) return false;
-    if (view === "syllables" && !display?.mode) {
+    if (view !== "actions" && openedFromActions) {
       setPanel("actions");
       return true;
     }
     closeAndRestore();
     return true;
+  }
+
+  function backToActions(): void {
+    if (!openedFromActions) return;
+    setPanel("actions");
   }
 
   const handleEscapeRef = useRef(handleEscape);
@@ -549,7 +579,7 @@ export function WordToolsPopover({
   }, [open]);
 
   function copyCandidate(candidate: RankedCandidate): void {
-    if (!target || !target.mode) return;
+    if (!target || !lookupMode) return;
     const text = preserveCasing(target.raw, candidate.word);
     void navigator.clipboard
       .writeText(text)
@@ -565,7 +595,7 @@ export function WordToolsPopover({
     candidate: RankedCandidate,
     options?: { copy?: boolean },
   ): void {
-    if (!target || !target.mode) return;
+    if (!target || !lookupMode) return;
     if (options?.copy) {
       copyCandidate(candidate);
       return;
@@ -706,8 +736,8 @@ export function WordToolsPopover({
         }}
         onEscapeKeyDown={(event) => {
           // Capture-phase window listener owns the ladder; block Radix dismiss
-          // so syllables can step back to actions.
-          if (view === "syllables" && !display?.mode) {
+          // so actions-opened panels can step back to actions.
+          if (view !== "actions" && openedFromActions) {
             event.preventDefault();
           }
         }}
@@ -729,7 +759,7 @@ export function WordToolsPopover({
           )}
         >
         {view === "actions" && display ? (
-          <TooltipProvider delayDuration={400}>
+          <TooltipProvider delayDuration={150}>
             <ButtonGroup
               aria-label={`Word actions for ${display.raw}`}
               className="[&_[data-slot=button]]:bg-popover [&_[data-slot=button]]:hover:bg-muted dark:[&_[data-slot=button]]:border-[color-mix(in_oklch,var(--popover-foreground)_25%,var(--popover))] dark:[&_[data-slot=button]]:bg-popover dark:[&_[data-slot=button]]:hover:bg-muted"
@@ -741,14 +771,19 @@ export function WordToolsPopover({
                       type="button"
                       variant="outline"
                       size="icon-sm"
-                      className={coarseTouchTarget}
+                      className={cn(coarseTouchTarget, coarseActionButton)}
                       aria-label="Syllables"
                       onClick={() => setPanel("syllables")}
                     >
                       <Hash />
+                      <span className={coarseActionLabel}>Syllables</span>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" sideOffset={6}>
+                  <TooltipContent
+                    side="bottom"
+                    sideOffset={6}
+                    className="[@media(pointer:coarse)]:hidden"
+                  >
                     Syllables
                   </TooltipContent>
                 </Tooltip>
@@ -760,14 +795,19 @@ export function WordToolsPopover({
                       type="button"
                       variant="outline"
                       size="icon-sm"
-                      className={coarseTouchTarget}
+                      className={cn(coarseTouchTarget, coarseActionButton)}
                       aria-label="Synonyms"
-                      onClick={() => onOpenLookup("thesaurus")}
+                      onClick={() => setPanel("thesaurus")}
                     >
                       <BookA />
+                      <span className={coarseActionLabel}>Synonyms</span>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" sideOffset={6}>
+                  <TooltipContent
+                    side="bottom"
+                    sideOffset={6}
+                    className="[@media(pointer:coarse)]:hidden"
+                  >
                     Synonyms
                   </TooltipContent>
                 </Tooltip>
@@ -777,14 +817,19 @@ export function WordToolsPopover({
                       type="button"
                       variant="outline"
                       size="icon-sm"
-                      className={coarseTouchTarget}
+                      className={cn(coarseTouchTarget, coarseActionButton)}
                       aria-label="Rhymes"
-                      onClick={() => onOpenLookup("rhyme")}
+                      onClick={() => setPanel("rhyme")}
                     >
                       <Music2 />
+                      <span className={coarseActionLabel}>Rhymes</span>
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" sideOffset={6}>
+                  <TooltipContent
+                    side="bottom"
+                    sideOffset={6}
+                    className="[@media(pointer:coarse)]:hidden"
+                  >
                     Rhymes
                   </TooltipContent>
                 </Tooltip>
@@ -795,6 +840,16 @@ export function WordToolsPopover({
 
         {view === "syllables" && display && baseline ? (
           <>
+            {openedFromActions ? (
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-foreground -ml-0.5 flex items-center gap-0.5 self-start px-0.5 text-xs"
+                onClick={backToActions}
+              >
+                <ChevronLeft className="size-3.5" />
+                Back
+              </button>
+            ) : null}
             <PopoverHeader className="gap-0.5 px-0.5">
               <PopoverTitle className="text-xs font-medium tracking-wide text-muted-foreground">
                 Syllables · {display.raw}
@@ -802,9 +857,11 @@ export function WordToolsPopover({
               <PopoverDescription className="text-muted-foreground text-xs">
                 {hasOverride
                   ? `Override · dictionary ${baseline.count}`
-                  : baseline.source === "dict"
-                    ? "Dictionary default"
-                    : "Estimated default"}
+                  : isMeterFit
+                    ? `Meter fit · dictionary ${baseline.count}`
+                    : baseline.source === "dict"
+                      ? "Dictionary default"
+                      : "Estimated default"}
               </PopoverDescription>
             </PopoverHeader>
 
@@ -932,13 +989,24 @@ export function WordToolsPopover({
 
         {isLookup && display ? (
           <>
+            {openedFromActions ? (
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-foreground -ml-0.5 flex items-center gap-0.5 self-start px-0.5 text-xs"
+                onClick={backToActions}
+              >
+                <ChevronLeft className="size-3.5" />
+                Back
+              </button>
+            ) : null}
             <PopoverHeader className="px-1.5 pt-0.5">
               <PopoverTitle className="text-xs font-medium tracking-wide text-muted-foreground">
                 {title}
               </PopoverTitle>
-              <PopoverDescription className="sr-only">
-                {lookupDescription}
+              <PopoverDescription className="text-muted-foreground text-xs">
+                Tap to replace · Copy to clipboard.
               </PopoverDescription>
+              <span className="sr-only">{lookupDescription}</span>
             </PopoverHeader>
 
             {view === "rhyme" ? (
@@ -1042,11 +1110,12 @@ export function WordToolsPopover({
                         tabIndex={-1}
                         aria-selected={selected}
                         aria-label={label}
-                        className={[
-                          "flex min-w-0 flex-1 items-baseline justify-between gap-2 px-1.5 py-1 text-left text-sm",
+                        className={cn(
+                          "flex min-w-0 flex-1 items-center justify-between gap-2 px-1.5 py-1 text-left text-sm",
                           "outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
+                          coarseRowTarget,
                           candidate.keepsMeter ? "font-medium" : "font-normal",
-                        ].join(" ")}
+                        )}
                         onClick={(event) => onCandidateClick(event, candidate)}
                       >
                         <span
@@ -1070,7 +1139,10 @@ export function WordToolsPopover({
                         variant="ghost"
                         size="icon-xs"
                         tabIndex={-1}
-                        className="mr-0.5 shrink-0 text-muted-foreground"
+                        className={cn(
+                          "mr-0.5 shrink-0 text-muted-foreground",
+                          coarseTouchTarget,
+                        )}
                         aria-label={`Copy ${candidate.word}`}
                         onClick={() => copyCandidate(candidate)}
                       >
