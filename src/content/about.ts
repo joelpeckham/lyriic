@@ -72,7 +72,7 @@ export const ABOUT_HERO: AboutPoem = {
 export const ABOUT_WHY: AboutPoem = {
   label: "A failed poem",
   summary:
-    "I suck at counting syllables. So I built this tool to keep me sane.",
+    "I suck at counting syllables. So I built a zen poetry editor that counts for me.",
   text: [
     "I counted. Rapping, tapping, jabs on every jot.",
     "And then above my head appeared a bulb, a thought.",
@@ -99,14 +99,20 @@ export const ABOUT_FEATURES: AboutPoem[] = [
       "He never stops to scold or chasten me",
       "The count he keeps with perfect guarantee",
     ].join("\n"),
-    settings: aboutMeterSettings("iambic-pentameter", { showStress: false }),
+    settings: aboutMeterSettings("iambic-pentameter", { showStress: false, showRulers: false }),
   },
   {
     label: "When it runs long",
     summary:
       "When a line exceeds the meter target, the gutter shows a clear over count.",
-    text: "I ordered five; the waiter wheeled out a syllable soufflé the size of Cleveland.",
-    settings: aboutMeterSettings("custom", { customPattern: [5] }),
+    text: [
+      "I aimed for a limerick neat,",
+      "with eight on each long-running beat.",
+      "The shorts toed the line,",
+      "then five crossed the sign—",
+      "and kept right on counting: nine, ten, eleven, oh look at that gutter go scarlet with heat.",
+    ].join("\n"),
+    settings: aboutMeterSettings("limerick"),
   },
   {
     label: "Meter",
@@ -121,40 +127,42 @@ export const ABOUT_FEATURES: AboutPoem[] = [
     settings: aboutMeterSettings("common-meter", {
       showStress: true,
       showMeterBreaks: true,
+      showRulers: false
     }),
   },
   {
     label: "Word tools",
     summary:
-      "Hover or tap a word and rhymes, synonyms, and definitions tip-toe in—helpers, not a flood.",
+      "Hover or tap a word and rhymes, synonyms, and definitions are presented as inline helpers.",
     text: [
-      "Tap once: a rhyme in bedroom slippers",
-      "sidles up—no synonym shippers.",
+      "Tap any tough word",
+      "rhymes and synonyms appear.",
+      "Even orange blinks.",
     ].join("\n"),
-    settings: aboutMeterSettings("custom", { customPattern: [9] }),
+    settings: aboutMeterSettings("haiku"),
   },
   {
     label: "Local",
     summary:
       "Drafts stay on your device with no account, no cloud storage, and offline use after the first load.",
     text: [
-      "No password parade, and no cloud for a throne—",
-      "your draft stays offline once the page has been shown.",
+      "No login, no account, no rented shelf—",
+      "your draft stays local, safe beside yourself.",
     ].join("\n"),
-    settings: aboutMeterSettings("custom", { customPattern: [11] }),
+    settings: aboutMeterSettings("heroic-couplet", { showStress: false }),
   },
 ];
 
 /** Stance — free, local-first, meter tools only; no generative AI. */
 export const ABOUT_STANCE: AboutPoem = {
-  label: "Stance",
+  label: "AI Stance",
   summary:
-    "Lyriic counts meter and leaves the writing—and the draft—to you, on your device.",
+    "Lyriic counts meter and leaves the writing—and the draft—to you, on your device. No AI allowed.",
   text: [
     "We count your meter; we will not compose—",
     "your draft stays home in its Saturday clothes.",
   ].join("\n"),
-  settings: aboutMeterSettings("heroic-couplet"),
+  settings: aboutMeterSettings("heroic-couplet", { showStress: false, showMeterBreaks: false })
 };
 
 export const ABOUT_CLOSE_LINE = "Focus on your words, not your meter.";
