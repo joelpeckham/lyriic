@@ -11,7 +11,16 @@ import { createServer } from "vite";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 
-const OG_IMAGE = "https://lyriic.com/og.jpg";
+function ogImageForPath(path) {
+  if (path === "/" || path === "") return "https://lyriic.com/og.jpg";
+  const toolMatch = /^\/tools\/([^/]+)\/?$/.exec(path);
+  if (toolMatch) return `https://lyriic.com/og/${toolMatch[1]}.png`;
+  return "https://lyriic.com/og.jpg";
+}
+
+function ogImageTypeForUrl(imageUrl) {
+  return imageUrl.endsWith(".png") ? "image/png" : "image/jpeg";
+}
 
 function routeToFile(route) {
   const trimmed = route.replace(/^\//, "");
@@ -97,20 +106,25 @@ function stripNoscript(html) {
   return html.replace(/<noscript>[\s\S]*?<\/noscript>\s*/i, "");
 }
 
-function applyHead(html, { title, description, canonical }) {
+function applyHead(html, { title, description, canonical, path }) {
+  const image = ogImageForPath(path ?? "/");
+  const imageType = ogImageTypeForUrl(image);
   let out = setTitle(html, title);
   out = upsertMeta(out, "name", "description", description);
   out = upsertMeta(out, "property", "og:title", title);
   out = upsertMeta(out, "property", "og:description", description);
   out = upsertMeta(out, "property", "og:url", canonical);
-  out = upsertMeta(out, "property", "og:image", OG_IMAGE);
+  out = upsertMeta(out, "property", "og:image", image);
+  out = upsertMeta(out, "property", "og:image:width", "1200");
+  out = upsertMeta(out, "property", "og:image:height", "630");
+  out = upsertMeta(out, "property", "og:image:type", imageType);
   out = upsertMeta(out, "property", "og:type", "website");
   out = upsertMeta(out, "property", "og:site_name", "lyriic");
   out = upsertMeta(out, "property", "og:locale", "en_US");
   out = upsertMeta(out, "name", "twitter:card", "summary_large_image");
   out = upsertMeta(out, "name", "twitter:title", title);
   out = upsertMeta(out, "name", "twitter:description", description);
-  out = upsertMeta(out, "name", "twitter:image", OG_IMAGE);
+  out = upsertMeta(out, "name", "twitter:image", image);
   out = upsertCanonical(out, canonical);
   return out;
 }

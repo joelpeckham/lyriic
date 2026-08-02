@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 
-import { OG_IMAGE, absoluteUrl } from "@/lib/seo";
+import {
+  ogImageForPath,
+  ogImageTypeForUrl,
+  absoluteUrl,
+} from "@/lib/seo";
 
 type DocumentMeta = {
   title: string;
@@ -43,19 +47,24 @@ export function useDocumentMeta({
 }: DocumentMeta): void {
   useEffect(() => {
     const canonical = absoluteUrl(path);
+    const image = ogImageForPath(path);
+    const imageType = ogImageTypeForUrl(image);
     document.title = title;
     upsertMeta("name", "description", description);
     upsertMeta("property", "og:title", title);
     upsertMeta("property", "og:description", description);
     upsertMeta("property", "og:url", canonical);
-    upsertMeta("property", "og:image", OG_IMAGE);
+    upsertMeta("property", "og:image", image);
+    upsertMeta("property", "og:image:width", "1200");
+    upsertMeta("property", "og:image:height", "630");
+    upsertMeta("property", "og:image:type", imageType);
     upsertMeta("property", "og:type", "website");
     upsertMeta("property", "og:site_name", "lyriic");
     upsertMeta("property", "og:locale", "en_US");
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", title);
     upsertMeta("name", "twitter:description", description);
-    upsertMeta("name", "twitter:image", OG_IMAGE);
+    upsertMeta("name", "twitter:image", image);
     upsertCanonical(canonical);
   }, [title, description, path]);
 }

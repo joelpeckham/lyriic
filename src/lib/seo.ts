@@ -6,6 +6,7 @@ export const SITE_TITLE =
 export const SITE_DESCRIPTION =
   "Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser.";
 
+/** Default / home OG image (JPEG kept for the long-lived `/og.jpg` URL). */
 export const OG_IMAGE = `${SITE_URL}/og.jpg`;
 
 export const SITE_FEATURE_LIST = [
@@ -29,4 +30,24 @@ export const SITE_KNOWS_ABOUT = [
 export function absoluteUrl(path: string): string {
   if (path === "/" || path === "") return `${SITE_URL}/`;
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+/**
+ * Per-route Open Graph image. Tool pages use `/og/{slug}.png`; everything else
+ * falls back to the home JPEG.
+ */
+export function ogImageForPath(path: string): string {
+  const normalized = path === "" ? "/" : path;
+  if (normalized === "/") return OG_IMAGE;
+
+  const toolMatch = /^\/tools\/([^/]+)\/?$/.exec(normalized);
+  if (toolMatch) {
+    return `${SITE_URL}/og/${toolMatch[1]}.png`;
+  }
+
+  return OG_IMAGE;
+}
+
+export function ogImageTypeForUrl(imageUrl: string): string {
+  return imageUrl.endsWith(".png") ? "image/png" : "image/jpeg";
 }

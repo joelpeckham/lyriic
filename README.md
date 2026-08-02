@@ -30,6 +30,14 @@ pnpm lint
 
 `pnpm build` regenerates SEO/agent files (`llms.txt`, markdown mirrors, sitemap), builds the app, then prerenders `/faq`, `/privacy`, and `/tools/*` to static HTML via `react-dom/server` (Vite SSR) — no browser required.
 
+Regenerate Open Graph images (Playwright screenshots of `og.html` → `public/og/`):
+
+```bash
+pnpm build:og
+```
+
+Preview the OG gallery with `pnpm dev:og`.
+
 Rebuild pronunciation packs (shared lexicon + perfect/end/slant rhyme indexes). Downloads Misaki and WikiPron into `scripts/sources/` when missing; requires `pip install wordfreq`:
 
 ```bash
