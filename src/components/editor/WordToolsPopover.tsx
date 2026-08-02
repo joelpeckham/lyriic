@@ -267,11 +267,9 @@ export function WordToolsPopover({
   const [retryNonce, setRetryNonce] = useState(0);
   // Autofocus the list only on a fresh thesaurus/rhyme open — not End/Slant reloads.
   const autofocusListRef = useRef(false);
-  const prevLookupIdentityRef = useRef("");
-  if (lookupIdentity !== prevLookupIdentityRef.current) {
-    prevLookupIdentityRef.current = lookupIdentity;
+  useEffect(() => {
     if (lookupIdentity) autofocusListRef.current = true;
-  }
+  }, [lookupIdentity]);
 
   const syllables = display
     ? resolveTokenSyllables(display, displayMetered)
@@ -534,7 +532,9 @@ export function WordToolsPopover({
   }
 
   const handleEscapeRef = useRef(handleEscape);
-  handleEscapeRef.current = handleEscape;
+  useEffect(() => {
+    handleEscapeRef.current = handleEscape;
+  });
 
   useEffect(() => {
     if (!open) return;
