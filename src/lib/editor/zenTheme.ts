@@ -77,6 +77,7 @@ export function zenEditorTheme(
         /* Count gutter + rhyme-dot slot — em so it tracks editor font-size
            (overlay sizes gutters with the same constants × contentDOM.fontSize). */
         paddingRight: `${COUNT_GUTTER_REM + RHYME_GUTTER_REM}em`,
+        marginLeft: "-0.25rem",
         paddingBottom: `${lineGap}rem`,
         letterSpacing: "0.01em",
       },

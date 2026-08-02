@@ -9,6 +9,29 @@ import {
 import type { EditorSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
+/** Match SettingsSheet FONT_SIZE_OPTIONS — about demos ignore prefs. */
+const ABOUT_FONT_S = 1.25;
+const ABOUT_FONT_M = 1.5;
+
+/** S by default; M from the Tailwind `sm` breakpoint up — never L/XL. */
+function useAboutEmbedFontSize(): number {
+  const [size, setSize] = useState(() =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(min-width: 640px)").matches
+      ? ABOUT_FONT_M
+      : ABOUT_FONT_S,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 640px)");
+    const apply = () => setSize(mq.matches ? ABOUT_FONT_M : ABOUT_FONT_S);
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  return size;
+}
+
 type AboutPoemEditorProps = {
   text: string;
   settings: EditorSettings;
@@ -36,7 +59,7 @@ function StaticVerseFallback({
     <div
       className={cn(
         "font-[family-name:var(--font-editor)] text-foreground",
-        "text-[1.125rem] sm:text-[1.25rem]",
+        "text-[1.25rem] sm:text-[1.5rem]",
         className,
       )}
       style={{ lineHeight: WRAP_LEADING }}
@@ -73,6 +96,7 @@ export function AboutPoemEditor({
   eager = false,
 }: AboutPoemEditorProps) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const fontSizeRem = useAboutEmbedFontSize();
   const [text, setText] = useState(initialText);
   const [overrides, setOverrides] = useState<Record<string, number>>({});
   const [stressOverrides, setStressOverrides] = useState<
@@ -155,7 +179,7 @@ export function AboutPoemEditor({
           }}
           variant="embed"
           autoFocus={false}
-          className="text-[1.125rem] sm:text-[1.25rem]"
+          fontSizeRem={fontSizeRem}
         />
       ) : (
         <StaticVerseFallback text={text} />

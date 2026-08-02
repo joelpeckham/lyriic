@@ -79,6 +79,11 @@ type PoemEditorProps = {
   variant?: ZenThemeVariant;
   /** Focus the CM view on mount. Default true for zen; about embeds pass false. */
   autoFocus?: boolean;
+  /**
+   * Override prefs font size for this instance (rem). About embeds pass a
+   * fixed S/M so demos ignore the user’s editor size preference.
+   */
+  fontSizeRem?: number;
   className?: string;
 };
 
@@ -115,15 +120,18 @@ export function PoemEditor({
   activeWordGetterRef,
   variant = "zen",
   autoFocus = true,
+  fontSizeRem,
   className,
 }: PoemEditorProps) {
   const { prefs } = usePrefs();
+  const resolvedFontSize = fontSizeRem ?? prefs.fontSize;
   const parentRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const themeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
   const variantRef = useRef(variant);
   const autoFocusRef = useRef(autoFocus);
+  const fontSizeRef = useRef(resolvedFontSize);
   const meteredLinesRef = useRef<readonly MeteredLine[]>([]);
   /** Single mutable bridge for CM → React word UI. */
   const wordBridgeRef = useRef({
@@ -144,7 +152,8 @@ export function PoemEditor({
   useLayoutEffect(() => {
     variantRef.current = variant;
     autoFocusRef.current = autoFocus;
-  }, [variant, autoFocus]);
+    fontSizeRef.current = resolvedFontSize;
+  }, [variant, autoFocus, resolvedFontSize]);
 
   useLayoutEffect(() => {
     wordTargetRef.current = wordTarget;
@@ -324,7 +333,7 @@ export function PoemEditor({
       doc: value,
       extensions: [
         themeComp.of(
-          zenEditorTheme(prefs.fontSize, {
+          zenEditorTheme(fontSizeRef.current, {
             compactLineGap,
             variant: variantRef.current,
           }),
@@ -391,10 +400,10 @@ export function PoemEditor({
     if (!view) return;
     view.dispatch({
       effects: themeCompartment.current.reconfigure(
-        zenEditorTheme(prefs.fontSize, { compactLineGap, variant }),
+        zenEditorTheme(resolvedFontSize, { compactLineGap, variant }),
       ),
     });
-  }, [prefs.fontSize, compactLineGap, variant]);
+  }, [resolvedFontSize, compactLineGap, variant]);
 
   // Push meter overlay data into the editor plugin.
   useEffect(() => {

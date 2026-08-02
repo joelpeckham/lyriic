@@ -20,8 +20,13 @@ import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-const sectionLabelClass =
-  "font-[family-name:var(--font-ui)] text-xs tracking-[0.14em] text-muted-foreground uppercase";
+/** Chapter heading (Why, What it does). */
+const groupLabelClass =
+  "font-[family-name:var(--font-brand)] text-sm tracking-[0.12em] text-foreground/75 uppercase sm:text-base";
+
+/** Quiet label sitting directly above a verse sample. */
+const poemLabelClass =
+  "font-[family-name:var(--font-ui)] text-[0.6875rem] tracking-[0.14em] text-muted-foreground uppercase";
 
 function Reveal({
   children,
@@ -95,13 +100,20 @@ function Reveal({
   );
 }
 
-function PoemSection({ poem }: { poem: AboutPoem }) {
+function PoemSection({
+  poem,
+  hideLabel = false,
+}: {
+  poem: AboutPoem;
+  /** When the chapter already supplies a heavier heading. */
+  hideLabel?: boolean;
+}) {
   return (
     <section aria-label={poem.label}>
-      <p className={sectionLabelClass}>{poem.label}</p>
+      {hideLabel ? null : <p className={poemLabelClass}>{poem.label}</p>}
       <p className="sr-only">{poem.summary}</p>
       <AboutPoemEditor
-        className="mt-4"
+        className={hideLabel ? undefined : "mt-2"}
         text={poem.text}
         settings={poem.settings}
         documentKey={`about-${poem.label}`}
@@ -133,26 +145,30 @@ export function AboutPage() {
 
   return (
     <div className="relative flex min-h-dvh flex-1 flex-col">
-      <AppHeader variant="flow" brandAs="link" />
+      <AppHeader
+        variant="flow"
+        brandAs="link"
+        className="[&_a]:text-foreground/40"
+      />
 
-      <main className="mx-auto w-full max-w-4xl flex-1 px-4 pb-16 sm:px-8">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-16 sm:px-8">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
         {/* Hero — brand first, annotated verse as the visual. */}
-        <section className="flex min-h-[calc(100dvh-5.5rem)] flex-col justify-center py-8 sm:py-12">
+        <section className="flex min-h-[calc(100dvh-5.5rem)] flex-col justify-center py-10 sm:py-14">
           <h1
             className={cn(
-              "font-[family-name:var(--font-brand)] text-5xl tracking-[0.18em] text-foreground sm:text-6xl md:text-7xl",
+              "font-[family-name:var(--font-brand)] text-5xl tracking-[0.18em] text-foreground sm:text-6xl",
               "motion-safe:animate-[lyriic-brand-settle_0.9s_ease-out_both]",
             )}
           >
             lyriic
           </h1>
 
-          <div className="mt-10 max-w-3xl sm:mt-14">
+          <div className="mt-8 sm:mt-10">
             <AboutPoemEditor
               text={ABOUT_HERO.text}
               settings={ABOUT_HERO.settings}
@@ -162,7 +178,7 @@ export function AboutPage() {
             />
           </div>
 
-          <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-[family-name:var(--font-ui)]">
+          <p className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 font-[family-name:var(--font-ui)] sm:mt-12">
             <Button asChild>
               <Link to="/">Open the editor</Link>
             </Button>
@@ -175,11 +191,14 @@ export function AboutPage() {
           </p>
         </section>
 
-        <div className="mx-auto max-w-3xl space-y-16 sm:space-y-20">
+        <div className="space-y-24 sm:space-y-32">
           <Reveal>
             <div id="why">
-              <PoemSection poem={ABOUT_WHY} />
-              <p className="mt-3 font-[family-name:var(--font-ui)] text-sm text-muted-foreground">
+              <p className={groupLabelClass}>Why</p>
+              <div className="mt-6">
+                <PoemSection poem={ABOUT_WHY} hideLabel />
+              </div>
+              <p className="mt-12 font-[family-name:var(--font-ui)] text-sm text-muted-foreground sm:mt-14">
                 <a
                   href={ABOUT_ORIGIN_URL}
                   target="_blank"
@@ -193,11 +212,13 @@ export function AboutPage() {
           </Reveal>
 
           <Reveal>
-            <div className="space-y-14">
-              <p className={sectionLabelClass}>What it does</p>
-              {ABOUT_FEATURES.map((poem) => (
-                <PoemSection key={poem.label} poem={poem} />
-              ))}
+            <div>
+              <p className={groupLabelClass}>What it does</p>
+              <div className="mt-8 space-y-10 sm:space-y-12">
+                {ABOUT_FEATURES.map((poem) => (
+                  <PoemSection key={poem.label} poem={poem} />
+                ))}
+              </div>
             </div>
           </Reveal>
 
@@ -206,8 +227,11 @@ export function AboutPage() {
           </Reveal>
 
           <Reveal>
-            <section aria-label="Open the editor" className="border-t border-border/70 pt-10">
-              <p className="font-[family-name:var(--font-editor)] text-xl text-foreground sm:text-2xl">
+            <section
+              aria-label="Open the editor"
+              className="border-t border-border/70 pt-14 sm:pt-16"
+            >
+              <p className="font-[family-name:var(--font-editor)] text-[1.125rem] text-foreground sm:text-[1.25rem]">
                 {ABOUT_CLOSE_LINE}
               </p>
               <p className="mt-2 font-[family-name:var(--font-ui)] text-sm text-muted-foreground">
