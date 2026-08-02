@@ -7,7 +7,12 @@ import {
 import { runWhenIdle } from "@/lib/data/runWhenIdle";
 import { normalizeLookupKey } from "@/lib/syllables/normalize";
 
-export type RhymeMode = "perfect" | "end";
+export type RhymeMode = "perfect" | "end" | "slant";
+
+export type RhymeQueryOptions = {
+  includeEnd?: boolean;
+  includeSlant?: boolean;
+};
 
 const perfectStore = createLazyBinData<RhymeModeData>(
   () =>
@@ -37,12 +42,27 @@ const endStore = createLazyBinData<RhymeModeData>(
   },
 );
 
+const slantStore = createLazyBinData<RhymeModeData>(
+  () =>
+    import("@/lib/data/packs/rhyme-slant.bin?url").then(
+      (m) => m.default as string,
+    ),
+  "rhyme-slant",
+  (decoded) => {
+    if (decoded.kind !== "rhyme-slant") {
+      throw new Error("expected rhyme-slant pack");
+    }
+    return decoded.data;
+  },
+);
+
 /** Unit-test fixture: mini lexicon + packs (does not touch the shared lexicon). */
 let testFixture: {
   words: string[];
   wordToId: Map<string, number>;
   perfect: RhymeModeData;
   end: RhymeModeData;
+  slant: RhymeModeData;
 } | null = null;
 
 let revision = 0;
@@ -50,6 +70,7 @@ const listeners = new Set<() => void>();
 const readyAnnounced: Record<RhymeMode, boolean> = {
   perfect: false,
   end: false,
+  slant: false,
 };
 
 /** Monotonic revision bumped when a rhyme pack becomes ready or tests inject data. */
@@ -82,12 +103,26 @@ function bumpRevision(): void {
 }
 
 function storeFor(mode: RhymeMode) {
-  return mode === "end" ? endStore : perfectStore;
+  if (mode === "end") return endStore;
+  if (mode === "slant") return slantStore;
+  return perfectStore;
+}
+
+function normalizeQueryOptions(
+  opts: boolean | RhymeQueryOptions = {},
+): Required<RhymeQueryOptions> {
+  if (typeof opts === "boolean") {
+    return { includeEnd: opts, includeSlant: false };
+  }
+  return {
+    includeEnd: opts.includeEnd ?? false,
+    includeSlant: opts.includeSlant ?? false,
+  };
 }
 
 /**
- * Lazy-load a rhyme mode pack (and lexicon). Perfect and end are separate assets.
- * Prefetches end after perfect resolves when loading perfect.
+ * Lazy-load a rhyme mode pack (and lexicon). Perfect, end, and slant are
+ * separate assets. Prefetch chain: perfect → idle end → idle slant.
  */
 function assertRhymeAligned(pack: RhymeModeData): void {
   const lex = getLexicon();
@@ -99,6 +134,39 @@ function assertRhymeAligned(pack: RhymeModeData): void {
   }
 }
 
+/** Idle-prefetch the next pack in the perfect → end → slant chain. */
+function prefetchNextAfter(mode: RhymeMode): void {
+  if (typeof window === "undefined") return;
+  if (mode === "perfect") {
+    runWhenIdle(() => {
+      void endStore
+        .load()
+        .then((end) => {
+          assertRhymeAligned(end);
+          announceReady("end");
+          prefetchNextAfter("end");
+        })
+        .catch(() => {
+          // Prefetch is best-effort; query path will surface failures.
+        });
+    }, 2000);
+    return;
+  }
+  if (mode === "end") {
+    runWhenIdle(() => {
+      void slantStore
+        .load()
+        .then((slant) => {
+          assertRhymeAligned(slant);
+          announceReady("slant");
+        })
+        .catch(() => {
+          // Prefetch is best-effort; query path will surface failures.
+        });
+    }, 2000);
+  }
+}
+
 export async function loadRhymeIndex(
   mode: RhymeMode = "perfect",
 ): Promise<RhymeModeData> {
@@ -106,32 +174,21 @@ export async function loadRhymeIndex(
   const data = await storeFor(mode).load();
   assertRhymeAligned(data);
   announceReady(mode);
-  if (mode === "perfect" && typeof window !== "undefined") {
-    runWhenIdle(() => {
-      void endStore
-        .load()
-        .then((end) => {
-          assertRhymeAligned(end);
-          announceReady("end");
-        })
-        .catch(() => {
-          // Prefetch is best-effort; query path will surface failures.
-        });
-    }, 2000);
-  }
+  prefetchNextAfter(mode);
   return data;
 }
 
-/** True once the given mode (default: either) has finished loading. */
+/** True once the given mode (default: any) has finished loading. */
 export function isRhymeIndexReady(mode?: RhymeMode): boolean {
   if (testFixture) return true;
   if (mode) return storeFor(mode).isReady() && getLexicon() !== null;
   return (
-    (perfectStore.isReady() || endStore.isReady()) && getLexicon() !== null
+    (perfectStore.isReady() || endStore.isReady() || slantStore.isReady()) &&
+    getLexicon() !== null
   );
 }
 
-/** Idle-prefetch rhyme packs after lexicon is available (end follows via loadRhymeIndex). */
+/** Idle-prefetch rhyme packs after lexicon is available (end/slant follow). */
 export function prefetchRhymes(): void {
   if (typeof window === "undefined") return;
   if (isRhymeIndexReady("perfect")) return;
@@ -154,7 +211,9 @@ function activeLex(): {
 
 function activePack(mode: RhymeMode): RhymeModeData | null {
   if (testFixture) {
-    return mode === "end" ? testFixture.end : testFixture.perfect;
+    if (mode === "end") return testFixture.end;
+    if (mode === "slant") return testFixture.slant;
+    return testFixture.perfect;
   }
   return storeFor(mode).get();
 }
@@ -247,50 +306,69 @@ export function lookupRhymeIds(
   return out;
 }
 
-/**
- * Perfect rhymes, optionally unioned with end rhymes (perfect-first, deduped).
- * Call after {@link loadRhymeQuery} has resolved.
- */
-export function queryRhymeIds(
-  word: string,
-  includeEnd: boolean,
-): number[] {
-  const perfect = lookupRhymeIds(word, "perfect");
-  if (!includeEnd) return perfect;
-  const end = lookupRhymeIds(word, "end");
-  if (end.length === 0) return perfect;
-  const seen = new Set(perfect);
-  const out = perfect.slice();
-  for (const id of end) {
+function appendUnique(out: number[], seen: Set<number>, ids: number[]): void {
+  for (const id of ids) {
     if (seen.has(id)) continue;
     seen.add(id);
     out.push(id);
   }
+}
+
+/**
+ * Perfect rhymes, optionally unioned with end then slant (perfect-first, deduped).
+ * Call after {@link loadRhymeQuery} has resolved.
+ * Accepts a boolean for backward-compatible `includeEnd` only.
+ */
+export function queryRhymeIds(
+  word: string,
+  opts: boolean | RhymeQueryOptions = {},
+): number[] {
+  const { includeEnd, includeSlant } = normalizeQueryOptions(opts);
+  const perfect = lookupRhymeIds(word, "perfect");
+  if (!includeEnd && !includeSlant) return perfect;
+  const seen = new Set(perfect);
+  const out = perfect.slice();
+  if (includeEnd) {
+    appendUnique(out, seen, lookupRhymeIds(word, "end"));
+  }
+  if (includeSlant) {
+    appendUnique(out, seen, lookupRhymeIds(word, "slant"));
+  }
   return out;
 }
 
-/** True when the word has a perfect entry, or an end entry when includeEnd. */
+/** True when the word has a perfect entry, or end/slant when requested. */
 export function hasRhymeQueryEntry(
   word: string,
-  includeEnd: boolean,
+  opts: boolean | RhymeQueryOptions = {},
 ): boolean {
+  const { includeEnd, includeSlant } = normalizeQueryOptions(opts);
   return (
     hasRhymeEntry(word, "perfect") ||
-    (includeEnd && hasRhymeEntry(word, "end"))
+    (includeEnd && hasRhymeEntry(word, "end")) ||
+    (includeSlant && hasRhymeEntry(word, "slant"))
   );
 }
 
-/** Load perfect (and end when requested) for a rhyme query. */
-export async function loadRhymeQuery(includeEnd: boolean): Promise<void> {
+/** Load perfect (and end/slant when requested) for a rhyme query. */
+export async function loadRhymeQuery(
+  opts: boolean | RhymeQueryOptions = {},
+): Promise<void> {
+  const { includeEnd, includeSlant } = normalizeQueryOptions(opts);
   await loadRhymeIndex("perfect");
   if (includeEnd) await loadRhymeIndex("end");
+  if (includeSlant) await loadRhymeIndex("slant");
 }
 
 /** True when packs needed for {@link queryRhymeIds} are ready. */
-export function isRhymeQueryReady(includeEnd: boolean): boolean {
+export function isRhymeQueryReady(
+  opts: boolean | RhymeQueryOptions = {},
+): boolean {
+  const { includeEnd, includeSlant } = normalizeQueryOptions(opts);
   return (
     isRhymeIndexReady("perfect") &&
-    (!includeEnd || isRhymeIndexReady("end"))
+    (!includeEnd || isRhymeIndexReady("end")) &&
+    (!includeSlant || isRhymeIndexReady("slant"))
   );
 }
 
@@ -316,22 +394,30 @@ export function __setRhymeDataForTests(
     byKey: Record<string, string[]>;
     byWordEnd: Record<string, string | string[]>;
     byKeyEnd: Record<string, string[]>;
+    byWordSlant?: Record<string, string | string[]>;
+    byKeySlant?: Record<string, string[]>;
   } | null,
 ): void {
   if (index === null) {
     testFixture = null;
     readyAnnounced.perfect = false;
     readyAnnounced.end = false;
+    readyAnnounced.slant = false;
     bumpRevision();
     return;
   }
+
+  const byWordSlant = index.byWordSlant ?? {};
+  const byKeySlant = index.byKeySlant ?? {};
 
   const words = [
     ...new Set([
       ...Object.keys(index.byWord),
       ...Object.keys(index.byWordEnd),
+      ...Object.keys(byWordSlant),
       ...Object.values(index.byKey).flat(),
       ...Object.values(index.byKeyEnd).flat(),
+      ...Object.values(byKeySlant).flat(),
     ]),
   ].sort();
 
@@ -341,9 +427,11 @@ export function __setRhymeDataForTests(
     wordToId,
     perfect: buildModeData(words, wordToId, index.byWord, index.byKey),
     end: buildModeData(words, wordToId, index.byWordEnd, index.byKeyEnd),
+    slant: buildModeData(words, wordToId, byWordSlant, byKeySlant),
   };
   readyAnnounced.perfect = true;
   readyAnnounced.end = true;
+  readyAnnounced.slant = true;
   bumpRevision();
 }
 

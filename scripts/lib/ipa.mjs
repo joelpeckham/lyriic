@@ -290,6 +290,38 @@ function keyFrom(phones, start) {
 }
 
 /**
+ * Index of the perfect-/slant-rhyme nucleus: last primary, else last secondary,
+ * else (unmarked) last non-reduced oral vowel, else last vowel.
+ *
+ * @param {{ phone: string, stress: 0 | 1 | 2, isVowel: boolean }[]} phones
+ * @returns {number} -1 when no vowel
+ */
+export function rhymeAnchorIndex(phones) {
+  for (let i = phones.length - 1; i >= 0; i -= 1) {
+    if (phones[i].isVowel && phones[i].stress === 1) return i;
+  }
+  for (let i = phones.length - 1; i >= 0; i -= 1) {
+    if (phones[i].isVowel && phones[i].stress === 2) return i;
+  }
+  // Unmarked (WikiPron): prefer last non-reduced oral nucleus so trailing
+  // schwa / syllabic consonants do not own the key (banana → ænə, not ə).
+  for (let i = phones.length - 1; i >= 0; i -= 1) {
+    const p = phones[i];
+    if (
+      p.isVowel &&
+      !IPA_REDUCED.has(p.phone) &&
+      !IPA_SYLLABIC.has(p.phone)
+    ) {
+      return i;
+    }
+  }
+  for (let i = phones.length - 1; i >= 0; i -= 1) {
+    if (phones[i].isVowel) return i;
+  }
+  return -1;
+}
+
+/**
  * Perfect-rhyme key: phones from the last primary-stressed vowel (else last
  * secondary) through the coda. Build-time only (packs store precomputed keys).
  *
@@ -298,48 +330,127 @@ function keyFrom(phones, start) {
  */
 export function rhymeKeyFromIpa(ipa) {
   const phones = tokenizeIpa(ipa);
-  let start = -1;
-  for (let i = phones.length - 1; i >= 0; i -= 1) {
-    if (phones[i].isVowel && phones[i].stress === 1) {
-      start = i;
-      break;
+  return keyFrom(phones, rhymeAnchorIndex(phones));
+}
+
+/** @type {Map<string, string>} */
+const VOWEL_FAMILY = new Map([
+  ["i", "I"],
+  ["ɪ", "I"],
+  ["ɨ", "I"],
+  ["e", "E"],
+  ["ɛ", "E"],
+  ["eɪ", "E"],
+  ["æ", "A"],
+  ["a", "A"],
+  ["ɑ", "A"],
+  ["ɐ", "A"],
+  ["ɔ", "O"],
+  ["ɒ", "O"],
+  ["o", "O"],
+  ["oʊ", "O"],
+  ["əʊ", "O"],
+  ["u", "U"],
+  ["ʊ", "U"],
+  ["ʉ", "U"],
+  ["ɵ", "U"],
+  ["ʌ", "V"],
+  ["ɜ", "V"],
+  ["ɝ", "V"],
+  ["ɚ", "V"],
+  ["ə", "V"],
+  ["aɪ", "AI"],
+  ["aʊ", "AU"],
+  ["ɔɪ", "OI"],
+  ["ɪə", "Iə"],
+  ["ʊə", "Uə"],
+  ["ɛə", "Eə"],
+]);
+
+/** @type {Map<string, string>} */
+const CODA_FAMILY = new Map([
+  ["n", "N"],
+  ["m", "N"],
+  ["ŋ", "N"],
+  ["n̩", "N"],
+  ["m̩", "N"],
+  ["ŋ̩", "N"],
+  ["l", "L"],
+  ["l̩", "L"],
+  ["ɹ", "R"],
+  ["r", "R"],
+  ["ɹ̩", "R"],
+  ["r̩", "R"],
+  ["t", "T"],
+  ["d", "T"],
+  ["k", "K"],
+  ["ɡ", "K"],
+  ["p", "P"],
+  ["b", "P"],
+  ["s", "S"],
+  ["z", "S"],
+  ["ʃ", "S"],
+  ["ʒ", "S"],
+  ["f", "F"],
+  ["v", "F"],
+  ["θ", "F"],
+  ["ð", "F"],
+  ["tʃ", "CH"],
+  ["dʒ", "CH"],
+]);
+
+/**
+ * @param {string} phone
+ * @returns {string | null}
+ */
+export function vowelFamily(phone) {
+  return VOWEL_FAMILY.get(phone) ?? null;
+}
+
+/**
+ * Map coda phones (after the rhyme nucleus) to a family string.
+ * Empty coda → `Ø` (open only matches open). Segment count is preserved.
+ *
+ * @param {{ phone: string, stress: 0 | 1 | 2, isVowel: boolean }[]} codaPhones
+ * @returns {string}
+ */
+export function codaFamily(codaPhones) {
+  if (codaPhones.length === 0) return "Ø";
+  let out = "";
+  for (const p of codaPhones) {
+    // Trailing reduced / syllabic nuclei after the slant anchor are coda-like
+    // for family matching (e.g. fire aɪɚ → AI+V).
+    if (p.isVowel) {
+      const fam = vowelFamily(p.phone);
+      out += fam ?? p.phone;
+      continue;
     }
+    out += CODA_FAMILY.get(p.phone) ?? p.phone;
   }
-  if (start === -1) {
-    for (let i = phones.length - 1; i >= 0; i -= 1) {
-      if (phones[i].isVowel && phones[i].stress === 2) {
-        start = i;
-        break;
-      }
-    }
-  }
-  if (start === -1) {
-    // Unmarked (WikiPron): prefer last non-reduced oral nucleus so trailing
-    // schwa / syllabic consonants do not own the key (banana → ænə, not ə).
-    for (let i = phones.length - 1; i >= 0; i -= 1) {
-      const p = phones[i];
-      if (
-        p.isVowel &&
-        !IPA_REDUCED.has(p.phone) &&
-        !IPA_SYLLABIC.has(p.phone)
-      ) {
-        start = i;
-        break;
-      }
-    }
-  }
-  if (start === -1) {
-    for (let i = phones.length - 1; i >= 0; i -= 1) {
-      if (phones[i].isVowel) {
-        start = i;
-        break;
-      }
-    }
-  }
-  return keyFrom(phones, start);
+  return out;
 }
 
 const IPA_CLOSING_DIPHTHONGS = new Set(["aɪ", "aʊ", "ɔɪ"]);
+
+/**
+ * Slant keys for one IPA: family half-rhyme first, then assonance.
+ * Family = vowelFamily + codaFamily (same stress anchor as perfect).
+ * Assonance = vowelFamily only. Build-time only.
+ * Trailing reduced after a closing diphthong stays in the coda (fire → AI+V).
+ *
+ * @param {string} ipa
+ * @returns {string[]}
+ */
+export function slantRhymeKeysFromIpa(ipa) {
+  const phones = tokenizeIpa(ipa);
+  const start = rhymeAnchorIndex(phones);
+  if (start === -1) return [];
+  const nucleus = phones[start];
+  const fam = vowelFamily(nucleus.phone);
+  if (!fam) return [];
+  const coda = codaFamily(phones.slice(start + 1));
+  return [`f:${fam}+${coda}`, `a:${fam}`];
+}
 
 /**
  * End-rhyme / unstressed key: last vowel nucleus through the coda, ignoring

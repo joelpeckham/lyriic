@@ -340,6 +340,9 @@ export const syllableOverlay = ViewPlugin.fromClass(
             } else if (rhyme.status === "endMatch") {
               // End rhyme only — hollow green donut.
               classes.push("lyriic-rhyme-dot--end");
+            } else if (rhyme.status === "slantMatch") {
+              // Slant rhyme — dashed green ring.
+              classes.push("lyriic-rhyme-dot--slant");
             } else if (rhyme.status === "mismatch") {
               classes.push("lyriic-rhyme-dot--mismatch");
             } else if (

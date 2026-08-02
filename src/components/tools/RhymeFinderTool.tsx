@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { EndRhymesSwitch } from "@/components/rhyme/EndRhymesSwitch";
+import { SlantRhymesSwitch } from "@/components/rhyme/SlantRhymesSwitch";
 import { RhymeWordBank } from "@/components/tools/RhymeWordBank";
 import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import {
   loadRhymeIndex,
   loadRhymeQuery,
   queryRhymeIds,
+  type RhymeQueryOptions,
 } from "@/lib/rhyme";
 import { countWord } from "@/lib/syllables";
 import { normalizeLookupKey } from "@/lib/syllables/normalize";
@@ -36,69 +38,88 @@ const EXAMPLE_WORDS = [
 export function RhymeFinderTool() {
   const [query, setQuery] = useState("");
   const [includeEndRhymes, setIncludeEndRhymes] = useState(false);
+  const [includeSlantRhymes, setIncludeSlantRhymes] = useState(false);
   const [loaded, setLoaded] = useState<{
     key: string;
     includeEnd: boolean;
+    includeSlant: boolean;
   } | null>(null);
   const dictRevision = useDictRevision();
   const dictReady = dictRevision > 0;
 
   const trimmed = query.trim();
   const lookupKey = normalizeLookupKey(trimmed);
+  const queryOpts = useMemo(
+    (): RhymeQueryOptions => ({
+      includeEnd: includeEndRhymes,
+      includeSlant: includeSlantRhymes,
+    }),
+    [includeEndRhymes, includeSlantRhymes],
+  );
 
   // Defer the multi‑MB rhyme pack until the user asks for a word.
   useEffect(() => {
     if (!lookupKey) return;
     let cancelled = false;
-    void loadRhymeQuery(includeEndRhymes).then(() => {
+    void loadRhymeQuery(queryOpts).then(() => {
       if (!cancelled) {
-        setLoaded({ key: lookupKey, includeEnd: includeEndRhymes });
+        setLoaded({
+          key: lookupKey,
+          includeEnd: includeEndRhymes,
+          includeSlant: includeSlantRhymes,
+        });
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [includeEndRhymes, lookupKey]);
+  }, [includeEndRhymes, includeSlantRhymes, lookupKey, queryOpts]);
 
   const modeReady =
     !!lookupKey &&
     loaded?.key === lookupKey &&
-    loaded.includeEnd === includeEndRhymes;
-  const rhymeReady = modeReady && isRhymeQueryReady(includeEndRhymes);
+    loaded.includeEnd === includeEndRhymes &&
+    loaded.includeSlant === includeSlantRhymes;
+  const rhymeReady = modeReady && isRhymeQueryReady(queryOpts);
 
   const { rhymeIds, known } = useMemo(() => {
     if (!rhymeReady || !lookupKey) {
       return { rhymeIds: [] as number[], known: false };
     }
     return {
-      rhymeIds: queryRhymeIds(lookupKey, includeEndRhymes),
-      known: hasRhymeQueryEntry(lookupKey, includeEndRhymes),
+      rhymeIds: queryRhymeIds(lookupKey, queryOpts),
+      known: hasRhymeQueryEntry(lookupKey, queryOpts),
     };
-  }, [lookupKey, rhymeReady, includeEndRhymes]);
+  }, [lookupKey, rhymeReady, queryOpts]);
 
-  // When perfect is empty, probe end pack so we can hint "Enable End rhymes".
-  const shouldProbeEnd =
-    rhymeReady &&
-    !!lookupKey &&
-    !includeEndRhymes &&
-    rhymeIds.length === 0 &&
-    known;
-  const [, setEndProbeTick] = useState(0);
+  // When current modes are empty, probe near packs for enable hints.
+  const shouldProbeNear =
+    rhymeReady && !!lookupKey && rhymeIds.length === 0 && known;
+  const shouldProbeEnd = shouldProbeNear && !includeEndRhymes;
+  const shouldProbeSlant = shouldProbeNear && !includeSlantRhymes;
+  const [, setNearProbeTick] = useState(0);
   useEffect(() => {
-    if (!shouldProbeEnd) return;
+    if (!shouldProbeEnd && !shouldProbeSlant) return;
     let cancelled = false;
-    void loadRhymeIndex("end").then(() => {
-      if (!cancelled) setEndProbeTick((n) => n + 1);
+    const loads: Promise<unknown>[] = [];
+    if (shouldProbeEnd) loads.push(loadRhymeIndex("end"));
+    if (shouldProbeSlant) loads.push(loadRhymeIndex("slant"));
+    void Promise.all(loads).then(() => {
+      if (!cancelled) setNearProbeTick((n) => n + 1);
     });
     return () => {
       cancelled = true;
     };
-  }, [shouldProbeEnd, lookupKey]);
+  }, [shouldProbeEnd, shouldProbeSlant, lookupKey]);
 
   const endRhymesAvailable =
     shouldProbeEnd &&
     isRhymeIndexReady("end") &&
     hasRhymeEntry(lookupKey, "end");
+  const slantRhymesAvailable =
+    shouldProbeSlant &&
+    isRhymeIndexReady("slant") &&
+    hasRhymeEntry(lookupKey, "slant");
 
   const groups = useMemo(() => {
     if (!dictReady || !lookupKey || rhymeIds.length === 0) return [];
@@ -117,6 +138,13 @@ export function RhymeFinderTool() {
     });
   }, [rhymeIds, dictReady, dictRevision, lookupKey]);
 
+  const emptyHint =
+    endRhymesAvailable
+      ? "enable-end"
+      : slantRhymesAvailable
+        ? "enable-slant"
+        : "no-rhymes";
+
   const status =
     trimmed.length === 0
       ? "empty-query"
@@ -125,9 +153,7 @@ export function RhymeFinderTool() {
         : !known
           ? "unknown"
           : rhymeIds.length === 0
-            ? endRhymesAvailable
-              ? "enable-end"
-              : "no-rhymes"
+            ? emptyHint
             : !dictReady
               ? "loading-dict"
               : "ready";
@@ -154,10 +180,16 @@ export function RhymeFinderTool() {
           />
         </label>
 
-        <EndRhymesSwitch
-          checked={includeEndRhymes}
-          onCheckedChange={setIncludeEndRhymes}
-        />
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <EndRhymesSwitch
+            checked={includeEndRhymes}
+            onCheckedChange={setIncludeEndRhymes}
+          />
+          <SlantRhymesSwitch
+            checked={includeSlantRhymes}
+            onCheckedChange={setIncludeSlantRhymes}
+          />
+        </div>
 
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-sm">
           <span className="text-muted-foreground">Try</span>
@@ -215,6 +247,13 @@ export function RhymeFinderTool() {
             No perfect rhymes for “{trimmed}”, but end rhymes are available.
             Turn on End rhymes above to see matches that share the final
             syllable.
+          </p>
+        ) : null}
+
+        {status === "enable-slant" ? (
+          <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
+            No exact rhymes for “{trimmed}”, but slant rhymes are available.
+            Turn on Slant rhymes above for related vowel and coda families.
           </p>
         ) : null}
 

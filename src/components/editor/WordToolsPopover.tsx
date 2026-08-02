@@ -13,6 +13,7 @@ import { WordAnchor } from "@/components/editor/WordAnchor";
 import { useClosingRetention } from "@/components/editor/useClosingRetention";
 import { useKeyedState } from "@/components/editor/useKeyedState";
 import { EndRhymesSwitch } from "@/components/rhyme/EndRhymesSwitch";
+import { SlantRhymesSwitch } from "@/components/rhyme/SlantRhymesSwitch";
 import { useVariantsRevision } from "@/hooks/useVariantsRevision";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -169,11 +170,15 @@ export function WordToolsPopover({
   // exit animation can still show syllables.
   const [panel, setPanel] = useState<Panel>("actions");
   const [includeEndRhymes, setIncludeEndRhymes] = useState(false);
+  const [includeSlantRhymes, setIncludeSlantRhymes] = useState(false);
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
     setPrevOpen(open);
     if (open) setPanel("actions");
-    else setIncludeEndRhymes(false);
+    else {
+      setIncludeEndRhymes(false);
+      setIncludeSlantRhymes(false);
+    }
   }
   // Lookup mode from PoemEditor wins over local actions/syllables.
   const view: Panel = display?.mode ?? panel;
@@ -238,7 +243,7 @@ export function WordToolsPopover({
   const stressSyllableCount = stressResolved?.pattern.length ?? displayCount;
 
   const [activeIndex, setActiveIndex] = useKeyedState(
-    `${lookupIdentity}|end:${includeEndRhymes ? 1 : 0}`,
+    `${lookupIdentity}|end:${includeEndRhymes ? 1 : 0}|slant:${includeSlantRhymes ? 1 : 0}`,
     0,
   );
   const [load, setLoad] = useState<LoadResult | null>(null);
@@ -265,6 +270,8 @@ export function WordToolsPopover({
           mode: view,
           includeEndRhymes:
             view === "rhyme" ? includeEndRhymes : undefined,
+          includeSlantRhymes:
+            view === "rhyme" ? includeSlantRhymes : undefined,
           word: display.word,
           usage: view === "thesaurus" ? usage : undefined,
           lineTotal,
@@ -347,8 +354,14 @@ export function WordToolsPopover({
               limit: POPOVER_THESAURUS_RANK_LIMIT,
             });
           })
-        : loadRhymeQuery(includeEndRhymes).then(() => {
-            const ids = queryRhymeIds(display.word, includeEndRhymes);
+        : loadRhymeQuery({
+            includeEnd: includeEndRhymes,
+            includeSlant: includeSlantRhymes,
+          }).then(() => {
+            const ids = queryRhymeIds(display.word, {
+              includeEnd: includeEndRhymes,
+              includeSlant: includeSlantRhymes,
+            });
             const lex = getLexicon();
             if (!lex) return [] as RankedCandidate[];
             return rankRhymeIds({
@@ -387,6 +400,7 @@ export function WordToolsPopover({
     lineTarget,
     overrides,
     includeEndRhymes,
+    includeSlantRhymes,
     usage,
     view,
   ]);
@@ -397,19 +411,26 @@ export function WordToolsPopover({
     listRef.current?.focus();
   }, [open, loadState, lookupIdentity, view]);
 
-  // Prefetch end pack when perfect list is empty so the enable-End hint works.
+  // Prefetch near packs when the current list is empty so enable hints work.
   useEffect(() => {
     if (
       !open ||
       view !== "rhyme" ||
-      includeEndRhymes ||
       loadState !== "ready" ||
       (candidates && candidates.length > 0)
     ) {
       return;
     }
-    void loadRhymeIndex("end");
-  }, [open, view, includeEndRhymes, loadState, candidates]);
+    if (!includeEndRhymes) void loadRhymeIndex("end");
+    if (!includeSlantRhymes) void loadRhymeIndex("slant");
+  }, [
+    open,
+    view,
+    includeEndRhymes,
+    includeSlantRhymes,
+    loadState,
+    candidates,
+  ]);
 
   function applyCount(raw: string | number): void {
     if (!open || !display || !key || !baseline) return;
@@ -512,22 +533,38 @@ export function WordToolsPopover({
           ? `Syllables · ${display.raw}`
           : `Word actions for ${display.raw}`
     : "Word tools";
-  const rhymeEmptyHint =
-    view === "rhyme" &&
-    !includeEndRhymes &&
-    isRhymeIndexReady("end") &&
-    display &&
-    hasRhymeEntry(display.word, "end")
-      ? "No perfect rhymes — enable End rhymes for more matches."
-      : "No rhymes found.";
+  const rhymeEmptyHint = (() => {
+    if (view !== "rhyme" || !display) return "No rhymes found.";
+    if (
+      !includeEndRhymes &&
+      isRhymeIndexReady("end") &&
+      hasRhymeEntry(display.word, "end")
+    ) {
+      return "No perfect rhymes — enable End rhymes for more matches.";
+    }
+    if (
+      !includeSlantRhymes &&
+      isRhymeIndexReady("slant") &&
+      hasRhymeEntry(display.word, "slant")
+    ) {
+      return "No exact rhymes — enable Slant rhymes for more matches.";
+    }
+    return "No rhymes found.";
+  })();
   const emptyLabel = isThesaurus ? "No synonyms found." : rhymeEmptyHint;
   const errorLabel = isThesaurus
     ? "Couldn’t load thesaurus."
     : "Couldn’t load rhymes.";
+  const nearRhymeBits = [
+    includeEndRhymes ? "end rhymes that match the final syllable" : null,
+    includeSlantRhymes
+      ? "slant rhymes (related vowel and coda families)"
+      : null,
+  ].filter(Boolean);
   const lookupDescription = isThesaurus
     ? "Choose a synonym. Matching part of speech comes first, then meter fit and syllable count."
-    : includeEndRhymes
-      ? "Choose a rhyme to copy. Includes perfect rhymes plus end rhymes that match the final syllable. Sorted by syllable count. Meter-matching options are marked."
+    : nearRhymeBits.length > 0
+      ? `Choose a rhyme to copy. Includes perfect rhymes plus ${nearRhymeBits.join(" and ")}. Sorted by syllable count. Meter-matching options are marked.`
       : "Choose a perfect rhyme to copy. Options are sorted by syllable count. Meter-matching options are marked.";
 
   const contentClass =
@@ -775,11 +812,18 @@ export function WordToolsPopover({
             </PopoverHeader>
 
             {view === "rhyme" ? (
-              <EndRhymesSwitch
-                size="sm"
-                checked={includeEndRhymes}
-                onCheckedChange={setIncludeEndRhymes}
-              />
+              <div className="flex flex-col gap-1 px-0.5">
+                <EndRhymesSwitch
+                  size="sm"
+                  checked={includeEndRhymes}
+                  onCheckedChange={setIncludeEndRhymes}
+                />
+                <SlantRhymesSwitch
+                  size="sm"
+                  checked={includeSlantRhymes}
+                  onCheckedChange={setIncludeSlantRhymes}
+                />
+              </div>
             ) : null}
 
             {loadState === "loading" ? (

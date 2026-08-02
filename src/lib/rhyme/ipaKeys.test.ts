@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   endRhymeKeyFromIpa,
   rhymeKeyFromIpa,
+  slantRhymeKeysFromIpa,
 } from "../../../scripts/lib/ipa.mjs";
 
 describe("rhymeKeyFromIpa (scripts/lib/ipa.mjs)", () => {
@@ -72,6 +73,60 @@ describe("endRhymeKeyFromIpa (scripts/lib/ipa.mjs)", () => {
     expect(endRhymeKeyFromIpa("kˈɝld")).toBe(
       endRhymeKeyFromIpa("ˈʌndɚwɝld"),
     );
+  });
+});
+
+describe("slantRhymeKeysFromIpa (scripts/lib/ipa.mjs)", () => {
+  it("shares family keys for night / side (AI+T)", () => {
+    const night = slantRhymeKeysFromIpa("nˈaɪt");
+    const side = slantRhymeKeysFromIpa("sˈaɪd");
+    expect(night[0]).toBe("f:AI+T");
+    expect(side[0]).toBe(night[0]);
+    expect(night[1]).toBe("a:AI");
+  });
+
+  it("shares family keys for love / rough (V+F)", () => {
+    expect(slantRhymeKeysFromIpa("lˈʌv")[0]).toBe("f:V+F");
+    expect(slantRhymeKeysFromIpa("ɹˈʌf")[0]).toBe("f:V+F");
+  });
+
+  it("shares family keys for cat / bad (A+T)", () => {
+    expect(slantRhymeKeysFromIpa("kæt")[0]).toBe("f:A+T");
+    expect(slantRhymeKeysFromIpa("bæd")[0]).toBe("f:A+T");
+  });
+
+  it("does not family-match time / tame (AI vs E)", () => {
+    expect(slantRhymeKeysFromIpa("tˈaɪm")[0]).toBe("f:AI+N");
+    expect(slantRhymeKeysFromIpa("tˈeɪm")[0]).toBe("f:E+N");
+  });
+
+  it("does not family-match cat / cast (coda length)", () => {
+    expect(slantRhymeKeysFromIpa("kæt")[0]).toBe("f:A+T");
+    expect(slantRhymeKeysFromIpa("kæst")[0]).toBe("f:A+ST");
+  });
+
+  it("does not family-match tie / time (open vs closed)", () => {
+    expect(slantRhymeKeysFromIpa("tˈaɪ")[0]).toBe("f:AI+Ø");
+    expect(slantRhymeKeysFromIpa("tˈaɪm")[0]).toBe("f:AI+N");
+  });
+
+  it("assonance matches hold / coal; family does not", () => {
+    const hold = slantRhymeKeysFromIpa("hˈoʊld");
+    const coal = slantRhymeKeysFromIpa("kˈoʊl");
+    expect(hold[0]).toBe("f:O+LT");
+    expect(coal[0]).toBe("f:O+L");
+    expect(hold[1]).toBe("a:O");
+    expect(coal[1]).toBe(hold[1]);
+  });
+
+  it("keeps fire as AI+V (not reduced-only)", () => {
+    expect(slantRhymeKeysFromIpa("fˈaɪɚ")[0]).toBe("f:AI+V");
+    expect(slantRhymeKeysFromIpa("fˈaɪɚ")[1]).toBe("a:AI");
+  });
+
+  it("returns empty when no vowel", () => {
+    expect(slantRhymeKeysFromIpa("")).toEqual([]);
+    expect(slantRhymeKeysFromIpa("ʃ")).toEqual([]);
   });
 });
 

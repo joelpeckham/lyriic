@@ -1,6 +1,6 @@
 /**
  * Binary dictionary pack decode (shared by main thread + worker).
- * Formats mirror scripts/lib/dictPack.mjs (LYXL / LYXP / LYXE / LYXT).
+ * Formats mirror scripts/lib/dictPack.mjs (LYXL / LYXP / LYXE / LYXR / LYXT).
  */
 
 export const DICT_PACK_VERSION = 1;
@@ -17,8 +17,17 @@ export const DICT_MAGIC = {
   variants: "LYXV",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
+  rhymeSlant: "LYXR",
   thesaurus: "LYXT",
 } as const;
+
+export type RhymePackMode = "perfect" | "end" | "slant";
+
+function rhymeMagicForMode(mode: RhymePackMode): string {
+  if (mode === "perfect") return DICT_MAGIC.rhymePerfect;
+  if (mode === "end") return DICT_MAGIC.rhymeEnd;
+  return DICT_MAGIC.rhymeSlant;
+}
 
 /** Max syllables encodable in a packed u32 (2 bits each). */
 export const STRESS_PACK_MAX_SYLLABLES = 16;
@@ -245,11 +254,10 @@ export function decodeVariants(buf: Uint8Array): VariantsPack {
 
 export function decodeRhymePack(
   buf: Uint8Array,
-  expectMode: "perfect" | "end",
+  expectMode: RhymePackMode,
 ): RhymeModeData {
   const magic = readMagic(buf);
-  const expect =
-    expectMode === "perfect" ? DICT_MAGIC.rhymePerfect : DICT_MAGIC.rhymeEnd;
+  const expect = rhymeMagicForMode(expectMode);
   if (magic !== expect) throw new Error(`bad rhyme magic: ${magic}`);
   if (buf[4] !== DICT_PACK_VERSION) {
     throw new Error(`unsupported rhyme version: ${buf[4]}`);
@@ -368,6 +376,7 @@ export type DictPackKind =
   | "variants"
   | "rhyme-perfect"
   | "rhyme-end"
+  | "rhyme-slant"
   | "thesaurus";
 
 export type DecodedPack =
@@ -376,6 +385,7 @@ export type DecodedPack =
   | { kind: "variants"; data: VariantsPack }
   | { kind: "rhyme-perfect"; data: RhymeModeData }
   | { kind: "rhyme-end"; data: RhymeModeData }
+  | { kind: "rhyme-slant"; data: RhymeModeData }
   | { kind: "thesaurus"; data: ThesaurusPack };
 
 export function decodePack(kind: DictPackKind, buf: Uint8Array): DecodedPack {
@@ -390,6 +400,8 @@ export function decodePack(kind: DictPackKind, buf: Uint8Array): DecodedPack {
       return { kind, data: decodeRhymePack(buf, "perfect") };
     case "rhyme-end":
       return { kind, data: decodeRhymePack(buf, "end") };
+    case "rhyme-slant":
+      return { kind, data: decodeRhymePack(buf, "slant") };
     case "thesaurus":
       return { kind, data: decodeThesaurus(buf) };
   }

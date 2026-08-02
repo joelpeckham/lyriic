@@ -15,6 +15,7 @@ export {
   subscribeRhymeReady,
   wordsRhyme,
   type RhymeMode,
+  type RhymeQueryOptions,
 } from "./lookup";
 export {
   analyzeRhymeScheme,

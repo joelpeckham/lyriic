@@ -13,6 +13,7 @@ export type RhymeLineStatus =
   | "open"
   | "match"
   | "endMatch"
+  | "slantMatch"
   | "mismatch";
 
 export type RhymeSchemeLine = {
@@ -25,7 +26,7 @@ export type RhymeSchemeLine = {
 
 const UNRHYMED = "X";
 
-type PeerMatchStatus = "match" | "endMatch" | "mismatch";
+type PeerMatchStatus = "match" | "endMatch" | "slantMatch" | "mismatch";
 
 /** Last dictionary-normalized word on a poetic line, or null if none. */
 export function endWordOfLine(line: string): string | null {
@@ -46,6 +47,9 @@ export function rhymeSchemeLineTitle(line: RhymeSchemeLine): string {
   if (line.status === "endMatch") {
     return `Rhyme ${letter} — end rhyme`;
   }
+  if (line.status === "slantMatch") {
+    return `Rhyme ${letter} — slant rhyme`;
+  }
   if (line.status === "unknown") {
     return `Rhyme ${letter} — word not in dictionary`;
   }
@@ -61,14 +65,15 @@ function letterColorIndex(letter: string | null): number {
   return code - 65;
 }
 
-/** Prefer perfect over end over mismatch when summarizing an anchor's peers. */
+/** Prefer perfect over end over slant over mismatch when summarizing peers. */
 function bestPeerStatus(
   prev: PeerMatchStatus | undefined,
   next: PeerMatchStatus,
 ): PeerMatchStatus {
   const rank: Record<PeerMatchStatus, number> = {
-    match: 3,
-    endMatch: 2,
+    match: 4,
+    endMatch: 3,
+    slantMatch: 2,
     mismatch: 1,
   };
   if (!prev) return next;
@@ -78,29 +83,33 @@ function bestPeerStatus(
 function classifyPair(a: string, b: string): PeerMatchStatus {
   if (wordsRhyme(a, b, "perfect")) return "match";
   if (wordsRhyme(a, b, "end")) return "endMatch";
+  if (wordsRhyme(a, b, "slant")) return "slantMatch";
   return "mismatch";
 }
 
 function hasAnyRhymeKeys(word: string): boolean {
   return (
     rhymeKeyIds(word, "perfect").length > 0 ||
-    rhymeKeyIds(word, "end").length > 0
+    rhymeKeyIds(word, "end").length > 0 ||
+    rhymeKeyIds(word, "slant").length > 0
   );
 }
 
 /**
  * Compare end words of each line against a cycling scheme pattern.
- * Same letter ⇒ should rhyme within one pattern period. Perfect beats end;
- * neither ⇒ mismatch. `X` is unrhymed. Blank lines do not consume scheme
- * slots; anchors reset each period so multi-couplet / multi-stanza drafts
- * match independently.
+ * Same letter ⇒ should rhyme within one pattern period. Perfect beats end
+ * beats slant; none ⇒ mismatch. `X` is unrhymed. Blank lines do not consume
+ * scheme slots; anchors reset each period so multi-couplet / multi-stanza
+ * drafts match independently.
  */
 export function analyzeRhymeScheme(
   lines: readonly string[],
   schemePattern: string,
 ): RhymeSchemeLine[] {
   const packReady =
-    isRhymeIndexReady("perfect") && isRhymeIndexReady("end");
+    isRhymeIndexReady("perfect") &&
+    isRhymeIndexReady("end") &&
+    isRhymeIndexReady("slant");
   const endWords = lines.map(endWordOfLine);
   const period = schemePattern.length;
 

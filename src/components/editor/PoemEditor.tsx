@@ -195,12 +195,13 @@ export function PoemEditor({
   }, [hasMeterTarget, variantsPackRevision]);
 
   useEffect(() => {
-    // Scheme overlay needs perfect + end packs (solid vs donut green).
-    if (!needsRhyme || isRhymeQueryReady(true)) return;
+    // Scheme overlay needs perfect + end + slant (solid / ring / dashed).
+    const schemeOpts = { includeEnd: true, includeSlant: true };
+    if (!needsRhyme || isRhymeQueryReady(schemeOpts)) return;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const attempt = () => {
-      void loadRhymeQuery(true).catch(() => {
+      void loadRhymeQuery(schemeOpts).catch(() => {
         if (cancelled) return;
         timer = setTimeout(attempt, 3000);
       });

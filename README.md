@@ -30,7 +30,7 @@ pnpm lint
 
 `pnpm build` regenerates SEO/agent files (`llms.txt`, markdown mirrors, sitemap), builds the app, then prerenders `/faq`, `/privacy`, and `/tools/*` to static HTML via `react-dom/server` (Vite SSR) — no browser required.
 
-Rebuild pronunciation packs (shared lexicon + perfect/end rhyme indexes). Downloads Misaki and WikiPron into `scripts/sources/` when missing; requires `pip install wordfreq`:
+Rebuild pronunciation packs (shared lexicon + perfect/end/slant rhyme indexes). Downloads Misaki and WikiPron into `scripts/sources/` when missing; requires `pip install wordfreq`:
 
 ```bash
 pnpm build:pronunciation

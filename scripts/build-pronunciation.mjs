@@ -10,6 +10,7 @@
  *   src/lib/data/packs/variants.bin
  *   src/lib/data/packs/rhyme-perfect.bin
  *   src/lib/data/packs/rhyme-end.bin
+ *   src/lib/data/packs/rhyme-slant.bin
  *
  * Usage: node scripts/build-pronunciation.mjs
  * Requires: pip install wordfreq (for Zipf ranking of rhyme buckets)
@@ -29,6 +30,7 @@ import {
   misakiToIpa,
   packStressPattern,
   rhymeKeyFromIpa,
+  slantRhymeKeysFromIpa,
   STRESS_PACK_MAX_SYLLABLES,
   stressPatternFromIpa,
   syllableCountFromIpa,
@@ -63,6 +65,7 @@ const stressOutPath = join(packsDir, "stress.bin");
 const variantsOutPath = join(packsDir, "variants.bin");
 const perfectOutPath = join(packsDir, "rhyme-perfect.bin");
 const endOutPath = join(packsDir, "rhyme-end.bin");
+const slantOutPath = join(packsDir, "rhyme-slant.bin");
 
 /**
  * @param {unknown} value
@@ -244,11 +247,16 @@ async function main() {
   const byWordEnd = Object.create(null);
   /** @type {Record<string, string[]>} */
   const bucketsEnd = Object.create(null);
+  /** @type {Record<string, string | string[]>} */
+  const byWordSlant = Object.create(null);
+  /** @type {Record<string, string[]>} */
+  const bucketsSlant = Object.create(null);
 
   let sylEntries = 0;
   let stressEntries = 0;
   let rhymeEntries = 0;
   let endEntries = 0;
+  let slantEntries = 0;
   let skippedNoRhyme = 0;
 
   for (const [word, entry] of merged) {
@@ -292,6 +300,9 @@ async function main() {
     /** @type {string[]} */
     const endKeys = [];
     const endSeen = new Set();
+    /** @type {string[]} */
+    const slantKeys = [];
+    const slantSeen = new Set();
     const primaryKey = rhymeKeyFromIpa(entry.primary);
     const primaryEndKey = endRhymeKeyFromIpa(entry.primary);
     for (const ipa of [entry.primary, ...entry.alts]) {
@@ -324,6 +335,23 @@ async function main() {
         if (!(endKey in bucketsEnd)) bucketsEnd[endKey] = [];
         bucketsEnd[endKey].push(word);
       }
+      // Gate slant on the raw perfect slice so collapsed schwa alts do not
+      // pollute vowel-family buckets.
+      const allowSlant =
+        isPrimary ||
+        !primaryKey ||
+        !key ||
+        !isReducedRhymeKey(key) ||
+        isReducedRhymeKey(primaryKey);
+      if (allowSlant) {
+        for (const slantKey of slantRhymeKeysFromIpa(ipa)) {
+          if (slantSeen.has(slantKey)) continue;
+          slantSeen.add(slantKey);
+          slantKeys.push(slantKey);
+          if (!(slantKey in bucketsSlant)) bucketsSlant[slantKey] = [];
+          bucketsSlant[slantKey].push(word);
+        }
+      }
     }
     if (keys.length === 0) {
       skippedNoRhyme += 1;
@@ -334,6 +362,10 @@ async function main() {
     if (endKeys.length > 0) {
       byWordEnd[word] = endKeys.length === 1 ? endKeys[0] : endKeys;
       endEntries += 1;
+    }
+    if (slantKeys.length > 0) {
+      byWordSlant[word] = slantKeys.length === 1 ? slantKeys[0] : slantKeys;
+      slantEntries += 1;
     }
   }
 
@@ -378,6 +410,7 @@ async function main() {
   const allBucketWords = [
     ...Object.values(buckets).flat(),
     ...Object.values(bucketsEnd).flat(),
+    ...Object.values(bucketsSlant).flat(),
   ];
   const freq = zipfFrequencies(allBucketWords);
 
@@ -399,6 +432,7 @@ async function main() {
 
   const perfect = rankBuckets(buckets);
   const end = rankBuckets(bucketsEnd);
+  const slant = rankBuckets(bucketsSlant);
 
   const { wordCount, variantEntryCount } = writePronunciationPacks({
     syllables,
@@ -408,11 +442,14 @@ async function main() {
     byKey: perfect.byKey,
     byWordEnd,
     byKeyEnd: end.byKey,
+    byWordSlant,
+    byKeySlant: slant.byKey,
     lexiconPath: lexiconOutPath,
     stressPath: stressOutPath,
     variantsPath: variantsOutPath,
     perfectPath: perfectOutPath,
     endPath: endOutPath,
+    slantPath: slantOutPath,
   });
 
   console.log(
@@ -427,6 +464,9 @@ async function main() {
   );
   console.log(
     `End rhymes: ${endEntries} words / ${Object.keys(end.byKey).length} keys (${end.seats} seats)`,
+  );
+  console.log(
+    `Slant rhymes: ${slantEntries} words / ${Object.keys(slant.byKey).length} keys (${slant.seats} seats)`,
   );
 }
 

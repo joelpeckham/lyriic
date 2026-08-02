@@ -22,11 +22,14 @@ import {
  * @param {Record<string, string[]>} input.byKey
  * @param {Record<string, string | string[]>} input.byWordEnd
  * @param {Record<string, string[]>} input.byKeyEnd
+ * @param {Record<string, string | string[]>} input.byWordSlant
+ * @param {Record<string, string[]>} input.byKeySlant
  * @param {string} input.lexiconPath
  * @param {string} input.stressPath
  * @param {string} input.variantsPath
  * @param {string} input.perfectPath
  * @param {string} input.endPath
+ * @param {string} input.slantPath
  */
 export function writePronunciationPacks({
   syllables,
@@ -36,11 +39,14 @@ export function writePronunciationPacks({
   byKey,
   byWordEnd,
   byKeyEnd,
+  byWordSlant,
+  byKeySlant,
   lexiconPath,
   stressPath,
   variantsPath,
   perfectPath,
   endPath,
+  slantPath,
 }) {
   const words = Object.keys(byWord).sort();
   const wordIndex = new Map(words.map((w, i) => [w, i]));
@@ -63,7 +69,7 @@ export function writePronunciationPacks({
   /**
    * @param {Record<string, string | string[]>} wordKeys
    * @param {Record<string, string[]>} buckets
-   * @param {"perfect" | "end"} mode
+   * @param {"perfect" | "end" | "slant"} mode
    */
   function buildMode(wordKeys, buckets, mode) {
     const keys = Object.keys(buckets);
@@ -99,23 +105,27 @@ export function writePronunciationPacks({
   const variantsBuf = encodeVariants(variantEntries);
   const perfectBuf = buildMode(byWord, byKey, "perfect");
   const endBuf = buildMode(byWordEnd, byKeyEnd, "end");
+  const slantBuf = buildMode(byWordSlant, byKeySlant, "slant");
 
   mkdirSync(dirname(lexiconPath), { recursive: true });
   mkdirSync(dirname(stressPath), { recursive: true });
   mkdirSync(dirname(variantsPath), { recursive: true });
   mkdirSync(dirname(perfectPath), { recursive: true });
   mkdirSync(dirname(endPath), { recursive: true });
+  mkdirSync(dirname(slantPath), { recursive: true });
   writeFileSync(lexiconPath, lexBuf);
   writeFileSync(stressPath, stressBuf);
   writeFileSync(variantsPath, variantsBuf);
   writeFileSync(perfectPath, perfectBuf);
   writeFileSync(endPath, endBuf);
+  writeFileSync(slantPath, slantBuf);
 
   reportPackSize(`lexicon → ${lexiconPath}`, lexBuf);
   reportPackSize(`stress → ${stressPath}`, stressBuf);
   reportPackSize(`variants → ${variantsPath}`, variantsBuf);
   reportPackSize(`rhyme-perfect → ${perfectPath}`, perfectBuf);
   reportPackSize(`rhyme-end → ${endPath}`, endBuf);
+  reportPackSize(`rhyme-slant → ${slantPath}`, slantBuf);
 
   return { wordCount: words.length, variantEntryCount: variantEntries.length };
 }

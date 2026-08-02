@@ -24,10 +24,13 @@ function fixtureRhymes() {
       there: "ɛr",
       care: "ɛr",
       hair: "ɛr",
+      // Slant only: night ↔ side (family AI+T); no perfect/end share.
+      side: "aɪd",
     },
     byKey: {
       eɪ: ["day", "way"],
       aɪt: ["night", "light"],
+      aɪd: ["side"],
       æt: ["cat", "bat"],
       ɔg: ["dog", "fog"],
       ɑmɚ: ["bomber"],
@@ -39,6 +42,7 @@ function fixtureRhymes() {
       way: "eɪ",
       night: "aɪt",
       light: "aɪt",
+      side: "aɪd",
       cat: "æt",
       dog: "ɔg",
       bat: "æt",
@@ -52,10 +56,22 @@ function fixtureRhymes() {
     byKeyEnd: {
       eɪ: ["day", "way"],
       aɪt: ["night", "light"],
+      aɪd: ["side"],
       æt: ["cat", "bat"],
       ɔg: ["dog", "fog"],
       ɚ: ["bomber", "her"],
       ɛr: ["there", "care", "hair"],
+    },
+    byWordSlant: {
+      night: "f:AI+T",
+      light: "f:AI+T",
+      side: "f:AI+T",
+      day: "f:E+Ø",
+      way: "f:E+Ø",
+    },
+    byKeySlant: {
+      "f:AI+T": ["night", "light", "side"],
+      "f:E+Ø": ["day", "way"],
     },
   });
 }
@@ -90,6 +106,13 @@ describe("analyzeRhymeScheme", () => {
     const rows = analyzeRhymeScheme([a, b], "AA");
     expect(rows.map((r) => r.endWord)).toEqual(["bomber", "her"]);
     expect(rows.map((r) => r.status)).toEqual(["endMatch", "endMatch"]);
+  });
+
+  it("marks slant-only pairs as slantMatch", () => {
+    fixtureRhymes();
+    const rows = analyzeRhymeScheme(["dark night", "the other side"], "AA");
+    expect(rows.map((r) => r.endWord)).toEqual(["night", "side"]);
+    expect(rows.map((r) => r.status)).toEqual(["slantMatch", "slantMatch"]);
   });
 
   it("flags mismatched same-letter peers", () => {

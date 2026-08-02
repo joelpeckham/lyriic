@@ -548,7 +548,7 @@ export function SettingsSheet({
             <SettingsToggle
               id="show-rhyme-scheme"
               label="Rhyme scheme"
-              hint="Solid green = perfect rhyme, green ring = end rhyme, red = no rhyme"
+              hint="Solid green = perfect, green ring = end, dashed ring = slant, red = no rhyme"
               icon={Music2}
               checked={settings.showRhymeScheme}
               onCheckedChange={(showRhymeScheme) =>

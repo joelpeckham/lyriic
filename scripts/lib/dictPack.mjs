@@ -5,7 +5,7 @@
  *   lexicon.bin   magic LYXL — front-coded words + syllable bytes
  *   stress.bin    magic LYXS — packed per-syllable stress (u32 × wordCount, v2)
  *   variants.bin  magic LYXV — sparse non-primary syl/stress alts by word id
- *   rhyme-*.bin   magic LYXP / LYXE — IPA keys + word→key + key→wordIds
+ *   rhyme-*.bin   magic LYXP / LYXE / LYXR — IPA keys + word→key + key→wordIds
  *   thesaurus.bin magic LYXT — overflow words + head/synonym id entries
  */
 
@@ -25,6 +25,7 @@ export const MAGIC = {
   variants: "LYXV",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
+  rhymeSlant: "LYXR",
   thesaurus: "LYXT",
 };
 
@@ -271,7 +272,18 @@ export function decodeVariants(buf) {
 }
 
 /**
- * @param {"perfect" | "end"} mode
+ * @param {"perfect" | "end" | "slant"} mode
+ * @returns {string}
+ */
+function rhymeMagicForMode(mode) {
+  if (mode === "perfect") return MAGIC.rhymePerfect;
+  if (mode === "end") return MAGIC.rhymeEnd;
+  if (mode === "slant") return MAGIC.rhymeSlant;
+  throw new Error(`unknown rhyme mode: ${mode}`);
+}
+
+/**
+ * @param {"perfect" | "end" | "slant"} mode
  * @param {number} wordCount lexicon size
  * @param {string[]} keys sorted? insertion order from Object.keys is fine
  * @param {Array<number[]>} byWord wordId → keyIds
@@ -279,7 +291,7 @@ export function decodeVariants(buf) {
  * @returns {Buffer}
  */
 export function encodeRhymePack(mode, wordCount, keys, byWord, buckets) {
-  const magic = mode === "perfect" ? MAGIC.rhymePerfect : MAGIC.rhymeEnd;
+  const magic = rhymeMagicForMode(mode);
   if (byWord.length !== wordCount) {
     throw new Error("rhyme byWord length mismatch");
   }
@@ -315,13 +327,13 @@ export function encodeRhymePack(mode, wordCount, keys, byWord, buckets) {
 
 /**
  * @param {Uint8Array | Buffer} buf
- * @param {"perfect" | "end"} expectMode
+ * @param {"perfect" | "end" | "slant"} expectMode
  * @returns {{ keys: string[], byWord: number[][], buckets: number[][] }}
  */
 export function decodeRhymePack(buf, expectMode) {
   const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
   const magic = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
-  const expect = expectMode === "perfect" ? MAGIC.rhymePerfect : MAGIC.rhymeEnd;
+  const expect = rhymeMagicForMode(expectMode);
   if (magic !== expect) throw new Error(`bad rhyme magic: ${magic}`);
   if (u8[4] !== VERSION) throw new Error(`unsupported rhyme version: ${u8[4]}`);
   const wordCount = u8[5] | (u8[6] << 8) | (u8[7] << 16) | (u8[8] << 24);

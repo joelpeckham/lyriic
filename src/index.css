@@ -433,6 +433,14 @@ html[data-contrast="more"].dark {
   opacity: 1;
 }
 
+/* Slant rhyme — dashed green ring (pattern cue, not color alone). */
+.lyriic-rhyme-dot--slant {
+  background: transparent;
+  border-color: var(--lyriic-rhyme-match);
+  border-style: dashed;
+  opacity: 1;
+}
+
 .lyriic-rhyme-dot--mismatch {
   background: var(--lyriic-over);
   border-color: var(--lyriic-over);

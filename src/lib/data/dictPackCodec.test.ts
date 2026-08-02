@@ -49,6 +49,26 @@ describe("dictPackCodec", () => {
     );
   });
 
+  it("decodes slant rhyme pack and resolves a family bucket", () => {
+    const lex = decodeLexicon(
+      new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
+    );
+    const pack = decodeRhymePack(
+      new Uint8Array(readFileSync(join(packsDir, "rhyme-slant.bin"))),
+      "slant",
+    );
+    expect(pack.byWord.length).toBe(lex.words.length);
+    const night = lex.wordToId.get("night");
+    expect(night).toBeDefined();
+    const keys = pack.byWord[night!]!;
+    expect(keys.length).toBeGreaterThan(0);
+    // Family key first; side shares AI+T with night.
+    const familyBucket = pack.buckets[keys[0]!]!;
+    expect(familyBucket.map((id) => lex.words[id])).toEqual(
+      expect.arrayContaining(["side"]),
+    );
+  });
+
   it("decodes thesaurus and resolves a head", () => {
     const lex = decodeLexicon(
       new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
