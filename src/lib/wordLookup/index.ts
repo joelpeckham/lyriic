@@ -27,3 +27,4 @@ export {
   type RankCandidatesInput,
 } from "./rankCandidates";
 export { lookupForms } from "./lookupForms";
+export { suggestWords } from "./suggestWords";

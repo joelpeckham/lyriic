@@ -447,20 +447,22 @@ export function EditorShell() {
         brandAs="heading"
         actions={
           <nav aria-label="Draft and settings" className="contents">
-            <ActiveMeterChip
-              meterId={active.settings.meter}
-              customPattern={active.settings.customPattern}
-              writtenLines={writtenLines}
-              firstRunCta={firstRunCta}
-              onOpenSettings={() => openSettings(null)}
-              onOpenOverlays={() => openSettings("overlays")}
-              onCycleCounts={() =>
-                setSettings({
-                  ...active.settings,
-                  showCounts: !active.settings.showCounts,
-                })
-              }
-            />
+            <div className="max-sm:hidden">
+              <ActiveMeterChip
+                meterId={active.settings.meter}
+                customPattern={active.settings.customPattern}
+                writtenLines={writtenLines}
+                firstRunCta={firstRunCta}
+                onOpenSettings={() => openSettings(null)}
+                onOpenOverlays={() => openSettings("overlays")}
+                onCycleCounts={() =>
+                  setSettings({
+                    ...active.settings,
+                    showCounts: !active.settings.showCounts,
+                  })
+                }
+              />
+            </div>
             <ProjectSwitcher
               projects={projects}
               activeId={active.id}

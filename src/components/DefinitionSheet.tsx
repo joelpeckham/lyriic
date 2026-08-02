@@ -4,9 +4,10 @@ import {
   useRef,
   useState,
   type FormEvent,
+  type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { Copy, Search } from "lucide-react";
+import { ChevronDown, Copy, Search } from "lucide-react";
 import { toast } from "sonner";
 
 import { EndRhymesSwitch } from "@/components/rhyme/EndRhymesSwitch";
@@ -21,17 +22,19 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useDictRevision } from "@/hooks/useDictRevision";
+import {
+  getLexicon,
+  isLexiconReady,
+  loadLexicon,
+  lookupDict,
+  syllablesForId,
+} from "@/lib/data/lexicon";
 import {
   loadDefinitions,
   type DefinitionSource,
   type ResolvedDefinitionSense,
 } from "@/lib/definitions";
-import {
-  getLexicon,
-  loadLexicon,
-  lookupDict,
-  syllablesForId,
-} from "@/lib/data/lexicon";
 import {
   isRhymeQueryReady,
   loadRhymeQuery,
@@ -45,6 +48,7 @@ import {
   type WordUsage,
 } from "@/lib/thesaurus";
 import { filterCandidates } from "@/lib/wordLookup/filterCandidates";
+import { suggestWords } from "@/lib/wordLookup/suggestWords";
 import { cn } from "@/lib/utils";
 
 const USAGE_LABELS: Record<WordUsage, string> = {
@@ -56,6 +60,16 @@ const USAGE_LABELS: Record<WordUsage, string> = {
 
 const USAGE_ORDER: WordUsage[] = ["n", "v", "a", "r"];
 const LIST_CAP = 150;
+const SUGGEST_LIMIT = 8;
+
+const EXAMPLE_WORDS = [
+  "light",
+  "heart",
+  "night",
+  "river",
+  "alone",
+  "fire",
+] as const;
 
 type BrowseRow = {
   word: string;
@@ -106,31 +120,17 @@ function normalizeSearchQuery(raw: string): string {
   return normalizeLookupKey(normalizeWord(raw.trim()));
 }
 
-function clearBrowseFilters(
-  setSynSub: (v: string) => void,
-  setRhymeSub: (v: string) => void,
-  setSynUsages: (v: Set<WordUsage>) => void,
-  setSynSylMin: (v: string) => void,
-  setSynSylMax: (v: string) => void,
-  setRhymeSylMin: (v: string) => void,
-  setRhymeSylMax: (v: string) => void,
-): void {
-  setSynSub("");
-  setRhymeSub("");
-  setSynUsages(new Set());
-  setSynSylMin("");
-  setSynSylMax("");
-  setRhymeSylMin("");
-  setRhymeSylMax("");
-}
-
 export function DefinitionSheet({
   open,
   onOpenChange,
   initialWord = null,
 }: DefinitionSheetProps) {
   const searchId = useId();
+  const listboxId = useId();
   const searchRef = useRef<HTMLInputElement>(null);
+  const blurCloseTimer = useRef<number | null>(null);
+  const dictRevision = useDictRevision();
+
   const [query, setQuery] = useState("");
   const [activeWord, setActiveWord] = useState("");
   const [reloadToken, setReloadToken] = useState(0);
@@ -150,7 +150,6 @@ export function DefinitionSheet({
   } | null>(null);
 
   const [synSub, setSynSub] = useState("");
-  const [synUsages, setSynUsages] = useState<Set<WordUsage>>(new Set());
   const [synSylMin, setSynSylMin] = useState("");
   const [synSylMax, setSynSylMax] = useState("");
 
@@ -159,6 +158,9 @@ export function DefinitionSheet({
   const [includeSlantRhymes, setIncludeSlantRhymes] = useState(false);
   const [rhymeSylMin, setRhymeSylMin] = useState("");
   const [rhymeSylMax, setRhymeSylMax] = useState("");
+
+  const [suggestOpen, setSuggestOpen] = useState(false);
+  const [highlight, setHighlight] = useState(-1);
 
   const [prevOpen, setPrevOpen] = useState(false);
   if (open !== prevOpen) {
@@ -173,15 +175,14 @@ export function DefinitionSheet({
       setRhymeLoad(null);
       setIncludeEndRhymes(false);
       setIncludeSlantRhymes(false);
-      clearBrowseFilters(
-        setSynSub,
-        setRhymeSub,
-        setSynUsages,
-        setSynSylMin,
-        setSynSylMax,
-        setRhymeSylMin,
-        setRhymeSylMax,
-      );
+      setSynSub("");
+      setSynSylMin("");
+      setSynSylMax("");
+      setRhymeSub("");
+      setRhymeSylMin("");
+      setRhymeSylMax("");
+      setSuggestOpen(false);
+      setHighlight(-1);
     }
   }
 
@@ -209,20 +210,31 @@ export function DefinitionSheet({
   const resolvedLemma = defState === "ready" ? defCached!.lemma : "";
   const thesaurusReady = Boolean(thesaurusCached && !thesaurusCached.error);
   const rhymeReady = Boolean(rhymeCached && !rhymeCached.error);
-  const listError = Boolean(
-    thesaurusCached?.error || rhymeCached?.error,
-  );
+  const thesaurusError = Boolean(thesaurusCached?.error);
+  const rhymeError = Boolean(rhymeCached?.error);
 
-  // Focus search when opening.
+  const lexiconReady = isLexiconReady() || dictRevision > 0;
+  const suggestPrefix = normalizeSearchQuery(query);
+  const suggestions =
+    lexiconReady && suggestPrefix.length >= 2
+      ? suggestWords(suggestPrefix, SUGGEST_LIMIT)
+      : [];
+  const listVisible = suggestOpen && suggestions.length > 0;
+
+  // Kick lexicon for autocomplete. Focus is handled in onOpenAutoFocus —
+  // Radix focuses the first tabbable (the search input) unless prevented.
   useEffect(() => {
     if (!open) return;
-    const seed = initialWord?.trim() ?? "";
-    const timer = window.setTimeout(() => {
-      searchRef.current?.focus();
-      if (seed) searchRef.current?.select();
-    }, 50);
-    return () => window.clearTimeout(timer);
-  }, [open, initialWord]);
+    void loadLexicon();
+  }, [open]);
+
+  useEffect(() => {
+    return () => {
+      if (blurCloseTimer.current != null) {
+        window.clearTimeout(blurCloseTimer.current);
+      }
+    };
+  }, []);
 
   // Load definitions for the active word.
   useEffect(() => {
@@ -300,23 +312,30 @@ export function DefinitionSheet({
     };
   }, [rhymeKey, rhymeCached, includeEndRhymes, includeSlantRhymes]);
 
-  function resetFilters(): void {
-    clearBrowseFilters(
-      setSynSub,
-      setRhymeSub,
-      setSynUsages,
-      setSynSylMin,
-      setSynSylMax,
-      setRhymeSylMin,
-      setRhymeSylMax,
-    );
+  function clearSynFilters(): void {
+    setSynSub("");
+    setSynSylMin("");
+    setSynSylMax("");
+  }
+
+  function clearRhymeFilters(): void {
+    setRhymeSub("");
+    setRhymeSylMin("");
+    setRhymeSylMax("");
+  }
+
+  function closeSuggestions(): void {
+    setSuggestOpen(false);
+    setHighlight(-1);
   }
 
   function commitSearch(raw: string): void {
     const next = normalizeSearchQuery(raw);
-    setQuery(raw);
+    setQuery(raw.trim() || raw);
+    closeSuggestions();
     if (next !== activeWord) {
-      resetFilters();
+      clearSynFilters();
+      clearRhymeFilters();
       setDefLoad(null);
     }
     setActiveWord(next);
@@ -324,7 +343,70 @@ export function DefinitionSheet({
 
   function onSubmit(event: FormEvent): void {
     event.preventDefault();
+    if (listVisible && highlight >= 0 && suggestions[highlight]) {
+      commitSearch(suggestions[highlight]!);
+      return;
+    }
     commitSearch(query);
+  }
+
+  function onSearchKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+    if (event.key === "Escape") {
+      if (listVisible) {
+        event.preventDefault();
+        closeSuggestions();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      if (suggestions.length === 0) return;
+      event.preventDefault();
+      setSuggestOpen(true);
+      setHighlight((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : 0,
+      );
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      if (suggestions.length === 0) return;
+      event.preventDefault();
+      setSuggestOpen(true);
+      setHighlight((prev) =>
+        prev <= 0 ? suggestions.length - 1 : prev - 1,
+      );
+      return;
+    }
+
+    if (event.key === "Enter") {
+      // Form onSubmit handles commit (with optional highlight).
+      return;
+    }
+  }
+
+  function onSearchChange(value: string): void {
+    setQuery(value);
+    setHighlight(-1);
+    const nextPrefix = normalizeSearchQuery(value);
+    setSuggestOpen(nextPrefix.length >= 2);
+  }
+
+  function onSearchFocus(): void {
+    if (blurCloseTimer.current != null) {
+      window.clearTimeout(blurCloseTimer.current);
+      blurCloseTimer.current = null;
+    }
+    if (suggestPrefix.length >= 2 && suggestions.length > 0) {
+      setSuggestOpen(true);
+    }
+  }
+
+  function onSearchBlur(): void {
+    blurCloseTimer.current = window.setTimeout(() => {
+      closeSuggestions();
+      blurCloseTimer.current = null;
+    }, 120);
   }
 
   function navigateTo(word: string): void {
@@ -365,7 +447,6 @@ export function DefinitionSheet({
 
   const synFilters = {
     substring: synSub,
-    usages: synUsages.size > 0 ? synUsages : null,
     syllableMin: synSylMin ? Number(synSylMin) : null,
     syllableMax: synSylMax ? Number(synSylMax) : null,
   };
@@ -379,10 +460,7 @@ export function DefinitionSheet({
   const filteredRhymes = filterCandidates(rhymeRows, rhymeFilters, LIST_CAP);
 
   const synFiltersActive =
-    Boolean(synSub.trim()) ||
-    synUsages.size > 0 ||
-    Boolean(synSylMin) ||
-    Boolean(synSylMax);
+    Boolean(synSub.trim()) || Boolean(synSylMin) || Boolean(synSylMax);
   const rhymeFiltersActive =
     Boolean(rhymeSub.trim()) ||
     Boolean(rhymeSylMin) ||
@@ -403,11 +481,27 @@ export function DefinitionSheet({
     resolvedLemma !== activeWord &&
     defState === "ready";
 
+  const activeOptionId =
+    listVisible && highlight >= 0
+      ? `${listboxId}-opt-${highlight}`
+      : undefined;
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="gap-0 overflow-hidden sm:max-w-md"
+        className="gap-0 overflow-hidden"
+        onOpenAutoFocus={(event) => {
+          // Prefill (Define / word tools): do not focus search — keeps the soft
+          // keyboard down and avoids opening autocomplete on the seeded word.
+          if (initialWord?.trim()) {
+            event.preventDefault();
+            return;
+          }
+          // Empty open: focus search for typing.
+          event.preventDefault();
+          searchRef.current?.focus();
+        }}
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           document.getElementById("poem")?.focus();
@@ -420,28 +514,98 @@ export function DefinitionSheet({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pb-6">
-          <form className="relative" onSubmit={onSubmit}>
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Label htmlFor={searchId} className="sr-only">
-              Look up a word
-            </Label>
-            <Input
-              ref={searchRef}
-              id={searchId}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search a word…"
-              autoComplete="off"
-              spellCheck={false}
-              className="pl-8 font-[family-name:var(--font-editor)]"
-            />
-          </form>
+        {/* Non-scrolling search chrome — padding keeps input border/ring inside overflow-hidden. */}
+        <div className="z-10 shrink-0 px-4 pt-1 pb-3">
+          <div className="relative">
+            <form className="relative" onSubmit={onSubmit}>
+              <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Label htmlFor={searchId} className="sr-only">
+                Look up a word
+              </Label>
+              <Input
+                ref={searchRef}
+                id={searchId}
+                role="combobox"
+                value={query}
+                onChange={(e) => onSearchChange(e.target.value)}
+                onKeyDown={onSearchKeyDown}
+                onFocus={onSearchFocus}
+                onBlur={onSearchBlur}
+                placeholder="Search a word…"
+                autoComplete="off"
+                spellCheck={false}
+                aria-autocomplete="list"
+                aria-expanded={listVisible}
+                aria-controls={listVisible ? listboxId : undefined}
+                aria-activedescendant={activeOptionId}
+                className="pl-8 font-[family-name:var(--font-editor)]"
+              />
+            </form>
 
+            {listVisible ? (
+              <ul
+                id={listboxId}
+                role="listbox"
+                aria-label="Word suggestions"
+                className="absolute top-full right-0 left-0 z-10 mt-1 max-h-56 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-md"
+              >
+                {suggestions.map((word, index) => {
+                  const selected = index === highlight;
+                  return (
+                    <li key={word} className="min-w-0">
+                      <button
+                        id={`${listboxId}-opt-${index}`}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        className={cn(
+                          "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm outline-none",
+                          "font-[family-name:var(--font-editor)]",
+                          "focus-visible:ring-3 focus-visible:ring-ring/80",
+                          selected ? "bg-muted" : "hover:bg-muted/70",
+                        )}
+                        onMouseEnter={() => setHighlight(index)}
+                        onMouseDown={(event) => {
+                          // Keep input focus until commit; avoid blur-close racing the click.
+                          event.preventDefault();
+                        }}
+                        onClick={() => commitSearch(word)}
+                      >
+                        {word}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pb-6">
           {!activeWord ? (
-            <p className="text-sm text-muted-foreground">
-              Type a word and press Enter to look it up.
-            </p>
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-muted-foreground">
+                Type a word—or pick one below—to look up definitions, synonyms,
+                and rhymes.
+              </p>
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 text-sm">
+                <span className="text-muted-foreground">Try</span>
+                {EXAMPLE_WORDS.map((word) => (
+                  <button
+                    key={word}
+                    type="button"
+                    onClick={() => commitSearch(word)}
+                    className={cn(
+                      "font-[family-name:var(--font-editor)] text-foreground/80 underline-offset-4",
+                      "outline-none transition-colors hover:text-foreground hover:underline hover:decoration-[var(--lyriic-ruler)]",
+                      "focus-visible:underline focus-visible:text-foreground focus-visible:decoration-[var(--lyriic-ruler)]",
+                    )}
+                  >
+                    {word}
+                  </button>
+                ))}
+              </div>
+            </div>
           ) : (
             <>
               <section className="flex flex-col gap-3">
@@ -518,9 +682,10 @@ export function DefinitionSheet({
               </section>
 
               <BrowseSection
+                key={`syn-${activeWord}`}
                 title="Synonyms"
                 emptyLabel={
-                  listError
+                  thesaurusError
                     ? "Couldn’t load synonyms."
                     : !thesaurusReady
                       ? "Loading…"
@@ -530,14 +695,9 @@ export function DefinitionSheet({
                           ? "No synonyms match these filters."
                           : "No synonyms for this word."
                 }
-                onClearFilters={
-                  thesaurusReady &&
-                  synRows.length > 0 &&
-                  filteredSyns.length === 0 &&
-                  synFiltersActive
-                    ? resetFilters
-                    : undefined
-                }
+                hasCandidates={synRows.length > 0}
+                filtersActive={synFiltersActive}
+                onClearFilters={clearSynFilters}
                 substring={synSub}
                 onSubstringChange={setSynSub}
                 syllableMin={synSylMin}
@@ -545,24 +705,17 @@ export function DefinitionSheet({
                 onSyllableMinChange={setSynSylMin}
                 onSyllableMaxChange={setSynSylMax}
                 rows={filteredSyns}
+                truncated={filteredSyns.length === LIST_CAP}
                 showUsage
-                usageFilter={synUsages}
-                onToggleUsage={(usage) => {
-                  setSynUsages((prev) => {
-                    const next = new Set(prev);
-                    if (next.has(usage)) next.delete(usage);
-                    else next.add(usage);
-                    return next;
-                  });
-                }}
                 onNavigate={navigateTo}
                 onCopy={copyWord}
               />
 
               <BrowseSection
+                key={`rhyme-${activeWord}`}
                 title="Rhymes"
                 emptyLabel={
-                  listError
+                  rhymeError
                     ? "Couldn’t load rhymes."
                     : !rhymeReady
                       ? "Loading…"
@@ -572,14 +725,9 @@ export function DefinitionSheet({
                           ? "No rhymes match these filters."
                           : "No rhymes for this word."
                 }
-                onClearFilters={
-                  rhymeReady &&
-                  rhymeRows.length > 0 &&
-                  filteredRhymes.length === 0 &&
-                  rhymeFiltersActive
-                    ? resetFilters
-                    : undefined
-                }
+                hasCandidates={rhymeRows.length > 0}
+                filtersActive={rhymeFiltersActive}
+                onClearFilters={clearRhymeFilters}
                 substring={rhymeSub}
                 onSubstringChange={setRhymeSub}
                 syllableMin={rhymeSylMin}
@@ -587,6 +735,7 @@ export function DefinitionSheet({
                 onSyllableMinChange={setRhymeSylMin}
                 onSyllableMaxChange={setRhymeSylMax}
                 rows={filteredRhymes}
+                truncated={filteredRhymes.length === LIST_CAP}
                 onNavigate={navigateTo}
                 onCopy={copyWord}
                 rhymeControls={
@@ -615,6 +764,8 @@ export function DefinitionSheet({
 function BrowseSection({
   title,
   emptyLabel,
+  hasCandidates,
+  filtersActive,
   onClearFilters,
   substring,
   onSubstringChange,
@@ -623,16 +774,17 @@ function BrowseSection({
   onSyllableMinChange,
   onSyllableMaxChange,
   rows,
+  truncated,
   showUsage,
-  usageFilter,
-  onToggleUsage,
   onNavigate,
   onCopy,
   rhymeControls,
 }: {
   title: string;
   emptyLabel: string;
-  onClearFilters?: () => void;
+  hasCandidates: boolean;
+  filtersActive: boolean;
+  onClearFilters: () => void;
   substring: string;
   onSubstringChange: (value: string) => void;
   syllableMin: string;
@@ -640,13 +792,21 @@ function BrowseSection({
   onSyllableMinChange: (value: string) => void;
   onSyllableMaxChange: (value: string) => void;
   rows: BrowseRow[];
+  truncated: boolean;
   showUsage?: boolean;
-  usageFilter?: Set<WordUsage>;
-  onToggleUsage?: (usage: WordUsage) => void;
   onNavigate: (word: string) => void;
   onCopy: (word: string) => void;
   rhymeControls?: ReactNode;
 }) {
+  const [filterOpen, setFilterOpen] = useState(filtersActive);
+  const [prevActive, setPrevActive] = useState(filtersActive);
+  if (filtersActive !== prevActive) {
+    setPrevActive(filtersActive);
+    if (filtersActive) setFilterOpen(true);
+  }
+
+  const canFilter = hasCandidates || filtersActive;
+
   return (
     <section className="flex flex-col gap-3">
       <p className="text-xs tracking-wide text-muted-foreground uppercase">
@@ -655,69 +815,84 @@ function BrowseSection({
 
       {rhymeControls}
 
-      {showUsage && onToggleUsage && usageFilter ? (
-        <div className="flex flex-wrap gap-1">
-          {USAGE_ORDER.map((usage) => {
-            const selected = usageFilter.has(usage);
-            return (
+      {canFilter ? (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline"
+              aria-expanded={filterOpen}
+              onClick={() => setFilterOpen((open) => !open)}
+            >
+              Filter
+              <ChevronDown
+                className={cn(
+                  "size-3.5 transition-transform",
+                  filterOpen && "rotate-180",
+                )}
+              />
+            </button>
+            {filtersActive ? (
               <Button
-                key={usage}
                 type="button"
+                variant="ghost"
                 size="xs"
-                variant={selected ? "secondary" : "ghost"}
-                className={cn(selected && "font-medium")}
-                aria-pressed={selected}
-                onClick={() => onToggleUsage(usage)}
+                className="text-muted-foreground"
+                onClick={onClearFilters}
               >
-                {usage}
+                Clear filters
               </Button>
-            );
-          })}
+            ) : null}
+          </div>
+
+          {filterOpen ? (
+            <div className="grid grid-cols-[1fr_auto_auto] items-end gap-2">
+              <div className="min-w-0">
+                <Label className="sr-only">
+                  Filter {title.toLowerCase()} by text
+                </Label>
+                <Input
+                  value={substring}
+                  onChange={(e) => onSubstringChange(e.target.value)}
+                  placeholder="Contains…"
+                  autoComplete="off"
+                  spellCheck={false}
+                  className="h-8"
+                />
+              </div>
+              <div className="w-14">
+                <Label className="sr-only">Min syllables</Label>
+                <Input
+                  inputMode="numeric"
+                  value={syllableMin}
+                  onChange={(e) =>
+                    onSyllableMinChange(e.target.value.replace(/\D/g, ""))
+                  }
+                  placeholder="Min"
+                  className="h-8 px-2 tabular-nums"
+                />
+              </div>
+              <div className="w-14">
+                <Label className="sr-only">Max syllables</Label>
+                <Input
+                  inputMode="numeric"
+                  value={syllableMax}
+                  onChange={(e) =>
+                    onSyllableMaxChange(e.target.value.replace(/\D/g, ""))
+                  }
+                  placeholder="Max"
+                  className="h-8 px-2 tabular-nums"
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
-
-      <div className="grid grid-cols-[1fr_auto_auto] items-end gap-2">
-        <div className="min-w-0">
-          <Label className="sr-only">Filter {title.toLowerCase()} by text</Label>
-          <Input
-            value={substring}
-            onChange={(e) => onSubstringChange(e.target.value)}
-            placeholder="Contains…"
-            autoComplete="off"
-            spellCheck={false}
-            className="h-8"
-          />
-        </div>
-        <div className="w-14">
-          <Label className="sr-only">Min syllables</Label>
-          <Input
-            inputMode="numeric"
-            value={syllableMin}
-            onChange={(e) =>
-              onSyllableMinChange(e.target.value.replace(/\D/g, ""))
-            }
-            placeholder="Min"
-            className="h-8 px-2 tabular-nums"
-          />
-        </div>
-        <div className="w-14">
-          <Label className="sr-only">Max syllables</Label>
-          <Input
-            inputMode="numeric"
-            value={syllableMax}
-            onChange={(e) =>
-              onSyllableMaxChange(e.target.value.replace(/\D/g, ""))
-            }
-            placeholder="Max"
-            className="h-8 px-2 tabular-nums"
-          />
-        </div>
-      </div>
 
       {rows.length === 0 ? (
         <div className="flex flex-col gap-1.5">
           <p className="text-sm text-muted-foreground">{emptyLabel}</p>
-          {onClearFilters ? (
+          {filtersActive ? (
             <Button
               type="button"
               variant="ghost"
@@ -730,36 +905,45 @@ function BrowseSection({
           ) : null}
         </div>
       ) : (
-        <ul className="flex max-h-56 flex-col gap-0.5 overflow-y-auto">
-          {rows.map((row) => (
-            <li
-              key={`${row.word}-${row.usage ?? ""}`}
-              className="flex items-center gap-0.5 rounded-md hover:bg-muted/70"
-            >
-              <button
-                type="button"
-                className="flex min-w-0 flex-1 items-center justify-between gap-2 px-1.5 py-1 text-left text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
-                onClick={() => onNavigate(row.word)}
+        <div className="flex flex-col gap-1.5">
+          {truncated ? (
+            <p className="text-xs text-muted-foreground">
+              Showing first {LIST_CAP}.
+            </p>
+          ) : null}
+          <ul className="flex flex-col gap-0.5">
+            {rows.map((row) => (
+              <li
+                key={`${row.word}-${row.usage ?? ""}`}
+                className="flex items-center gap-0.5 rounded-md hover:bg-muted/70"
               >
-                <span className="min-w-0 truncate">{row.word}</span>
-                <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
-                  {row.usage ? `${row.usage} · ` : null}
-                  {row.syllables}
-                </span>
-              </button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                className="mr-0.5 shrink-0 text-muted-foreground"
-                aria-label={`Copy ${row.word}`}
-                onClick={() => onCopy(row.word)}
-              >
-                <Copy />
-              </Button>
-            </li>
-          ))}
-        </ul>
+                <button
+                  type="button"
+                  className="flex min-w-0 flex-1 items-center justify-between gap-2 px-1.5 py-1 text-left text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+                  onClick={() => onNavigate(row.word)}
+                >
+                  <span className="min-w-0 truncate">{row.word}</span>
+                  <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
+                    {showUsage && row.usage
+                      ? `${USAGE_LABELS[row.usage]} · `
+                      : null}
+                    {row.syllables}
+                  </span>
+                </button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="mr-0.5 shrink-0 text-muted-foreground"
+                  aria-label={`Copy ${row.word}`}
+                  onClick={() => onCopy(row.word)}
+                >
+                  <Copy />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </section>
   );

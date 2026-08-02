@@ -1,4 +1,10 @@
-import { useEffect, useId, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import {
   Check,
   ChevronDown,
@@ -29,6 +35,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  SOFT_KEYBOARD_INSET_PX,
+  useVisualViewportBottomInset,
+} from "@/hooks/useVisualViewportBottomInset";
 import { getMeterCatalogEntry } from "@/lib/meters/presets";
 import {
   copyText,
@@ -38,6 +48,7 @@ import {
   draftListSecondary,
 } from "@/lib/projects/exportDraft";
 import type { Project } from "@/lib/projects/types";
+import { cn } from "@/lib/utils";
 
 type ProjectSwitcherProps = {
   projects: Project[];
@@ -76,6 +87,9 @@ export function ProjectSwitcher({
   const renameInputRef = useRef<HTMLInputElement>(null);
   const renameInputId = useId();
   const suppressMenuFocusRestore = useRef(false);
+  const vvBottomInset = useVisualViewportBottomInset();
+  const renameKeyboardUp =
+    renameOpen && vvBottomInset >= SOFT_KEYBOARD_INSET_PX;
 
   const sortedProjects = [...projects].sort(
     (a, b) => b.updatedAt - a.updatedAt,
@@ -136,7 +150,7 @@ export function ProjectSwitcher({
             type="button"
             variant="ghost"
             size="sm"
-            className="h-10 max-w-48 gap-1 border-transparent bg-transparent px-2.5 font-normal text-muted-foreground shadow-none hover:text-foreground"
+            className="h-10 max-sm:max-w-36 sm:max-w-48 gap-1 border-transparent bg-transparent px-2.5 font-normal text-muted-foreground shadow-none hover:text-foreground"
             aria-label={`Draft: ${activeName}`}
           >
             <span className="truncate">{activeName}</span>
@@ -246,7 +260,20 @@ export function ProjectSwitcher({
       </DropdownMenu>
 
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
-        <DialogContent showCloseButton={false}>
+        <DialogContent
+          showCloseButton={false}
+          className={cn(
+            renameKeyboardUp && "max-h-[min(100%,calc(100dvh-var(--keyboard-inset)-2rem))] overflow-y-auto",
+          )}
+          style={
+            renameKeyboardUp
+              ? ({
+                  ["--keyboard-inset" as string]: `${vvBottomInset}px`,
+                  top: `calc((100dvh - ${vvBottomInset}px) / 2)`,
+                } satisfies CSSProperties)
+              : undefined
+          }
+        >
           <DialogHeader>
             <DialogTitle>Rename draft</DialogTitle>
             <DialogDescription>

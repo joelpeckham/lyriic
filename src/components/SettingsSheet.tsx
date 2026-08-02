@@ -536,7 +536,7 @@ export function SettingsSheet({
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="gap-0 overflow-hidden sm:max-w-md"
+        className="gap-0 overflow-hidden"
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           document.getElementById("poem")?.focus();
