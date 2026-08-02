@@ -94,12 +94,12 @@ export const ABOUT_FEATURES: AboutPoem[] = [
     summary:
       "Per-line syllable counts sit quietly in the gutter. Patient and never bossy.",
     text: [
-      "I keep a clerk within the gutter verse",
-      "Who tallies my feet with a calm perverse;",
-      "He never will nudge, lecture me, or glare—",
-      "He just reports the quiet counts found there.",
+      "I keep a tiny clerk beside my rhyme",
+      "He tallies my beats as I keep the time",
+      "He never stops to scold or chasten me",
+      "The count he keeps with perfect guarantee",
     ].join("\n"),
-    settings: aboutMeterSettings("iambic-pentameter", { showStress: true }),
+    settings: aboutMeterSettings("iambic-pentameter", { showStress: false }),
   },
   {
     label: "When it runs long",
