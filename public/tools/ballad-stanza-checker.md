@@ -40,7 +40,7 @@ A ballad stanza is a quatrain of alternating iambic tetrameter and iambic trimet
 
 lyriic’s catalog stores that full cycle as pattern [8, 6, 8, 6] with footId iamb and stanzaLines 4. The related Common meter entry uses pattern [8, 6] cycled across the same four-line stanza — identical syllable and stress targets.
 
-Folk tradition often rhymes only lines 2 and 4 (ABCB) and may loosen unstressed syllables. lyriic checks the syllable and iambic stress grid only; rhyme, refrain, and story are left to you.
+Folk tradition often rhymes only lines 2 and 4 (ABCB) and may loosen unstressed syllables. This checker scores the syllable and iambic stress grid; ABCB rhyme dots are available in the zen editor.
 
 ## Iamb (da-DUM)
 
@@ -60,7 +60,7 @@ lyriic checks that repeating contour when the stress pack is loaded. Rhyme schem
 
 lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. Folk and literary ballads often admit anapests, headless lines, or looser counts — mismatches are feedback against the teaching grid, not a claim that every published stanza is perfectly regular.
 
-Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. lyriic does not enforce rhyme, refrain, or narrative content.
+Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. This checker stays on syllables and stress — open the zen editor for ABCB rhyme dots. Refrain and narrative stay with you.
 
 ## Common questions
 

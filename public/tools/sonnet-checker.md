@@ -42,7 +42,7 @@ In lyriic’s catalog, a sonnet is fourteen lines of iambic pentameter: ten syll
 
 That matches the English teaching backbone shared by Shakespearean, Petrarchan, and Spenserian sonnets. Those traditions differ mainly in rhyme scheme and where the volta falls — not in the default meter.
 
-lyriic enforces line count, syllable target, and the iambic stress contour when the stress pack is loaded. It does not score ABAB/CDCD patterns, octave–sestet splits, or theme rules.
+This checker scores line count, syllable target, and the iambic stress contour when the stress pack is loaded. Named rhyme schemes (Shakespearean, Petrarchan, Spenserian) are available as colored dots in the zen editor.
 
 ## Iamb (da-DUM)
 
@@ -62,7 +62,7 @@ lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; s
 
 lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. Substitutions, feminine endings, and speech stress will show as mismatches against the ideal grid.
 
-lyriic does not enforce rhyme schemes (Shakespearean, Petrarchan, Spenserian), volta placement, or thematic “argument” structure — only line count, syllable target, and iambic stress.
+This checker scores line count, syllable target, and iambic stress only. For Shakespearean, Petrarchan, or Spenserian rhyme dots while you draft, open the zen editor with the Sonnet meter.
 
 ## Common questions
 
@@ -72,7 +72,7 @@ Fourteen lines of iambic pentameter: about ten syllables each with an unstressed
 
 ### Does lyriic check the rhyme scheme?
 
-No. Rhyme schemes and volta placement are not modeled. Open the zen editor with the Sonnet meter for live syllable and stress rulers beside each line.
+Not on this page — the checker stays on syllables and stress. Open the zen editor with the Sonnet meter to pick Shakespearean, Petrarchan, or Spenserian and see colored rhyme dots beside each line.
 
 ### Is my draft uploaded?
 

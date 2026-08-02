@@ -548,7 +548,7 @@ In lyriic’s catalog, a sonnet is fourteen lines of iambic pentameter: ten syll
 
 That matches the English teaching backbone shared by Shakespearean, Petrarchan, and Spenserian sonnets. Those traditions differ mainly in rhyme scheme and where the volta falls — not in the default meter.
 
-lyriic enforces line count, syllable target, and the iambic stress contour when the stress pack is loaded. It does not score ABAB/CDCD patterns, octave–sestet splits, or theme rules.
+This checker scores line count, syllable target, and the iambic stress contour when the stress pack is loaded. Named rhyme schemes (Shakespearean, Petrarchan, Spenserian) are available as colored dots in the zen editor.
 
 ## Iamb (da-DUM)
 
@@ -568,7 +568,7 @@ lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; s
 
 lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. Substitutions, feminine endings, and speech stress will show as mismatches against the ideal grid.
 
-lyriic does not enforce rhyme schemes (Shakespearean, Petrarchan, Spenserian), volta placement, or thematic “argument” structure — only line count, syllable target, and iambic stress.
+This checker scores line count, syllable target, and iambic stress only. For Shakespearean, Petrarchan, or Spenserian rhyme dots while you draft, open the zen editor with the Sonnet meter.
 
 ## Common questions
 
@@ -578,7 +578,7 @@ Fourteen lines of iambic pentameter: about ten syllables each with an unstressed
 
 ### Does lyriic check the rhyme scheme?
 
-No. Rhyme schemes and volta placement are not modeled. Open the zen editor with the Sonnet meter for live syllable and stress rulers beside each line.
+Not on this page — the checker stays on syllables and stress. Open the zen editor with the Sonnet meter to pick Shakespearean, Petrarchan, or Spenserian and see colored rhyme dots beside each line.
 
 ### Is my draft uploaded?
 
@@ -1312,7 +1312,7 @@ A heroic couplet is two successive lines of iambic pentameter that traditionally
 
 The same pentameter grid underlies blank verse (unrhymed) and many English sonnets. What makes the couplet “heroic” in teaching terms is the paired length plus end rhyme — not a different foot or syllable count.
 
-Closed couplets often finish a thought within the pair; open couplets spill sense across the break. lyriic checks syllable and stress only; rhyme pairing and rhetorical closure are left to the writer.
+Closed couplets often finish a thought within the pair; open couplets spill sense across the break. This checker scores syllable and stress; couplet rhyme dots are available in the zen editor.
 
 ## Iamb (da-DUM)
 
@@ -1332,7 +1332,7 @@ lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; s
 
 lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.
 
-Tradition expects the two lines to rhyme (aa). lyriic does not enforce rhyme pairing, caesura placement, or closed vs. open couplet rhetoric.
+Tradition expects the two lines to rhyme (aa). This checker scores syllables and stress; open the zen editor for couplet rhyme dots. Caesura placement and closed vs. open rhetoric stay with you.
 
 ## Common questions
 
@@ -1342,7 +1342,7 @@ A pair of rhyming lines in iambic pentameter: each line has ten syllables with a
 
 ### Does lyriic check rhyme as well as meter?
 
-No. This checker targets two ten-syllable iambic lines and the weak–strong stress contour when the stress pack is loaded. End rhyme is traditional for heroic couplets but is not enforced.
+This page targets two ten-syllable iambic lines and the weak–strong stress contour. For end-rhyme dots on the couplet, open the zen editor with the Heroic couplet meter.
 
 ### Is my draft uploaded?
 
@@ -1396,7 +1396,7 @@ Christmas carol frequently cited for common-metre hymn shape.
 
 Common meter alternates an eight-syllable iambic line with a six-syllable one: four da-DUM feet, then three. Across a quatrain the cycle reads 8 · 6 · 8 · 6 (often labeled CM or 86.86 in hymnals).
 
-It is the shared grid of many English hymns and ballads. Strict common measure usually aims for ABAB rhyme; ballad stanza often uses ABCB with freer stress. lyriic checks the syllable and iambic stress cycle only — rhyme and tune are left to you.
+It is the shared grid of many English hymns and ballads. Strict common measure usually aims for ABAB rhyme; ballad stanza often uses ABCB with freer stress. This checker scores the syllable and iambic stress cycle; ABAB rhyme dots are available in the zen editor.
 
 When stress-aware checking is on, lyriic marks the expected weak–strong contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
 
@@ -1418,7 +1418,7 @@ When the stress pack is loaded, lyriic checks that 8 / 6 iambic contour line by 
 
 lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. Real hymns and ballads often admit substitutions — mismatches are feedback, not a claim that every published line is perfectly regular.
 
-lyriic does not enforce rhyme schemes (ABAB common measure vs ABCB ballad stanza) or tune matching between hymn texts.
+This checker scores syllables and stress only. For ABAB rhyme dots while you draft, open the zen editor with Common meter. Tune matching between hymn texts stays with you.
 
 ## Common questions
 
@@ -1486,7 +1486,7 @@ Long meter (L.M.) is a hymn quatrain of four eight-syllable lines — 8.8.8.8 �
 
 In the lyriic catalog the cycle is stored as 8 / 8 and repeats across the four stanza lines, matching hymnal L.M. Homogeneous eights distinguish it from common meter (8 / 6) and short meter.
 
-When stress-aware checking is on, lyriic compares dictionary stress to that iambic contour line by line. Rhyme and tune choice stay yours.
+When stress-aware checking is on, lyriic compares dictionary stress to that iambic contour line by line. ABAB rhyme dots are available in the zen editor; tune choice stays yours.
 
 ## Iamb (da-DUM)
 
@@ -1506,7 +1506,7 @@ With the stress pack loaded, lyriic marks that 8 / 8 iambic contour for the hymn
 
 lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. Real hymns may stretch “heavenly,” drop a syllable in singing, or substitute a foot — mismatches are feedback, not a claim that every line must be perfectly regular.
 
-lyriic does not enforce hymn rhyme schemes (ABAB, AABB, and so on) or tune pairing. Doubled long metre (L.M.D., eight lines of eight) is out of scope for this checker.
+This checker scores syllables and stress. For ABAB rhyme dots while you draft, open the zen editor with Long meter. Doubled long metre (L.M.D.) and tune pairing stay out of scope here.
 
 ## Common questions
 
@@ -1516,7 +1516,7 @@ Long meter is a four-line hymn stanza of eight syllables each — 8.8.8.8 — us
 
 ### How is long meter different from common meter?
 
-Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keeps eight syllables on every line (8.8.8.8). Both are typically iambic; lyriic checks syllables and stress, not rhyme.
+Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keeps eight syllables on every line (8.8.8.8). Both are typically iambic; this checker scores syllables and stress, with rhyme dots available in the zen editor.
 
 ### Is my draft uploaded?
 
@@ -1566,7 +1566,7 @@ Often indexed as short meter (or double short meter in longer stanza settings).
 
 Hymnal short meter (S.M.) is a quatrain written 6.6.8.6: six syllables, six, eight, six, usually iambic, so that the third line has four feet and the others three. Texts in the same metre can share tunes.
 
-lyriic’s Short meter entry uses pattern [6, 6, 8, 6] with a four-line stanza, matching that teaching grid. Rhyme and tune choice stay outside the checker.
+lyriic’s Short meter entry uses pattern [6, 6, 8, 6] with a four-line stanza, matching that teaching grid. ABCB rhyme dots are available in the zen editor; tune choice stays outside this checker.
 
 ## Iamb (da-DUM)
 
@@ -1584,7 +1584,7 @@ lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded.
 
 ## Notes on this form
 
-lyriic checks the hymnal short-meter grid 6 · 6 · 8 · 6 and the iamb stress contour. Hymnal rhyme schemes (ABCB / ABAB) and tune pairing are not enforced.
+lyriic checks the hymnal short-meter grid 6 · 6 · 8 · 6 and the iamb stress contour. For ABCB rhyme dots while you draft, open the zen editor with Short meter. Tune pairing stays with you.
 
 ## Common questions
 
@@ -1650,7 +1650,7 @@ Cited in hymnal pedagogy as a clear 8.7.8.7 trochaic example (odd-syllable stres
 
 8s & 7s (hymnal 8.7.8.7) cycles eight- and seven-syllable lines. In the classic trochaic form lyriic models, long lines are four full trochees (DUM-da × 4); short lines are catalectic — they truncate after a final strong beat so the line ends on stress.
 
-A four-line stanza therefore reads 8 · 7 · 8 · 7. Hymnals mark 8.7.8.7.D when that quatrain doubles to eight lines; the syllable-and-stress cycle is the same, only longer. Rhyme and tune choice are outside the checker.
+A four-line stanza therefore reads 8 · 7 · 8 · 7. Hymnals mark 8.7.8.7.D when that quatrain doubles to eight lines; the syllable-and-stress cycle is the same, only longer. ABAB rhyme dots are available in the zen editor; tune choice stays outside this checker.
 
 When stress-aware checking is on, lyriic compares dictionary stress to the expected falling contour on each line length. Iambic 8.7.8.7 texts exist in some indexes but use a different beat and are not this meter’s target.
 
@@ -1672,7 +1672,7 @@ lyriic checks that 8 / 7 trochaic contour when the stress pack is loaded, fillin
 
 lyriic models classic trochaic 8s & 7s: eight-syllable lines with strong beats on odd positions, alternating with seven-syllable catalectic lines that end on a stress. Hymnals also index a rarer iambic 8.7.8.7 — that contour is a different meter and is not what this checker targets.
 
-lyriic does not enforce rhyme schemes, doubled (D) eight-line stanzas, or tune interchange rules from a hymnal’s metrical index.
+This checker scores syllables and trochaic stress. For ABAB rhyme dots while you draft, open the zen editor with 8s & 7s. Doubled (D) eight-line stanzas and hymnal tune interchange stay out of scope here.
 
 ## Common questions
 
@@ -1738,7 +1738,7 @@ A ballad stanza is a quatrain of alternating iambic tetrameter and iambic trimet
 
 lyriic’s catalog stores that full cycle as pattern [8, 6, 8, 6] with footId iamb and stanzaLines 4. The related Common meter entry uses pattern [8, 6] cycled across the same four-line stanza — identical syllable and stress targets.
 
-Folk tradition often rhymes only lines 2 and 4 (ABCB) and may loosen unstressed syllables. lyriic checks the syllable and iambic stress grid only; rhyme, refrain, and story are left to you.
+Folk tradition often rhymes only lines 2 and 4 (ABCB) and may loosen unstressed syllables. This checker scores the syllable and iambic stress grid; ABCB rhyme dots are available in the zen editor.
 
 ## Iamb (da-DUM)
 
@@ -1758,7 +1758,7 @@ lyriic checks that repeating contour when the stress pack is loaded. Rhyme schem
 
 lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. Folk and literary ballads often admit anapests, headless lines, or looser counts — mismatches are feedback against the teaching grid, not a claim that every published stanza is perfectly regular.
 
-Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. lyriic does not enforce rhyme, refrain, or narrative content.
+Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. This checker stays on syllables and stress — open the zen editor for ABCB rhyme dots. Refrain and narrative stay with you.
 
 ## Common questions
 
@@ -2364,7 +2364,7 @@ A mathematical limerick that reads an equation aloud in AABBA form.
 
 lyriic’s catalog treats a limerick as five lines with syllable targets 8 · 8 · 5 · 5 · 8. That mirrors the usual teaching contour: three longer lines framing two shorter ones in the middle.
 
-Tradition also expects AABBA rhyme and a rising anapestic (or rocking amphibrachic) beat — three stresses on the long lines, two on the short. Those rules are outside this checker; only the syllable shape is scored.
+Tradition also expects AABBA rhyme and a rising anapestic (or rocking amphibrachic) beat — three stresses on the long lines, two on the short. This checker scores the syllable shape; AABBA rhyme dots are available in the zen editor.
 
 Published limericks often bend exact syllable counts when the bounce is clear. Use the deltas as a drafting aid, not as proof that a comic or Lear-style stanza is “wrong.”
 
@@ -2372,7 +2372,7 @@ Published limericks often bend exact syllable counts when the bounce is clear. U
 
 Counts use English syllables from the bundled dictionary against an 8 · 8 · 5 · 5 · 8 shape — a useful teaching approximation of the long–long–short–short–long limerick contour. Real limericks often flex by a syllable or two when the anapest or amphibrach swing is clear.
 
-lyriic does not enforce the AABBA rhyme scheme, anapestic or amphibrachic stress, or comic/nonsense content.
+This checker scores the syllable shape only — not anapestic stress or comic content. For AABBA rhyme dots while you draft, open the zen editor with the Limerick meter.
 
 ## Common questions
 
@@ -2382,7 +2382,7 @@ Five lines targeting eight, eight, five, five, and eight syllables. That matches
 
 ### Does lyriic check limerick rhyme or anapests?
 
-No. The checker scores syllable targets only. Traditional AABBA rhyme and the bouncing anapestic (or amphibrachic) beat are left to you; open the Limerick writer under Meter for the same live syllable ruler while you draft.
+This page scores syllable targets only. Open the zen editor with the Limerick meter for AABBA rhyme dots beside each line; anapestic or amphibrachic stress is still left to your ear.
 
 ### Is my limerick uploaded?
 

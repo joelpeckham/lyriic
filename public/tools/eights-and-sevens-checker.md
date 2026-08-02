@@ -40,7 +40,7 @@ Cited in hymnal pedagogy as a clear 8.7.8.7 trochaic example (odd-syllable stres
 
 8s & 7s (hymnal 8.7.8.7) cycles eight- and seven-syllable lines. In the classic trochaic form lyriic models, long lines are four full trochees (DUM-da × 4); short lines are catalectic — they truncate after a final strong beat so the line ends on stress.
 
-A four-line stanza therefore reads 8 · 7 · 8 · 7. Hymnals mark 8.7.8.7.D when that quatrain doubles to eight lines; the syllable-and-stress cycle is the same, only longer. Rhyme and tune choice are outside the checker.
+A four-line stanza therefore reads 8 · 7 · 8 · 7. Hymnals mark 8.7.8.7.D when that quatrain doubles to eight lines; the syllable-and-stress cycle is the same, only longer. ABAB rhyme dots are available in the zen editor; tune choice stays outside this checker.
 
 When stress-aware checking is on, lyriic compares dictionary stress to the expected falling contour on each line length. Iambic 8.7.8.7 texts exist in some indexes but use a different beat and are not this meter’s target.
 
@@ -62,7 +62,7 @@ lyriic checks that 8 / 7 trochaic contour when the stress pack is loaded, fillin
 
 lyriic models classic trochaic 8s & 7s: eight-syllable lines with strong beats on odd positions, alternating with seven-syllable catalectic lines that end on a stress. Hymnals also index a rarer iambic 8.7.8.7 — that contour is a different meter and is not what this checker targets.
 
-lyriic does not enforce rhyme schemes, doubled (D) eight-line stanzas, or tune interchange rules from a hymnal’s metrical index.
+This checker scores syllables and trochaic stress. For ABAB rhyme dots while you draft, open the zen editor with 8s & 7s. Doubled (D) eight-line stanzas and hymnal tune interchange stay out of scope here.
 
 ## Common questions
 

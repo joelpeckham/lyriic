@@ -40,7 +40,7 @@ A mathematical limerick that reads an equation aloud in AABBA form.
 
 lyriic’s catalog treats a limerick as five lines with syllable targets 8 · 8 · 5 · 5 · 8. That mirrors the usual teaching contour: three longer lines framing two shorter ones in the middle.
 
-Tradition also expects AABBA rhyme and a rising anapestic (or rocking amphibrachic) beat — three stresses on the long lines, two on the short. Those rules are outside this checker; only the syllable shape is scored.
+Tradition also expects AABBA rhyme and a rising anapestic (or rocking amphibrachic) beat — three stresses on the long lines, two on the short. This checker scores the syllable shape; AABBA rhyme dots are available in the zen editor.
 
 Published limericks often bend exact syllable counts when the bounce is clear. Use the deltas as a drafting aid, not as proof that a comic or Lear-style stanza is “wrong.”
 
@@ -48,7 +48,7 @@ Published limericks often bend exact syllable counts when the bounce is clear. U
 
 Counts use English syllables from the bundled dictionary against an 8 · 8 · 5 · 5 · 8 shape — a useful teaching approximation of the long–long–short–short–long limerick contour. Real limericks often flex by a syllable or two when the anapest or amphibrach swing is clear.
 
-lyriic does not enforce the AABBA rhyme scheme, anapestic or amphibrachic stress, or comic/nonsense content.
+This checker scores the syllable shape only — not anapestic stress or comic content. For AABBA rhyme dots while you draft, open the zen editor with the Limerick meter.
 
 ## Common questions
 
@@ -58,7 +58,7 @@ Five lines targeting eight, eight, five, five, and eight syllables. That matches
 
 ### Does lyriic check limerick rhyme or anapests?
 
-No. The checker scores syllable targets only. Traditional AABBA rhyme and the bouncing anapestic (or amphibrachic) beat are left to you; open the Limerick writer under Meter for the same live syllable ruler while you draft.
+This page scores syllable targets only. Open the zen editor with the Limerick meter for AABBA rhyme dots beside each line; anapestic or amphibrachic stress is still left to your ear.
 
 ### Is my limerick uploaded?
 

@@ -271,7 +271,7 @@ html[data-contrast="more"].dark {
   pointer-events: none;
 }
 
-/* Rhyme dots opt back in for native title tooltips (gutter only). */
+/* Rhyme dots opt back in for hover tooltips (gutter only). */
 .lyriic-syllable-overlay .lyriic-rhyme-dot {
   pointer-events: auto;
 }

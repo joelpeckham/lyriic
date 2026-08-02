@@ -42,7 +42,7 @@ Long meter (L.M.) is a hymn quatrain of four eight-syllable lines — 8.8.8.8 �
 
 In the lyriic catalog the cycle is stored as 8 / 8 and repeats across the four stanza lines, matching hymnal L.M. Homogeneous eights distinguish it from common meter (8 / 6) and short meter.
 
-When stress-aware checking is on, lyriic compares dictionary stress to that iambic contour line by line. Rhyme and tune choice stay yours.
+When stress-aware checking is on, lyriic compares dictionary stress to that iambic contour line by line. ABAB rhyme dots are available in the zen editor; tune choice stays yours.
 
 ## Iamb (da-DUM)
 
@@ -62,7 +62,7 @@ With the stress pack loaded, lyriic marks that 8 / 8 iambic contour for the hymn
 
 lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. Real hymns may stretch “heavenly,” drop a syllable in singing, or substitute a foot — mismatches are feedback, not a claim that every line must be perfectly regular.
 
-lyriic does not enforce hymn rhyme schemes (ABAB, AABB, and so on) or tune pairing. Doubled long metre (L.M.D., eight lines of eight) is out of scope for this checker.
+This checker scores syllables and stress. For ABAB rhyme dots while you draft, open the zen editor with Long meter. Doubled long metre (L.M.D.) and tune pairing stay out of scope here.
 
 ## Common questions
 
@@ -72,7 +72,7 @@ Long meter is a four-line hymn stanza of eight syllables each — 8.8.8.8 — us
 
 ### How is long meter different from common meter?
 
-Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keeps eight syllables on every line (8.8.8.8). Both are typically iambic; lyriic checks syllables and stress, not rhyme.
+Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keeps eight syllables on every line (8.8.8.8). Both are typically iambic; this checker scores syllables and stress, with rhyme dots available in the zen editor.
 
 ### Is my draft uploaded?
 

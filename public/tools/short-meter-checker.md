@@ -34,7 +34,7 @@ Often indexed as short meter (or double short meter in longer stanza settings).
 
 Hymnal short meter (S.M.) is a quatrain written 6.6.8.6: six syllables, six, eight, six, usually iambic, so that the third line has four feet and the others three. Texts in the same metre can share tunes.
 
-lyriic’s Short meter entry uses pattern [6, 6, 8, 6] with a four-line stanza, matching that teaching grid. Rhyme and tune choice stay outside the checker.
+lyriic’s Short meter entry uses pattern [6, 6, 8, 6] with a four-line stanza, matching that teaching grid. ABCB rhyme dots are available in the zen editor; tune choice stays outside this checker.
 
 ## Iamb (da-DUM)
 
@@ -52,7 +52,7 @@ lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded.
 
 ## Notes on this form
 
-lyriic checks the hymnal short-meter grid 6 · 6 · 8 · 6 and the iamb stress contour. Hymnal rhyme schemes (ABCB / ABAB) and tune pairing are not enforced.
+lyriic checks the hymnal short-meter grid 6 · 6 · 8 · 6 and the iamb stress contour. For ABCB rhyme dots while you draft, open the zen editor with Short meter. Tune pairing stays with you.
 
 ## Common questions
 

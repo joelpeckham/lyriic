@@ -38,7 +38,7 @@ Christmas carol frequently cited for common-metre hymn shape.
 
 Common meter alternates an eight-syllable iambic line with a six-syllable one: four da-DUM feet, then three. Across a quatrain the cycle reads 8 · 6 · 8 · 6 (often labeled CM or 86.86 in hymnals).
 
-It is the shared grid of many English hymns and ballads. Strict common measure usually aims for ABAB rhyme; ballad stanza often uses ABCB with freer stress. lyriic checks the syllable and iambic stress cycle only — rhyme and tune are left to you.
+It is the shared grid of many English hymns and ballads. Strict common measure usually aims for ABAB rhyme; ballad stanza often uses ABCB with freer stress. This checker scores the syllable and iambic stress cycle; ABAB rhyme dots are available in the zen editor.
 
 When stress-aware checking is on, lyriic marks the expected weak–strong contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
 
@@ -60,7 +60,7 @@ When the stress pack is loaded, lyriic checks that 8 / 6 iambic contour line by 
 
 lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. Real hymns and ballads often admit substitutions — mismatches are feedback, not a claim that every published line is perfectly regular.
 
-lyriic does not enforce rhyme schemes (ABAB common measure vs ABCB ballad stanza) or tune matching between hymn texts.
+This checker scores syllables and stress only. For ABAB rhyme dots while you draft, open the zen editor with Common meter. Tune matching between hymn texts stays with you.
 
 ## Common questions
 
