@@ -4,8 +4,11 @@ import {
   isMeterCatalogId,
   isStressAwareMeterConfig,
   listFormCheckerMeters,
+  listMeterCatalogByGroup,
   METER_CATALOG,
+  METER_GROUP_LABELS,
   resolveMeterConfig,
+  rhymeSchemesForMeter,
   stressExplainerIdForEntry,
 } from "./presets";
 
@@ -72,6 +75,22 @@ function getEntry(id: string) {
   return METER_CATALOG.find((entry) => entry.id === id)!;
 }
 
+describe("listMeterCatalogByGroup", () => {
+  it("puts None and Custom under General with no trailing Custom group", () => {
+    const groups = listMeterCatalogByGroup();
+    expect(groups.map((g) => g.group)).toEqual([
+      "free",
+      "accentual",
+      "ballad",
+      "syllable",
+    ]);
+    expect(METER_GROUP_LABELS.free).toBe("General");
+    const general = groups[0]!;
+    expect(general.label).toBe("General");
+    expect(general.entries.map((e) => e.id)).toEqual(["none", "custom"]);
+  });
+});
+
 describe("resolveMeterConfig", () => {
   it("resolves catalog meters", () => {
     const haiku = resolveMeterConfig({
@@ -93,6 +112,23 @@ describe("resolveMeterConfig", () => {
     expect(custom.pattern).toEqual([5, 7, 5]);
     expect(custom.stressPatterns?.[0]).toEqual([1, 0, 1, 0, 1]);
     expect(isStressAwareMeterConfig(custom)).toBe(true);
+    expect(custom.rhymeSchemes).toBeUndefined();
+  });
+
+  it("includes custom rhyme schemes when a pattern is set", () => {
+    const custom = resolveMeterConfig({
+      meter: "custom",
+      customPattern: [8],
+      customFoot: "none",
+      customRhymePattern: "ABAB",
+    });
+    expect(custom.rhymeSchemes).toEqual([
+      { id: "custom", label: "Custom", pattern: "ABAB" },
+    ]);
+    expect(rhymeSchemesForMeter("custom", "ABAB")).toEqual(
+      custom.rhymeSchemes,
+    );
+    expect(rhymeSchemesForMeter("custom", "")).toEqual([]);
   });
 
   it("falls back to none for unknown ids", () => {

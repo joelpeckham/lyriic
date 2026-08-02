@@ -18,7 +18,10 @@ export function applyMeterChoice(
   const next: EditorSettings = {
     ...settings,
     meter: meterId,
-    rhymeSchemeId: defaultRhymeSchemeId(meterId),
+    rhymeSchemeId: defaultRhymeSchemeId(
+      meterId,
+      settings.customRhymePattern,
+    ),
   };
   if (meterId === "none") return next;
 
@@ -26,6 +29,7 @@ export function applyMeterChoice(
     meter: meterId,
     customPattern: next.customPattern,
     customFoot: next.customFoot,
+    customRhymePattern: next.customRhymePattern,
   });
   const stressAware = isStressAwareMeterConfig(config);
   const hasRhyme = Boolean(config.rhymeSchemes && config.rhymeSchemes.length > 0);

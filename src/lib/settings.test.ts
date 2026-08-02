@@ -4,6 +4,7 @@ import {
   DEFAULT_SETTINGS,
   normalizeSettings,
   parseCustomPattern,
+  parseCustomRhymePattern,
   settingsForMeter,
 } from "./settings";
 
@@ -16,6 +17,7 @@ describe("normalizeSettings", () => {
     });
     expect(next.customPattern).toEqual([12]);
     expect(next.customFoot).toBe("none");
+    expect(next.customRhymePattern).toBe("");
     expect(next.meter).toBe("custom");
   });
 
@@ -33,6 +35,16 @@ describe("normalizeSettings", () => {
     });
     expect(next.customPattern).toEqual([1, 20, 7]);
   });
+
+  it("normalizes custom rhyme patterns", () => {
+    const next = normalizeSettings({
+      meter: "custom",
+      customRhymePattern: "ab ab",
+    });
+    expect(next.customRhymePattern).toBe("ABAB");
+    expect(next.rhymeSchemeId).toBe("custom");
+    expect(next.showRhymeScheme).toBe(true);
+  });
 });
 
 describe("parseCustomPattern", () => {
@@ -44,6 +56,27 @@ describe("parseCustomPattern", () => {
   it("rejects empty input", () => {
     expect(parseCustomPattern("")).toBeNull();
     expect(parseCustomPattern("  ,  ")).toBeNull();
+  });
+});
+
+describe("parseCustomRhymePattern", () => {
+  it("uppercases and strips separators", () => {
+    expect(parseCustomRhymePattern("ab/ab")).toBe("ABAB");
+    expect(parseCustomRhymePattern("a a b b a")).toBe("AABBA");
+  });
+
+  it("keeps X for unrhymed lines", () => {
+    expect(parseCustomRhymePattern("axbx")).toBe("AXBX");
+  });
+
+  it("returns empty for blank or letterless input", () => {
+    expect(parseCustomRhymePattern("")).toBe("");
+    expect(parseCustomRhymePattern("  ,  ")).toBe("");
+  });
+
+  it("clamps length", () => {
+    const long = "A".repeat(40);
+    expect(parseCustomRhymePattern(long)).toHaveLength(32);
   });
 });
 
@@ -92,5 +125,14 @@ describe("normalizeSettings rhyme", () => {
     });
     expect(next.rhymeSchemeId).toBe("petrarchan");
     expect(next.showRhymeScheme).toBe(false);
+  });
+
+  it("clears rhymeSchemeId for custom without a pattern", () => {
+    const next = normalizeSettings({
+      meter: "custom",
+      rhymeSchemeId: "custom",
+      customRhymePattern: "",
+    });
+    expect(next.rhymeSchemeId).toBeNull();
   });
 });

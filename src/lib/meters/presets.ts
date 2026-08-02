@@ -13,15 +13,13 @@ export type MeterGroupId =
   | "free"
   | "accentual"
   | "ballad"
-  | "syllable"
-  | "custom";
+  | "syllable";
 
 export const METER_GROUP_LABELS: Record<MeterGroupId, string> = {
-  free: "Free",
+  free: "General",
   accentual: "Accentual-syllabic",
   ballad: "Song / ballad",
   syllable: "Syllable forms",
-  custom: "Custom",
 };
 
 export type RhymeScheme = {
@@ -142,6 +140,14 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     group: "free",
     pattern: [],
     description: "Syllable counts only",
+    stanzaLines: null,
+  },
+  {
+    id: "custom",
+    label: "Custom",
+    group: "free",
+    pattern: [8],
+    description: "Your syllable cycle, optional foot, and rhyme scheme",
     stanzaLines: null,
   },
 
@@ -347,15 +353,6 @@ export const METER_CATALOG: readonly MeterCatalogEntry[] = [
     5,
     [scheme("limerick", "Limerick", "AABBA")],
   ),
-
-  {
-    id: "custom",
-    label: "Custom",
-    group: "custom",
-    pattern: [8],
-    description: "Your syllable cycle and optional foot",
-    stanzaLines: null,
-  },
 ] as const;
 
 /** @deprecated Use METER_CATALOG. */
@@ -393,7 +390,6 @@ export function listMeterCatalogByGroup(): {
     "accentual",
     "ballad",
     "syllable",
-    "custom",
   ];
   return order.map((group) => ({
     group,
@@ -406,19 +402,32 @@ export type ResolveMeterInput = {
   meter: string;
   customPattern: readonly number[];
   customFoot: CustomFootId;
+  /** Letter cycle for custom meter rhyme (empty = none). */
+  customRhymePattern?: string;
 };
+
+function customRhymeSchemes(pattern: string | undefined): readonly RhymeScheme[] {
+  const normalized = (pattern ?? "")
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "")
+    .slice(0, 32);
+  if (!normalized) return [];
+  return [{ id: "custom", label: "Custom", pattern: normalized }];
+}
 
 export function resolveMeterConfig(input: ResolveMeterInput): MeterConfig {
   if (input.meter === "custom") {
     const pattern =
       input.customPattern.length > 0 ? [...input.customPattern] : [8];
     const stressPatterns = stressPatternsForCycle(input.customFoot, pattern);
+    const rhymeSchemes = customRhymeSchemes(input.customRhymePattern);
     return {
       id: "custom",
       label: "Custom",
       pattern,
       stressPatterns,
       stanzaLines: null,
+      rhymeSchemes: rhymeSchemes.length > 0 ? rhymeSchemes : undefined,
       description: formatCustomDescription(pattern, input.customFoot),
     };
   }
@@ -435,9 +444,13 @@ export function resolveMeterConfig(input: ResolveMeterInput): MeterConfig {
   };
 }
 
-/** Named rhyme schemes for a catalog meter (empty when none). */
-export function rhymeSchemesForMeter(meterId: string): readonly RhymeScheme[] {
-  if (!isMeterCatalogId(meterId) || meterId === "custom") return [];
+/** Named rhyme schemes for a meter (empty when none). */
+export function rhymeSchemesForMeter(
+  meterId: string,
+  customRhymePattern: string = "",
+): readonly RhymeScheme[] {
+  if (!isMeterCatalogId(meterId)) return [];
+  if (meterId === "custom") return customRhymeSchemes(customRhymePattern);
   return getMeterCatalogEntry(meterId).rhymeSchemes ?? [];
 }
 
@@ -448,8 +461,9 @@ export function rhymeSchemesForMeter(meterId: string): readonly RhymeScheme[] {
 export function resolveRhymeScheme(
   meterId: string,
   schemeId: string | null | undefined,
+  customRhymePattern: string = "",
 ): RhymeScheme | null {
-  const schemes = rhymeSchemesForMeter(meterId);
+  const schemes = rhymeSchemesForMeter(meterId, customRhymePattern);
   if (schemes.length === 0) return null;
   if (schemeId) {
     const hit = schemes.find((s) => s.id === schemeId);

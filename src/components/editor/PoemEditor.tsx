@@ -143,13 +143,24 @@ export function PoemEditor({
         meter: settings.meter,
         customPattern: settings.customPattern,
         customFoot: settings.customFoot,
+        customRhymePattern: settings.customRhymePattern,
       }),
-    [settings.meter, settings.customPattern, settings.customFoot],
+    [
+      settings.meter,
+      settings.customPattern,
+      settings.customFoot,
+      settings.customRhymePattern,
+    ],
   );
 
   const activeRhymeScheme = useMemo(
-    () => resolveRhymeScheme(settings.meter, settings.rhymeSchemeId),
-    [settings.meter, settings.rhymeSchemeId],
+    () =>
+      resolveRhymeScheme(
+        settings.meter,
+        settings.rhymeSchemeId,
+        settings.customRhymePattern,
+      ),
+    [settings.meter, settings.rhymeSchemeId, settings.customRhymePattern],
   );
 
   const needsStress =

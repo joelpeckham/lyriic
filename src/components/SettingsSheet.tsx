@@ -50,6 +50,7 @@ import {
 import {
   formatCustomPattern,
   parseCustomPattern,
+  parseCustomRhymePattern,
   type EditorSettings,
 } from "@/lib/settings";
 import { applyMeterChoice } from "@/lib/settings/applyMeterChoice";
@@ -135,6 +136,9 @@ function CustomMeterControls({
   const [draft, setDraft] = useState(() =>
     formatCustomPattern(settings.customPattern),
   );
+  const [rhymeDraft, setRhymeDraft] = useState(
+    () => settings.customRhymePattern,
+  );
 
   const commitPattern = (raw: string) => {
     const parsed = parseCustomPattern(raw);
@@ -148,10 +152,21 @@ function CustomMeterControls({
     }
   };
 
+  const commitRhyme = (raw: string) => {
+    const next = parseCustomRhymePattern(raw);
+    setRhymeDraft(next);
+    if (next !== settings.customRhymePattern) {
+      onChange(
+        applyMeterChoice({ ...settings, customRhymePattern: next }, "custom"),
+      );
+    }
+  };
+
   const preview = resolveMeterConfig({
     meter: "custom",
     customPattern: settings.customPattern,
     customFoot: settings.customFoot,
+    customRhymePattern: settings.customRhymePattern,
   });
 
   return (
@@ -200,6 +215,28 @@ function CustomMeterControls({
         </select>
       </div>
 
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="custom-rhyme">Rhyme scheme</Label>
+        <Input
+          id="custom-rhyme"
+          value={rhymeDraft}
+          placeholder="ABAB or AABBA"
+          spellCheck={false}
+          autoCapitalize="characters"
+          onChange={(event) => setRhymeDraft(event.target.value)}
+          onBlur={() => commitRhyme(rhymeDraft)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              commitRhyme(rhymeDraft);
+            }
+          }}
+        />
+        <p className="text-muted-foreground text-xs">
+          Letter cycle; X = unrhymed. Leave blank for none.
+        </p>
+      </div>
+
       <p className="text-muted-foreground text-xs">{preview.description}</p>
     </div>
   );
@@ -212,6 +249,8 @@ function RhymeSchemeControls({
   settings: EditorSettings;
   onChange: (next: EditorSettings) => void;
 }) {
+  // Catalog meters only — custom uses the text field in CustomMeterControls.
+  if (settings.meter === "custom") return null;
   const schemes = rhymeSchemesForMeter(settings.meter);
   if (schemes.length === 0) return null;
 
@@ -490,7 +529,7 @@ export function SettingsSheet({
 
           {settings.meter === "custom" ? (
             <CustomMeterControls
-              key={formatCustomPattern(settings.customPattern)}
+              key={`${formatCustomPattern(settings.customPattern)}|${settings.customRhymePattern}`}
               settings={settings}
               onChange={onChange}
             />
@@ -544,7 +583,10 @@ export function SettingsSheet({
             }
           />
 
-          {rhymeSchemesForMeter(settings.meter).length > 0 ? (
+          {rhymeSchemesForMeter(
+            settings.meter,
+            settings.customRhymePattern,
+          ).length > 0 ? (
             <SettingsToggle
               id="show-rhyme-scheme"
               label="Rhyme scheme"

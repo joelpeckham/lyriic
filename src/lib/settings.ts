@@ -26,11 +26,17 @@ export type EditorSettings = {
   customPattern: number[];
   /** Optional foot used to fill stress for each custom line length. */
   customFoot: CustomFootId;
+  /**
+   * Letter-cycle rhyme scheme for custom meter (e.g. `"ABAB"`).
+   * Empty = no rhyme. `X` = unrhymed line.
+   */
+  customRhymePattern: string;
 };
 
 export const CUSTOM_SYLLABLES_MIN = 1;
 export const CUSTOM_SYLLABLES_MAX = 20;
 export const CUSTOM_PATTERN_MAX_LINES = 16;
+export const CUSTOM_RHYME_PATTERN_MAX_LENGTH = 32;
 
 export const DEFAULT_SETTINGS: EditorSettings = {
   meter: "none",
@@ -42,6 +48,7 @@ export const DEFAULT_SETTINGS: EditorSettings = {
   rhymeSchemeId: null,
   customPattern: [8],
   customFoot: "none",
+  customRhymePattern: "",
 };
 
 function clampInt(value: number, min: number, max: number): number {
@@ -90,9 +97,29 @@ function normalizeCustomPattern(
   return [...DEFAULT_SETTINGS.customPattern];
 }
 
+/**
+ * Parse a custom rhyme scheme string into uppercase A–Z letters.
+ * Strips separators/spaces; empty or no letters → `""`.
+ */
+export function parseCustomRhymePattern(raw: string): string {
+  const letters = raw
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "")
+    .slice(0, CUSTOM_RHYME_PATTERN_MAX_LENGTH);
+  return letters;
+}
+
+export function normalizeCustomRhymePattern(raw: unknown): string {
+  if (typeof raw !== "string") return DEFAULT_SETTINGS.customRhymePattern;
+  return parseCustomRhymePattern(raw);
+}
+
 /** Default scheme id for a meter, or null when the meter has none. */
-export function defaultRhymeSchemeId(meterId: string): string | null {
-  return resolveRhymeScheme(meterId, null)?.id ?? null;
+export function defaultRhymeSchemeId(
+  meterId: string,
+  customRhymePattern: string = "",
+): string | null {
+  return resolveRhymeScheme(meterId, null, customRhymePattern)?.id ?? null;
 }
 
 /**
@@ -102,8 +129,9 @@ export function defaultRhymeSchemeId(meterId: string): string | null {
 export function normalizeRhymeSchemeId(
   meterId: string,
   schemeId: unknown,
+  customRhymePattern: string = "",
 ): string | null {
-  const schemes = rhymeSchemesForMeter(meterId);
+  const schemes = rhymeSchemesForMeter(meterId, customRhymePattern);
   if (schemes.length === 0) return null;
   if (typeof schemeId === "string" && schemes.some((s) => s.id === schemeId)) {
     return schemeId;
@@ -131,7 +159,13 @@ export function normalizeSettings(raw: unknown): EditorSettings {
       ? s.customFoot
       : DEFAULT_SETTINGS.customFoot;
 
-  const rhymeSchemeId = normalizeRhymeSchemeId(meter, s.rhymeSchemeId);
+  const customRhymePattern = normalizeCustomRhymePattern(s.customRhymePattern);
+
+  const rhymeSchemeId = normalizeRhymeSchemeId(
+    meter,
+    s.rhymeSchemeId,
+    customRhymePattern,
+  );
   const hasRhyme = rhymeSchemeId !== null;
 
   return {
@@ -161,6 +195,7 @@ export function normalizeSettings(raw: unknown): EditorSettings {
     rhymeSchemeId,
     customPattern,
     customFoot,
+    customRhymePattern,
   };
 }
 
@@ -183,6 +218,7 @@ export function settingsForMeter(
     meter: meterId,
     customPattern: DEFAULT_SETTINGS.customPattern,
     customFoot: DEFAULT_SETTINGS.customFoot,
+    customRhymePattern: DEFAULT_SETTINGS.customRhymePattern,
   });
   const overlays = overlaysForMeterSeed(config);
   return {

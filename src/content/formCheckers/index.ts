@@ -166,11 +166,10 @@ export function listComposedFormToolsByGroup(): {
 }[] {
   const order: MeterGroupId[] = ["syllable", "ballad", "accentual"];
   const labels: Record<MeterGroupId, string> = {
-    free: "Free",
+    free: "General",
     accentual: "Accentual-syllabic",
     ballad: "Song / ballad",
     syllable: "Syllable forms",
-    custom: "Custom",
   };
   const pages = listComposedFormToolPages();
   return order
