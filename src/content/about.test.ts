@@ -33,7 +33,8 @@ describe("about page verse samples", () => {
       for (let i = 0; i < lines.length; i++) {
         const total = countLine(lines[i] ?? "").total;
         const target = config.pattern[i % config.pattern.length]!;
-        if (poem.label === "When it runs long") {
+        // Limerick demo: only the final line intentionally overruns.
+        if (poem.label === "When it runs long" && i === lines.length - 1) {
           expect(total).toBeGreaterThan(target);
         } else {
           expect(total).toBe(target);

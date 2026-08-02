@@ -77,7 +77,7 @@ export const ABOUT_WHY: AboutPoem = {
     "I counted. Rapping, tapping, jabs on every jot.",
     "And then above my head appeared a bulb, a thought.",
     "The verse can wait a sec. Now let me write some code.",
-    "Machines append a count. And now I cant't be slowed.",
+    "Machines append a count. And now I can't be slowed.",
   ].join("\n"),
   settings: aboutMeterSettings("iambic-hexameter", {
     showRulers: false,
