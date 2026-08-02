@@ -6,8 +6,8 @@ lyriic runs entirely in the browser at https://lyriic.com. Drafts stay on-device
 
 ## Product
 
-- [lyriic home](https://lyriic.com/): Zen poem canvas with syllable counts and meter tools
-- [About](https://lyriic.com/about): Product page — also [about.md](https://lyriic.com/about.md) for features, audience, privacy model, how counting works
+- [lyriic home](https://lyriic.com/): Product landing — zen poem canvas pitch with live samples; open the editor at https://lyriic.com/write
+- [About](https://lyriic.com/about): Same landing (always, even after a draft exists) — also [about.md](https://lyriic.com/about.md)
 - [FAQ](https://lyriic.com/faq): Common questions — also [faq.md](https://lyriic.com/faq.md)
 
 ## Tools

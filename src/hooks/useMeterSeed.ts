@@ -64,7 +64,7 @@ export function useMeterSeed(
       const search = next.toString();
       navigate(
         {
-          pathname: slug ? `/write/${slug}` : "/",
+          pathname: slug ? `/write/${slug}` : "/write",
           search: search ? `?${search}` : "",
         },
         { replace: true },

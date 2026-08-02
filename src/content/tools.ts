@@ -53,7 +53,7 @@ export const TOOL_PAGES: ToolPageContent[] = [
         q: "Does my text move into the editor?",
         plain:
           "Yes, when you continue with a draft you edited here (not an untouched sample). lyriic carries that text into the editor once via a short-lived browser handoff — nothing is uploaded.",
-        href: "/",
+        href: "/write",
         hrefLabel: "Continue in the editor",
       },
     ],
@@ -98,7 +98,7 @@ export const TOOL_PAGES: ToolPageContent[] = [
         q: "How is this different from the editor?",
         plain:
           "This page is for browsing rhymes. The editor keeps rhyme lookup beside your draft while you write, with live syllable counts and optional meter rulers. Your finder query does not carry over — open the editor when you are ready to draft.",
-        href: "/",
+        href: "/write",
         hrefLabel: "Open the editor",
       },
     ],

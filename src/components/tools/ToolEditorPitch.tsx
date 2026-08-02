@@ -8,7 +8,7 @@ type ToolEditorPitchProps = {
   body: string;
   /** Label for the editor CTA — typically draft-aware from the parent. */
   cta: string;
-  /** Editor destination — defaults to home; use `/write/:slug` for seeded meters. */
+  /** Editor destination — defaults to `/write`; use `/write/:slug` for seeded meters. */
   to?: string;
   /** Optional secondary text link (e.g. blank canvas). Never stashes. */
   secondary?: {
@@ -28,7 +28,7 @@ export function ToolEditorPitch({
   title,
   body,
   cta,
-  to = "/",
+  to = "/write",
   secondary,
   onPrimaryNavigate,
   carryHint,

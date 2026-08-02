@@ -1,5 +1,5 @@
 /**
- * Copy and verse samples for the /about page.
+ * Copy and verse samples for the home / about landing page.
  * Each sample is live-edited via PoemEditor (embed) with real meter settings.
  */
 
@@ -11,11 +11,6 @@ import {
   DEFAULT_SETTINGS,
   type EditorSettings,
 } from "@/lib/settings";
-
-export const ABOUT_TITLE = "lyriic — about";
-
-export const ABOUT_DESCRIPTION =
-  "A free, local-first zen editor for writing poetry and lyrics in meter — syllable counts, optional rulers, and quiet word tools in your browser.";
 
 export const ABOUT_ORIGIN_URL = "https://jpeckham.com/projects/lyriic/";
 

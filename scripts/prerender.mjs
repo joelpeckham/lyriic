@@ -1,7 +1,7 @@
 /**
  * Prerender content routes into dist/ after vite build.
  * Uses react-dom/server via Vite SSR (no Chromium).
- * Skips "/" so the SEO shell in index.html is preserved.
+ * "/" gets the About landing (keeps WebApplication JSON-LD in the template).
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -23,6 +23,7 @@ function ogImageTypeForUrl(imageUrl) {
 }
 
 function routeToFile(route) {
+  if (route === "/" || route === "") return join(dist, "index.html");
   const trimmed = route.replace(/^\//, "");
   return join(dist, trimmed, "index.html");
 }
@@ -152,6 +153,7 @@ async function main() {
     const writerRoutes = WRITER_PRERENDER_SLUGS.map((slug) => `/write/${slug}`);
 
     const ROUTES = [
+      "/",
       "/about",
       "/faq",
       "/privacy",
@@ -166,8 +168,11 @@ async function main() {
       const result = render(route);
       let html = injectRoot(template, result.html);
       html = applyHead(html, result);
-      html = stripHomeJsonLd(html);
-      html = stripNoscript(html);
+      // Home keeps WebApplication JSON-LD + noscript; /about is an alias.
+      if (route !== "/") {
+        html = stripHomeJsonLd(html);
+        html = stripNoscript(html);
+      }
 
       const out = routeToFile(route);
       mkdirSync(dirname(out), { recursive: true });

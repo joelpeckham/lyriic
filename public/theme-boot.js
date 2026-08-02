@@ -1,6 +1,18 @@
 (function () {
   document.documentElement.classList.add("js");
   try {
+    var path = location.pathname;
+    if (
+      (path === "/" || path === "") &&
+      localStorage.getItem("lyriic.projects.v1") != null
+    ) {
+      location.replace("/write");
+      return;
+    }
+  } catch {
+    /* ignore storage / navigation failures */
+  }
+  try {
     var raw = localStorage.getItem("lyriic.prefs.v1");
     var prefs = raw ? JSON.parse(raw) : {};
     var theme =

@@ -547,7 +547,7 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
         carryHint={carryDraft ? CARRY_HINT : undefined}
         secondary={{
           label: "Open a blank canvas",
-          to: "/",
+          to: "/write",
         }}
       />
     </div>

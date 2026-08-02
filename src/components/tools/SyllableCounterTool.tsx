@@ -160,7 +160,7 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
           {carryDraft ? (
             <p className="border-b border-border/50 px-4 py-2 font-[family-name:var(--font-ui)] text-sm sm:px-5">
               <Link
-                to="/"
+                to="/write"
                 onClick={handoffNavigate}
                 className="text-foreground underline-offset-2 hover:underline"
               >

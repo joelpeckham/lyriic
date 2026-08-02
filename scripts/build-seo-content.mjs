@@ -186,8 +186,8 @@ lyriic runs entirely in the browser at ${SITE}. Drafts stay on-device; there is 
 
 ## Product
 
-- [lyriic home](${SITE}/): Zen poem canvas with syllable counts and meter tools
-- [About](${SITE}/about): Product page — also [about.md](${SITE}/about.md) for features, audience, privacy model, how counting works
+- [lyriic home](${SITE}/): Product landing — zen poem canvas pitch with live samples; open the editor at ${SITE}/write
+- [About](${SITE}/about): Same landing (always, even after a draft exists) — also [about.md](${SITE}/about.md)
 - [FAQ](${SITE}/faq): Common questions — also [faq.md](${SITE}/faq.md)
 
 ## Tools
@@ -267,7 +267,6 @@ const writerSlugs = formPages.map((page) => page.meterId);
 
 const urls = [
   { loc: `${SITE}/`, priority: "1.0", changefreq: "weekly" },
-  { loc: `${SITE}/about`, priority: "0.7", changefreq: "monthly" },
   { loc: `${SITE}/faq`, priority: "0.6", changefreq: "monthly" },
   { loc: `${SITE}/privacy`, priority: "0.4", changefreq: "yearly" },
   { loc: `${SITE}/tools`, priority: "0.8", changefreq: "monthly" },

@@ -19,6 +19,22 @@ import type { Project, ProjectsState } from "./types";
 export const STORAGE_KEY = "lyriic.projects.v1";
 export const CORRUPT_STORAGE_KEY = "lyriic.projects.v1.corrupt";
 
+/**
+ * True when EditorShell has written projects at least once.
+ * Key presence is enough — do not require a parseable payload.
+ */
+export function hasPersistedDraft(
+  storage: Pick<Storage, "getItem"> | null =
+    typeof localStorage !== "undefined" ? localStorage : null,
+): boolean {
+  if (!storage) return false;
+  try {
+    return storage.getItem(STORAGE_KEY) != null;
+  } catch {
+    return false;
+  }
+}
+
 export type SaveResult =
   | { ok: true }
   | { ok: false; reason: "quota" | "unavailable" };

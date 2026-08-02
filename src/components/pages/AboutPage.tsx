@@ -7,17 +7,19 @@ import { AboutPoemEditor } from "@/components/pages/AboutPoemEditor";
 import { Button } from "@/components/ui/button";
 import {
   ABOUT_CLOSE_LINE,
-  ABOUT_DESCRIPTION,
   ABOUT_FEATURES,
   ABOUT_HERO,
   ABOUT_ORIGIN_URL,
   ABOUT_STANCE,
-  ABOUT_TITLE,
   ABOUT_WHY,
   type AboutPoem,
 } from "@/content/about";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
-import { SITE_URL } from "@/lib/seo";
+import {
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 /** Chapter heading (Why, What it does). */
@@ -123,19 +125,20 @@ function PoemSection({
   );
 }
 
+/** Home landing (`/`) and always-available alias (`/about`). Canonical is `/`. */
 export function AboutPage() {
   useDocumentMeta({
-    title: ABOUT_TITLE,
-    description: ABOUT_DESCRIPTION,
-    path: "/about",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    path: "/",
   });
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: ABOUT_TITLE,
-    description: ABOUT_DESCRIPTION,
-    url: `${SITE_URL}/about`,
+    name: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: `${SITE_URL}/`,
     isPartOf: {
       "@type": "WebSite",
       name: "lyriic",
@@ -180,7 +183,7 @@ export function AboutPage() {
 
           <p className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 font-[family-name:var(--font-ui)] sm:mt-12">
             <Button asChild>
-              <Link to="/">Open the editor</Link>
+              <Link to="/write">Open the editor</Link>
             </Button>
             <a
               href="#why"
@@ -239,7 +242,7 @@ export function AboutPage() {
               </p>
               <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-[family-name:var(--font-ui)]">
                 <Button asChild>
-                  <Link to="/">Open the editor</Link>
+                  <Link to="/write">Open the editor</Link>
                 </Button>
                 <Link
                   to="/tools"

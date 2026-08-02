@@ -3,7 +3,7 @@
  *
  * ## Write side (tools)
  * Prefer `continueToEditor({ text, samples })` (see `continueToEditor.ts`) in
- * click handlers before navigating to `/` or `/write/:meter`. It stashes only
+ * click handlers before navigating to `/write` or `/write/:meter`. It stashes only
  * when the user has real text that is not still a stock sample
  * (`shouldCarryToolText`). Tools should also `registerToolHandoffSource` so FAQ
  * continue links can stash the same way.

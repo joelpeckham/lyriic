@@ -9,7 +9,7 @@ const brandClass =
 type AppHeaderProps = {
   /** Absolute overlay for the editor canvas; in-flow for content pages. */
   variant?: "overlay" | "flow";
-  /** Home uses a heading; other pages link back to the editor. */
+  /** Editor uses a heading; other pages link back to the landing page. */
   brandAs?: "heading" | "link";
   actions?: ReactNode;
   className?: string;

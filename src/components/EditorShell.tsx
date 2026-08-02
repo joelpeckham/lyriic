@@ -327,7 +327,7 @@ export function EditorShell() {
       ? `${active.name.trim()} · lyriic`
       : SITE_TITLE;
   const pageDescription = writerMeta?.description ?? SITE_DESCRIPTION;
-  const pagePath = writerMeta?.path ?? "/";
+  const pagePath = writerMeta?.path ?? "/write";
 
   useDocumentMeta({
     title: pageTitle,

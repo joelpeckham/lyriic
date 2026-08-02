@@ -16,10 +16,6 @@ import { FormCheckerTool } from "@/components/tools/FormCheckerTool";
 import { RhymeFinderTool } from "@/components/tools/RhymeFinderTool";
 import { SyllableCounterTool } from "@/components/tools/SyllableCounterTool";
 import {
-  ABOUT_DESCRIPTION,
-  ABOUT_TITLE,
-} from "@/content/about";
-import {
   FAQ_DESCRIPTION,
   FAQ_TITLE,
 } from "@/content/faq";
@@ -38,7 +34,11 @@ import {
   TOOLS_INDEX_TITLE,
 } from "@/content/toolsIndex";
 import { WRITER_PRERENDER_SLUGS, writerDocumentMeta } from "@/lib/meters/seed";
-import { absoluteUrl } from "@/lib/seo";
+import {
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  absoluteUrl,
+} from "@/lib/seo";
 
 export type RenderResult = {
   html: string;
@@ -86,11 +86,12 @@ function metaForRoute(route: string): {
   description: string;
   path: string;
 } {
-  if (route === "/about") {
+  if (route === "/" || route === "" || route === "/about") {
+    // /about is a human alias; canonical stays on home.
     return {
-      title: ABOUT_TITLE,
-      description: ABOUT_DESCRIPTION,
-      path: "/about",
+      title: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      path: "/",
     };
   }
   if (route === "/faq") {
@@ -182,6 +183,7 @@ function App({ route }: { route: string }) {
   return (
     <StaticRouter location={route}>
       <Routes>
+        <Route path="/" element={<AboutPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
