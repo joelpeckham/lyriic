@@ -35,7 +35,7 @@ export function AppFooter({
             "pointer-events-auto cursor-default opacity-55 transition-opacity hover:opacity-100 focus-within:opacity-100",
         )}
       >
-        <Link to="/tools/syllable-counter" className={linkClass}>
+        <Link to="/tools" className={linkClass}>
           Tools
         </Link>
         <span aria-hidden="true" className="text-foreground/25">

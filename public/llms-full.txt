@@ -27,6 +27,9 @@ Drafts and preferences stay in browser local storage. Poem text is not sent to a
 
 ## Tools
 
+Private-in-browser utilities and form checkers for poetry and lyrics. Nothing leaves your device.
+
+- [All tools](https://lyriic.com/tools): Index of utilities and form checkers
 - [Syllable counter](https://lyriic.com/tools/syllable-counter) — [https://lyriic.com/tools/syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
 - [Rhyme finder](https://lyriic.com/tools/rhyme-finder) — [https://lyriic.com/tools/rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
 

@@ -13,6 +13,7 @@ import { createServer } from "vite";
 import { FAQ_ENTRIES, FAQ_INTRO } from "../src/content/faq.ts";
 import { PRIVACY_EFFECTIVE, PRIVACY_INTRO, PRIVACY_SECTIONS } from "../src/content/privacy.ts";
 import { TOOL_PAGES } from "../src/content/tools.ts";
+import { TOOLS_INDEX_INTRO } from "../src/content/toolsIndex.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const publicDir = join(root, "public");
@@ -113,6 +114,9 @@ Drafts and preferences stay in browser local storage. Poem text is not sent to a
 
 ## Tools
 
+${TOOLS_INDEX_INTRO}
+
+- [All tools](${SITE}/tools): Index of utilities and form checkers
 - [Syllable counter](${SITE}/tools/syllable-counter) — [${SITE}/tools/syllable-counter.md](${SITE}/tools/syllable-counter.md)
 - [Rhyme finder](${SITE}/tools/rhyme-finder) — [${SITE}/tools/rhyme-finder.md](${SITE}/tools/rhyme-finder.md)
 
@@ -188,6 +192,7 @@ lyriic runs entirely in the browser at ${SITE}. Drafts stay on-device; there is 
 
 ## Tools
 
+- [All tools](${SITE}/tools): Index of utilities and form checkers
 - [Syllable counter](${SITE}/tools/syllable-counter): Per-line syllable counts — [syllable-counter.md](${SITE}/tools/syllable-counter.md)
 - [Rhyme finder](${SITE}/tools/rhyme-finder): Local rhyming dictionary — [rhyme-finder.md](${SITE}/tools/rhyme-finder.md)
 
@@ -264,6 +269,7 @@ const urls = [
   { loc: `${SITE}/`, priority: "1.0", changefreq: "weekly" },
   { loc: `${SITE}/faq`, priority: "0.6", changefreq: "monthly" },
   { loc: `${SITE}/privacy`, priority: "0.4", changefreq: "yearly" },
+  { loc: `${SITE}/tools`, priority: "0.8", changefreq: "monthly" },
   ...TOOL_PAGES.map((tool) => ({
     loc: `${SITE}${tool.path}`,
     priority: "0.8",

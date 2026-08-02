@@ -154,6 +154,7 @@ async function main() {
     const ROUTES = [
       "/faq",
       "/privacy",
+      "/tools",
       "/tools/syllable-counter",
       "/tools/rhyme-finder",
       ...formRoutes,

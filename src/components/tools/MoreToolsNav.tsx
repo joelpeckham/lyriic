@@ -7,15 +7,7 @@ import {
   type ComposedFormToolPage,
 } from "@/content/formCheckers";
 import { TOOL_PAGES, type ToolPageContent } from "@/content/tools";
-
-/** High-traffic form checkers shown before the “All form checkers” disclosure. */
-export const POPULAR_FORM_METER_IDS = [
-  "haiku",
-  "sonnet",
-  "iambic-pentameter",
-  "limerick",
-  "tanka",
-] as const;
+import { POPULAR_FORM_METER_IDS } from "@/content/toolsIndex";
 
 type MoreToolsNavProps = {
   /** Current tool path — omitted from lists. */

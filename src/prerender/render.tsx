@@ -9,6 +9,7 @@ import { FaqPage } from "@/components/pages/FaqPage";
 import { FormToolPage } from "@/components/pages/FormToolPage";
 import { PrivacyPage } from "@/components/pages/PrivacyPage";
 import { ToolPage } from "@/components/pages/ToolPage";
+import { ToolsIndexPage } from "@/components/pages/ToolsIndexPage";
 import { WriterSeoPage } from "@/components/pages/WriterSeoPage";
 import { FormCheckerTool } from "@/components/tools/FormCheckerTool";
 import { RhymeFinderTool } from "@/components/tools/RhymeFinderTool";
@@ -27,6 +28,10 @@ import {
   PRIVACY_TITLE,
 } from "@/content/privacy";
 import { getToolBySlug, type ToolPageContent } from "@/content/tools";
+import {
+  TOOLS_INDEX_DESCRIPTION,
+  TOOLS_INDEX_TITLE,
+} from "@/content/toolsIndex";
 import { WRITER_PRERENDER_SLUGS, writerDocumentMeta } from "@/lib/meters/seed";
 import { absoluteUrl } from "@/lib/seo";
 
@@ -88,6 +93,13 @@ function metaForRoute(route: string): {
       title: PRIVACY_TITLE,
       description: PRIVACY_DESCRIPTION,
       path: "/privacy",
+    };
+  }
+  if (route === "/tools") {
+    return {
+      title: TOOLS_INDEX_TITLE,
+      description: TOOLS_INDEX_DESCRIPTION,
+      path: "/tools",
     };
   }
 
@@ -160,6 +172,7 @@ function App({ route }: { route: string }) {
       <Routes>
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/tools" element={<ToolsIndexPage />} />
         <Route
           path="/write/:slug"
           element={

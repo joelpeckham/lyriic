@@ -19,6 +19,11 @@ const PrivacyPage = lazy(() =>
     default: m.PrivacyPage,
   })),
 );
+const ToolsIndexPage = lazy(() =>
+  import("./components/pages/ToolsIndexPage").then((m) => ({
+    default: m.ToolsIndexPage,
+  })),
+);
 const ToolRoute = lazy(() =>
   import("./components/pages/toolRoutes").then((m) => ({
     default: m.ToolRoute,
@@ -50,6 +55,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/write/:slug" element={<WriteRoute />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/tools" element={<ToolsIndexPage />} />
             <Route path="/tools/:slug" element={<ToolRoute />} />
           </Routes>
         </Suspense>
