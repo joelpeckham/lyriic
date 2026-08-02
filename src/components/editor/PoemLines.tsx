@@ -265,7 +265,7 @@ export function PoemLines({
   return (
     <div
       className={cn(
-        "font-[family-name:var(--font-editor)] text-foreground",
+        "lyriic-poem-lines font-[family-name:var(--font-editor)] text-foreground",
         className,
       )}
       style={style}

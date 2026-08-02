@@ -41,6 +41,12 @@ export function AppFooter({
         <span aria-hidden="true" className="text-foreground/25">
           ·
         </span>
+        <Link to="/about" className={linkClass}>
+          About
+        </Link>
+        <span aria-hidden="true" className="text-foreground/25">
+          ·
+        </span>
         <Link to="/faq" className={linkClass}>
           FAQ
         </Link>

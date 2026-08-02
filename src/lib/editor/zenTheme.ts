@@ -10,9 +10,16 @@ import {
 /** Slightly tighter poetic gap when rulers and stress marks are off. */
 const LINE_GAP_COMPACT_REM = 1.35;
 
+export type ZenThemeVariant = "zen" | "embed";
+
 export type ZenThemeOptions = {
   /** Reduce line gap when meter rulers + stress overlays are off. */
   compactLineGap?: boolean;
+  /**
+   * `zen` — full-canvas padding for the main editor.
+   * `embed` — compact padding for about-page / inline demos.
+   */
+  variant?: ZenThemeVariant;
 };
 
 /** Font-size-dependent zen theme for the poem canvas. */
@@ -21,10 +28,11 @@ export function zenEditorTheme(
   options: ZenThemeOptions = {},
 ) {
   const lineGap = options.compactLineGap ? LINE_GAP_COMPACT_REM : LINE_GAP_REM;
+  const embed = options.variant === "embed";
   return EditorView.theme(
     {
       "&": {
-        height: "100%",
+        height: embed ? "auto" : "100%",
         fontSize: `${fontSizeRem}rem`,
         backgroundColor: "transparent",
         color: "var(--foreground)",
@@ -36,8 +44,8 @@ export function zenEditorTheme(
         fontFamily: "var(--font-editor), Georgia, serif",
         lineHeight: String(WRAP_LEADING),
         fontSize: "inherit",
-        overflow: "auto",
-        scrollbarGutter: "stable",
+        overflow: embed ? "visible" : "auto",
+        scrollbarGutter: embed ? "auto" : "stable",
         WebkitOverflowScrolling: "touch",
         touchAction: "pan-y",
         cursor: "default",
@@ -47,17 +55,19 @@ export function zenEditorTheme(
         /* Padding above/below the verse is not “text” — keep the arrow there
            so the header/footer overlays are not I-beam / flicker zones. */
         cursor: "default",
-        paddingTop: "6rem",
+        paddingTop: embed ? "0.35rem" : "6rem",
         /* --lyriic-vv-bottom grows when the soft keyboard occludes the canvas. */
-        paddingBottom: "calc(4rem + var(--lyriic-vv-bottom, 0px))",
-        paddingLeft: "1.5rem",
+        paddingBottom: embed
+          ? "0.5rem"
+          : "calc(4rem + var(--lyriic-vv-bottom, 0px))",
+        paddingLeft: embed ? "0" : "1.5rem",
         /* Keep in sync with .lyriic-count padding-right (index.css). */
-        paddingRight: "1.5rem",
-        maxWidth: "48rem",
+        paddingRight: embed ? "0" : "1.5rem",
+        maxWidth: embed ? "none" : "48rem",
         width: "100%",
         marginLeft: "auto",
         marginRight: "auto",
-        minHeight: "100%",
+        minHeight: embed ? "0" : "100%",
         boxSizing: "border-box",
       },
       /* Poetic gap via padding — never margin. CM’s height map / posAtCoords

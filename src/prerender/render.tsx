@@ -5,6 +5,7 @@
 import { renderToString } from "react-dom/server";
 import { Route, Routes, StaticRouter } from "react-router-dom";
 
+import { AboutPage } from "@/components/pages/AboutPage";
 import { FaqPage } from "@/components/pages/FaqPage";
 import { FormToolPage } from "@/components/pages/FormToolPage";
 import { PrivacyPage } from "@/components/pages/PrivacyPage";
@@ -14,6 +15,10 @@ import { WriterSeoPage } from "@/components/pages/WriterSeoPage";
 import { FormCheckerTool } from "@/components/tools/FormCheckerTool";
 import { RhymeFinderTool } from "@/components/tools/RhymeFinderTool";
 import { SyllableCounterTool } from "@/components/tools/SyllableCounterTool";
+import {
+  ABOUT_DESCRIPTION,
+  ABOUT_TITLE,
+} from "@/content/about";
 import {
   FAQ_DESCRIPTION,
   FAQ_TITLE,
@@ -81,6 +86,13 @@ function metaForRoute(route: string): {
   description: string;
   path: string;
 } {
+  if (route === "/about") {
+    return {
+      title: ABOUT_TITLE,
+      description: ABOUT_DESCRIPTION,
+      path: "/about",
+    };
+  }
   if (route === "/faq") {
     return {
       title: FAQ_TITLE,
@@ -170,6 +182,7 @@ function App({ route }: { route: string }) {
   return (
     <StaticRouter location={route}>
       <Routes>
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/tools" element={<ToolsIndexPage />} />

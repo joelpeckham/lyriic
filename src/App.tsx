@@ -4,6 +4,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { EditorShell } from "./components/EditorShell";
 import { Toaster } from "./components/ui/sonner";
 
+const AboutPage = lazy(() =>
+  import("./components/pages/AboutPage").then((m) => ({
+    default: m.AboutPage,
+  })),
+);
 const FaqPage = lazy(() =>
   import("./components/pages/FaqPage").then((m) => ({ default: m.FaqPage })),
 );
@@ -46,6 +51,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<EditorShell />} />
             <Route path="/write/:slug" element={<WriteRoute />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/tools" element={<ToolsIndexPage />} />

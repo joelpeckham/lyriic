@@ -152,6 +152,7 @@ async function main() {
     const writerRoutes = WRITER_PRERENDER_SLUGS.map((slug) => `/write/${slug}`);
 
     const ROUTES = [
+      "/about",
       "/faq",
       "/privacy",
       "/tools",

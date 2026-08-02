@@ -38,7 +38,10 @@ import {
   type WordLookupRequest,
   type WordTarget,
 } from "@/lib/editor/wordInteraction";
-import { zenEditorTheme } from "@/lib/editor/zenTheme";
+import {
+  zenEditorTheme,
+  type ZenThemeVariant,
+} from "@/lib/editor/zenTheme";
 import {
   buildMeteredLines,
   formatMeterLabel,
@@ -53,6 +56,7 @@ import {
   loadRhymeQuery,
 } from "@/lib/rhyme";
 import type { EditorSettings } from "@/lib/settings";
+import { cn } from "@/lib/utils";
 
 type PoemEditorProps = {
   value: string;
@@ -71,6 +75,11 @@ type PoemEditorProps = {
   onOpenDefinition?: (word: string) => void;
   /** Parent reads caret/toolbar word when opening the dictionary from chrome. */
   activeWordGetterRef?: MutableRefObject<() => string | null>;
+  /** `zen` full canvas (default) vs compact about-page embed. */
+  variant?: ZenThemeVariant;
+  /** Focus the CM view on mount. Default true for zen; about embeds pass false. */
+  autoFocus?: boolean;
+  className?: string;
 };
 
 const LIVE_COUNT_DEBOUNCE_MS = 500;
@@ -104,12 +113,17 @@ export function PoemEditor({
   documentKey,
   onOpenDefinition,
   activeWordGetterRef,
+  variant = "zen",
+  autoFocus = true,
+  className,
 }: PoemEditorProps) {
   const { prefs } = usePrefs();
   const parentRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const themeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
+  const variantRef = useRef(variant);
+  const autoFocusRef = useRef(autoFocus);
   const meteredLinesRef = useRef<readonly MeteredLine[]>([]);
   /** Single mutable bridge for CM → React word UI. */
   const wordBridgeRef = useRef({
@@ -126,6 +140,11 @@ export function PoemEditor({
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useLayoutEffect(() => {
+    variantRef.current = variant;
+    autoFocusRef.current = autoFocus;
+  }, [variant, autoFocus]);
 
   useLayoutEffect(() => {
     wordTargetRef.current = wordTarget;
@@ -304,7 +323,12 @@ export function PoemEditor({
     const state = EditorState.create({
       doc: value,
       extensions: [
-        themeComp.of(zenEditorTheme(prefs.fontSize, { compactLineGap })),
+        themeComp.of(
+          zenEditorTheme(prefs.fontSize, {
+            compactLineGap,
+            variant: variantRef.current,
+          }),
+        ),
         ...createPoemExtensions({
           onDocChange: (text, { userEdit }) => {
             setLiveText(text);
@@ -326,7 +350,7 @@ export function PoemEditor({
 
     const view = new EditorView({ state, parent });
     viewRef.current = view;
-    view.focus();
+    if (autoFocusRef.current) view.focus();
 
     // Literata loads with font-display:swap — remasure so the drawn caret
     // tracks the real glyph box after the fallback → webfont swap.
@@ -361,16 +385,16 @@ export function PoemEditor({
     setLiveText(value);
   }, [value]);
 
-  // Font size / line-gap → theme compartment.
+  // Font size / line-gap / variant → theme compartment.
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
     view.dispatch({
       effects: themeCompartment.current.reconfigure(
-        zenEditorTheme(prefs.fontSize, { compactLineGap }),
+        zenEditorTheme(prefs.fontSize, { compactLineGap, variant }),
       ),
     });
-  }, [prefs.fontSize, compactLineGap]);
+  }, [prefs.fontSize, compactLineGap, variant]);
 
   // Push meter overlay data into the editor plugin.
   useEffect(() => {
@@ -439,11 +463,19 @@ export function PoemEditor({
     setWordTarget(null);
   }
 
+  const embed = variant === "embed";
+
   return (
     <div
-      id="poem"
+      id={embed ? undefined : "poem"}
       tabIndex={-1}
-      className="relative mx-auto flex h-full min-h-0 w-full max-w-none flex-1 flex-col outline-none focus-visible:outline-none"
+      className={cn(
+        "relative mx-auto flex w-full max-w-none outline-none focus-visible:outline-none",
+        embed
+          ? "h-auto min-h-0 flex-none flex-col"
+          : "h-full min-h-0 flex-1 flex-col",
+        className,
+      )}
       onFocus={(event) => {
         // Skip link focuses #poem; move into the single CM textbox tab stop.
         if (event.target === event.currentTarget) {
@@ -454,7 +486,10 @@ export function PoemEditor({
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {anyMeterOverlay ? liveCountText : ""}
       </div>
-      <div ref={parentRef} className="min-h-0 w-full flex-1" />
+      <div
+        ref={parentRef}
+        className={cn("w-full", embed ? "min-h-0" : "min-h-0 flex-1")}
+      />
       <RhymeDotTooltip containerRef={parentRef} />
       <WordToolsPopover
         target={wordTarget}

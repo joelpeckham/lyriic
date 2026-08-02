@@ -316,6 +316,16 @@ html[data-contrast="more"].dark {
   pointer-events: auto;
 }
 
+/* Editor / PoemLines: hang ticks under coords.bottom / measured bottom. */
+.lyriic-syllable-overlay .lyriic-ruler-tick,
+.lyriic-syllable-overlay .lyriic-ruler-tick--target,
+.lyriic-syllable-overlay .lyriic-ruler-tick--over,
+.lyriic-poem-lines .lyriic-ruler-tick,
+.lyriic-poem-lines .lyriic-ruler-tick--target,
+.lyriic-poem-lines .lyriic-ruler-tick--over {
+  transform: translateY(0.7rem);
+}
+
 .lyriic-count {
   position: absolute;
   box-sizing: border-box;
@@ -359,19 +369,52 @@ html[data-contrast="more"].dark {
   color: var(--lyriic-subtle-faint);
 }
 
-/* Meter rulers: ticks in the lower leading / line gap (clear of baseline). */
+/* About-page facsimile: marks wake after the verse paints. */
+@keyframes lyriic-marks-wake {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lyriic-brand-settle {
+  from {
+    letter-spacing: 0.32em;
+    opacity: 0.55;
+  }
+  to {
+    letter-spacing: 0.18em;
+    opacity: 1;
+  }
+}
+
+@keyframes lyriic-section-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    /* `none` — not translateY(0). A non-none transform on an ancestor
+       makes position:fixed word anchors (WordToolsPopover) mis-place. */
+    transform: none;
+  }
+}
+
+/* Meter rulers: shared appearance. Vertical offset is surface-scoped
+   (.lyriic-syllable-overlay / .lyriic-poem-lines / VerseMeterDemo top). */
 .lyriic-ruler-tick,
 .lyriic-ruler-tick--target,
 .lyriic-ruler-tick--over {
   position: absolute;
-  width: 2px;
-  height: 0.7rem;
+  width: 1.5px;
+  height: 0.5rem;
   margin-left: -1px;
   background: var(--lyriic-ruler);
   opacity: 0.78;
   pointer-events: none;
-  /* Drop below the glyph box into the line gap so ticks clear the baseline. */
-  transform: translateY(0.28rem);
 }
 
 .lyriic-ruler-tick--target {
