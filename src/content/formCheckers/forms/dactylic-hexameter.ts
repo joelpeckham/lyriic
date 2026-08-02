@@ -65,7 +65,7 @@ export const dactylicHexameterForm: FormCheckerContent = {
     "Happily galloping over the meadow the riders are singing now",
     "Under the canopy quietly people are gathering afterward",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "dactyl",
   stressExplainerId: "dactyl-6",
   meterExplainer: {

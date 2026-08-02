@@ -66,7 +66,7 @@ export const ethereeForm: FormCheckerContent = {
     "calling us gently out of our dream",
     "into the cool and open morning air",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "etheree",
     title: "How the etheree works",

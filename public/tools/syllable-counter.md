@@ -16,7 +16,7 @@ Yes. The tool runs in your browser on lyriic.com with no account and no upload o
 
 ### How accurate are the counts?
 
-Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.
+Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor: hover or tap the word and open Syllables.
 
 ### Can I use it for song lyrics?
 

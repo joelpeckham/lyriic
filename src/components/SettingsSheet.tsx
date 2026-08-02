@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import {
+  BookOpen,
+  ChevronDown,
   CircleDot,
   Contrast,
   Hash,
@@ -84,6 +86,9 @@ const THEME_OPTIONS: {
 const SHORTCUT_ICONS = {
   Settings: Settings,
   "Focus poem": Type,
+  Synonyms: BookOpen,
+  Rhymes: Music2,
+  Syllables: Hash,
 } as const;
 
 function SettingsToggle({
@@ -357,8 +362,8 @@ function MeterPicker({
       </div>
 
       <div
-        role="listbox"
-        aria-label="Meter"
+        role="group"
+        aria-labelledby="meter-label"
         className="flex max-h-64 flex-col gap-3 overflow-y-auto pr-0.5"
       >
         {filtered.map((group) => (
@@ -372,8 +377,7 @@ function MeterPicker({
                 <button
                   key={entry.id}
                   type="button"
-                  role="option"
-                  aria-selected={selected}
+                  aria-pressed={selected}
                   className={cn(
                     "flex w-full items-start gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors",
                     "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/80",
@@ -397,7 +401,18 @@ function MeterPicker({
           </div>
         ))}
         {filtered.length === 0 ? (
-          <p className="px-1 text-sm text-muted-foreground">No meters match.</p>
+          <p className="px-1 text-sm text-muted-foreground">
+            No meters match &lsquo;{query.trim()}&rsquo;.{" "}
+            <button
+              type="button"
+              className="underline underline-offset-2 hover:text-foreground"
+              onClick={() => setQuery("")}
+            >
+              Clear search
+            </button>
+            <span aria-hidden> · </span>
+            or choose Custom.
+          </p>
         ) : null}
       </div>
     </div>
@@ -411,12 +426,17 @@ export function SettingsSheet({
   onOpenChange,
 }: SettingsSheetProps) {
   const { prefs, setTheme, setContrast, setFontSize } = usePrefs();
+  const [appearanceOpen, setAppearanceOpen] = useState(false);
 
   const fontValue = FONT_SIZE_OPTIONS.some(
     (option) => option.value === prefs.fontSize,
   )
     ? prefs.fontSize
     : DEFAULT_FONT_SIZE;
+
+  const hasRhymeOverlay =
+    rhymeSchemesForMeter(settings.meter, settings.customRhymePattern).length >
+    0;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -430,98 +450,20 @@ export function SettingsSheet({
           <Settings className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="gap-0 overflow-hidden">
+      <SheetContent
+        side="right"
+        className="gap-0 overflow-hidden"
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          document.getElementById("poem")?.focus();
+        }}
+      >
         <SheetHeader className="shrink-0">
           <SheetTitle>Settings</SheetTitle>
           <SheetDescription>Preferences stay on this device.</SheetDescription>
         </SheetHeader>
 
         <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pb-6">
-          <div className="flex flex-col gap-4">
-            <p className="text-xs tracking-wide text-muted-foreground uppercase">
-              Appearance
-            </p>
-
-            <div className="flex flex-col gap-2">
-              <Label id="theme-label">Theme</Label>
-              <ButtonGroup aria-labelledby="theme-label">
-                {THEME_OPTIONS.map((option) => {
-                  const Icon = option.icon;
-                  const selected = prefs.theme === option.value;
-                  return (
-                    <Button
-                      key={option.value}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      aria-label={option.label}
-                      aria-pressed={selected}
-                      className={cn(selected && "bg-muted text-foreground")}
-                      onClick={() => setTheme(option.value)}
-                    >
-                      <Icon data-icon="inline-start" />
-                      {option.label}
-                    </Button>
-                  );
-                })}
-              </ButtonGroup>
-            </div>
-
-            <SettingsToggle
-              id="higher-contrast"
-              label="Higher contrast"
-              hint="Stronger subtle text and borders across the app"
-              icon={Contrast}
-              checked={prefs.contrast === "more"}
-              onCheckedChange={(checked) =>
-                setContrast(checked ? "more" : "default")
-              }
-            />
-
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <Type className="size-4 text-muted-foreground" aria-hidden />
-                <Label id="font-size-label">Font size</Label>
-              </div>
-              <ButtonGroup aria-labelledby="font-size-label">
-                {FONT_SIZE_OPTIONS.map((option) => {
-                  const selected = fontValue === option.value;
-                  return (
-                    <Button
-                      key={option.value}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      aria-label={option.aria}
-                      aria-pressed={selected}
-                      className={cn(
-                        "min-w-10",
-                        selected && "bg-muted text-foreground",
-                      )}
-                      onClick={() => {
-                        setFontSize(
-                          Math.min(
-                            FONT_SIZE_MAX,
-                            Math.max(FONT_SIZE_MIN, option.value),
-                          ),
-                        );
-                      }}
-                    >
-                      <span
-                        className="font-[family-name:var(--font-brand)]"
-                        style={{ fontSize: `${0.65 + option.value * 0.2}rem` }}
-                      >
-                        {option.label}
-                      </span>
-                    </Button>
-                  );
-                })}
-              </ButtonGroup>
-            </div>
-          </div>
-
-          <Separator />
-
           <div className="flex flex-col gap-3">
             <Label id="meter-label">Meter</Label>
             <MeterPicker settings={settings} onChange={onChange} />
@@ -539,65 +481,176 @@ export function SettingsSheet({
 
           <Separator />
 
-          <SettingsToggle
-            id="show-counts"
-            label="Syllable counts"
-            hint="Show a count at the end of each line"
-            icon={Hash}
-            checked={settings.showCounts}
-            onCheckedChange={(showCounts) =>
-              onChange({ ...settings, showCounts })
-            }
-          />
+          <div className="flex flex-col gap-4">
+            <p className="text-xs tracking-wide text-muted-foreground uppercase">
+              Overlays
+            </p>
 
-          <SettingsToggle
-            id="show-rulers"
-            label="Meter rulers"
-            hint="Tick marks at syllable boundaries under each line"
-            icon={Ruler}
-            checked={settings.showRulers}
-            onCheckedChange={(showRulers) =>
-              onChange({ ...settings, showRulers })
-            }
-          />
-
-          <SettingsToggle
-            id="show-stress"
-            label="Stress marks"
-            hint="ˈ and ˘ marks above stressed and unstressed syllables"
-            icon={Waves}
-            checked={settings.showStress}
-            onCheckedChange={(showStress) =>
-              onChange({ ...settings, showStress })
-            }
-          />
-
-          <SettingsToggle
-            id="show-meter-breaks"
-            label="Meter breaks"
-            hint="On stress-aware meters, mark syllables that break the pattern"
-            icon={CircleDot}
-            checked={settings.showMeterBreaks}
-            onCheckedChange={(showMeterBreaks) =>
-              onChange({ ...settings, showMeterBreaks })
-            }
-          />
-
-          {rhymeSchemesForMeter(
-            settings.meter,
-            settings.customRhymePattern,
-          ).length > 0 ? (
             <SettingsToggle
-              id="show-rhyme-scheme"
-              label="Rhyme scheme"
-              hint="Solid green = perfect, green ring = end, dashed ring = slant, red = no rhyme"
-              icon={Music2}
-              checked={settings.showRhymeScheme}
-              onCheckedChange={(showRhymeScheme) =>
-                onChange({ ...settings, showRhymeScheme })
+              id="show-counts"
+              label="Syllable counts"
+              hint="Show a count at the end of each line"
+              icon={Hash}
+              checked={settings.showCounts}
+              onCheckedChange={(showCounts) =>
+                onChange({ ...settings, showCounts })
               }
             />
-          ) : null}
+
+            <SettingsToggle
+              id="show-rulers"
+              label="Meter rulers"
+              hint="Tick marks at syllable boundaries under each line"
+              icon={Ruler}
+              checked={settings.showRulers}
+              onCheckedChange={(showRulers) =>
+                onChange({ ...settings, showRulers })
+              }
+            />
+
+            <SettingsToggle
+              id="show-stress"
+              label="Stress marks"
+              hint="ˈ and ˘ marks above stressed and unstressed syllables"
+              icon={Waves}
+              checked={settings.showStress}
+              onCheckedChange={(showStress) =>
+                onChange({ ...settings, showStress })
+              }
+            />
+
+            <SettingsToggle
+              id="show-meter-breaks"
+              label="Meter breaks"
+              hint="On stress-aware meters, mark syllables that break the pattern"
+              icon={CircleDot}
+              checked={settings.showMeterBreaks}
+              onCheckedChange={(showMeterBreaks) =>
+                onChange({ ...settings, showMeterBreaks })
+              }
+            />
+
+            {hasRhymeOverlay ? (
+              <SettingsToggle
+                id="show-rhyme-scheme"
+                label="Rhyme scheme"
+                hint="Solid green = perfect, green ring = end, dashed ring = slant, red = no rhyme"
+                icon={Music2}
+                checked={settings.showRhymeScheme}
+                onCheckedChange={(showRhymeScheme) =>
+                  onChange({ ...settings, showRhymeScheme })
+                }
+              />
+            ) : null}
+          </div>
+
+          <Separator />
+
+          <div className="flex flex-col gap-4">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between gap-2 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+              aria-expanded={appearanceOpen}
+              onClick={() => setAppearanceOpen((next) => !next)}
+            >
+              <span className="text-xs tracking-wide text-muted-foreground uppercase">
+                Appearance
+              </span>
+              <ChevronDown
+                className={cn(
+                  "size-3.5 shrink-0 text-muted-foreground transition-transform",
+                  appearanceOpen && "rotate-180",
+                )}
+                aria-hidden
+              />
+            </button>
+
+            {appearanceOpen ? (
+              <>
+                <div className="flex flex-col gap-2">
+                  <Label id="theme-label">Theme</Label>
+                  <ButtonGroup aria-labelledby="theme-label">
+                    {THEME_OPTIONS.map((option) => {
+                      const Icon = option.icon;
+                      const selected = prefs.theme === option.value;
+                      return (
+                        <Button
+                          key={option.value}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          aria-label={option.label}
+                          aria-pressed={selected}
+                          className={cn(selected && "bg-muted text-foreground")}
+                          onClick={() => setTheme(option.value)}
+                        >
+                          <Icon data-icon="inline-start" />
+                          {option.label}
+                        </Button>
+                      );
+                    })}
+                  </ButtonGroup>
+                </div>
+
+                <SettingsToggle
+                  id="higher-contrast"
+                  label="Higher contrast"
+                  hint="Stronger subtle text and borders across the app"
+                  icon={Contrast}
+                  checked={prefs.contrast === "more"}
+                  onCheckedChange={(checked) =>
+                    setContrast(checked ? "more" : "default")
+                  }
+                />
+
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <Type
+                      className="size-4 text-muted-foreground"
+                      aria-hidden
+                    />
+                    <Label id="font-size-label">Font size</Label>
+                  </div>
+                  <ButtonGroup aria-labelledby="font-size-label">
+                    {FONT_SIZE_OPTIONS.map((option) => {
+                      const selected = fontValue === option.value;
+                      return (
+                        <Button
+                          key={option.value}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          aria-label={option.aria}
+                          aria-pressed={selected}
+                          className={cn(
+                            "min-w-10",
+                            selected && "bg-muted text-foreground",
+                          )}
+                          onClick={() => {
+                            setFontSize(
+                              Math.min(
+                                FONT_SIZE_MAX,
+                                Math.max(FONT_SIZE_MIN, option.value),
+                              ),
+                            );
+                          }}
+                        >
+                          <span
+                            className="font-[family-name:var(--font-brand)]"
+                            style={{
+                              fontSize: `${0.65 + option.value * 0.2}rem`,
+                            }}
+                          >
+                            {option.label}
+                          </span>
+                        </Button>
+                      );
+                    })}
+                  </ButtonGroup>
+                </div>
+              </>
+            ) : null}
+          </div>
 
           <Separator />
 
@@ -610,8 +663,8 @@ export function SettingsSheet({
               <p className="text-sm font-medium">Word tools</p>
             </div>
             <p className="text-sm text-muted-foreground">
-              Hover or tap a word for synonyms, rhymes, and syllable or stress
-              overrides.
+              Tap or long-press a word for synonyms. Hover or tap for tools —
+              rhymes, syllables, and stress overrides.
             </p>
           </div>
 

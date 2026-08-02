@@ -44,8 +44,8 @@ function FaqAnswer({ question }: { question: string }) {
           </a>
           . Hyphenated compounds are split and summed. Unfamiliar words fall
           back to a spelling heuristic. For ambiguous words (like poetic{" "}
-          <em>fire</em> as one syllable), set a per-draft override in Settings →
-          Syllable overrides.
+          <em>fire</em> as one syllable), hover or tap the word and open
+          Syllables.
         </>
       );
     case "Where does the dictionary data come from?":
@@ -101,6 +101,29 @@ function FaqAnswer({ question }: { question: string }) {
             syllable counter
           </Link>{" "}
           tools.
+        </>
+      );
+    case "Do the free tools send my text into the editor?":
+      return (
+        <>
+          The{" "}
+          <Link
+            to="/tools/syllable-counter"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            syllable counter
+          </Link>{" "}
+          and form checkers can carry a draft you edited into the editor once
+          (not an untouched sample). It uses a short-lived handoff in your
+          browser — nothing is uploaded. Try{" "}
+          <Link
+            to="/write/haiku"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            Continue in the editor with Haiku
+          </Link>{" "}
+          when you want rulers beside the line. The rhyme finder is for
+          browsing; open the editor when you are ready to draft.
         </>
       );
     default: {

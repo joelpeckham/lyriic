@@ -39,11 +39,12 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "flex items-start justify-between gap-4 p-4",
+        "flex items-start justify-between gap-4",
         // Overlay: let clicks pass through empty chrome into verse; only the
         // brand and action controls capture hits (and own cursor:default).
         variant === "overlay" &&
-          "pointer-events-none absolute inset-x-0 top-0 z-20",
+          "pointer-events-none absolute inset-x-0 top-0 z-20 pt-[max(1rem,env(safe-area-inset-top,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] pb-4 pl-[max(1rem,env(safe-area-inset-left,0px))]",
+        variant === "flow" && "p-4",
         className,
       )}
     >

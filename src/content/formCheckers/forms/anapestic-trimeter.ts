@@ -60,7 +60,7 @@ export const anapesticTrimeterForm: FormCheckerContent = {
     "With a leap and a bound through the field",
     "As the light of the morning returns",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "anapest",
   stressExplainerId: "anapest-3",
   meterExplainer: {

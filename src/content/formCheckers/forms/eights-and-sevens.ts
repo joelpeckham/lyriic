@@ -69,7 +69,7 @@ export const eightsAndSevensForm: FormCheckerContent = {
     "streams of mercy, never ceasing",
     "call for songs of loudest praise",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "trochee",
   stressExplainerId: "trochee-8-7",
   meterExplainer: {

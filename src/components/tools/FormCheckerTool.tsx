@@ -1,4 +1,5 @@
 import { useEffect, useId, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,10 @@ import {
   targetForLine,
 } from "@/lib/meters";
 import { countLine } from "@/lib/syllables";
+import {
+  shouldCarryToolText,
+  stashToolDraft,
+} from "@/lib/tools/editorHandoff";
 import { cn } from "@/lib/utils";
 
 type FormCheckerToolProps = {
@@ -142,10 +147,16 @@ function MeterStatus({
   pattern,
   allOk,
   stressAware,
+  continueTo,
+  continueLabel,
+  onContinue,
 }: {
   pattern: readonly number[];
   allOk: boolean;
   stressAware: boolean;
+  continueTo?: string;
+  continueLabel?: string;
+  onContinue?: () => void;
 }) {
   const cycle = pattern.join(" · ");
   return (
@@ -179,6 +190,17 @@ function MeterStatus({
             ? "Adjust syllables and stress until each line lands."
             : "Adjust until each line hits its syllable target."}
       </p>
+      {allOk && continueTo && continueLabel ? (
+        <p className="mt-3 font-[family-name:var(--font-ui)] text-sm">
+          <Link
+            to={continueTo}
+            onClick={onContinue}
+            className="text-foreground underline-offset-2 hover:underline"
+          >
+            {continueLabel}
+          </Link>
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -243,6 +265,18 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
   }, [lines, dictRevision, stressRevision, entry, stressAware]);
 
   const allOk = results.length > 0 && results.every((result) => result.ok);
+  const draftText = lines.join("\n");
+  const sampleText = sampleLines.join("\n");
+  const carryDraft = shouldCarryToolText(draftText, [sampleText]);
+  const writePath = page?.writePath ?? ZEN_EDITOR_PITCH.to;
+  const editorCta = carryDraft
+    ? "Open this draft in the editor"
+    : page
+      ? `Continue in the editor with ${page.label}`
+      : ZEN_EDITOR_PITCH.cta;
+  const handoffNavigate = () => {
+    if (carryDraft) stashToolDraft(draftText);
+  };
 
   const updateLine = (index: number, value: string) => {
     setLines((current) => {
@@ -279,6 +313,13 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
         pattern={entry.pattern}
         allOk={allOk}
         stressAware={stressAware}
+        continueTo={writePath}
+        continueLabel={
+          carryDraft
+            ? "Open this draft in the editor"
+            : "Continue in the editor…"
+        }
+        onContinue={handoffNavigate}
       />
 
       <div
@@ -468,16 +509,13 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
       <ToolEditorPitch
         title={ZEN_EDITOR_PITCH.title}
         body={ZEN_EDITOR_PITCH.body}
-        cta={page?.cta ?? ZEN_EDITOR_PITCH.cta}
-        to={ZEN_EDITOR_PITCH.to}
-        secondary={
-          page
-            ? {
-                label: `Open with ${page.label} meter`,
-                to: page.writePath,
-              }
-            : undefined
-        }
+        cta={editorCta}
+        to={writePath}
+        onNavigate={handoffNavigate}
+        secondary={{
+          label: "Open a blank canvas",
+          to: "/",
+        }}
       />
     </div>
   );

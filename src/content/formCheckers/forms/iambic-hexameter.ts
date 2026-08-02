@@ -66,7 +66,7 @@ export const iambicHexameterForm: FormCheckerContent = {
     "We wait until the morning sun returns again",
     "A colder wind begins to rise across the lake",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-6",
   meterExplainer: {

@@ -79,7 +79,7 @@ export const sonnetForm: FormCheckerContent = {
     "When light returns and names the world anew,",
     "And what was lost is somehow found in you.",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-5",
   meterExplainer: {

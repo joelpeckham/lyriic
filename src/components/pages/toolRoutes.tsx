@@ -34,7 +34,13 @@ export const TOOL_COMPONENTS: Record<string, ToolComponent> = {
 
 function ToolFallback() {
   return (
-    <div className="mt-8 min-h-40" aria-busy="true" aria-label="Loading tool" />
+    <div
+      className="mt-8 min-h-40 font-[family-name:var(--font-ui)] text-sm text-muted-foreground"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      Loading the tool…
+    </div>
   );
 }
 

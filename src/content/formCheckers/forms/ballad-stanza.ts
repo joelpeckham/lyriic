@@ -69,7 +69,7 @@ export const balladStanzaForm: FormCheckerContent = {
     "Right up above the mast did stand",
     "No bigger than the Moon",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-8-6-8-6",
   meterExplainer: {

@@ -72,7 +72,7 @@ export const limerickForm: FormCheckerContent = {
     "With honey and spice",
     "And fed half the loaf to a ghost",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "limerick",
     title: "How the limerick meter works",

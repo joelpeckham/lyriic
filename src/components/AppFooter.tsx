@@ -22,7 +22,7 @@ export function AppFooter({
         // Overlay: clicks pass through empty chrome into verse; only the nav
         // captures hits (and owns cursor:default over the link cluster).
         variant === "overlay" &&
-          "pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 py-3",
+          "pointer-events-none absolute inset-x-0 bottom-0 z-20 pt-3 pr-[max(1rem,env(safe-area-inset-right,0px))] pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] pl-[max(1rem,env(safe-area-inset-left,0px))]",
         variant === "flow" && "mt-auto px-4 py-6",
         className,
       )}
@@ -32,7 +32,7 @@ export function AppFooter({
         className={cn(
           "mx-auto flex w-fit flex-wrap items-center justify-center gap-x-3 gap-y-1",
           variant === "overlay" &&
-            "pointer-events-auto cursor-default opacity-70 transition-opacity hover:opacity-100",
+            "pointer-events-auto cursor-default opacity-35 transition-opacity hover:opacity-100 focus-within:opacity-100",
         )}
       >
         <Link to="/tools/syllable-counter" className={linkClass}>
@@ -50,20 +50,24 @@ export function AppFooter({
         <Link to="/privacy" className={linkClass}>
           Privacy
         </Link>
-        <span aria-hidden="true" className="text-foreground/25">
-          ·
-        </span>
-        <span>
-          Made by{" "}
-          <a
-            href="https://jpeckham.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkClass}
-          >
-            jpeckham.com
-          </a>
-        </span>
+        {variant !== "overlay" ? (
+          <>
+            <span aria-hidden="true" className="text-foreground/25">
+              ·
+            </span>
+            <span>
+              Made by{" "}
+              <a
+                href="https://jpeckham.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkClass}
+              >
+                jpeckham.com
+              </a>
+            </span>
+          </>
+        ) : null}
       </nav>
     </footer>
   );

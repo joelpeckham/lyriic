@@ -66,7 +66,7 @@ export const anapesticTetrameterForm: FormCheckerContent = {
     "And the sheen of their spears was like stars on the sea",
     "In the light of the moon on the hill by the bay",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "anapestic-tetrameter",
     title: "Anapestic tetrameter (12)",

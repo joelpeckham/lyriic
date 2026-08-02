@@ -68,7 +68,7 @@ export const longMeterForm: FormCheckerContent = {
     "Him serve with fear His praise forth tell",
     "Come ye before Him and rejoice",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "long-meter",
     title: "Long meter (8 · 8 · 8 · 8)",

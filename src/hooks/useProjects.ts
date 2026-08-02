@@ -2,9 +2,14 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { isReusableEmptyDraft } from "@/lib/meters/seed";
 import {
+  defaultDraftName,
+  downloadTextFile,
+} from "@/lib/projects/exportDraft";
+import {
   createEmptyProject,
   getActiveProject,
   loadProjectsState,
+  readQuarantinedBackup,
   saveProjectsState,
   STORAGE_KEY,
   type SaveResult,
@@ -52,15 +57,18 @@ function settingsEqual(a: EditorSettings, b: EditorSettings): boolean {
 }
 
 export function useProjects() {
-  const [state, setState] = useState<ProjectsState>(() => {
-    const { state: initial } = loadProjectsState();
-    return initial;
-  });
+  // Lazy once: capture quarantine flag with the same load as initial state.
+  const [boot] = useState(loadProjectsState);
+  const [state, setState] = useState<ProjectsState>(boot.state);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [storageQuarantined, setStorageQuarantined] = useState(
+    boot.quarantined,
+  );
 
   const stateRef = useRef(state);
   const pendingTextRef = useRef<PendingText | null>(null);
   const textTimerRef = useRef<number | null>(null);
+  const quarantineBootstrapped = useRef(false);
   const active = getActiveProject(state);
 
   useLayoutEffect(() => {
@@ -75,6 +83,15 @@ export function useProjects() {
     }
     return result;
   }
+
+  // After a quarantine reset, persist the fresh empty state so the next load
+  // does not re-read the corrupt payload (backup stays under CORRUPT_STORAGE_KEY).
+  useEffect(() => {
+    if (!boot.quarantined || quarantineBootstrapped.current) return;
+    quarantineBootstrapped.current = true;
+    persist(stateRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- one-shot boot recovery
+  }, []);
 
   function clearTextTimer() {
     if (textTimerRef.current != null) {
@@ -285,9 +302,46 @@ export function useProjects() {
     });
   }
 
-  function createProject(name = "Untitled", settings?: EditorSettings) {
+  function createProject(name?: string, settings?: EditorSettings) {
+    const draftName = name ?? defaultDraftName();
     commit((prev) => {
-      const project = createEmptyProject(name, settings);
+      const project = createEmptyProject(draftName, settings);
+      return {
+        ...prev,
+        activeId: project.id,
+        projects: [...prev.projects, project],
+      };
+    });
+  }
+
+  function dismissStorageQuarantine() {
+    setStorageQuarantined(false);
+  }
+
+  function downloadQuarantineBackup(): boolean {
+    const raw = readQuarantinedBackup();
+    if (!raw) return false;
+    downloadTextFile("lyriic-drafts-backup.json", raw);
+    return true;
+  }
+
+  /**
+   * Immediately seed text from a tool handoff.
+   * Fills the active empty draft; otherwise opens a new draft so existing work
+   * is not overwritten.
+   */
+  function applyToolDraft(text: string) {
+    if (!text.trim()) return;
+    commit((prev) => {
+      const current = getActiveProject(prev);
+      if (current.text.trim().length === 0) {
+        return applyTextToProject(prev, current.id, text);
+      }
+      const project = {
+        ...createEmptyProject("Untitled", current.settings),
+        text,
+        updatedAt: Date.now(),
+      };
       return {
         ...prev,
         activeId: project.id,
@@ -401,6 +455,7 @@ export function useProjects() {
     projects: state.projects,
     active,
     saveStatus,
+    storageQuarantined,
     setText,
     setSettings,
     setOverride,
@@ -409,8 +464,11 @@ export function useProjects() {
     clearStressOverride,
     switchProject,
     createProject,
+    applyToolDraft,
     applyMeterSeed,
     renameProject,
     deleteProject,
+    dismissStorageQuarantine,
+    downloadQuarantineBackup,
   };
 }

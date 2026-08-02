@@ -38,7 +38,18 @@ export function createPoemExtensions({
     // empty line boxes (WRAP_LEADING), so it floats above the placeholder.
     drawSelection(),
     EditorView.lineWrapping,
-    placeholder("Write a line…"),
+    placeholder(() => {
+      const el = document.createElement("span");
+      el.className = "lyriic-placeholder";
+      const primary = document.createElement("span");
+      primary.className = "lyriic-placeholder-primary";
+      primary.textContent = "Write a line…";
+      const hint = document.createElement("span");
+      hint.className = "lyriic-placeholder-hint";
+      hint.textContent = "     then tap a word for tools";
+      el.append(primary, document.createTextNode(" "), hint);
+      return el;
+    }),
     keymap.of([...defaultKeymap, ...historyKeymap]),
     EditorView.editorAttributes.of({
       class: "lyriic-poem",
@@ -49,6 +60,7 @@ export function createPoemExtensions({
       spellcheck: "true",
       "aria-label": "Poem",
       "aria-multiline": "true",
+      "aria-placeholder": "Write a line… tap a word for tools",
       autocapitalize: "sentences",
       autocorrect: "on",
       enterkeyhint: "enter",

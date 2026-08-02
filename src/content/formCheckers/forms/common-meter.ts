@@ -70,7 +70,7 @@ export const commonMeterForm: FormCheckerContent = {
     "I once was lost, but now am found",
     "Was blind, but now I see",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "common-meter",
     title: "Common meter (8 · 6)",

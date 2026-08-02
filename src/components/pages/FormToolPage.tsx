@@ -1,14 +1,10 @@
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
 
 import { ContentPageLayout } from "@/components/pages/ContentPageLayout";
+import { MoreToolsNav } from "@/components/tools/MoreToolsNav";
 import { ToolFaqList } from "@/components/tools/ToolFaqList";
-import {
-  listComposedFormToolsByGroup,
-  type ComposedFormToolPage,
-} from "@/content/formCheckers";
+import type { ComposedFormToolPage } from "@/content/formCheckers";
 import type { Explainer } from "@/content/formCheckers/types";
-import { TOOL_PAGES } from "@/content/tools";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/lib/seo";
 
@@ -59,11 +55,6 @@ export function FormToolPage({ page, children }: FormToolPageProps) {
       url: `${SITE_URL}/`,
     },
   };
-
-  const groups = listComposedFormToolsByGroup();
-  const utilityTools = TOOL_PAGES.filter(
-    (tool) => !tool.slug.endsWith("-checker"),
-  );
 
   return (
     <ContentPageLayout>
@@ -148,47 +139,7 @@ export function FormToolPage({ page, children }: FormToolPageProps) {
 
       <ToolFaqList faqs={page.faqs} path={page.path} />
 
-      <nav
-        aria-label="More tools"
-        className="mt-12 font-[family-name:var(--font-ui)] text-sm text-muted-foreground"
-      >
-        <p className="font-medium text-foreground">More tools</p>
-        {utilityTools.length > 0 ? (
-          <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
-            {utilityTools.map((tool) => (
-              <li key={tool.path}>
-                <Link
-                  to={tool.path}
-                  className="underline-offset-2 hover:text-foreground hover:underline"
-                >
-                  {tool.h1}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        {groups.map((group) => (
-          <div key={group.group} className="mt-5">
-            <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
-              {group.label}
-            </p>
-            <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
-              {group.pages
-                .filter((other) => other.path !== page.path)
-                .map((other) => (
-                  <li key={other.path}>
-                    <Link
-                      to={other.path}
-                      className="underline-offset-2 hover:text-foreground hover:underline"
-                    >
-                      {other.h1}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        ))}
-      </nav>
+      <MoreToolsNav currentPath={page.path} />
     </ContentPageLayout>
   );
 }

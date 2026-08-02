@@ -6,6 +6,9 @@ export type ContentStatus = "stub" | "ready";
 export type ToolFaq = {
   q: string;
   plain: string;
+  /** Optional in-app link shown after the plain answer (e.g. `/write/haiku`). */
+  href?: string;
+  hrefLabel?: string;
 };
 
 export type FamousPoem = {

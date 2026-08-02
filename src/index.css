@@ -92,9 +92,9 @@
   --lyriic-selection: oklch(0.82 0.006 48 / 0.7);
   --lyriic-match: oklch(0.4 0.012 56);
   --lyriic-over: oklch(0.36 0.14 40);
-  --lyriic-ruler: oklch(0.55 0.01 56);
-  --lyriic-subtle: oklch(0.48 0.012 58);
-  --lyriic-subtle-faint: oklch(0.55 0.01 58);
+  --lyriic-ruler: oklch(0.52 0.01 56);
+  --lyriic-subtle: oklch(0.45 0.012 58);
+  --lyriic-subtle-faint: oklch(0.52 0.01 58);
   --lyriic-rhyme-match: oklch(0.52 0.14 145);
   --lyriic-rhyme-a: oklch(0.52 0.12 35);
   --lyriic-rhyme-b: oklch(0.5 0.1 145);
@@ -146,9 +146,9 @@
   --lyriic-selection: oklch(0.374 0.01 68 / 0.55);
   --lyriic-match: oklch(0.82 0.01 56);
   --lyriic-over: oklch(0.78 0.1 45);
-  --lyriic-ruler: oklch(0.72 0.01 56);
-  --lyriic-subtle: oklch(0.78 0.01 56);
-  --lyriic-subtle-faint: oklch(0.7 0.01 56);
+  --lyriic-ruler: oklch(0.76 0.01 56);
+  --lyriic-subtle: oklch(0.82 0.01 56);
+  --lyriic-subtle-faint: oklch(0.74 0.01 56);
   --lyriic-rhyme-match: oklch(0.74 0.14 145);
   --lyriic-rhyme-a: oklch(0.72 0.12 35);
   --lyriic-rhyme-b: oklch(0.72 0.1 145);
@@ -327,7 +327,7 @@ html[data-contrast="more"].dark {
   height: 0.7rem;
   margin-left: -1px;
   background: var(--lyriic-ruler);
-  opacity: 0.72;
+  opacity: 0.78;
   pointer-events: none;
   /* Drop below the glyph box into the line gap so ticks clear the baseline. */
   transform: translateY(0.28rem);
@@ -335,7 +335,7 @@ html[data-contrast="more"].dark {
 
 .lyriic-ruler-tick--target {
   height: 0.9rem;
-  opacity: 0.92;
+  opacity: 0.96;
 }
 
 .lyriic-ruler-tick--over {
@@ -354,7 +354,7 @@ html[data-contrast="more"].dark {
   font-size: 0.95rem;
   font-weight: 700;
   line-height: 1;
-  opacity: 0.85;
+  opacity: 0.9;
   pointer-events: none;
   user-select: none;
   /* Inside the line box (not the gap above) so wraps/next lines stay clear. */
@@ -362,7 +362,7 @@ html[data-contrast="more"].dark {
 }
 
 .lyriic-stress-mark--weak {
-  opacity: 0.68;
+  opacity: 0.74;
 }
 
 .lyriic-stress-mark--off,
@@ -390,6 +390,17 @@ html[data-contrast="more"].dark {
     border-color 120ms ease,
     box-shadow 120ms ease,
     opacity 120ms ease;
+}
+
+/* Invisible ≥24px hit halo — keeps the painted dot small. */
+.lyriic-rhyme-dot::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
 }
 
 .lyriic-rhyme-dot--A {
@@ -447,6 +458,55 @@ html[data-contrast="more"].dark {
   opacity: 1;
   /* Non-color cue (WCAG 1.4.1) — ring, not color alone. */
   box-shadow: 0 0 0 1.5px var(--lyriic-over);
+}
+
+/* App "more contrast" — lift faint overlay glyphs one more step. */
+html[data-contrast="more"] .lyriic-count--subtle,
+html[data-contrast="more"] .lyriic-count--stress {
+  color: var(--lyriic-subtle);
+  opacity: 1;
+}
+
+html[data-contrast="more"] .lyriic-count__target {
+  color: var(--lyriic-subtle-faint);
+  opacity: 1;
+}
+
+html[data-contrast="more"] .lyriic-ruler-tick,
+html[data-contrast="more"] .lyriic-ruler-tick--target {
+  opacity: 1;
+}
+
+html[data-contrast="more"] .lyriic-stress-mark {
+  opacity: 1;
+}
+
+html[data-contrast="more"] .lyriic-stress-mark--weak {
+  opacity: 0.88;
+}
+
+@media (prefers-contrast: more) {
+  .lyriic-count--subtle,
+  .lyriic-count--stress {
+    opacity: 1;
+  }
+
+  .lyriic-count__target {
+    opacity: 1;
+  }
+
+  .lyriic-ruler-tick,
+  .lyriic-ruler-tick--target {
+    opacity: 1;
+  }
+
+  .lyriic-stress-mark {
+    opacity: 1;
+  }
+
+  .lyriic-stress-mark--weak {
+    opacity: 0.88;
+  }
 }
 
 @layer base {

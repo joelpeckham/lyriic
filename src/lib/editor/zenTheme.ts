@@ -36,7 +36,8 @@ export function zenEditorTheme(fontSizeRem: number) {
            so the header/footer overlays are not I-beam / flicker zones. */
         cursor: "default",
         paddingTop: "6rem",
-        paddingBottom: "4rem",
+        /* --lyriic-vv-bottom grows when the soft keyboard occludes the canvas. */
+        paddingBottom: "calc(4rem + var(--lyriic-vv-bottom, 0px))",
         paddingLeft: "1.5rem",
         /* Keep in sync with .lyriic-count padding-right (index.css). */
         paddingRight: "1.5rem",
@@ -75,6 +76,13 @@ export function zenEditorTheme(fontSizeRem: number) {
       ".cm-placeholder": {
         color: "var(--lyriic-subtle-faint)",
         fontStyle: "normal",
+      },
+      ".lyriic-placeholder-hint": {
+        fontSize: "0.6em",
+        fontFamily: "var(--font-ui)",
+        letterSpacing: "0.01em",
+        opacity: "0.85",
+        verticalAlign: "baseline",
       },
       /* Strip code-editor chrome */
       ".cm-gutters": {

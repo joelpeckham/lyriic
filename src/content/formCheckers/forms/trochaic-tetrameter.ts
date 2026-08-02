@@ -66,7 +66,7 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     "Bright before it beat the water",
     "Stood the wigwam of Nokomis",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "trochee",
   stressExplainerId: "trochee-4",
   meterExplainer: {

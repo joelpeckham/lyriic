@@ -66,7 +66,7 @@ export const amphibrachicTetrameterForm: FormCheckerContent = {
     "All ready to put up the tents for my circus",
     "I'm writing you now just to see if you're better",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "amphibrach",
   stressExplainerId: "amphibrach-4",
   meterExplainer: {

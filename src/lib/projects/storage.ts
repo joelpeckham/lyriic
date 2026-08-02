@@ -205,6 +205,19 @@ export function loadProjectsState(
   return { state: createInitialState(), quarantined: false };
 }
 
+/** Raw payload moved aside when drafts could not be parsed. */
+export function readQuarantinedBackup(
+  storage: Pick<Storage, "getItem"> | null =
+    typeof localStorage !== "undefined" ? localStorage : null,
+): string | null {
+  if (!storage) return null;
+  try {
+    return storage.getItem(CORRUPT_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
 export function saveProjectsState(
   state: ProjectsState,
   storage: Pick<Storage, "setItem"> | null = typeof localStorage !== "undefined"

@@ -1,10 +1,16 @@
 import { useId, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
+import { Button } from "@/components/ui/button";
 import { getToolBySlug } from "@/content/tools";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { countLines } from "@/lib/syllables";
 import type { LineSyllableCount } from "@/lib/syllables/types";
+import {
+  shouldCarryToolText,
+  stashToolDraft,
+} from "@/lib/tools/editorHandoff";
 import { cn } from "@/lib/utils";
 
 const tool = getToolBySlug("syllable-counter")!;
@@ -27,6 +33,8 @@ const SAMPLES = [
       "I've been walking these streets at midnight\nCounting the windows lit from inside\nHoping one of them still has your name\nWritten in steam on the glass again",
   },
 ] as const;
+
+const SAMPLE_TEXTS = SAMPLES.map((sample) => sample.text);
 
 type SampleId = (typeof SAMPLES)[number]["id"];
 
@@ -56,6 +64,18 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
     0,
   );
   const lineCount = nonEmptyLines.length;
+  const carryDraft = shouldCarryToolText(text, SAMPLE_TEXTS);
+  const editorCta = carryDraft
+    ? "Open this draft in the editor"
+    : tool.cta;
+  const handoffNavigate = () => {
+    if (carryDraft) stashToolDraft(text);
+  };
+
+  const clearAll = () => {
+    setText("");
+    setActiveSample(null);
+  };
 
   return (
     <div className={cn("mt-8 space-y-8", className)}>
@@ -119,7 +139,28 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
                 </>
               )}
             </p>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={clearAll}
+              disabled={isEmpty}
+            >
+              Clear
+            </Button>
           </div>
+
+          {carryDraft ? (
+            <p className="border-b border-border/50 px-4 py-2 font-[family-name:var(--font-ui)] text-sm sm:px-5">
+              <Link
+                to="/"
+                onClick={handoffNavigate}
+                className="text-foreground underline-offset-2 hover:underline"
+              >
+                Continue in the editor…
+              </Link>
+            </p>
+          ) : null}
 
           <div className="grid gap-0 md:grid-cols-2 md:divide-x md:divide-border/50">
             <label
@@ -176,7 +217,8 @@ export function SyllableCounterTool({ className }: SyllableCounterToolProps) {
       <ToolEditorPitch
         title="Count here. Write in the editor."
         body="This page gives you totals. In the full lyriic editor, syllable counts sit beside every line while you draft — with meter rulers for haiku, iambic pentameter, and dozens of other forms, plus quiet overrides when a word (say fire) should count as one beat instead of two. Drafts stay on your device."
-        cta={tool.cta}
+        cta={editorCta}
+        onNavigate={handoffNavigate}
       />
     </div>
   );

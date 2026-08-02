@@ -1,5 +1,14 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Check, ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  Download,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +28,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  copyText,
+  countPoemLines,
+  downloadTextFile,
+  draftFilename,
+  draftListSecondary,
+} from "@/lib/projects/exportDraft";
 import type { Project } from "@/lib/projects/types";
 
 type ProjectSwitcherProps = {
@@ -29,6 +45,20 @@ type ProjectSwitcherProps = {
   onRename: (id: string, name: string) => void;
   onDelete: (id: string) => void;
 };
+
+async function copyPoem(text: string): Promise<void> {
+  const ok = await copyText(text);
+  if (ok) {
+    toast("Poem copied");
+  } else {
+    toast("Couldn’t copy — try selecting the text");
+  }
+}
+
+function downloadPoem(name: string, text: string): void {
+  downloadTextFile(draftFilename(name), text);
+  toast("Downloaded .txt");
+}
 
 export function ProjectSwitcher({
   projects,
@@ -48,6 +78,7 @@ export function ProjectSwitcher({
   const active = projects.find((p) => p.id === activeId) ?? projects[0];
   const canDelete = projects.length > 1;
   const activeName = active?.name ?? "Draft";
+  const activeLines = countPoemLines(active?.text ?? "");
 
   useEffect(() => {
     if (!renameOpen) return;
@@ -83,6 +114,14 @@ export function ProjectSwitcher({
     setDeleteOpen(false);
   };
 
+  const handleDownloadThenDelete = () => {
+    if (!active || !canDelete) return;
+    downloadTextFile(draftFilename(active.name), active.text);
+    onDelete(active.id);
+    setDeleteOpen(false);
+    toast("Downloaded .txt, then deleted");
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -100,7 +139,7 @@ export function ProjectSwitcher({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="min-w-48"
+          className="min-w-56"
           onCloseAutoFocus={(event) => {
             if (suppressMenuFocusRestore.current) {
               event.preventDefault();
@@ -113,16 +152,44 @@ export function ProjectSwitcher({
               key={project.id}
               onSelect={() => onSwitch(project.id)}
               aria-current={project.id === activeId ? "true" : undefined}
+              className="items-start py-1.5"
             >
-              <span className="min-w-0 flex-1 truncate">{project.name}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate">{project.name}</span>
+                <span className="block truncate text-xs text-muted-foreground">
+                  {draftListSecondary(project.text, project.updatedAt)}
+                </span>
+              </span>
               {project.id === activeId ? (
                 <>
                   <span className="sr-only">(current)</span>
-                  <Check className="size-4" />
+                  <Check className="mt-0.5 size-4" />
                 </>
               ) : null}
             </DropdownMenuItem>
           ))}
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            onSelect={() => {
+              if (!active) return;
+              void copyPoem(active.text);
+            }}
+          >
+            <Copy className="size-4" />
+            Copy poem
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onSelect={() => {
+              if (!active) return;
+              downloadPoem(active.name, active.text);
+            }}
+          >
+            <Download className="size-4" />
+            Download .txt
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
@@ -133,7 +200,7 @@ export function ProjectSwitcher({
 
           <DropdownMenuItem onSelect={openRename}>
             <Pencil className="size-4" />
-            Rename
+            Rename this draft
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -142,7 +209,7 @@ export function ProjectSwitcher({
             onSelect={openDelete}
           >
             <Trash2 className="size-4" />
-            Delete
+            Delete this draft
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -191,16 +258,25 @@ export function ProjectSwitcher({
           <DialogHeader>
             <DialogTitle>Delete draft?</DialogTitle>
             <DialogDescription>
-              Delete “{active?.name}”? This cannot be undone.
+              Delete “{active?.name}”?{" "}
+              {activeLines === 1 ? "1 line" : `${activeLines} lines`}. This
+              cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="sm:flex-wrap">
             <Button
               type="button"
               variant="outline"
               onClick={() => setDeleteOpen(false)}
             >
               Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleDownloadThenDelete}
+            >
+              Download .txt, then delete
             </Button>
             <Button
               type="button"

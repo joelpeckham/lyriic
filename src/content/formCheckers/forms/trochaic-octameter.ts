@@ -71,7 +71,7 @@ export const trochaicOctameterForm: FormCheckerContent = {
     "Never more shall sorrow linger in the hollow of the midnight",
     "Hear the pounding of the hammers on the iron in the evening",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "trochaic-octameter",
     title: "Trochaic octameter (16)",

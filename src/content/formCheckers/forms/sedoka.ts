@@ -67,7 +67,7 @@ export const sedokaForm: FormCheckerContent = {
     "Ripples fold into the dark",
     "The heron is somewhere gone",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainerId: "sedoka",
   meterExplainer: {
     id: "sedoka",

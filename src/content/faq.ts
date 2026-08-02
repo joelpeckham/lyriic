@@ -21,7 +21,7 @@ export const FAQ_ENTRIES: FaqEntry[] = [
   {
     q: "How are syllables counted?",
     plain:
-      "Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.",
+      "Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. For ambiguous words, hover or tap the word and open Syllables to set a per-draft count.",
   },
   {
     q: "What are meter rulers?",
@@ -52,5 +52,10 @@ export const FAQ_ENTRIES: FaqEntry[] = [
     q: "Does writing leave my browser?",
     plain:
       "No. Syllable counts, thesaurus, and rhyme helpers run client-side. Poem text is not sent to a server for editing. You can keep writing offline after assets load.",
+  },
+  {
+    q: "Do the free tools send my text into the editor?",
+    plain:
+      "The syllable counter and form checkers can carry a draft you edited into the editor once (not an untouched sample). It uses a short-lived handoff in your browser — nothing is uploaded. The rhyme finder is for browsing; open the editor when you are ready to draft.",
   },
 ];

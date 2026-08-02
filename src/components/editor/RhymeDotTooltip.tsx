@@ -15,11 +15,29 @@ type HoverState = {
   top: number;
   width: number;
   height: number;
+  /** Stable id so tap can toggle the same dot. */
+  dotKey: string;
 };
+
+function dotKeyFor(dot: HTMLElement): string {
+  return `${dot.dataset.tooltip ?? ""}@${Math.round(dot.offsetTop)}:${Math.round(dot.offsetLeft)}`;
+}
+
+function rectState(dot: HTMLElement): HoverState {
+  const rect = dot.getBoundingClientRect();
+  return {
+    label: dot.dataset.tooltip ?? "",
+    left: rect.left,
+    top: rect.top,
+    width: Math.max(1, rect.width),
+    height: Math.max(1, rect.height),
+    dotKey: dotKeyFor(dot),
+  };
+}
 
 /**
  * Bridges imperative CM rhyme dots (`.lyriic-rhyme-dot[data-tooltip]`) to a
- * shadcn/Radix hover Tooltip. Dots stay in the overlay; this only owns chrome.
+ * shadcn/Radix Tooltip. Hover opens with delay; tap/click toggles.
  */
 export function RhymeDotTooltip({
   containerRef,
@@ -34,6 +52,9 @@ export function RhymeDotTooltip({
     if (!root) return;
 
     let openTimer: number | null = null;
+    /** When true, ignore pointerout dismiss (tap-pinned open). */
+    let pinned = false;
+    let pinnedKey = "";
 
     const clearOpenTimer = () => {
       if (openTimer !== null) {
@@ -44,8 +65,26 @@ export function RhymeDotTooltip({
 
     const close = () => {
       clearOpenTimer();
+      pinned = false;
+      pinnedKey = "";
       setOpen(false);
       setHover(null);
+    };
+
+    const openFromDot = (dot: HTMLElement, immediate: boolean) => {
+      const label = dot.dataset.tooltip;
+      if (!label) return;
+      const next = rectState(dot);
+      clearOpenTimer();
+      setHover(next);
+      if (immediate) {
+        setOpen(true);
+        return;
+      }
+      openTimer = window.setTimeout(() => {
+        openTimer = null;
+        setOpen(true);
+      }, OPEN_DELAY_MS);
     };
 
     const onPointerOver = (event: PointerEvent) => {
@@ -55,26 +94,18 @@ export function RhymeDotTooltip({
       if (!(dot instanceof HTMLElement) || !root.contains(dot)) return;
       const related = event.relatedTarget;
       if (related instanceof Node && dot.contains(related)) return;
+      if (!dot.dataset.tooltip) return;
 
-      const label = dot.dataset.tooltip;
-      if (!label) return;
+      // Coarse pointers use tap toggle; skip hover-open (avoids sticky ghosts).
+      if (event.pointerType === "touch") return;
 
-      const rect = dot.getBoundingClientRect();
-      clearOpenTimer();
-      setHover({
-        label,
-        left: rect.left,
-        top: rect.top,
-        width: Math.max(1, rect.width),
-        height: Math.max(1, rect.height),
-      });
-      openTimer = window.setTimeout(() => {
-        openTimer = null;
-        setOpen(true);
-      }, OPEN_DELAY_MS);
+      pinned = false;
+      pinnedKey = "";
+      openFromDot(dot, false);
     };
 
     const onPointerOut = (event: PointerEvent) => {
+      if (pinned) return;
       const target = event.target;
       if (!(target instanceof Element)) return;
       const dot = target.closest(".lyriic-rhyme-dot");
@@ -84,16 +115,47 @@ export function RhymeDotTooltip({
       close();
     };
 
+    const onPointerUp = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const dot = target.closest(".lyriic-rhyme-dot");
+      if (!(dot instanceof HTMLElement) || !root.contains(dot)) return;
+      if (!dot.dataset.tooltip) return;
+
+      // Mouse already gets hover; click still toggles for keyboard/trackpad users.
+      const key = dotKeyFor(dot);
+      if (pinned && pinnedKey === key) {
+        close();
+        return;
+      }
+      pinned = true;
+      pinnedKey = key;
+      openFromDot(dot, true);
+    };
+
+    const onPointerDownOutside = (event: PointerEvent) => {
+      if (!pinned) return;
+      const target = event.target;
+      if (target instanceof Element && target.closest(".lyriic-rhyme-dot")) {
+        return;
+      }
+      close();
+    };
+
     root.addEventListener("pointerover", onPointerOver);
     root.addEventListener("pointerout", onPointerOut);
+    root.addEventListener("pointerup", onPointerUp);
     // Capture scroll from the CM scroller (or any ancestor).
     root.addEventListener("scroll", close, true);
+    document.addEventListener("pointerdown", onPointerDownOutside, true);
 
     return () => {
       clearOpenTimer();
       root.removeEventListener("pointerover", onPointerOver);
       root.removeEventListener("pointerout", onPointerOut);
+      root.removeEventListener("pointerup", onPointerUp);
       root.removeEventListener("scroll", close, true);
+      document.removeEventListener("pointerdown", onPointerDownOutside, true);
     };
   }, [containerRef]);
 

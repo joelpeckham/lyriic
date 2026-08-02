@@ -68,7 +68,7 @@ export const blankVerseForm: FormCheckerContent = {
     "She spoke of hope before the day was done",
     "We heard the distant thunder in the hills",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-5",
   meterExplainer: {

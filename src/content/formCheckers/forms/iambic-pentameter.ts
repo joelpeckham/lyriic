@@ -67,7 +67,7 @@ export const iambicPentameterForm: FormCheckerContent = {
     "She walks along the quiet garden path",
     "We wait for morning light across the hills",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-5",
   meterExplainer: {

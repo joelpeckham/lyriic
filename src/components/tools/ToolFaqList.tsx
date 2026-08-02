@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import type { ToolFaq } from "@/content/tools";
 import { SITE_URL } from "@/lib/seo";
 
@@ -15,7 +17,9 @@ export function ToolFaqList({ faqs, path }: ToolFaqListProps) {
       name: item.q,
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.plain,
+        text: item.href
+          ? `${item.plain} ${item.hrefLabel ?? item.href}: ${SITE_URL}${item.href}`
+          : item.plain,
       },
     })),
     url: `${SITE_URL}${path}`,
@@ -36,6 +40,17 @@ export function ToolFaqList({ faqs, path }: ToolFaqListProps) {
             <dt className="text-base font-medium text-foreground">{item.q}</dt>
             <dd className="mt-2 text-base leading-relaxed text-muted-foreground">
               {item.plain}
+              {item.href ? (
+                <>
+                  {" "}
+                  <Link
+                    to={item.href}
+                    className="text-foreground underline-offset-2 hover:underline"
+                  >
+                    {item.hrefLabel ?? item.href}
+                  </Link>
+                </>
+              ) : null}
             </dd>
           </div>
         ))}

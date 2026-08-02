@@ -8,7 +8,7 @@ lyriic is a zen text editor for writing in meter — poetry, lyrics, or any line
 
 ## How are syllables counted?
 
-Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.
+Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. For ambiguous words, hover or tap the word and open Syllables to set a per-draft count.
 
 ## What are meter rulers?
 

@@ -37,6 +37,7 @@ export function applyMeterChoice(
     ...next,
     showCounts: true,
     showRulers: config.pattern.length > 0,
+    showStress: true,
     showMeterBreaks: stressAware ? true : next.showMeterBreaks,
     showRhymeScheme: hasRhyme ? true : next.showRhymeScheme,
   };

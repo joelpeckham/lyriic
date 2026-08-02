@@ -60,7 +60,7 @@ export const dactylicTetrameterForm: FormCheckerContent = {
     "Over the mountain the cavalry thundered on",
     "Open the window and listen to melodies",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "dactyl",
   stressExplainerId: "dactyl-4",
   meterExplainer: {

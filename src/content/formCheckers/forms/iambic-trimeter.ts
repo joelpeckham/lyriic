@@ -66,7 +66,7 @@ export const iambicTrimeterForm: FormCheckerContent = {
     "I hear the distant drums",
     "We wait beside the fire",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-3",
   meterExplainer: {

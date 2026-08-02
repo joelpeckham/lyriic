@@ -67,7 +67,7 @@ export const cinquainForm: FormCheckerContent = {
     "The leaves, frost-crisp’d, break from the trees",
     "And fall.",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainerId: "cinquain",
   meterExplainer: {
     id: "cinquain",

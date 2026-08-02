@@ -65,7 +65,7 @@ export const heroicCoupletForm: FormCheckerContent = {
     "A little learning is a dangerous thing",
     "Drink deep, or taste not the Pierian spring",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-5",
   meterExplainer: {

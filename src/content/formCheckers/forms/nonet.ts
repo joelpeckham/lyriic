@@ -64,7 +64,7 @@ export const nonetForm: FormCheckerContent = {
     "Still air",
     "Here",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainerId: "nonet",
   meterExplainer: {
     id: "nonet",

@@ -5,8 +5,9 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
 } from "react";
-import { BookA, Hash, Music2, RotateCcw } from "lucide-react";
+import { BookA, Copy, Hash, Music2, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 import { WordAnchor } from "@/components/editor/WordAnchor";
@@ -26,6 +27,12 @@ import {
   PopoverHeader,
   PopoverTitle,
 } from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { getLexicon } from "@/lib/data/lexicon";
 import { loadStress } from "@/lib/data/stress";
 import {
@@ -68,10 +75,20 @@ import {
   setCachedRanked,
   type RankedCandidate,
 } from "@/lib/wordLookup";
+import {
+  SOFT_KEYBOARD_INSET_PX,
+  useVisualViewportBottomInset,
+} from "@/hooks/useVisualViewportBottomInset";
 import { cn } from "@/lib/utils";
 
+/** Enlarge icon/chip controls on touch devices; stay compact for mouse. */
+const coarseTouchTarget =
+  "[@media(pointer:coarse)]:size-10 [@media(pointer:coarse)]:min-h-10 [@media(pointer:coarse)]:min-w-10";
+const coarseChipTarget =
+  "[@media(pointer:coarse)]:h-10 [@media(pointer:coarse)]:min-h-10 [@media(pointer:coarse)]:min-w-10 [@media(pointer:coarse)]:px-3";
+
 export type WordToolsTarget = WordTarget & {
-  /** When set, show thesaurus/rhyme instead of actions/syllables. */
+  /** When set, open that panel directly (shortcut / long-press). */
   mode?: WordLookupMode;
   tokenSyllables?: number;
 };
@@ -150,6 +167,8 @@ export function WordToolsPopover({
 }: WordToolsPopoverProps) {
   const listId = useId();
   const listRef = useRef<HTMLDivElement>(null);
+  const syllableCountRef = useRef<HTMLInputElement>(null);
+  const vvBottomInset = useVisualViewportBottomInset();
   const open = target !== null;
   const display = useClosingRetention(target);
   // Pass the line ref directly — wrapping in a new `{ meteredLine }` each
@@ -245,6 +264,14 @@ export function WordToolsPopover({
     0,
   );
   const [load, setLoad] = useState<LoadResult | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
+  // Autofocus the list only on a fresh thesaurus/rhyme open — not End/Slant reloads.
+  const autofocusListRef = useRef(false);
+  const prevLookupIdentityRef = useRef("");
+  if (lookupIdentity !== prevLookupIdentityRef.current) {
+    prevLookupIdentityRef.current = lookupIdentity;
+    if (lookupIdentity) autofocusListRef.current = true;
+  }
 
   const syllables = display
     ? resolveTokenSyllables(display, displayMetered)
@@ -401,13 +428,30 @@ export function WordToolsPopover({
     includeSlantRhymes,
     usage,
     view,
+    retryNonce,
   ]);
 
   useLayoutEffect(() => {
     if (!open || loadState !== "ready") return;
     if (view !== "thesaurus" && view !== "rhyme") return;
+    if (!autofocusListRef.current) return;
+    autofocusListRef.current = false;
     listRef.current?.focus();
   }, [open, loadState, lookupIdentity, view]);
+
+  // Focus the syllable count when the syllables panel opens (shortcut or chip).
+  const syllablesFocusKey =
+    open && view === "syllables" ? targetIdentity : "";
+  const prevSyllablesFocusKey = useRef("");
+  useLayoutEffect(() => {
+    if (!syllablesFocusKey) {
+      prevSyllablesFocusKey.current = "";
+      return;
+    }
+    if (prevSyllablesFocusKey.current === syllablesFocusKey) return;
+    prevSyllablesFocusKey.current = syllablesFocusKey;
+    syllableCountRef.current?.focus();
+  }, [syllablesFocusKey]);
 
   // Prefetch near packs when the current list is empty so enable hints work.
   useEffect(() => {
@@ -473,30 +517,67 @@ export function WordToolsPopover({
     onSetStressOverride(key, next);
   }
 
-  function applyCandidate(candidate: RankedCandidate): void {
+  function closeAndRestore(): void {
+    onClose();
+    onRestoreFocus();
+  }
+
+  /** Escape ladder: syllables → actions → dismiss (captures even when CM focused). */
+  function handleEscape(): boolean {
+    if (!open) return false;
+    if (view === "syllables" && !display?.mode) {
+      setPanel("actions");
+      return true;
+    }
+    closeAndRestore();
+    return true;
+  }
+
+  const handleEscapeRef = useRef(handleEscape);
+  handleEscapeRef.current = handleEscape;
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (!handleEscapeRef.current()) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, [open]);
+
+  function copyCandidate(candidate: RankedCandidate): void {
     if (!target || !target.mode) return;
     const text = preserveCasing(target.raw, candidate.word);
-    if (target.mode === "rhyme") {
-      void navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          toast(`“${text}” copied to clipboard`);
-        })
-        .finally(() => {
-          onClose();
-          onRestoreFocus();
-        });
+    void navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast(`“${text}” copied to clipboard`);
+      })
+      .finally(() => {
+        closeAndRestore();
+      });
+  }
+
+  function applyCandidate(
+    candidate: RankedCandidate,
+    options?: { copy?: boolean },
+  ): void {
+    if (!target || !target.mode) return;
+    if (options?.copy) {
+      copyCandidate(candidate);
       return;
     }
+    const text = preserveCasing(target.raw, candidate.word);
     onReplace(target.from, target.to, text);
-    onClose();
+    closeAndRestore();
   }
 
   function onListKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
     if (event.key === "Escape") {
-      event.preventDefault();
-      onClose();
-      onRestoreFocus();
+      // Window capture handler owns the ladder / dismiss.
       return;
     }
     if (!candidates || candidates.length === 0) return;
@@ -516,8 +597,20 @@ export function WordToolsPopover({
     if (event.key === "Enter") {
       event.preventDefault();
       const chosen = candidates[activeIndex];
-      if (chosen) applyCandidate(chosen);
+      if (chosen) applyCandidate(chosen, { copy: event.shiftKey });
     }
+  }
+
+  function onCandidateClick(
+    event: ReactMouseEvent<HTMLButtonElement>,
+    candidate: RankedCandidate,
+  ): void {
+    applyCandidate(candidate, { copy: event.shiftKey });
+  }
+
+  function retryLoad(): void {
+    setLoad(null);
+    setRetryNonce((n) => n + 1);
   }
 
   const isThesaurus = view === "thesaurus";
@@ -531,25 +624,23 @@ export function WordToolsPopover({
           ? `Syllables · ${display.raw}`
           : `Word actions for ${display.raw}`
     : "Word tools";
-  const rhymeEmptyHint = (() => {
-    if (view !== "rhyme" || !display) return "No rhymes found.";
-    if (
-      !includeEndRhymes &&
-      isRhymeIndexReady("end") &&
-      lookupRhymeIds(display.word, "end").length > 0
-    ) {
-      return "No perfect rhymes — enable End rhymes for more matches.";
-    }
-    if (
-      !includeSlantRhymes &&
-      isRhymeIndexReady("slant") &&
-      lookupRhymeIds(display.word, "slant").length > 0
-    ) {
-      return "No exact rhymes — enable Slant rhymes for more matches.";
-    }
-    return "No rhymes found.";
-  })();
-  const emptyLabel = isThesaurus ? "No synonyms found." : rhymeEmptyHint;
+  const showEndRhymesAction =
+    view === "rhyme" &&
+    !!display &&
+    !includeEndRhymes &&
+    isRhymeIndexReady("end") &&
+    lookupRhymeIds(display.word, "end").length > 0;
+  const showSlantRhymesAction =
+    view === "rhyme" &&
+    !!display &&
+    !includeSlantRhymes &&
+    isRhymeIndexReady("slant") &&
+    lookupRhymeIds(display.word, "slant").length > 0;
+  const emptyLabel = isThesaurus
+    ? "No synonyms found."
+    : showEndRhymesAction || showSlantRhymesAction
+      ? "No perfect rhymes."
+      : "No rhymes found.";
   const errorLabel = isThesaurus
     ? "Couldn’t load thesaurus."
     : "Couldn’t load rhymes.";
@@ -560,10 +651,10 @@ export function WordToolsPopover({
       : null,
   ].filter(Boolean);
   const lookupDescription = isThesaurus
-    ? "Choose a synonym. Matching part of speech comes first, then meter fit and syllable count."
+    ? "Choose a synonym to replace the word. Matching part of speech comes first, then meter fit and syllable count. Shift-click or use Copy to copy instead."
     : nearRhymeBits.length > 0
-      ? `Choose a rhyme to copy. Includes perfect rhymes plus ${nearRhymeBits.join(" and ")}. Sorted by syllable count. Meter-matching options are marked.`
-      : "Choose a perfect rhyme to copy. Options are sorted by syllable count. Meter-matching options are marked.";
+      ? `Choose a rhyme to replace the word. Includes perfect rhymes plus ${nearRhymeBits.join(" and ")}. Sorted by syllable count. Meter-matching options are marked. Shift-click or use Copy to copy instead.`
+      : "Choose a perfect rhyme to replace the word. Options are sorted by syllable count. Meter-matching options are marked. Shift-click or use Copy to copy instead.";
 
   const contentClass =
     view === "actions"
@@ -584,8 +675,7 @@ export function WordToolsPopover({
       open={open}
       onOpenChange={(next) => {
         if (!next) {
-          onClose();
-          if (isLookup) onRestoreFocus();
+          closeAndRestore();
         }
       }}
     >
@@ -596,7 +686,14 @@ export function WordToolsPopover({
         align={view === "actions" ? "center" : "start"}
         side="bottom"
         sideOffset={WORD_TOOLBAR_SIDE_OFFSET_PX}
-        collisionPadding={12}
+        collisionPadding={{
+          top: 12,
+          left: 12,
+          right: 12,
+          bottom:
+            12 +
+            (vvBottomInset >= SOFT_KEYBOARD_INSET_PX ? vvBottomInset : 0),
+        }}
         avoidCollisions
         data-word-toolbar=""
         className={contentShellClass}
@@ -605,7 +702,14 @@ export function WordToolsPopover({
         }}
         onCloseAutoFocus={(event) => {
           event.preventDefault();
-          if (isLookup) onRestoreFocus();
+          onRestoreFocus();
+        }}
+        onEscapeKeyDown={(event) => {
+          // Capture-phase window listener owns the ladder; block Radix dismiss
+          // so syllables can step back to actions.
+          if (view === "syllables" && !display?.mode) {
+            event.preventDefault();
+          }
         }}
         onPointerDownOutside={(event) => {
           // Actions/syllables: plugin + hit layer own dismiss — ignore editor hits.
@@ -625,42 +729,68 @@ export function WordToolsPopover({
           )}
         >
         {view === "actions" && display ? (
-          <ButtonGroup
-            aria-label={`Word actions for ${display.raw}`}
-            className="[&_[data-slot=button]]:bg-popover [&_[data-slot=button]]:hover:bg-muted dark:[&_[data-slot=button]]:border-[color-mix(in_oklch,var(--popover-foreground)_25%,var(--popover))] dark:[&_[data-slot=button]]:bg-popover dark:[&_[data-slot=button]]:hover:bg-muted"
-          >
-            <ButtonGroup>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                aria-label="Syllable count"
-                onClick={() => setPanel("syllables")}
-              >
-                <Hash />
-              </Button>
+          <TooltipProvider delayDuration={400}>
+            <ButtonGroup
+              aria-label={`Word actions for ${display.raw}`}
+              className="[&_[data-slot=button]]:bg-popover [&_[data-slot=button]]:hover:bg-muted dark:[&_[data-slot=button]]:border-[color-mix(in_oklch,var(--popover-foreground)_25%,var(--popover))] dark:[&_[data-slot=button]]:bg-popover dark:[&_[data-slot=button]]:hover:bg-muted"
+            >
+              <ButtonGroup>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className={coarseTouchTarget}
+                      aria-label="Syllables"
+                      onClick={() => setPanel("syllables")}
+                    >
+                      <Hash />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" sideOffset={6}>
+                    Syllables
+                  </TooltipContent>
+                </Tooltip>
+              </ButtonGroup>
+              <ButtonGroup>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className={coarseTouchTarget}
+                      aria-label="Synonyms"
+                      onClick={() => onOpenLookup("thesaurus")}
+                    >
+                      <BookA />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" sideOffset={6}>
+                    Synonyms
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon-sm"
+                      className={coarseTouchTarget}
+                      aria-label="Rhymes"
+                      onClick={() => onOpenLookup("rhyme")}
+                    >
+                      <Music2 />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" sideOffset={6}>
+                    Rhymes
+                  </TooltipContent>
+                </Tooltip>
+              </ButtonGroup>
             </ButtonGroup>
-            <ButtonGroup>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                aria-label="Synonyms"
-                onClick={() => onOpenLookup("thesaurus")}
-              >
-                <BookA />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon-sm"
-                aria-label="Rhymes"
-                onClick={() => onOpenLookup("rhyme")}
-              >
-                <Music2 />
-              </Button>
-            </ButtonGroup>
-          </ButtonGroup>
+          </TooltipProvider>
         ) : null}
 
         {view === "syllables" && display && baseline ? (
@@ -683,6 +813,7 @@ export function WordToolsPopover({
                 Syllable count
               </Label>
               <Input
+                ref={syllableCountRef}
                 id="syllable-override-count"
                 type="number"
                 inputMode="numeric"
@@ -782,6 +913,7 @@ export function WordToolsPopover({
                         size="xs"
                         className={cn(
                           "min-w-7 tabular-nums",
+                          coarseChipTarget,
                           selected && "font-semibold",
                         )}
                         aria-label={`Syllable ${index + 1}${selected ? ", stressed" : ""}`}
@@ -831,15 +963,46 @@ export function WordToolsPopover({
             ) : null}
 
             {loadState === "error" ? (
-              <p className="px-1.5 py-2 text-sm text-muted-foreground">
-                {errorLabel}
-              </p>
+              <div className="flex flex-col gap-1.5 px-1.5 py-2">
+                <p className="text-sm text-muted-foreground">{errorLabel}</p>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  className="self-start"
+                  onClick={retryLoad}
+                >
+                  Retry
+                </Button>
+              </div>
             ) : null}
 
             {loadState === "ready" && candidates && candidates.length === 0 ? (
-              <p className="px-1.5 py-2 text-sm text-muted-foreground">
-                {emptyLabel}
-              </p>
+              <div className="flex flex-col gap-1.5 px-1.5 py-2">
+                <p className="text-sm text-muted-foreground">{emptyLabel}</p>
+                {showEndRhymesAction ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    className="self-start"
+                    onClick={() => setIncludeEndRhymes(true)}
+                  >
+                    Show end rhymes
+                  </Button>
+                ) : null}
+                {showSlantRhymesAction ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    className="self-start"
+                    onClick={() => setIncludeSlantRhymes(true)}
+                  >
+                    Show slant rhymes
+                  </Button>
+                ) : null}
+              </div>
             ) : null}
 
             {loadState === "ready" && candidates && candidates.length > 0 ? (
@@ -864,35 +1027,56 @@ export function WordToolsPopover({
                     .join(", ");
 
                   return (
-                    <button
+                    <div
                       key={candidate.word}
-                      id={`${listId}-opt-${index}`}
-                      type="button"
-                      role="option"
-                      aria-selected={selected}
-                      aria-label={label}
                       className={[
-                        "flex w-full items-baseline justify-between gap-2 rounded-md px-1.5 py-1 text-left text-sm",
-                        "outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
+                        "flex w-full items-center gap-0.5 rounded-md",
                         selected ? "bg-muted" : "hover:bg-muted/70",
-                        candidate.keepsMeter ? "font-medium" : "font-normal",
                       ].join(" ")}
                       onMouseEnter={() => setActiveIndex(index)}
-                      onClick={() => applyCandidate(candidate)}
                     >
-                      <span
-                        className={
-                          candidate.keepsMeter
-                            ? "min-w-0 wrap-break-word underline decoration-muted-foreground/50 underline-offset-2"
-                            : "min-w-0 wrap-break-word"
-                        }
+                      <button
+                        id={`${listId}-opt-${index}`}
+                        type="button"
+                        role="option"
+                        tabIndex={-1}
+                        aria-selected={selected}
+                        aria-label={label}
+                        className={[
+                          "flex min-w-0 flex-1 items-baseline justify-between gap-2 px-1.5 py-1 text-left text-sm",
+                          "outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
+                          candidate.keepsMeter ? "font-medium" : "font-normal",
+                        ].join(" ")}
+                        onClick={(event) => onCandidateClick(event, candidate)}
                       >
-                        {candidate.word}
-                      </span>
-                      <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
-                        {candidate.syllables}
-                      </span>
-                    </button>
+                        <span
+                          className={
+                            candidate.keepsMeter
+                              ? "min-w-0 wrap-break-word underline decoration-muted-foreground/50 underline-offset-2"
+                              : "min-w-0 wrap-break-word"
+                          }
+                        >
+                          {candidate.word}
+                        </span>
+                        <span className="shrink-0 tabular-nums text-xs font-normal text-muted-foreground">
+                          {candidate.syllables}
+                          {candidate.keepsMeter ? (
+                            <span className="ml-1">meter</span>
+                          ) : null}
+                        </span>
+                      </button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        tabIndex={-1}
+                        className="mr-0.5 shrink-0 text-muted-foreground"
+                        aria-label={`Copy ${candidate.word}`}
+                        onClick={() => copyCandidate(candidate)}
+                      >
+                        <Copy />
+                      </Button>
+                    </div>
                   );
                 })}
               </div>

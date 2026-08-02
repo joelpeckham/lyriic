@@ -59,7 +59,7 @@ export const senryuForm: FormCheckerContent = {
     "during the wedding vows still",
     "nobody is shocked",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainerId: "syllable-5-7-5",
   verificationNotes: [
     "Catalog: pattern [5,7,5], stanzaLines 3, syllable-only (no stress) — identical to haiku meter. Matches English teaching 5-7-5. Intentionally omits theme/satire scoring, kigo/kireji, and Japanese on counting; senryu vs haiku is content, not a separate catalog pattern.",

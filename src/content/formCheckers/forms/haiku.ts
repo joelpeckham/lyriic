@@ -66,7 +66,7 @@ export const haikuForm: FormCheckerContent = {
     "A frog jumps into the pond",
     "Splash! Silence again",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainerId: "syllable-5-7-5",
   verificationNotes: [
     "Catalog: pattern [5,7,5], stanzaLines 3, syllable-only (no stress). Matches English teaching 5-7-5. Intentionally omits kigo/kireji and Japanese on counting.",

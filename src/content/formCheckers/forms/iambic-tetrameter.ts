@@ -66,7 +66,7 @@ export const iambicTetrameterForm: FormCheckerContent = {
     "Come live with me and be my love",
     "And miles to go before I sleep",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "iambic-tetrameter",
     title: "Iambic tetrameter (8)",

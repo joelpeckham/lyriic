@@ -17,7 +17,7 @@ import {
 
 export type { WordTarget };
 
-export type WordLookupMode = "thesaurus" | "rhyme";
+export type WordLookupMode = "thesaurus" | "rhyme" | "syllables";
 
 export type WordLookupRequest = WordTarget & {
   mode: WordLookupMode;
@@ -38,7 +38,7 @@ export const HOVER_SHOW_MS = 350;
 /** Exported for tests. */
 export const HOVER_HIDE_MS = 120;
 /** Long-press thesaurus + tap-skip threshold (one timer story). */
-export const LONG_PRESS_MS = 500;
+export const LONG_PRESS_MS = 550;
 
 /** Selector for the portaled toolbar surface (word ∪ toolbar hover target). */
 export const WORD_TOOLBAR_ATTR = "data-word-toolbar";
@@ -103,11 +103,13 @@ class WordPointerPlugin implements PluginValue {
     this.onPointerDown = this.onPointerDown.bind(this);
     this.onPointerUp = this.onPointerUp.bind(this);
     this.onPointerCancel = this.onPointerCancel.bind(this);
+    this.onContextMenu = this.onContextMenu.bind(this);
     this.onDocumentPointerMove = this.onDocumentPointerMove.bind(this);
     view.dom.addEventListener("pointermove", this.onPointerMove);
     view.dom.addEventListener("pointerdown", this.onPointerDown);
     view.dom.addEventListener("pointerup", this.onPointerUp);
     view.dom.addEventListener("pointercancel", this.onPointerCancel);
+    view.dom.addEventListener("contextmenu", this.onContextMenu);
   }
 
   update(update: ViewUpdate): void {
@@ -130,6 +132,7 @@ class WordPointerPlugin implements PluginValue {
     this.view.dom.removeEventListener("pointerdown", this.onPointerDown);
     this.view.dom.removeEventListener("pointerup", this.onPointerUp);
     this.view.dom.removeEventListener("pointercancel", this.onPointerCancel);
+    this.view.dom.removeEventListener("contextmenu", this.onContextMenu);
   }
 
   /**
@@ -348,8 +351,19 @@ class WordPointerPlugin implements PluginValue {
       this.pointerDown = null;
       this.suppressTap = true;
       if (!down) return;
+      // Collapse iOS/ephemeral selection so the system callout doesn't stick.
+      this.view.dispatch({
+        selection: { anchor: down.pos },
+      });
       openWordLookup(this.view, "thesaurus", down.pos);
     }, LONG_PRESS_MS);
+  }
+
+  /** Block the native callout while a word long-press is in flight or just fired. */
+  private onContextMenu(event: Event): void {
+    if (this.pointerDown || this.longPressTimer !== null || this.suppressTap) {
+      event.preventDefault();
+    }
   }
 
   private onPointerUp(event: PointerEvent): void {
@@ -392,7 +406,7 @@ function getPlugin(view: EditorView): WordPointerPlugin | null {
   return view.plugin(wordPointerPlugin);
 }
 
-/** Open thesaurus/rhyme for the word at selection or an optional document pos. */
+/** Open thesaurus/rhyme/syllables for the word at selection or an optional document pos. */
 export function openWordLookup(
   view: EditorView,
   mode: WordLookupMode,
@@ -418,6 +432,11 @@ export function openRhymeCommand(view: EditorView): boolean {
   return openWordLookup(view, "rhyme");
 }
 
+/** Open syllables panel for the word at the current selection / caret. */
+export function openSyllablesCommand(view: EditorView): boolean {
+  return openWordLookup(view, "syllables");
+}
+
 const wordLookupKeymap = keymap.of([
   {
     key: "Mod-'",
@@ -426,6 +445,10 @@ const wordLookupKeymap = keymap.of([
   {
     key: "Mod-;",
     run: openRhymeCommand,
+  },
+  {
+    key: "Mod-Shift-'",
+    run: openSyllablesCommand,
   },
 ]);
 

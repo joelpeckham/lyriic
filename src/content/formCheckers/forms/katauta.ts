@@ -61,7 +61,7 @@ export const katautaForm: FormCheckerContent = {
     "listening for your footsteps",
     "yet only the wind answers",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainerId: "katauta",
   meterExplainer: {
     id: "katauta",

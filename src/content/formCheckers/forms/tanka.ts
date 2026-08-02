@@ -68,7 +68,7 @@ export const tankaForm: FormCheckerContent = {
     "Words I meant to say aloud",
     "Stay folded against my coat",
   ],
-  cta: "Write in the zen editor",
+  cta: "Continue in the editor",
   meterExplainer: {
     id: "tanka",
     title: "How the tanka meter works",

@@ -1,6 +1,9 @@
 export type ToolFaq = {
   q: string;
   plain: string;
+  /** Optional in-app link shown after the plain answer (e.g. `/write/haiku`). */
+  href?: string;
+  hrefLabel?: string;
 };
 
 export type ToolPageContent = {
@@ -39,15 +42,22 @@ export const TOOL_PAGES: ToolPageContent[] = [
       {
         q: "How accurate are the counts?",
         plain:
-          "Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.",
+          "Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor: hover or tap the word and open Syllables.",
       },
       {
         q: "Can I use it for song lyrics?",
         plain:
           "Yes. Per-line totals help match syllable counts to a melody or flow, whether you are writing verse, chorus, or spoken word.",
       },
+      {
+        q: "Does my text move into the editor?",
+        plain:
+          "Yes, when you continue with a draft you edited here (not an untouched sample). lyriic carries that text into the editor once via a short-lived browser handoff — nothing is uploaded.",
+        href: "/",
+        hrefLabel: "Continue in the editor",
+      },
     ],
-    cta: "Write with live counts in the editor",
+    cta: "Continue in the editor with live counts",
   },
   {
     path: "/tools/rhyme-finder",
@@ -84,8 +94,15 @@ export const TOOL_PAGES: ToolPageContent[] = [
         plain:
           "No. lyriic is a meter-focused editor with dictionary helpers — not a generative AI songwriting tool.",
       },
+      {
+        q: "How is this different from the editor?",
+        plain:
+          "This page is for browsing rhymes. The editor keeps rhyme lookup beside your draft while you write, with live syllable counts and optional meter rulers. Your finder query does not carry over — open the editor when you are ready to draft.",
+        href: "/",
+        hrefLabel: "Continue in the editor",
+      },
     ],
-    cta: "Write with rhymes beside your draft",
+    cta: "Continue in the editor with rhyme lookup",
   },
 ];
 

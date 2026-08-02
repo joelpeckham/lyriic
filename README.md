@@ -46,7 +46,7 @@ Runtime dictionaries live under `src/lib/data/packs/` as compact binary assets (
 
 ## Syllable counting
 
-Defaults follow the fused US pronunciation corpus (Misaki + [CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict) + WikiPron): vowel nuclei in the primary IPA transcription. Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Prefer an alternate count for ambiguous words (e.g. poetic `fire` as 1) via Settings → Syllable overrides; overrides persist with the active draft.
+Defaults follow the fused US pronunciation corpus (Misaki + [CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict) + WikiPron): vowel nuclei in the primary IPA transcription. Hyphenated compounds are split and summed. Out-of-vocabulary words use a spelling heuristic. Prefer an alternate count for ambiguous words (e.g. poetic `fire` as 1) via hover/tap a word → Syllables; overrides persist with the active draft.
 
 ## Data attribution
 

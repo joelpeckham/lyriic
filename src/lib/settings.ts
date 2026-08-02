@@ -41,9 +41,10 @@ export const CUSTOM_RHYME_PATTERN_MAX_LENGTH = 32;
 export const DEFAULT_SETTINGS: EditorSettings = {
   meter: "none",
   showCounts: true,
-  showRulers: true,
-  showStress: true,
-  showMeterBreaks: true,
+  /** Free verse starts calm; picking a meter turns overlays on. */
+  showRulers: false,
+  showStress: false,
+  showMeterBreaks: false,
   showRhymeScheme: false,
   rhymeSchemeId: null,
   customPattern: [8],

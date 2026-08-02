@@ -63,7 +63,7 @@ export const shortMeterForm: FormCheckerContent = {
     "The fellowship of kindred minds",
     "Is like to that above",
   ],
-  cta: "Check rhyme in the zen editor",
+  cta: "Continue in the editor",
   footExplainerId: "iamb",
   stressExplainerId: "iamb-6-6-8-6",
   meterExplainer: {

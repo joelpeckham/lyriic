@@ -76,7 +76,7 @@ lyriic is a zen text editor for writing in meter — poetry, lyrics, or any line
 
 ## How are syllables counted?
 
-Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. Per-draft overrides are available in Settings.
+Counts follow a fused US pronunciation dictionary (Misaki, CMU Pronouncing Dictionary, and WikiPron). Hyphenated compounds are split and summed. Unfamiliar words use a spelling heuristic. For ambiguous words, hover or tap the word and open Syllables to set a per-draft count.
 
 ## What are meter rulers?
 
@@ -122,7 +122,7 @@ Yes. The tool runs in your browser on lyriic.com with no account and no upload o
 
 ## How accurate are the counts?
 
-Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor under Settings → Syllable overrides.
+Most English words use primary pronunciations from the bundled dictionary. Ambiguous poetic words can be overridden in the full lyriic editor: hover or tap the word and open Syllables.
 
 ## Can I use it for song lyrics?
 
