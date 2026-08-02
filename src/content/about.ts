@@ -108,9 +108,9 @@ export const ABOUT_FEATURES: AboutPoem[] = [
     text: [
       "I aimed for a limerick neat,",
       "with eight on each long-running beat.",
-      "The shorts toed the line,",
-      "then five crossed the sign—",
-      "and kept right on counting: nine, ten, eleven, oh look at that gutter go scarlet with heat.",
+      "The shorts were just great,",
+      "but five crossed the eight",
+      "and kept on counting: seven, eight, nine. Oh who cares, you can just cheat.",
     ].join("\n"),
     settings: aboutMeterSettings("limerick"),
   },
