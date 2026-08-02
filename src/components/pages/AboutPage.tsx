@@ -192,7 +192,7 @@ export function AboutPage() {
           >
             lyriic
           </h1>
-          
+
           <div className="mt-8 sm:mt-10">
             <AboutPoemEditor
               text={ABOUT_HERO.text}
@@ -219,7 +219,7 @@ export function AboutPage() {
         <div className="space-y-24 sm:space-y-32">
           <Reveal>
             <div id="why">
-              <p className={groupLabelClass}>Why we built it</p>
+              <p className={groupLabelClass}>Why I built it</p>
               <div className="mt-10 space-y-16 sm:mt-12 sm:space-y-24">
                 <PoemSection poem={ABOUT_WHY} lead />
               </div>
