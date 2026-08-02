@@ -1,6 +1,10 @@
 import { PoemLines, type PoemLine } from "@/components/editor/PoemLines";
 import { Button } from "@/components/ui/button";
+import { GRAIN_TILE_PX, createGrainDataUrl } from "@/lib/grain";
 import { cn } from "@/lib/utils";
+
+const ogGrainUrl =
+  typeof document !== "undefined" ? createGrainDataUrl() : "";
 
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
@@ -25,12 +29,14 @@ export function OgCard({ id, lines, cta }: OgCardProps) {
       )}
       style={{ width: OG_WIDTH, height: OG_HEIGHT }}
     >
-      {/* Local grain so the card screenshots cleanly without page ::before */}
+      {/* Local grain so the card screenshots cleanly without the page Grain */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-0 opacity-[var(--lyriic-grain-opacity)]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundImage: ogGrainUrl ? `url(${ogGrainUrl})` : undefined,
+          backgroundRepeat: "repeat",
+          backgroundSize: `${GRAIN_TILE_PX}px ${GRAIN_TILE_PX}px`,
         }}
       />
 

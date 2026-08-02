@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { EditorShell } from "./components/EditorShell";
+import { Grain } from "./components/Grain";
 import { Toaster } from "./components/ui/sonner";
 
 const RootRoute = lazy(() =>
@@ -51,6 +52,7 @@ function RouteFallback() {
 export function App() {
   return (
     <>
+      <Grain />
       <BrowserRouter>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
