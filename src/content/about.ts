@@ -29,6 +29,8 @@ function aboutMeterSettings(
   meter: string,
   options: {
     customPattern?: number[];
+    showCounts?: boolean;
+    showRulers?: boolean;
     showStress?: boolean;
     showMeterBreaks?: boolean;
     showRhymeScheme?: boolean;
@@ -47,6 +49,8 @@ function aboutMeterSettings(
     meter,
     customPattern,
     ...overlays,
+    showCounts: options.showCounts ?? overlays.showCounts,
+    showRulers: options.showRulers ?? overlays.showRulers,
     showStress: options.showStress ?? overlays.showStress,
     showMeterBreaks: options.showMeterBreaks ?? overlays.showMeterBreaks,
     showRhymeScheme: options.showRhymeScheme ?? false,
@@ -57,8 +61,8 @@ function aboutMeterSettings(
 export const ABOUT_HERO: AboutPoem = {
   label: "Hero",
   summary:
-    "A soft syllable count keeps quiet time—no boots, no brass—just counting feet.",
-  text: ["A soft count keeps a quiet beat", "No boots, no brass—just counting feet."].join(
+    "A soft count keeps a steady beat. No boots, no brass—just counting feet.",
+  text: ["A soft count keeps a steady beat", "No boots, no brass, just counting feet."].join(
     "\n",
   ),
   settings: aboutMeterSettings("iambic-tetrameter", { showStress: false }),
@@ -68,14 +72,17 @@ export const ABOUT_HERO: AboutPoem = {
 export const ABOUT_WHY: AboutPoem = {
   label: "A failed poem",
   summary:
-    "Hand-counting syllables broke my zen. So I built a tool to help me count.",
+    "I suck at counting syllables. So I built this tool to keep me sane.",
   text: [
-    "I counted. Tapping, rapping, jabs on every jot.",
+    "I counted. Rapping, tapping, jabs on every jot.",
     "And then above my head appeared a bulb, a thought.",
     "The verse can wait a sec. Now let me write some code.",
     "Machines append a count. And now I cant't be slowed.",
   ].join("\n"),
-  settings: aboutMeterSettings("iambic-hexameter"),
+  settings: aboutMeterSettings("iambic-hexameter", {
+    showRulers: false,
+    showStress: true,
+  }),
 };
 
 /**
@@ -85,14 +92,14 @@ export const ABOUT_FEATURES: AboutPoem[] = [
   {
     label: "Syllables",
     summary:
-      "Per-line syllable counts sit quietly in the gutter—exact, patient, and never bossy.",
+      "Per-line syllable counts sit quietly in the gutter. Patient and never bossy.",
     text: [
-      "I keep a small clerk in the gutter of verse",
-      "Who tallies my feet with a patience perverse;",
-      "He never will nudge me, or lecture, or glare—",
-      "He simply reports what syllables are there.",
+      "I keep a clerk within the gutter verse",
+      "Who tallies my feet with a calm perverse;",
+      "He never will nudge, lecture me, or glare—",
+      "He just reports the quiet counts found there.",
     ].join("\n"),
-    settings: aboutMeterSettings("custom", { customPattern: [11] }),
+    settings: aboutMeterSettings("iambic-pentameter", { showStress: true }),
   },
   {
     label: "When it runs long",

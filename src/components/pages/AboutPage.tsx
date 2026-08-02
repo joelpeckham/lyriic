@@ -192,16 +192,7 @@ export function AboutPage() {
           >
             lyriic
           </h1>
-
-          <p
-            className={cn(
-              "mt-5 max-w-md font-[family-name:var(--font-ui)] text-base leading-relaxed text-muted-foreground text-pretty sm:mt-6 sm:text-lg",
-              "motion-safe:animate-[lyriic-section-in_0.7s_ease-out_0.12s_both]",
-            )}
-          >
-            {ABOUT_HERO.summary}
-          </p>
-
+          
           <div className="mt-8 sm:mt-10">
             <AboutPoemEditor
               text={ABOUT_HERO.text}

@@ -12,11 +12,11 @@ import {
 import type { EditorSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
-/** Match SettingsSheet FONT_SIZE_OPTIONS — about demos ignore prefs. */
-const ABOUT_FONT_S = 1.25;
-const ABOUT_FONT_M = 1.5;
+/** About demos stay below editor prefs — a step under SettingsSheet S/M. */
+const ABOUT_FONT_S = 1;
+const ABOUT_FONT_M = 1.25;
 
-/** S by default; M from the Tailwind `sm` breakpoint up — never L/XL. */
+/** Smaller on narrow screens; S from the Tailwind `sm` breakpoint up. */
 function useAboutEmbedFontSize(): number {
   const [size, setSize] = useState(() =>
     typeof window !== "undefined" &&
@@ -65,7 +65,7 @@ function StaticVerseFallback({
     <div
       className={cn(
         "font-[family-name:var(--font-editor)] text-foreground",
-        "text-[1.25rem] sm:text-[1.5rem]",
+        "text-[1.125rem] sm:text-[1.25rem]",
         className,
       )}
       style={{
