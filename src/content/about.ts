@@ -157,7 +157,7 @@ export const ABOUT_FEATURES: AboutPoem[] = [
 export const ABOUT_STANCE: AboutPoem = {
   label: "AI Stance",
   summary:
-    "Lyriic counts meter and leaves the writing—and the draft—to you, on your device. No AI allowed.",
+    "Lyriic counts meter and leaves the writing to you, on your device. No AI allowed.",
   text: [
     "We count your meter; we will not compose—",
     "your draft stays home in its Saturday clothes.",
