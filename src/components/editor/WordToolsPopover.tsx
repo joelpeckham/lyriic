@@ -1015,7 +1015,7 @@ export function WordToolsPopover({
                 {title}
               </PopoverTitle>
               <PopoverDescription className="text-muted-foreground text-xs">
-                Tap to replace · Copy to clipboard.
+                Tap to replace
               </PopoverDescription>
               <span className="sr-only">{lookupDescription}</span>
             </PopoverHeader>
