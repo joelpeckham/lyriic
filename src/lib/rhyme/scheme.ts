@@ -34,6 +34,25 @@ export function endWordOfLine(line: string): string | null {
   return tokens[tokens.length - 1]?.word ?? null;
 }
 
+/** Short label for rhyme-dot tooltips (scheme letter + status). */
+export function rhymeSchemeLineTitle(line: RhymeSchemeLine): string {
+  const letter = line.letter ?? "?";
+  if (line.status === "mismatch") {
+    return `Rhyme ${letter} — does not match peers`;
+  }
+  if (line.status === "match") {
+    return `Rhyme ${letter} — perfect`;
+  }
+  if (line.status === "endMatch") {
+    return `Rhyme ${letter} — end rhyme`;
+  }
+  if (line.status === "unknown") {
+    return `Rhyme ${letter} — word not in dictionary`;
+  }
+  if (letter === "X") return "Unrhymed line";
+  return `Rhyme ${letter}`;
+}
+
 function letterColorIndex(letter: string | null): number {
   if (!letter || letter === UNRHYMED) return -1;
   const upper = letter.toUpperCase();
@@ -71,8 +90,10 @@ function hasAnyRhymeKeys(word: string): boolean {
 
 /**
  * Compare end words of each line against a cycling scheme pattern.
- * Same letter ⇒ should rhyme. Perfect beats end; neither ⇒ mismatch.
- * `X` is unrhymed.
+ * Same letter ⇒ should rhyme within one pattern period. Perfect beats end;
+ * neither ⇒ mismatch. `X` is unrhymed. Blank lines do not consume scheme
+ * slots; anchors reset each period so multi-couplet / multi-stanza drafts
+ * match independently.
  */
 export function analyzeRhymeScheme(
   lines: readonly string[],
@@ -81,78 +102,93 @@ export function analyzeRhymeScheme(
   const packReady =
     isRhymeIndexReady("perfect") && isRhymeIndexReady("end");
   const endWords = lines.map(endWordOfLine);
+  const period = schemePattern.length;
 
-  // First line index that established each letter (excluding X).
+  // schemeSlot → doc line index of the first non-empty line for that letter
+  // in the current period. Cleared every `period` non-empty lines.
   const anchorByLetter = new Map<string, number>();
+  // schemeSlot key → peer status (for retroactive anchor coloring).
+  const peerStatus = new Map<string, PeerMatchStatus>();
+  // schemeSlot key → doc index of the period's anchor for that letter.
+  const periodAnchors = new Map<string, number>();
 
-  const results: RhymeSchemeLine[] = lines.map((line, index) => {
-    const letterRaw = rhymeLetterForLine(schemePattern, index);
-    const letter = letterRaw ? letterRaw.toUpperCase() : null;
-    const colorIndex = letterColorIndex(letter);
+  let schemeSlot = 0;
+  const results: RhymeSchemeLine[] = [];
+
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index] ?? "";
     const endWord = endWords[index] ?? null;
 
     if (!line.trim() || !endWord) {
-      return { letter, colorIndex, status: "empty" as const, endWord: null };
+      results.push({
+        letter: null,
+        colorIndex: -1,
+        status: "empty",
+        endWord: null,
+      });
+      continue;
     }
 
+    if (period > 0 && schemeSlot > 0 && schemeSlot % period === 0) {
+      anchorByLetter.clear();
+    }
+
+    const letterRaw = rhymeLetterForLine(schemePattern, schemeSlot);
+    const letter = letterRaw ? letterRaw.toUpperCase() : null;
+    const colorIndex = letterColorIndex(letter);
+    const periodIndex = period > 0 ? Math.floor(schemeSlot / period) : 0;
+    const slotKey = `${periodIndex}:${letter ?? ""}`;
+    schemeSlot += 1;
+
     if (!letter || letter === UNRHYMED) {
-      return {
+      results.push({
         letter: letter ?? UNRHYMED,
         colorIndex: -1,
         status: "open",
         endWord,
-      };
+      });
+      continue;
     }
 
     if (!packReady) {
-      return { letter, colorIndex, status: "unknown", endWord };
+      results.push({ letter, colorIndex, status: "unknown", endWord });
+      continue;
     }
 
     if (!hasAnyRhymeKeys(endWord)) {
-      return { letter, colorIndex, status: "unknown", endWord };
+      results.push({ letter, colorIndex, status: "unknown", endWord });
+      continue;
     }
 
     const anchor = anchorByLetter.get(letter);
     if (anchor === undefined) {
       anchorByLetter.set(letter, index);
-      return { letter, colorIndex, status: "open", endWord };
+      periodAnchors.set(slotKey, index);
+      results.push({ letter, colorIndex, status: "open", endWord });
+      continue;
     }
 
     const anchorWord = endWords[anchor];
     if (!anchorWord) {
-      return { letter, colorIndex, status: "open", endWord };
+      results.push({ letter, colorIndex, status: "open", endWord });
+      continue;
     }
 
-    return {
-      letter,
-      colorIndex,
-      status: classifyPair(endWord, anchorWord),
-      endWord,
-    };
-  });
-
-  // Retroactively mark anchors from their best peer result.
-  const peerStatus = new Map<string, PeerMatchStatus>();
-  for (const row of results) {
-    if (!row.letter || row.letter === UNRHYMED) continue;
-    if (
-      row.status === "match" ||
-      row.status === "endMatch" ||
-      row.status === "mismatch"
-    ) {
-      peerStatus.set(
-        row.letter,
-        bestPeerStatus(peerStatus.get(row.letter), row.status),
-      );
-    }
+    const status = classifyPair(endWord, anchorWord);
+    peerStatus.set(slotKey, bestPeerStatus(peerStatus.get(slotKey), status));
+    results.push({ letter, colorIndex, status, endWord });
   }
 
   return results.map((row, index) => {
     if (!row.letter || row.letter === UNRHYMED) return row;
     if (row.status !== "open") return row;
-    if (anchorByLetter.get(row.letter) !== index) return row;
-    const peer = peerStatus.get(row.letter);
-    if (!peer) return row;
-    return { ...row, status: peer };
+    // Find which period-slot this open row anchored.
+    for (const [slotKey, anchorIndex] of periodAnchors) {
+      if (anchorIndex !== index) continue;
+      const peer = peerStatus.get(slotKey);
+      if (!peer) return row;
+      return { ...row, status: peer };
+    }
+    return row;
   });
 }

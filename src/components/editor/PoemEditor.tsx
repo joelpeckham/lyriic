@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
+import { RhymeDotTooltip } from "@/components/editor/RhymeDotTooltip";
 import { useSyllableLineCounts } from "@/components/editor/useSyllableLineCounts";
 import {
   WordToolsPopover,
@@ -404,6 +405,7 @@ export function PoemEditor({
         {settings.showCounts ? liveCountText : ""}
       </div>
       <div ref={parentRef} className="min-h-0 w-full flex-1" />
+      <RhymeDotTooltip containerRef={parentRef} />
       <WordToolsPopover
         target={wordTarget}
         onClose={closeWordUi}

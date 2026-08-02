@@ -16,17 +16,23 @@ function fixtureRhymes() {
       light: "aɪt",
       cat: "æt",
       dog: "ɔg",
+      bat: "æt",
+      fog: "ɔg",
       // Perfect keys differ; end keys share ɚ (bomber ↔ her).
       bomber: "ɑmɚ",
       her: "ɝ",
+      there: "ɛr",
+      care: "ɛr",
+      hair: "ɛr",
     },
     byKey: {
       eɪ: ["day", "way"],
       aɪt: ["night", "light"],
-      æt: ["cat"],
-      ɔg: ["dog"],
+      æt: ["cat", "bat"],
+      ɔg: ["dog", "fog"],
       ɑmɚ: ["bomber"],
       ɝ: ["her"],
+      ɛr: ["there", "care", "hair"],
     },
     byWordEnd: {
       day: "eɪ",
@@ -35,15 +41,21 @@ function fixtureRhymes() {
       light: "aɪt",
       cat: "æt",
       dog: "ɔg",
+      bat: "æt",
+      fog: "ɔg",
       bomber: "ɚ",
       her: "ɚ",
+      there: "ɛr",
+      care: "ɛr",
+      hair: "ɛr",
     },
     byKeyEnd: {
       eɪ: ["day", "way"],
       aɪt: ["night", "light"],
-      æt: ["cat"],
-      ɔg: ["dog"],
+      æt: ["cat", "bat"],
+      ɔg: ["dog", "fog"],
       ɚ: ["bomber", "her"],
+      ɛr: ["there", "care", "hair"],
     },
   });
 }
@@ -115,15 +127,80 @@ describe("analyzeRhymeScheme", () => {
     expect(rows[2]?.status).toBe("match");
   });
 
-  it("cycles the scheme pattern", () => {
+  it("matches independent scheme periods (heroic couplets)", () => {
     fixtureRhymes();
     const rows = analyzeRhymeScheme(
-      ["day", "night", "way", "light", "day", "night"],
-      "AB",
+      ["a quiet day", "another way", "dark night", "bright light"],
+      "AA",
     );
-    expect(rows.map((r) => r.letter)).toEqual(["A", "B", "A", "B", "A", "B"]);
-    expect(rows.every((r) => r.status === "match" || r.status === "open")).toBe(
-      true,
+    expect(rows.map((r) => r.letter)).toEqual(["A", "A", "A", "A"]);
+    expect(rows.map((r) => r.status)).toEqual([
+      "match",
+      "match",
+      "match",
+      "match",
+    ]);
+  });
+
+  it("matches independent ABAB stanzas with different rhyme sets", () => {
+    fixtureRhymes();
+    const rows = analyzeRhymeScheme(
+      [
+        "a quiet day",
+        "dark night",
+        "another way",
+        "bright light",
+        "a loud cat",
+        "a big dog",
+        "a small bat",
+        "thick fog",
+      ],
+      "ABAB",
     );
+    expect(rows.map((r) => r.letter)).toEqual([
+      "A",
+      "B",
+      "A",
+      "B",
+      "A",
+      "B",
+      "A",
+      "B",
+    ]);
+    expect(rows.every((r) => r.status === "match")).toBe(true);
+  });
+
+  it("does not consume scheme slots for blank lines", () => {
+    fixtureRhymes();
+    const rows = analyzeRhymeScheme(
+      [
+        "there once was a man from there",
+        "who never had much to care",
+        "he walked with flair",
+        "and styled his hair",
+        "then sat in his favorite chair",
+        "",
+        "there once was a man from there",
+        "who never had much to care",
+        "he walked with flair",
+        "and styled his hair",
+        "then sat in his favorite chair",
+      ],
+      "AABBA",
+    );
+    expect(rows.map((r) => r.letter)).toEqual([
+      "A",
+      "A",
+      "B",
+      "B",
+      "A",
+      null,
+      "A",
+      "A",
+      "B",
+      "B",
+      "A",
+    ]);
+    expect(rows[5]?.status).toBe("empty");
   });
 });

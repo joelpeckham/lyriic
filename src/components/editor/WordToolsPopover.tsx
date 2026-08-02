@@ -560,7 +560,7 @@ export function WordToolsPopover({
         side="bottom"
         sideOffset={WORD_TOOLBAR_SIDE_OFFSET_PX}
         collisionPadding={12}
-        avoidCollisions={view !== "actions"}
+        avoidCollisions
         data-word-toolbar=""
         className={contentShellClass}
         onOpenAutoFocus={(event) => {

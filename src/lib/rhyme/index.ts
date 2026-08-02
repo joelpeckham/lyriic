@@ -19,6 +19,7 @@ export {
 export {
   analyzeRhymeScheme,
   endWordOfLine,
+  rhymeSchemeLineTitle,
   type RhymeLineStatus,
   type RhymeSchemeLine,
 } from "./scheme";

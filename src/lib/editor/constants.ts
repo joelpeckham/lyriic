@@ -13,8 +13,15 @@ export const WRAP_LEADING = 2.3;
  */
 export const LINE_GAP_REM = 1.75;
 
-/** Right padding reserved for syllable count overlays. */
+/**
+ * Right padding reserved for syllable count overlays.
+ * Applied as `.cm-line` padding-right in **em** (scales with editor font-size).
+ * Overlay width uses the same constant × contentDOM.fontSize (px).
+ */
 export const COUNT_GUTTER_REM = 3;
 
-/** Extra right-gutter slot for rhyme-scheme dots (beside counts). */
+/**
+ * Extra right-gutter slot for rhyme-scheme dots (beside counts).
+ * Same em/px contract as {@link COUNT_GUTTER_REM}.
+ */
 export const RHYME_GUTTER_REM = 0.9;

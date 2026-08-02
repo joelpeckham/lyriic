@@ -51,8 +51,9 @@ export function zenEditorTheme(fontSizeRem: number) {
          ignore margins, so marginBottom makes hit-testing drift worse each line. */
       ".cm-line": {
         cursor: "text",
-        /* Count gutter + rhyme-dot slot (scheme overlay sits beside counts). */
-        paddingRight: `${COUNT_GUTTER_REM + RHYME_GUTTER_REM}rem`,
+        /* Count gutter + rhyme-dot slot — em so it tracks editor font-size
+           (overlay sizes gutters with the same constants × contentDOM.fontSize). */
+        paddingRight: `${COUNT_GUTTER_REM + RHYME_GUTTER_REM}em`,
         paddingBottom: `${LINE_GAP_REM}rem`,
         letterSpacing: "0.01em",
       },

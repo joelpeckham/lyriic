@@ -19,10 +19,10 @@ export function AppFooter({
     <footer
       className={cn(
         "font-[family-name:var(--font-ui)] text-xs text-muted-foreground",
-        // Overlay: own the bottom band (cursor:default) so FAQ/Tools edges do
-        // not alternate with the editor I-beam showing through gaps.
+        // Overlay: clicks pass through empty chrome into verse; only the nav
+        // captures hits (and owns cursor:default over the link cluster).
         variant === "overlay" &&
-          "pointer-events-auto absolute inset-x-0 bottom-0 z-20 cursor-default px-4 py-3",
+          "pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 py-3",
         variant === "flow" && "mt-auto px-4 py-6",
         className,
       )}
@@ -31,7 +31,8 @@ export function AppFooter({
         aria-label="Site"
         className={cn(
           "mx-auto flex w-fit flex-wrap items-center justify-center gap-x-3 gap-y-1",
-          variant === "overlay" && "opacity-70 transition-opacity hover:opacity-100",
+          variant === "overlay" &&
+            "pointer-events-auto cursor-default opacity-70 transition-opacity hover:opacity-100",
         )}
       >
         <Link to="/tools/syllable-counter" className={linkClass}>

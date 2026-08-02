@@ -17,7 +17,7 @@ import {
   type MeteredLine,
   type MeterStatus,
 } from "@/lib/meters";
-import type { RhymeSchemeLine } from "@/lib/rhyme";
+import { rhymeSchemeLineTitle, type RhymeSchemeLine } from "@/lib/rhyme";
 
 export type MeterOverlayState = {
   showCounts: boolean;
@@ -62,24 +62,6 @@ function statusClass(status: MeterStatus): string {
   if (status === "over") return "lyriic-count--over";
   if (status === "stress") return "lyriic-count--stress";
   return "lyriic-count--subtle";
-}
-
-function rhymeLetterTitle(line: RhymeSchemeLine): string {
-  const letter = line.letter ?? "?";
-  if (line.status === "mismatch") {
-    return `Rhyme ${letter} — does not match peers`;
-  }
-  if (line.status === "match") {
-    return `Rhyme ${letter} — perfect`;
-  }
-  if (line.status === "endMatch") {
-    return `Rhyme ${letter} — end rhyme`;
-  }
-  if (line.status === "unknown") {
-    return `Rhyme ${letter} — word not in dictionary`;
-  }
-  if (letter === "X") return "Unrhymed line";
-  return `Rhyme ${letter}`;
 }
 
 function tickClass(syllable: number, target: number | null): string {
@@ -373,7 +355,8 @@ export const syllableOverlay = ViewPlugin.fromClass(
             }
             dot.className = classes.join(" ");
             dot.dataset.letter = rhyme.letter;
-            dot.title = rhymeLetterTitle(rhyme);
+            // Label for React shadcn Tooltip (see RhymeDotTooltip).
+            dot.dataset.tooltip = rhymeSchemeLineTitle(rhyme);
             // Left edge of the right gutter, beside the syllable count.
             dot.style.left = `${gutterLeft + rhymeSlotPx * 0.15}px`;
             dot.style.top = `${rowTop + fontSize * 0.45}px`;

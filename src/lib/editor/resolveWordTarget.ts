@@ -57,6 +57,13 @@ export function pointerHitsWordAnchor(
 }
 
 /**
+ * Minimum horizontal span for the word→toolbar bridge. Short words (`I`, `a`)
+ * are narrower than the centered actions bar; without this floor the pointer
+ * leaves the corridor on a diagonal move and the pin dismisses.
+ */
+export const WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX = 120;
+
+/**
  * Whether the pointer is in the corridor between the word box and the toolbar
  * placement (below by default, or above when collision flips `side`).
  * Keeps the hover pin alive across the sideOffset − pad dead zone.
@@ -67,12 +74,15 @@ export function pointerHitsWordToolbarBridge(
   anchor: WordAnchor,
   sideOffset = WORD_TOOLBAR_SIDE_OFFSET_PX,
   pad = WORD_HIT_PAD_PX,
+  minWidth = WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX,
 ): boolean | null {
   if (isDegenerateAnchor(anchor)) return null;
   if (sideOffset <= pad) return false;
 
-  const left = anchor.left - pad;
-  const right = anchor.right + pad;
+  const mid = (anchor.left + anchor.right) / 2;
+  const half = Math.max((anchor.right - anchor.left) / 2 + pad, minWidth / 2);
+  const left = mid - half;
+  const right = mid + half;
   if (x < left || x > right) return false;
 
   // Below word → default popover placement

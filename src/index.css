@@ -271,6 +271,11 @@ html[data-contrast="more"].dark {
   pointer-events: none;
 }
 
+/* Rhyme dots opt back in for native title tooltips (gutter only). */
+.lyriic-syllable-overlay .lyriic-rhyme-dot {
+  pointer-events: auto;
+}
+
 .lyriic-count {
   position: absolute;
   box-sizing: border-box;
@@ -378,7 +383,6 @@ html[data-contrast="more"].dark {
   border: 1.5px solid transparent;
   background: var(--lyriic-rhyme-a, var(--lyriic-ruler));
   opacity: 0.9;
-  pointer-events: none;
   user-select: none;
   transform: translateY(-50%);
   transition:
@@ -410,9 +414,9 @@ html[data-contrast="more"].dark {
   background: var(--lyriic-rhyme-g);
 }
 
+/* Open / unknown — keep letter hue; mute with opacity only. */
 .lyriic-rhyme-dot--muted {
   opacity: 0.4;
-  background: var(--lyriic-subtle-faint);
 }
 
 /* Perfect rhyme — solid green. */

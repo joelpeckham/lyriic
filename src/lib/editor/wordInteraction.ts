@@ -111,6 +111,16 @@ class WordPointerPlugin implements PluginValue {
   update(update: ViewUpdate): void {
     if (update.docChanged || update.viewportChanged) {
       this.dismissImmediate();
+      return;
+    }
+    // Font load / measure: keep the pin but refresh React's fixed WordAnchor
+    // so popover position matches updated glyph geometry.
+    if (update.geometryChanged && this.openKey && this.openTarget) {
+      const fresh = resolveWordTarget(this.view, this.openTarget.from);
+      if (fresh && targetKey(fresh) === this.openKey) {
+        this.openTarget = fresh;
+        emitToolbar(this.view, fresh);
+      }
     }
   }
 

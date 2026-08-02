@@ -6,6 +6,7 @@ import {
   pointerHitsWordAnchor,
   pointerHitsWordToolbarBridge,
   WORD_HIT_PAD_PX,
+  WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX,
   WORD_TOOLBAR_SIDE_OFFSET_PX,
   wordTargetAtPointer,
 } from "./resolveWordTarget";
@@ -64,9 +65,19 @@ describe("pointerHitsWordToolbarBridge", () => {
     expect(pointerHitsWordToolbarBridge(120, yInGap, anchor)).toBe(true);
   });
 
-  it("rejects pointers outside the horizontal word corridor", () => {
+  it("rejects pointers outside the widened toolbar corridor", () => {
     const yInGap = anchor.bottom + WORD_HIT_PAD_PX + 1;
-    expect(pointerHitsWordToolbarBridge(50, yInGap, anchor)).toBe(false);
+    const mid = (anchor.left + anchor.right) / 2;
+    const farLeft = mid - WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX / 2 - 1;
+    expect(pointerHitsWordToolbarBridge(farLeft, yInGap, anchor)).toBe(false);
+  });
+
+  it("accepts x outside the glyph box but inside the toolbar span", () => {
+    // Short-word geometry: narrow AABB, pointer aimed at a centered actions button.
+    const short = { left: 118, right: 122, top: 20, bottom: 36 };
+    const yInGap = short.bottom + WORD_HIT_PAD_PX + 1;
+    expect(pointerHitsWordAnchor(70, yInGap, short)).toBe(false);
+    expect(pointerHitsWordToolbarBridge(70, yInGap, short)).toBe(true);
   });
 
   it("rejects pointers past the sideOffset", () => {
