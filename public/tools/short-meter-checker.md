@@ -68,8 +68,12 @@ Yes. For Short meter, lyriic targets 6 / 6 / 8 / 6 syllables and the iambic weak
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Short meter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Short meter meter: https://lyriic.com/write/short-meter

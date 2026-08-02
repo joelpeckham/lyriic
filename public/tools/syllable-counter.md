@@ -22,6 +22,10 @@ Most English words use primary pronunciations from the bundled dictionary. Ambig
 
 Yes. Per-line totals help match syllable counts to a melody or flow, whether you are writing verse, chorus, or spoken word.
 
+### Does my text move into the editor?
+
+Yes, when you continue with a draft you edited here (not an untouched sample). lyriic carries that text into the editor once via a short-lived browser handoff — nothing is uploaded.
+
 ## Open the editor
 
-Write with live counts in the editor: https://lyriic.com/
+Continue in the editor with live counts: https://lyriic.com/

@@ -56,8 +56,12 @@ Yes. Open the Katauta writer, or choose Katauta under Meter in Settings, for liv
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Katauta — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Katauta meter: https://lyriic.com/write/katauta

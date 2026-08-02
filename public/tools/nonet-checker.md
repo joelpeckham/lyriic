@@ -54,8 +54,12 @@ Yes. Open the Nonet writer, or choose Nonet under Meter in Settings, for live 9â
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Nonet â€” if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Nonet meter: https://lyriic.com/write/nonet

@@ -78,8 +78,12 @@ Not on this page — the checker stays on syllables and stress. Open the zen edi
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Sonnet (iambic pentameter) — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Sonnet (iambic pentameter) meter: https://lyriic.com/write/sonnet

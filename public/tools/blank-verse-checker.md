@@ -78,8 +78,12 @@ Yes. For Blank verse, lyriic targets ten syllables and the iambic weak–strong 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Blank verse — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Blank verse meter: https://lyriic.com/write/blank-verse

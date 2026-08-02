@@ -78,8 +78,12 @@ Yes. For 8s & 7s, lyriic targets the 8 / 7 syllable cycle and the trochaic stres
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with 8s & 7s — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with 8s & 7s meter: https://lyriic.com/write/eights-and-sevens

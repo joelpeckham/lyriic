@@ -26,6 +26,10 @@ Slant (near) rhymes share a related vowel family and coda family from the last s
 
 No. lyriic is a meter-focused editor with dictionary helpers — not a generative AI songwriting tool.
 
+### How is this different from the editor?
+
+This page is for browsing rhymes. The editor keeps rhyme lookup beside your draft while you write, with live syllable counts and optional meter rulers. Your finder query does not carry over — open the editor when you are ready to draft.
+
 ## Open the editor
 
-Write with rhymes beside your draft: https://lyriic.com/
+Continue in the editor with rhyme lookup: https://lyriic.com/

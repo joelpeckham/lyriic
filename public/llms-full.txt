@@ -102,6 +102,10 @@ Yes. Settings include system, light, or dark theme, higher contrast, and editor 
 
 No. Syllable counts, thesaurus, and rhyme helpers run client-side. Poem text is not sent to a server for editing. You can keep writing offline after assets load.
 
+## Do the free tools send my text into the editor?
+
+The syllable counter and form checkers can carry a draft you edited into the editor once (not an untouched sample). It uses a short-lived handoff in your browser — nothing is uploaded. The rhyme finder is for browsing; open the editor when you are ready to draft.
+
 ---
 
 # Tools
@@ -127,6 +131,10 @@ Most English words use primary pronunciations from the bundled dictionary. Ambig
 ## Can I use it for song lyrics?
 
 Yes. Per-line totals help match syllable counts to a melody or flow, whether you are writing verse, chorus, or spoken word.
+
+## Does my text move into the editor?
+
+Yes, when you continue with a draft you edited here (not an untouched sample). lyriic carries that text into the editor once via a short-lived browser handoff — nothing is uploaded.
 
 ---
 
@@ -155,6 +163,10 @@ Slant (near) rhymes share a related vowel family and coda family from the last s
 ## Does lyriic generate lyrics with AI?
 
 No. lyriic is a meter-focused editor with dictionary helpers — not a generative AI songwriting tool.
+
+## How is this different from the editor?
+
+This page is for browsing rhymes. The editor keeps rhyme lookup beside your draft while you write, with live syllable counts and optional meter rulers. Your finder query does not carry over — open the editor when you are ready to draft.
 
 ---
 
@@ -238,9 +250,13 @@ Yes. For Iambic trimeter, lyriic targets six syllables and the iambic weak–str
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Iambic trimeter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Iambic trimeter meter: https://lyriic.com/write/iambic-trimeter
 
@@ -324,9 +340,13 @@ Yes. With the stress pack loaded, the checker compares dictionary stress to the 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Iambic tetrameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Iambic tetrameter meter: https://lyriic.com/write/iambic-tetrameter
 
@@ -412,9 +432,13 @@ Yes. For Iambic pentameter, lyriic targets ten syllables and the iambic weak–s
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Iambic pentameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Iambic pentameter meter: https://lyriic.com/write/iambic-pentameter
 
@@ -500,9 +524,13 @@ Yes. For Blank verse, lyriic targets ten syllables and the iambic weak–strong 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Blank verse — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Blank verse meter: https://lyriic.com/write/blank-verse
 
@@ -588,9 +616,13 @@ Not on this page — the checker stays on syllables and stress. Open the zen edi
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Sonnet (iambic pentameter) — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Sonnet (iambic pentameter) meter: https://lyriic.com/write/sonnet
 
@@ -674,9 +706,13 @@ Yes. For Iambic hexameter, lyriic targets twelve syllables and the iambic weak�
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Iambic hexameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Iambic hexameter meter: https://lyriic.com/write/iambic-hexameter
 
@@ -760,9 +796,13 @@ Yes. For Trochaic tetrameter, lyriic targets eight syllables and the trochaic st
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Trochaic tetrameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Trochaic tetrameter meter: https://lyriic.com/write/trochaic-tetrameter
 
@@ -848,9 +888,13 @@ Yes. With the stress pack loaded, the checker compares dictionary stress to the 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Trochaic octameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Trochaic octameter meter: https://lyriic.com/write/trochaic-octameter
 
@@ -928,9 +972,13 @@ Yes. For Anapestic trimeter, lyriic targets nine syllables and the anapestic wea
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Anapestic trimeter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Anapestic trimeter meter: https://lyriic.com/write/anapestic-trimeter
 
@@ -1014,9 +1062,13 @@ Yes. With the stress pack loaded, the checker compares dictionary stress to the 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Anapestic tetrameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Anapestic tetrameter meter: https://lyriic.com/write/anapestic-tetrameter
 
@@ -1094,9 +1146,13 @@ Yes. For Dactylic tetrameter, lyriic targets twelve syllables and the dactylic s
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Dactylic tetrameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Dactylic tetrameter meter: https://lyriic.com/write/dactylic-tetrameter
 
@@ -1178,9 +1234,13 @@ Yes. For Dactylic hexameter, lyriic targets eighteen syllables and the dactylic 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Dactylic hexameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Dactylic hexameter meter: https://lyriic.com/write/dactylic-hexameter
 
@@ -1264,9 +1324,13 @@ Yes. For Amphibrachic tetrameter, lyriic targets twelve syllables and the amphib
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Amphibrachic tetrameter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Amphibrachic tetrameter meter: https://lyriic.com/write/amphibrachic-tetrameter
 
@@ -1352,9 +1416,13 @@ This page targets two ten-syllable iambic lines and the weak–strong stress con
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Heroic couplet — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Heroic couplet meter: https://lyriic.com/write/heroic-couplet
 
@@ -1438,9 +1506,13 @@ Yes. With the stress pack loaded, the checker compares dictionary stress to the 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Common meter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Common meter meter: https://lyriic.com/write/common-meter
 
@@ -1526,9 +1598,13 @@ Common meter alternates eight- and six-syllable lines (8.6.8.6). Long meter keep
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Long meter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Long meter meter: https://lyriic.com/write/long-meter
 
@@ -1604,9 +1680,13 @@ Yes. For Short meter, lyriic targets 6 / 6 / 8 / 6 syllables and the iambic weak
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Short meter — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Short meter meter: https://lyriic.com/write/short-meter
 
@@ -1692,9 +1772,13 @@ Yes. For 8s & 7s, lyriic targets the 8 / 7 syllable cycle and the trochaic stres
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with 8s & 7s — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with 8s & 7s meter: https://lyriic.com/write/eights-and-sevens
 
@@ -1778,9 +1862,13 @@ Both use the same 8.6.8.6 line lengths. Ballad stanza is the folk/literary name 
 
 No. Syllable and stress checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Ballad stanza — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Ballad stanza meter: https://lyriic.com/write/ballad-stanza
 
@@ -1850,9 +1938,13 @@ Yes. Open the Haiku writer, or choose Haiku under Meter in Settings, for live 5/
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Haiku — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Haiku meter: https://lyriic.com/write/haiku
 
@@ -1916,9 +2008,13 @@ Yes. Open the Senryu writer, or choose Senryu under Meter in Settings, for live 
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Senryu — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Senryu meter: https://lyriic.com/write/senryu
 
@@ -1986,9 +2082,13 @@ Yes. Open the Tanka writer, or choose Tanka under Meter in Settings, for live 5/
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Tanka — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Tanka meter: https://lyriic.com/write/tanka
 
@@ -2052,9 +2152,13 @@ Yes. Open the Katauta writer, or choose Katauta under Meter in Settings, for liv
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Katauta — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Katauta meter: https://lyriic.com/write/katauta
 
@@ -2120,9 +2224,13 @@ Yes. Open the Sedoka writer, or choose Sedoka under Meter in Settings, for live 
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Sedoka — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Sedoka meter: https://lyriic.com/write/sedoka
 
@@ -2190,9 +2298,13 @@ Yes. Open the Cinquain writer, or choose Cinquain under Meter in Settings, for l
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Cinquain — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Cinquain meter: https://lyriic.com/write/cinquain
 
@@ -2254,9 +2366,13 @@ Yes. Open the Nonet writer, or choose Nonet under Meter in Settings, for live 9�
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Nonet — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Nonet meter: https://lyriic.com/write/nonet
 
@@ -2318,9 +2434,13 @@ Yes. Open the Etheree writer, or choose Etheree under Meter in Settings, for liv
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Etheree — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Etheree meter: https://lyriic.com/write/etheree
 
@@ -2392,9 +2512,13 @@ This page scores syllable targets only. Open the zen editor with the Limerick me
 
 No. Syllable checks run locally in your browser. lyriic is local-first and does not require an account.
 
+### Can I continue this draft in the editor?
+
+Yes. Use Continue in the editor with Limerick — if you edited the checker (not just the stock sample), that text carries into the editor once. Nothing is uploaded.
+
 ## Open the editor
 
-Write in the zen editor: https://lyriic.com/
+Continue in the editor: https://lyriic.com/
 
 Open with Limerick meter: https://lyriic.com/write/limerick
 

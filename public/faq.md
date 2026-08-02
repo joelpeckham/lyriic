@@ -34,3 +34,7 @@ Yes. Settings include system, light, or dark theme, higher contrast, and editor 
 
 No. Syllable counts, thesaurus, and rhyme helpers run client-side. Poem text is not sent to a server for editing. You can keep writing offline after assets load.
 
+## Do the free tools send my text into the editor?
+
+The syllable counter and form checkers can carry a draft you edited into the editor once (not an untouched sample). It uses a short-lived handoff in your browser — nothing is uploaded. The rhyme finder is for browsing; open the editor when you are ready to draft.
+
