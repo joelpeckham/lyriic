@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { PoemEditor } from "@/components/editor/PoemEditor";
 import {
+  CONTENT_PAD_BOTTOM_MARKS_EM,
+  CONTENT_PAD_TOP_MARKS_EM,
   COUNT_GUTTER_REM,
-  LINE_GAP_REM,
+  LINE_GAP_COMPACT_EM,
+  LINE_GAP_EM,
   WRAP_LEADING,
 } from "@/lib/editor/constants";
 import type { EditorSettings } from "@/lib/settings";
@@ -49,9 +52,12 @@ type AboutPoemEditorProps = {
 
 function StaticVerseFallback({
   text,
+  marksActive,
   className,
 }: {
   text: string;
+  /** Match live embed padding / gap for the demo’s overlay settings. */
+  marksActive: boolean;
   className?: string;
 }) {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
@@ -62,7 +68,14 @@ function StaticVerseFallback({
         "text-[1.25rem] sm:text-[1.5rem]",
         className,
       )}
-      style={{ lineHeight: WRAP_LEADING }}
+      style={{
+        lineHeight: WRAP_LEADING,
+        // Match embed PoemEditor content pad so first paint doesn’t jump.
+        paddingTop: marksActive ? `${CONTENT_PAD_TOP_MARKS_EM}em` : "0.35em",
+        paddingBottom: marksActive
+          ? `${CONTENT_PAD_BOTTOM_MARKS_EM}em`
+          : "0.5em",
+      }}
       aria-hidden="true"
     >
       {lines.map((line, index) => (
@@ -70,9 +83,13 @@ function StaticVerseFallback({
           key={`${index}-${line}`}
           className="m-0"
           style={{
-            paddingRight: `${COUNT_GUTTER_REM + 0.5}rem`,
+            paddingRight: `${COUNT_GUTTER_REM + 0.5}em`,
             paddingBottom:
-              index < lines.length - 1 ? `${LINE_GAP_REM}rem` : undefined,
+              index < lines.length - 1
+                ? marksActive
+                  ? `${LINE_GAP_EM}em`
+                  : `${LINE_GAP_COMPACT_EM}em`
+                : undefined,
           }}
         >
           {line.length > 0 ? line : "\u00a0"}
@@ -97,6 +114,8 @@ export function AboutPoemEditor({
 }: AboutPoemEditorProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const fontSizeRem = useAboutEmbedFontSize();
+  const marksActive =
+    settings.showRulers || settings.showStress || settings.showMeterBreaks;
   const [text, setText] = useState(initialText);
   const [overrides, setOverrides] = useState<Record<string, number>>({});
   const [stressOverrides, setStressOverrides] = useState<
@@ -182,7 +201,7 @@ export function AboutPoemEditor({
           fontSizeRem={fontSizeRem}
         />
       ) : (
-        <StaticVerseFallback text={text} />
+        <StaticVerseFallback text={text} marksActive={marksActive} />
       )}
     </div>
   );

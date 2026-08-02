@@ -259,6 +259,11 @@ export const syllableOverlay = ViewPlugin.fromClass(
       const contentRect = view.contentDOM.getBoundingClientRect();
       const left = contentRect.left - hostRect.left;
       const width = contentRect.width;
+      const contentStyle = getComputedStyle(view.contentDOM);
+      const editorFont = contentStyle.fontSize || "16px";
+      // Mark CSS uses em — match verse so stress/ticks track font-size prefs.
+      this.dom.style.fontSize = editorFont;
+      const fontSize = parseFloat(editorFont);
       const rootFontPx = parseFloat(
         getComputedStyle(document.documentElement).fontSize || "16",
       );
@@ -362,9 +367,6 @@ export const syllableOverlay = ViewPlugin.fromClass(
           }
         }
 
-        const fontSize = parseFloat(
-          getComputedStyle(view.contentDOM).fontSize || "16",
-        );
         const countGutterPx = COUNT_GUTTER_REM * fontSize;
         const rhymeSlotPx = showRhymeScheme ? RHYME_GUTTER_REM * fontSize : 0;
         // Right gutter: [rhyme dot][syllable count…], both clear of glyphs.

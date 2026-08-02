@@ -227,7 +227,9 @@ export function PoemEditor({
   const hasMeterTarget = meterConfig.pattern.length > 0;
   const needsRhyme =
     settings.showRhymeScheme && activeRhymeScheme !== null;
-  const compactLineGap = !settings.showRulers && !settings.showStress;
+  // Meter-break marks paint stress glyphs too — same vertical budget.
+  const compactLineGap =
+    !settings.showRulers && !settings.showStress && !settings.showMeterBreaks;
 
   // Retry failed pack loads; createLazyBinData clears its promise on error.
   useEffect(() => {

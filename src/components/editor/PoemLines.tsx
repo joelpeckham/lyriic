@@ -7,7 +7,15 @@ import {
 } from "react";
 
 import { useDictRevision } from "@/hooks/useDictRevision";
-import { COUNT_GUTTER_REM, LINE_GAP_REM } from "@/lib/editor/constants";
+import {
+  CONTENT_PAD_BOTTOM_MARKS_EM,
+  CONTENT_PAD_TOP_MARKS_EM,
+  COUNT_GUTTER_REM,
+  LINE_GAP_COMPACT_EM,
+  LINE_GAP_EM,
+  TEXT_LEADING,
+  WRAP_LEADING,
+} from "@/lib/editor/constants";
 import { statusClass, tickClass } from "@/lib/editor/syllableOverlay";
 import {
   getStressRevision,
@@ -142,13 +150,13 @@ function PoemLineRow({
   isLast,
   showStress,
   showRulers,
-  lineGapRem,
+  lineGapEm,
 }: {
   line: PoemLine;
   isLast: boolean;
   showStress: boolean;
   showRulers: boolean;
-  lineGapRem: number;
+  lineGapEm: number;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
@@ -180,18 +188,21 @@ function PoemLineRow({
     }
   }, [text, target, showStress, showRulers, dictRev, stressRev]);
 
+  const padTop = showStress ? CONTENT_PAD_TOP_MARKS_EM : 0;
+  const padBottom = isLast
+    ? showRulers
+      ? CONTENT_PAD_BOTTOM_MARKS_EM
+      : 0
+    : lineGapEm;
+
   return (
     <div
       ref={hostRef}
       className="relative"
       style={{
         paddingRight: `${COUNT_GUTTER_REM}em`,
-        paddingTop: showStress ? "0.85em" : 0,
-        paddingBottom: isLast
-          ? showRulers
-            ? "0.85em"
-            : 0
-          : `${lineGapRem}rem`,
+        paddingTop: padTop > 0 ? `${padTop}em` : 0,
+        paddingBottom: padBottom > 0 ? `${padBottom}em` : 0,
       }}
     >
       <span ref={textRef} className="whitespace-pre-wrap">
@@ -225,7 +236,7 @@ function PoemLineRow({
         className={cn("lyriic-count", statusClass(metered.status))}
         style={{
           position: "absolute",
-          top: showStress ? "0.85em" : 0,
+          top: padTop > 0 ? `${padTop}em` : 0,
           right: 0,
           width: `${COUNT_GUTTER_REM}em`,
           paddingRight: "0.25rem",
@@ -253,13 +264,14 @@ export function PoemLines({
   showRulers = false,
   className,
 }: PoemLinesProps) {
-  const lineGapRem =
-    showStress || showRulers ? LINE_GAP_REM + 0.35 : LINE_GAP_REM;
+  const marksActive = showStress || showRulers;
+  const lineGapEm = marksActive ? LINE_GAP_EM : LINE_GAP_COMPACT_EM;
 
   const style: CSSProperties = {
     fontSize: `${fontSizeRem}rem`,
     letterSpacing: "0.01em",
-    lineHeight: showStress || showRulers ? 1.55 : 1.35,
+    // Match editor: WRAP_LEADING reserves mark bands when overlays are on.
+    lineHeight: marksActive ? WRAP_LEADING : TEXT_LEADING,
   };
 
   return (
@@ -277,7 +289,7 @@ export function PoemLines({
           isLast={index === lines.length - 1}
           showStress={showStress}
           showRulers={showRulers}
-          lineGapRem={lineGapRem}
+          lineGapEm={lineGapEm}
         />
       ))}
     </div>

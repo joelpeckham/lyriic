@@ -1,14 +1,14 @@
 import { EditorView } from "@codemirror/view";
 
 import {
+  CONTENT_PAD_BOTTOM_MARKS_EM,
+  CONTENT_PAD_TOP_MARKS_EM,
   COUNT_GUTTER_REM,
-  LINE_GAP_REM,
+  LINE_GAP_COMPACT_EM,
+  LINE_GAP_EM,
   RHYME_GUTTER_REM,
   WRAP_LEADING,
 } from "@/lib/editor/constants";
-
-/** Slightly tighter poetic gap when rulers and stress marks are off. */
-const LINE_GAP_COMPACT_REM = 1.35;
 
 export type ZenThemeVariant = "zen" | "embed";
 
@@ -27,8 +27,19 @@ export function zenEditorTheme(
   fontSizeRem: number,
   options: ZenThemeOptions = {},
 ) {
-  const lineGap = options.compactLineGap ? LINE_GAP_COMPACT_REM : LINE_GAP_REM;
+  const marksActive = !options.compactLineGap;
+  const lineGap = marksActive ? LINE_GAP_EM : LINE_GAP_COMPACT_EM;
   const embed = options.variant === "embed";
+
+  // Edge clearance for stress (top) / ticks (bottom). Content pad owns this so
+  // last-line padding can stay 0 without clipping marks.
+  const embedPadTop = marksActive ? `${CONTENT_PAD_TOP_MARKS_EM}em` : "0.35em";
+  const embedPadBottom = marksActive
+    ? `${CONTENT_PAD_BOTTOM_MARKS_EM}em`
+    : "0.5em";
+  const zenPadTop = `max(6rem, ${CONTENT_PAD_TOP_MARKS_EM}em)`;
+  const zenPadBottom = `calc(max(4rem, ${CONTENT_PAD_BOTTOM_MARKS_EM}em) + var(--lyriic-vv-bottom, 0px))`;
+
   return EditorView.theme(
     {
       "&": {
@@ -55,11 +66,9 @@ export function zenEditorTheme(
         /* Padding above/below the verse is not “text” — keep the arrow there
            so the header/footer overlays are not I-beam / flicker zones. */
         cursor: "default",
-        paddingTop: embed ? "0.35rem" : "6rem",
+        paddingTop: embed ? embedPadTop : zenPadTop,
         /* --lyriic-vv-bottom grows when the soft keyboard occludes the canvas. */
-        paddingBottom: embed
-          ? "0.5rem"
-          : "calc(4rem + var(--lyriic-vv-bottom, 0px))",
+        paddingBottom: embed ? embedPadBottom : zenPadBottom,
         paddingLeft: embed ? "0" : "1.5rem",
         /* Keep in sync with .lyriic-count padding-right (index.css). */
         paddingRight: embed ? "0" : "1.5rem",
@@ -78,9 +87,10 @@ export function zenEditorTheme(
            (overlay sizes gutters with the same constants × contentDOM.fontSize). */
         paddingRight: `${COUNT_GUTTER_REM + RHYME_GUTTER_REM}em`,
         marginLeft: "-0.25rem",
-        paddingBottom: `${lineGap}rem`,
+        paddingBottom: `${lineGap}em`,
         letterSpacing: "0.01em",
       },
+      /* Edge mark clearance lives in content padding — not a second last-line gap. */
       ".cm-line:last-child": {
         paddingBottom: "0",
       },
