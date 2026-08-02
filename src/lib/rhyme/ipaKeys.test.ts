@@ -82,7 +82,8 @@ describe("slantRhymeKeysFromIpa (scripts/lib/ipa.mjs)", () => {
     const side = slantRhymeKeysFromIpa("sˈaɪd");
     expect(night[0]).toBe("f:AI+T");
     expect(side[0]).toBe(night[0]);
-    expect(night[1]).toBe("a:AI");
+    // Single-segment coda: no truncation key.
+    expect(night).toEqual(["f:AI+T"]);
   });
 
   it("shares family keys for love / rough (V+F)", () => {
@@ -103,6 +104,8 @@ describe("slantRhymeKeysFromIpa (scripts/lib/ipa.mjs)", () => {
   it("does not family-match cat / cast (coda length)", () => {
     expect(slantRhymeKeysFromIpa("kæt")[0]).toBe("f:A+T");
     expect(slantRhymeKeysFromIpa("kæst")[0]).toBe("f:A+ST");
+    // Truncation is ST→S, not ST→T, so cat ↛ cast.
+    expect(slantRhymeKeysFromIpa("kæst")[1]).toBe("f:A+S");
   });
 
   it("does not family-match tie / time (open vs closed)", () => {
@@ -110,18 +113,31 @@ describe("slantRhymeKeysFromIpa (scripts/lib/ipa.mjs)", () => {
     expect(slantRhymeKeysFromIpa("tˈaɪm")[0]).toBe("f:AI+N");
   });
 
-  it("assonance matches hold / coal; family does not", () => {
+  it("additive slant matches hold / coal and mind / time", () => {
     const hold = slantRhymeKeysFromIpa("hˈoʊld");
     const coal = slantRhymeKeysFromIpa("kˈoʊl");
-    expect(hold[0]).toBe("f:O+LT");
-    expect(coal[0]).toBe("f:O+L");
-    expect(hold[1]).toBe("a:O");
-    expect(coal[1]).toBe(hold[1]);
+    expect(hold).toEqual(["f:O+LT", "f:O+L"]);
+    expect(coal).toEqual(["f:O+L"]);
+    expect(hold).toContain(coal[0]);
+
+    const mind = slantRhymeKeysFromIpa("mˈaɪnd");
+    const time = slantRhymeKeysFromIpa("tˈaɪm");
+    expect(mind).toEqual(["f:AI+NT", "f:AI+N"]);
+    expect(time).toEqual(["f:AI+N"]);
+    expect(mind).toContain(time[0]);
+  });
+
+  it("does not slant-match french / members (no shared family or truncate)", () => {
+    const french = slantRhymeKeysFromIpa("fɹˈɛntʃ");
+    const members = slantRhymeKeysFromIpa("mˈɛmbɚz");
+    // tʃ is one coda segment (CH), so truncate is NCH → N.
+    expect(french).toEqual(["f:E+NCH", "f:E+N"]);
+    expect(members).toEqual(["f:E+NPVS", "f:E+NPV"]);
+    expect(french.some((k) => members.includes(k))).toBe(false);
   });
 
   it("keeps fire as AI+V (not reduced-only)", () => {
-    expect(slantRhymeKeysFromIpa("fˈaɪɚ")[0]).toBe("f:AI+V");
-    expect(slantRhymeKeysFromIpa("fˈaɪɚ")[1]).toBe("a:AI");
+    expect(slantRhymeKeysFromIpa("fˈaɪɚ")).toEqual(["f:AI+V"]);
   });
 
   it("returns empty when no vowel", () => {

@@ -85,9 +85,8 @@ function FaqAnswer({ question }: { question: string }) {
           Hover or tap a word in the editor to open synonyms, rhymes, and
           syllable tools. Suggestions are sorted by syllable count; ones that
           match your meter target are highlighted. Optional End and Slant
-          toggles add stress-ignoring end rhymes and family or assonance near
-          rhymes. Everything runs from dictionaries bundled with the app. Try
-          the{" "}
+          toggles add stress-ignoring end rhymes and family slant near rhymes.
+          Everything runs from dictionaries bundled with the app. Try the{" "}
           <Link
             to="/tools/rhyme-finder"
             className="underline underline-offset-2 hover:text-foreground"

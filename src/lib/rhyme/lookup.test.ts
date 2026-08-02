@@ -43,13 +43,20 @@ describe("lookupRhymes", () => {
       byKey: { aɪt: ["night", "light"] },
       byWordEnd: { night: "aɪt", light: "aɪt" },
       byKeyEnd: { aɪt: ["night", "light"] },
-      byWordSlant: { night: ["f:AI+T", "a:AI"], side: ["f:AI+T", "a:AI"] },
+      byWordSlant: {
+        night: ["f:AI+T"],
+        side: ["f:AI+T"],
+        mind: ["f:AI+NT", "f:AI+N"],
+        time: ["f:AI+N"],
+      },
       byKeySlant: {
         "f:AI+T": ["night", "side", "light"],
-        "a:AI": ["night", "side", "hold"],
+        "f:AI+NT": ["mind"],
+        "f:AI+N": ["mind", "time"],
       },
     });
-    expect(lookupRhymes("night", "slant")).toEqual(["side", "light", "hold"]);
+    expect(lookupRhymes("night", "slant")).toEqual(["side", "light"]);
+    expect(lookupRhymes("mind", "slant")).toEqual(["time"]);
     expect(hasRhymeEntry("side", "slant")).toBe(true);
   });
 });

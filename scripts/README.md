@@ -32,9 +32,9 @@ Writes:
 - `src/lib/data/packs/variants.bin` — sparse non-primary syllable/stress alts (from merge IPA alts + `scripts/data/poetic-compressions.json`)
 - `src/lib/data/packs/rhyme-perfect.bin` — perfect-rhyme ID index
 - `src/lib/data/packs/rhyme-end.bin` — end-rhyme ID index
-- `src/lib/data/packs/rhyme-slant.bin` — slant-rhyme ID index (family + assonance)
+- `src/lib/data/packs/rhyme-slant.bin` — slant-rhyme ID index (family + one-segment coda truncate)
 
-Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last non-reduced vowel) through the coda. End-rhyme key = last vowel nucleus through the coda (ignores stress; fun ↔ anyone). Slant keys (same stress anchor as perfect): family half-rhyme = vowel family + coda family (night ↔ side), then assonance = vowel family only (hold ↔ coal). Stress patterns come from primary IPA vowel nuclei (unmarked multi-syllable IPA gets primary on the last non-reduced nucleus, matching rhyme). Syllable/stress **alts** are packed sparsely for meter-fit (citation primary stays in lexicon/stress). IPA helpers live in `scripts/lib/ipa.mjs` (build-time only; client uses precomputed packs). Pack codec: `scripts/lib/dictPack.mjs`.
+Perfect-rhyme key = IPA phones from the last primary stress (else secondary, else last non-reduced vowel) through the coda. End-rhyme key = last vowel nucleus through the coda (ignores stress; fun ↔ anyone). Slant keys (same stress anchor as perfect): family half-rhyme = vowel family + coda family (night ↔ side); when the coda has two or more segments, also emit the key with the final segment dropped (mind ↔ time, hold ↔ coal). Pure vowel-only assonance is not indexed. Stress patterns come from primary IPA vowel nuclei (unmarked multi-syllable IPA gets primary on the last non-reduced nucleus, matching rhyme). Syllable/stress **alts** are packed sparsely for meter-fit (citation primary stays in lexicon/stress). IPA helpers live in `scripts/lib/ipa.mjs` (build-time only; client uses precomputed packs). Pack codec: `scripts/lib/dictPack.mjs`.
 
 ## Thesaurus
 

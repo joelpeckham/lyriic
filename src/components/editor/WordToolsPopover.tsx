@@ -558,7 +558,7 @@ export function WordToolsPopover({
   const nearRhymeBits = [
     includeEndRhymes ? "end rhymes that match the final syllable" : null,
     includeSlantRhymes
-      ? "slant rhymes (related vowel and coda families)"
+      ? "slant rhymes (related vowel/coda families and one-segment coda add/drop)"
       : null,
   ].filter(Boolean);
   const lookupDescription = isThesaurus

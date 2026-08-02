@@ -408,6 +408,26 @@ export function vowelFamily(phone) {
 }
 
 /**
+ * Map coda phones (after the rhyme nucleus) to family segments.
+ * Trailing reduced / syllabic nuclei count as coda (e.g. fire aɪɚ → ["V"]).
+ *
+ * @param {{ phone: string, stress: 0 | 1 | 2, isVowel: boolean }[]} codaPhones
+ * @returns {string[]}
+ */
+export function codaFamilySegments(codaPhones) {
+  /** @type {string[]} */
+  const segs = [];
+  for (const p of codaPhones) {
+    if (p.isVowel) {
+      segs.push(vowelFamily(p.phone) ?? p.phone);
+      continue;
+    }
+    segs.push(CODA_FAMILY.get(p.phone) ?? p.phone);
+  }
+  return segs;
+}
+
+/**
  * Map coda phones (after the rhyme nucleus) to a family string.
  * Empty coda → `Ø` (open only matches open). Segment count is preserved.
  *
@@ -415,28 +435,18 @@ export function vowelFamily(phone) {
  * @returns {string}
  */
 export function codaFamily(codaPhones) {
-  if (codaPhones.length === 0) return "Ø";
-  let out = "";
-  for (const p of codaPhones) {
-    // Trailing reduced / syllabic nuclei after the slant anchor are coda-like
-    // for family matching (e.g. fire aɪɚ → AI+V).
-    if (p.isVowel) {
-      const fam = vowelFamily(p.phone);
-      out += fam ?? p.phone;
-      continue;
-    }
-    out += CODA_FAMILY.get(p.phone) ?? p.phone;
-  }
-  return out;
+  const segs = codaFamilySegments(codaPhones);
+  return segs.length === 0 ? "Ø" : segs.join("");
 }
 
 const IPA_CLOSING_DIPHTHONGS = new Set(["aɪ", "aʊ", "ɔɪ"]);
 
 /**
- * Slant keys for one IPA: family half-rhyme first, then assonance.
- * Family = vowelFamily + codaFamily (same stress anchor as perfect).
- * Assonance = vowelFamily only. Build-time only.
- * Trailing reduced after a closing diphthong stays in the coda (fire → AI+V).
+ * Slant keys for one IPA (same stress anchor as perfect).
+ * 1. Exact family half-rhyme: vowelFamily + codaFamily.
+ * 2. Additive/subtractive: drop the final coda segment when ≥2 remain
+ *    (mind ↔ time, hold ↔ coal) — not pure assonance (french ↛ members).
+ * Build-time only. Trailing reduced after a closing diphthong stays in coda.
  *
  * @param {string} ipa
  * @returns {string[]}
@@ -448,8 +458,15 @@ export function slantRhymeKeysFromIpa(ipa) {
   const nucleus = phones[start];
   const fam = vowelFamily(nucleus.phone);
   if (!fam) return [];
-  const coda = codaFamily(phones.slice(start + 1));
-  return [`f:${fam}+${coda}`, `a:${fam}`];
+  const segs = codaFamilySegments(phones.slice(start + 1));
+  const coda = segs.length === 0 ? "Ø" : segs.join("");
+  /** @type {string[]} */
+  const keys = [`f:${fam}+${coda}`];
+  // Keep at least one coda segment so we never collapse to open-vowel noise.
+  if (segs.length >= 2) {
+    keys.push(`f:${fam}+${segs.slice(0, -1).join("")}`);
+  }
+  return keys;
 }
 
 /**

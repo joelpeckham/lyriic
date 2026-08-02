@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const SLANT_RHYMES_HELP =
-  "Also include slant rhymes: related vowel and coda families (night ↔ side) plus assonance (hold ↔ coal). Perfect rhymes are always shown.";
+  "Also include slant rhymes: related vowel and coda families (night ↔ side), including one-segment coda add/drop (mind ↔ time, hold ↔ coal). Perfect rhymes are always shown.";
 
 type SlantRhymesSwitchProps = {
   checked: boolean;
