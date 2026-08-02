@@ -4,11 +4,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   pointerHitsWordAnchor,
-  pointerHitsWordToolbarBridge,
   WORD_HIT_PAD_PX,
   WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX,
   WORD_TOOLBAR_SIDE_OFFSET_PX,
   wordTargetAtPointer,
+  wordToolbarHitCorridors,
 } from "./resolveWordTarget";
 
 const anchor = { left: 100, right: 140, top: 20, bottom: 36 };
@@ -27,67 +27,40 @@ describe("pointerHitsWordAnchor", () => {
   });
 });
 
-describe("pointerHitsWordToolbarBridge", () => {
+describe("wordToolbarHitCorridors", () => {
   it("returns null for degenerate anchors", () => {
     expect(
-      pointerHitsWordToolbarBridge(10, 10, {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-      }),
+      wordToolbarHitCorridors({ left: 0, right: 0, top: 0, bottom: 0 }),
     ).toBeNull();
   });
 
-  it("covers the dead zone below the word pad toward the popover", () => {
-    const yInGap = anchor.bottom + WORD_HIT_PAD_PX + 1;
-    expect(yInGap).toBeLessThanOrEqual(
+  it("covers only the dead zones above and below the word pad", () => {
+    const corridors = wordToolbarHitCorridors(anchor);
+    expect(corridors).not.toBeNull();
+
+    const { above, below } = corridors!;
+    expect(above.top).toBe(anchor.top - WORD_TOOLBAR_SIDE_OFFSET_PX);
+    expect(above.top + above.height).toBe(anchor.top - WORD_HIT_PAD_PX);
+    expect(below.top).toBe(anchor.bottom + WORD_HIT_PAD_PX);
+    expect(below.top + below.height).toBe(
       anchor.bottom + WORD_TOOLBAR_SIDE_OFFSET_PX,
     );
-    expect(pointerHitsWordAnchor(120, yInGap, anchor)).toBe(false);
-    expect(pointerHitsWordToolbarBridge(120, yInGap, anchor)).toBe(true);
-    // Far edge of the sideOffset corridor still pins.
-    expect(
-      pointerHitsWordToolbarBridge(
-        120,
-        anchor.bottom + WORD_TOOLBAR_SIDE_OFFSET_PX,
-        anchor,
-      ),
-    ).toBe(true);
+
+    // Glyph box is not covered — caret clicks must reach the editor.
+    const wordMidY = (anchor.top + anchor.bottom) / 2;
+    expect(wordMidY).toBeGreaterThan(above.top + above.height);
+    expect(wordMidY).toBeLessThan(below.top);
   });
 
-  it("covers the dead zone above the word for collision-flipped side", () => {
-    const yInGap = anchor.top - WORD_HIT_PAD_PX - 1;
-    expect(yInGap).toBeGreaterThanOrEqual(
-      anchor.top - WORD_TOOLBAR_SIDE_OFFSET_PX,
-    );
-    expect(pointerHitsWordAnchor(120, yInGap, anchor)).toBe(false);
-    expect(pointerHitsWordToolbarBridge(120, yInGap, anchor)).toBe(true);
-  });
-
-  it("rejects pointers outside the widened toolbar corridor", () => {
-    const yInGap = anchor.bottom + WORD_HIT_PAD_PX + 1;
-    const mid = (anchor.left + anchor.right) / 2;
-    const farLeft = mid - WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX / 2 - 1;
-    expect(pointerHitsWordToolbarBridge(farLeft, yInGap, anchor)).toBe(false);
-  });
-
-  it("accepts x outside the glyph box but inside the toolbar span", () => {
-    // Short-word geometry: narrow AABB, pointer aimed at a centered actions button.
+  it("widens short words to the toolbar min width", () => {
     const short = { left: 118, right: 122, top: 20, bottom: 36 };
-    const yInGap = short.bottom + WORD_HIT_PAD_PX + 1;
-    expect(pointerHitsWordAnchor(70, yInGap, short)).toBe(false);
-    expect(pointerHitsWordToolbarBridge(70, yInGap, short)).toBe(true);
-  });
-
-  it("rejects pointers past the sideOffset", () => {
-    expect(
-      pointerHitsWordToolbarBridge(
-        120,
-        anchor.bottom + WORD_TOOLBAR_SIDE_OFFSET_PX + 1,
-        anchor,
-      ),
-    ).toBe(false);
+    const corridors = wordToolbarHitCorridors(short);
+    expect(corridors).not.toBeNull();
+    expect(corridors!.below.width).toBe(WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX);
+    const mid = (short.left + short.right) / 2;
+    expect(corridors!.below.left).toBe(
+      mid - WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX / 2,
+    );
   });
 });
 

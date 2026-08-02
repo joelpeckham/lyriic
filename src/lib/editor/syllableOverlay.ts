@@ -4,8 +4,6 @@ import {
   type ViewUpdate,
 } from "@codemirror/view";
 
-import type { StressCode } from "@/lib/data/dictPack";
-import { isStressReady } from "@/lib/data/stress";
 import { COUNT_GUTTER_REM, RHYME_GUTTER_REM } from "@/lib/editor/constants";
 import {
   mapSyllableMidpointToOffset,
@@ -13,11 +11,15 @@ import {
   rulerSyllableCount,
 } from "@/lib/meters/mapSyllableToOffset";
 import {
+  flattenTokenStress,
   stressMismatchMask,
   type MeteredLine,
   type MeterStatus,
 } from "@/lib/meters";
-import { rhymeSchemeLineTitle, type RhymeSchemeLine } from "@/lib/rhyme";
+import {
+  rhymeSchemeLineTitle,
+  type RhymeSchemeLine,
+} from "@/lib/rhyme";
 
 export type MeterOverlayState = {
   showCounts: boolean;
@@ -57,58 +59,84 @@ export function setMeterOverlayData(
   overlayByView.set(view, state);
 }
 
-function statusClass(status: MeterStatus): string {
+/** Exported for tests. */
+export function statusClass(status: MeterStatus): string {
   if (status === "exact") return "lyriic-count--exact";
   if (status === "over") return "lyriic-count--over";
   if (status === "stress") return "lyriic-count--stress";
   return "lyriic-count--subtle";
 }
 
-function tickClass(syllable: number, target: number | null): string {
+/** Exported for tests. */
+export function tickClass(syllable: number, target: number | null): string {
   if (target !== null && syllable === target) return "lyriic-ruler-tick--target";
   if (target !== null && syllable > target) return "lyriic-ruler-tick--over";
   return "lyriic-ruler-tick";
 }
 
-/** Flatten token stress for line-level comparison. */
-function flattenStress(line: MeteredLine): StressCode[] {
-  const out: StressCode[] = [];
-  for (const token of line.tokens) {
-    out.push(...token.stress);
+/** Exported for tests. */
+export function rhymeDotClass(rhyme: RhymeSchemeLine): string {
+  const classes = ["lyriic-rhyme-dot"];
+  if (rhyme.status === "match") {
+    classes.push("lyriic-rhyme-dot--match");
+  } else if (rhyme.status === "endMatch") {
+    classes.push("lyriic-rhyme-dot--end");
+  } else if (rhyme.status === "slantMatch") {
+    classes.push("lyriic-rhyme-dot--slant");
+  } else if (rhyme.status === "mismatch") {
+    classes.push("lyriic-rhyme-dot--mismatch");
+  } else if (rhyme.status === "unknown" || rhyme.status === "open") {
+    classes.push("lyriic-rhyme-dot--muted");
+    if (rhyme.colorIndex >= 0) {
+      classes.push(
+        `lyriic-rhyme-dot--${String.fromCharCode(65 + (rhyme.colorIndex % 7))}`,
+      );
+    }
   }
-  return out;
-}
-
-/**
- * Mismatch mask when the line is comparable (count matches target and
- * expected stress length aligns); otherwise null.
- * Gated on stress pack readiness — same as line status — to avoid heuristic flash.
- */
-function lineStressMismatchMask(line: MeteredLine): boolean[] | null {
-  if (
-    !isStressReady() ||
-    line.expectedStress === null ||
-    line.target === null ||
-    line.total !== line.target
-  ) {
-    return null;
-  }
-  return stressMismatchMask(flattenStress(line), line.expectedStress);
-}
-
-function lineHasStressMismatch(line: MeteredLine): boolean {
-  const mask = lineStressMismatchMask(line);
-  return mask !== null && mask.some(Boolean);
+  return classes.join(" ");
 }
 
 /** Keep overlay geometry on this doc line (avoids coords at line.to → next line). */
-function posOnLine(
+export function posOnLine(
   lineFrom: number,
   lineTo: number,
   offset: number,
 ): number {
   if (lineTo <= lineFrom) return lineFrom;
   return Math.min(lineFrom + Math.max(0, offset), lineTo - 1);
+}
+
+/**
+ * Per-syllable mismatch mask for lines already marked `status === "stress"`.
+ * Relies on buildMeteredLine’s status semantics (pack ready, count match, mismatch).
+ */
+function mismatchMaskForStressLine(line: MeteredLine): boolean[] | null {
+  if (line.status !== "stress" || line.expectedStress === null) return null;
+  return stressMismatchMask(
+    flattenTokenStress(line.tokens),
+    line.expectedStress,
+  );
+}
+
+function coordsAtPosSafe(
+  view: EditorView,
+  pos: number,
+): { left: number; right: number; top: number; bottom: number } | null {
+  try {
+    return view.coordsAtPos(pos);
+  } catch {
+    return null;
+  }
+}
+
+function placeAt(
+  el: HTMLElement,
+  hostRect: DOMRect,
+  x: number,
+  y: number,
+): void {
+  el.style.left = `${x - hostRect.left}px`;
+  el.style.top = `${y - hostRect.top}px`;
 }
 
 /**
@@ -189,7 +217,7 @@ export const syllableOverlay = ViewPlugin.fromClass(
         textLines,
       } = getMeterOverlay(view);
       const showMismatchMarks =
-        showMeterBreaks && lines.some(lineHasStressMismatch);
+        showMeterBreaks && lines.some((l) => l.status === "stress");
       if (
         !showCounts &&
         !showRulers &&
@@ -241,23 +269,19 @@ export const syllableOverlay = ViewPlugin.fromClass(
             const offset = mapSyllableToOffset(overlay.tokens, s);
             if (offset === null) continue;
             const pos = posOnLine(line.from, line.to, offset);
-            let tickCoords: { left: number; bottom: number } | null = null;
-            try {
-              tickCoords = view.coordsAtPos(pos);
-            } catch {
-              continue;
-            }
+            const tickCoords = coordsAtPosSafe(view, pos);
             if (!tickCoords) continue;
 
             const tick = document.createElement("span");
             tick.className = tickClass(s, overlay.target);
-            tick.style.left = `${tickCoords.left - hostRect.left}px`;
-            tick.style.top = `${tickCoords.bottom - hostRect.top}px`;
+            placeAt(tick, hostRect, tickCoords.left, tickCoords.bottom);
             frag.append(tick);
           }
         }
 
-        const mismatchMask = lineStressMismatchMask(overlay);
+        const mismatchMask = showMeterBreaks
+          ? mismatchMaskForStressLine(overlay)
+          : null;
         const hasMismatches =
           mismatchMask !== null && mismatchMask.some(Boolean);
         // Full weak/strong contour when stress marks are on, or when this
@@ -279,12 +303,7 @@ export const syllableOverlay = ViewPlugin.fromClass(
               );
               if (offset === null) continue;
               const pos = posOnLine(line.from, line.to, offset);
-              let markCoords: { left: number; top: number } | null = null;
-              try {
-                markCoords = view.coordsAtPos(pos);
-              } catch {
-                continue;
-              }
+              const markCoords = coordsAtPosSafe(view, pos);
               if (!markCoords) continue;
 
               const mark = document.createElement("span");
@@ -294,8 +313,7 @@ export const syllableOverlay = ViewPlugin.fromClass(
               mark.className = classes.join(" ");
               // Match WordToolsPopover: ˈ stressed, ˘ unstressed.
               mark.textContent = isStressed ? "ˈ" : "˘";
-              mark.style.left = `${markCoords.left - hostRect.left}px`;
-              mark.style.top = `${markCoords.top - hostRect.top}px`;
+              placeAt(mark, hostRect, markCoords.left, markCoords.top);
               frag.append(mark);
             }
           }
@@ -303,21 +321,18 @@ export const syllableOverlay = ViewPlugin.fromClass(
 
         // Prefer the first visible visual row for count / rhyme vertical align.
         let rowTop = blockClientTop - hostRect.top;
-        try {
-          const startCoords = view.coordsAtPos(line.from);
-          if (startCoords) {
-            rowTop = startCoords.top - hostRect.top;
-          } else {
-            const visiblePos = Math.max(line.from, from);
-            const visibleCoords = view.coordsAtPos(
-              posOnLine(line.from, line.to, visiblePos - line.from),
-            );
-            if (visibleCoords) {
-              rowTop = visibleCoords.top - hostRect.top;
-            }
+        const startCoords = coordsAtPosSafe(view, line.from);
+        if (startCoords) {
+          rowTop = startCoords.top - hostRect.top;
+        } else {
+          const visiblePos = Math.max(line.from, from);
+          const visibleCoords = coordsAtPosSafe(
+            view,
+            posOnLine(line.from, line.to, visiblePos - line.from),
+          );
+          if (visibleCoords) {
+            rowTop = visibleCoords.top - hostRect.top;
           }
-        } catch {
-          // jsdom / missing geometry — keep block-based top.
         }
 
         const fontSize = parseFloat(
@@ -333,30 +348,7 @@ export const syllableOverlay = ViewPlugin.fromClass(
           const rhyme = rhymeLines[lineNo - 1];
           if (rhyme && rhyme.letter && rhyme.status !== "empty") {
             const dot = document.createElement("span");
-            const classes = ["lyriic-rhyme-dot"];
-            if (rhyme.status === "match") {
-              // Perfect rhyme — solid green.
-              classes.push("lyriic-rhyme-dot--match");
-            } else if (rhyme.status === "endMatch") {
-              // End rhyme only — hollow green donut.
-              classes.push("lyriic-rhyme-dot--end");
-            } else if (rhyme.status === "slantMatch") {
-              // Slant rhyme — dashed green ring.
-              classes.push("lyriic-rhyme-dot--slant");
-            } else if (rhyme.status === "mismatch") {
-              classes.push("lyriic-rhyme-dot--mismatch");
-            } else if (
-              rhyme.status === "unknown" ||
-              rhyme.status === "open"
-            ) {
-              classes.push("lyriic-rhyme-dot--muted");
-              if (rhyme.colorIndex >= 0) {
-                classes.push(
-                  `lyriic-rhyme-dot--${String.fromCharCode(65 + (rhyme.colorIndex % 7))}`,
-                );
-              }
-            }
-            dot.className = classes.join(" ");
+            dot.className = rhymeDotClass(rhyme);
             dot.dataset.letter = rhyme.letter;
             // Label for React shadcn Tooltip (see RhymeDotTooltip).
             dot.dataset.tooltip = rhymeSchemeLineTitle(rhyme);

@@ -28,10 +28,25 @@ export const WORD_HIT_PAD_PX = 3;
 
 /**
  * Vertical gap between word and toolbar — must match WordToolsPopover
- * `sideOffset`. The pad stops short of this, leaving a dead zone unless
- * bridged by {@link pointerHitsWordToolbarBridge}.
+ * `sideOffset`. Open-state {@link wordToolbarHitCorridors} cover this gap.
  */
 export const WORD_TOOLBAR_SIDE_OFFSET_PX = 12;
+
+/**
+ * Minimum horizontal span for the open-state hit corridor. Short words
+ * (`I`, `a`) are narrower than the centered actions bar.
+ */
+export const WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX = 120;
+
+/** Attribute on the open-state word↔toolbar hit layer (see WordAnchor). */
+export const WORD_HIT_ATTR = "data-word-hit";
+
+export type WordHitRect = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
 
 function isDegenerateAnchor(anchor: WordAnchor): boolean {
   return anchor.right <= anchor.left || anchor.bottom <= anchor.top;
@@ -57,43 +72,39 @@ export function pointerHitsWordAnchor(
 }
 
 /**
- * Minimum horizontal span for the word→toolbar bridge. Short words (`I`, `a`)
- * are narrower than the centered actions bar; without this floor the pointer
- * leaves the corridor on a diagonal move and the pin dismisses.
+ * Open-state corridor strips between the word pad and the toolbar (below by
+ * default, above when collision flips). Does **not** cover the glyph box —
+ * that stays click-through so the caret can move; pin-over-word uses geometry.
  */
-export const WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX = 120;
-
-/**
- * Whether the pointer is in the corridor between the word box and the toolbar
- * placement (below by default, or above when collision flips `side`).
- * Keeps the hover pin alive across the sideOffset − pad dead zone.
- */
-export function pointerHitsWordToolbarBridge(
-  x: number,
-  y: number,
+export function wordToolbarHitCorridors(
   anchor: WordAnchor,
   sideOffset = WORD_TOOLBAR_SIDE_OFFSET_PX,
   pad = WORD_HIT_PAD_PX,
   minWidth = WORD_TOOLBAR_BRIDGE_MIN_WIDTH_PX,
-): boolean | null {
+): { above: WordHitRect; below: WordHitRect } | null {
   if (isDegenerateAnchor(anchor)) return null;
-  if (sideOffset <= pad) return false;
+  if (sideOffset <= pad) return null;
 
   const mid = (anchor.left + anchor.right) / 2;
   const half = Math.max((anchor.right - anchor.left) / 2 + pad, minWidth / 2);
   const left = mid - half;
-  const right = mid + half;
-  if (x < left || x > right) return false;
+  const width = half * 2;
+  const gap = sideOffset - pad;
 
-  // Below word → default popover placement
-  if (y > anchor.bottom + pad && y <= anchor.bottom + sideOffset) {
-    return true;
-  }
-  // Above word → collision-flipped placement
-  if (y >= anchor.top - sideOffset && y < anchor.top - pad) {
-    return true;
-  }
-  return false;
+  return {
+    above: {
+      left,
+      top: anchor.top - sideOffset,
+      width,
+      height: gap,
+    },
+    below: {
+      left,
+      top: anchor.bottom + pad,
+      width,
+      height: gap,
+    },
+  };
 }
 
 /**

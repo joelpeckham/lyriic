@@ -9,8 +9,8 @@ import {
 
 import {
   pointerHitsWordAnchor,
-  pointerHitsWordToolbarBridge,
   resolveWordTarget,
+  WORD_HIT_ATTR,
   wordTargetAtPointer,
   type WordTarget,
 } from "@/lib/editor/resolveWordTarget";
@@ -58,15 +58,18 @@ function emitToolbar(view: EditorView, target: WordTarget | null): void {
   view.state.facet(wordInteractionFacet)?.onToolbarChange(target);
 }
 
-function targetKey(target: WordTarget | null): string {
+/** Stable identity for an open word target. Exported for tests / React. */
+export function wordTargetKey(target: WordTarget | null): string {
   if (!target) return "";
   return `${target.from}:${target.to}:${target.word}`;
 }
 
-function isInsideToolbar(target: EventTarget | null): boolean {
+function isInsidePinSurface(target: EventTarget | null): boolean {
   return (
     target instanceof Element &&
-    Boolean(target.closest(`[${WORD_TOOLBAR_ATTR}]`))
+    Boolean(
+      target.closest(`[${WORD_TOOLBAR_ATTR}], [${WORD_HIT_ATTR}]`),
+    )
   );
 }
 
@@ -82,7 +85,6 @@ class WordPointerPlugin implements PluginValue {
   private pendingKey = "";
   private openKey = "";
   private openTarget: WordTarget | null = null;
-  private popoverHovered = false;
   /** When true, ignore mouse-leave hide (e.g. syllable / lookup panels). */
   private sticky = false;
   private docListening = false;
@@ -113,14 +115,9 @@ class WordPointerPlugin implements PluginValue {
       this.dismissImmediate();
       return;
     }
-    // Font load / measure: keep the pin but refresh React's fixed WordAnchor
-    // so popover position matches updated glyph geometry.
-    if (update.geometryChanged && this.openKey && this.openTarget) {
-      const fresh = resolveWordTarget(this.view, this.openTarget.from);
-      if (fresh && targetKey(fresh) === this.openKey) {
-        this.openTarget = fresh;
-        emitToolbar(this.view, fresh);
-      }
+    // Font load / measure: keep the pin but refresh React's fixed WordAnchor.
+    if (update.geometryChanged) {
+      this.refreshOpenAnchor(true);
     }
   }
 
@@ -133,17 +130,6 @@ class WordPointerPlugin implements PluginValue {
     this.view.dom.removeEventListener("pointerdown", this.onPointerDown);
     this.view.dom.removeEventListener("pointerup", this.onPointerUp);
     this.view.dom.removeEventListener("pointercancel", this.onPointerCancel);
-  }
-
-  /** React popover enter/leave — part of the hover target while open. */
-  setPopoverHovered(hovered: boolean): void {
-    this.popoverHovered = hovered;
-    if (!this.openKey) return;
-    if (hovered) {
-      this.clearHide();
-    } else {
-      this.scheduleHide();
-    }
   }
 
   /**
@@ -202,7 +188,6 @@ class WordPointerPlugin implements PluginValue {
     this.clearShow();
     this.clearHide();
     this.clearLongPress();
-    this.popoverHovered = false;
     this.sticky = false;
     this.detachDocumentListener();
     if (this.openKey) {
@@ -213,7 +198,7 @@ class WordPointerPlugin implements PluginValue {
   }
 
   private scheduleShow(target: WordTarget): void {
-    const key = targetKey(target);
+    const key = wordTargetKey(target);
     if (key === this.openKey) {
       this.clearHide();
       return;
@@ -234,11 +219,10 @@ class WordPointerPlugin implements PluginValue {
   private scheduleHide(): void {
     this.clearShow();
     if (!this.openKey) return;
-    if (this.sticky || this.popoverHovered) return;
+    if (this.sticky) return;
     if (this.hideTimer !== null) return;
     this.hideTimer = window.setTimeout(() => {
       this.hideTimer = null;
-      this.popoverHovered = false;
       this.detachDocumentListener();
       this.openKey = "";
       this.openTarget = null;
@@ -247,7 +231,7 @@ class WordPointerPlugin implements PluginValue {
   }
 
   private setOpen(target: WordTarget): void {
-    this.openKey = targetKey(target);
+    this.openKey = wordTargetKey(target);
     this.openTarget = target;
     this.attachDocumentListener();
   }
@@ -259,42 +243,36 @@ class WordPointerPlugin implements PluginValue {
     emitToolbar(this.view, target);
   }
 
-  /** Refresh glyph box from current layout so pin math stays current. */
-  private refreshOpenAnchor(): void {
+  /**
+   * Refresh glyph box from current layout. When `emit` is true, push the
+   * updated anchor to React so WordAnchor stays aligned.
+   */
+  private refreshOpenAnchor(emit: boolean): void {
     if (!this.openTarget || !this.openKey) return;
     const fresh = resolveWordTarget(this.view, this.openTarget.from);
-    if (fresh && targetKey(fresh) === this.openKey) {
-      this.openTarget = fresh;
-    }
+    if (!fresh || wordTargetKey(fresh) !== this.openKey) return;
+    this.openTarget = fresh;
+    if (emit) emitToolbar(this.view, fresh);
   }
 
-  private isPinnedWordAt(x: number, y: number): boolean {
+  /** True when the pointer is still over the open word’s glyph box. */
+  private isOverOpenWord(x: number, y: number): boolean {
     if (!this.openKey || !this.openTarget) return false;
-    this.refreshOpenAnchor();
-    // Geometry first — empty line margins must not keep the pin alive via
-    // snapped document positions.
-    const geo = pointerHitsWordAnchor(x, y, this.openTarget.anchor);
-    if (geo === true) return true;
-    // Bridge the sideOffset gap (and collision-flipped top side) so the
-    // pointer can travel word → toolbar without scheduling hide.
-    const bridge = pointerHitsWordToolbarBridge(x, y, this.openTarget.anchor);
-    if (bridge === true) return true;
-    if (geo === false || bridge === false) return false;
-    // No glyph box (jsdom): fall back to precise word-under-pointer.
-    const target = wordTargetAtPointer(this.view, x, y);
-    return target !== null && targetKey(target) === this.openKey;
+    this.refreshOpenAnchor(false);
+    return pointerHitsWordAnchor(x, y, this.openTarget.anchor) === true;
   }
 
+  /** Document capture owns leave detection while the toolbar is open. */
   private onDocumentPointerMove(event: PointerEvent): void {
     if (!this.openKey) return;
     if (event.pointerType !== "mouse") return;
 
-    if (this.popoverHovered || isInsideToolbar(event.target)) {
+    if (this.sticky || isInsidePinSurface(event.target)) {
       this.clearHide();
       return;
     }
 
-    if (this.isPinnedWordAt(event.clientX, event.clientY)) {
+    if (this.isOverOpenWord(event.clientX, event.clientY)) {
       this.clearHide();
       return;
     }
@@ -318,12 +296,13 @@ class WordPointerPlugin implements PluginValue {
     if (event.pointerType !== "mouse") return;
 
     // While open, pin the word — hover must not retarget. Document listener
-    // owns leave detection; editor moves over other words just schedule hide.
+    // owns leave; editor moves only clear a pending hide when still over the word.
     if (this.openKey) {
-      if (this.isPinnedWordAt(event.clientX, event.clientY)) {
+      if (
+        isInsidePinSurface(event.target) ||
+        this.isOverOpenWord(event.clientX, event.clientY)
+      ) {
         this.clearHide();
-      } else if (!this.popoverHovered && !isInsideToolbar(event.target)) {
-        this.scheduleHide();
       }
       return;
     }
@@ -449,14 +428,6 @@ const wordLookupKeymap = keymap.of([
     run: openRhymeCommand,
   },
 ]);
-
-/** Cancel hide while the pointer is over the portaled toolbar. */
-export function setWordToolbarPopoverHovered(
-  view: EditorView,
-  hovered: boolean,
-): void {
-  getPlugin(view)?.setPopoverHovered(hovered);
-}
 
 /** Pin toolbar open while an intentional panel is active. */
 export function setWordToolbarSticky(

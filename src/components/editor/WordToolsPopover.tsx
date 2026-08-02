@@ -33,9 +33,10 @@ import {
   syllableCountsForWord,
 } from "@/lib/data/variants";
 import { WORD_TOOLBAR_SIDE_OFFSET_PX } from "@/lib/editor/resolveWordTarget";
-import type {
-  WordLookupMode,
-  WordTarget,
+import {
+  wordTargetKey,
+  type WordLookupMode,
+  type WordTarget,
 } from "@/lib/editor/wordInteraction";
 import type { MeteredLine } from "@/lib/meters/types";
 import {
@@ -80,7 +81,6 @@ type Panel = "actions" | "syllables" | "thesaurus" | "rhyme";
 type WordToolsPopoverProps = {
   target: WordToolsTarget | null;
   onClose: () => void;
-  onPopoverHoverChange: (hovered: boolean) => void;
   /** Pin open while an interactive panel is up (no mouse-leave dismiss). */
   onStickyChange: (sticky: boolean) => void;
   onOpenLookup: (mode: WordLookupMode) => void;
@@ -134,7 +134,6 @@ type LoadResult = {
 export function WordToolsPopover({
   target,
   onClose,
-  onPopoverHoverChange,
   onStickyChange,
   onOpenLookup,
   onReplace,
@@ -159,9 +158,7 @@ export function WordToolsPopover({
     useClosingRetention(target !== null ? (meteredLine ?? null) : null) ??
     undefined;
 
-  const targetIdentity = display
-    ? `${display.from}:${display.to}:${display.word}`
-    : "";
+  const targetIdentity = wordTargetKey(display);
   const lookupIdentity = display?.mode
     ? `${display.mode}:${targetIdentity}`
     : "";
@@ -592,7 +589,9 @@ export function WordToolsPopover({
         }
       }}
     >
-      {display ? <WordAnchor anchor={display.anchor} /> : null}
+      {display ? (
+        <WordAnchor anchor={display.anchor} showHitLayer={open} />
+      ) : null}
       <PopoverContent
         align={view === "actions" ? "center" : "start"}
         side="bottom"
@@ -609,7 +608,7 @@ export function WordToolsPopover({
           if (isLookup) onRestoreFocus();
         }}
         onPointerDownOutside={(event) => {
-          // Actions/syllables: pointer bridge owns dismiss — ignore editor hits.
+          // Actions/syllables: plugin + hit layer own dismiss — ignore editor hits.
           // Thesaurus/rhyme: allow outside click (including editor) to close.
           if (isLookup) return;
           const el = event.target;
@@ -624,8 +623,6 @@ export function WordToolsPopover({
             view === "actions" && "cursor-default [&_button]:cursor-pointer",
             view !== "actions" && "flex flex-col gap-1.5",
           )}
-          onPointerEnter={() => onPopoverHoverChange(true)}
-          onPointerLeave={() => onPopoverHoverChange(false)}
         >
         {view === "actions" && display ? (
           <ButtonGroup

@@ -26,7 +26,6 @@ import {
 import {
   dismissWordToolbar,
   replaceWordRange,
-  setWordToolbarPopoverHovered,
   setWordToolbarSticky,
   type WordLookupRequest,
   type WordTarget,
@@ -410,10 +409,6 @@ export function PoemEditor({
       <WordToolsPopover
         target={wordTarget}
         onClose={closeWordUi}
-        onPopoverHoverChange={(hovered) => {
-          const view = viewRef.current;
-          if (view) setWordToolbarPopoverHovered(view, hovered);
-        }}
         onStickyChange={(sticky) => {
           const view = viewRef.current;
           if (view) setWordToolbarSticky(view, sticky);
