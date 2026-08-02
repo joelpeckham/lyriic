@@ -19,7 +19,7 @@ const FormCheckerLazy = lazy(() =>
 );
 
 /** slug → lazy tool interactive (utility tools only; form checkers share one chunk). */
-export const TOOL_COMPONENTS: Record<string, ToolComponent> = {
+const TOOL_COMPONENTS: Record<string, ToolComponent> = {
   "syllable-counter": lazy(() =>
     import("@/components/tools/SyllableCounterTool").then((m) => ({
       default: m.SyllableCounterTool,

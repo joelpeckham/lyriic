@@ -10,7 +10,7 @@
     "build:og": "node scripts/render-og.mjs",
     "dev:og": "vite --config vite.og.config.ts",
     "prerender": "node scripts/prerender.mjs",
-    "lint": "oxlint",
+    "lint": "oxlint --deny-warnings",
     "lint:hooks": "eslint src",
     "typecheck": "tsc -b",
     "preview": "vite preview",

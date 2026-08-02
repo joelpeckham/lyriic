@@ -136,7 +136,12 @@ const ARPABET_STRESS_RE = /^([A-Z]+)(\d?)$/;
 const SYLLABIC_MARK = "\u0329";
 
 /** Strip WikiPron narrow-IPA decoration (not syllabic mark). */
-const WIKIPRON_STRIP_RE = /[\u0300-\u0328\u032a-\u036fː͜͡]/g;
+const WIKIPRON_STRIP_RE = /[\u0300-\u0328\u032a-\u036f\u02d0]/g;
+
+/** Private-use sentinels for temporarily parking syllabic marks. */
+const RESERVE_OPEN = "\uE000";
+const RESERVE_CLOSE = "\uE001";
+const RESERVE_RE = /\uE000(\d+)\uE001/g;
 
 /**
  * @param {string} ps
@@ -190,11 +195,11 @@ export function wikipronToIpa(phonesSpaceSeparated) {
     new RegExp(`([nlmŋrɹ])${SYLLABIC_MARK}`, "g"),
     (full) => {
       reserved.push(full);
-      return `\0${reserved.length - 1}\0`;
+      return `${RESERVE_OPEN}${reserved.length - 1}${RESERVE_CLOSE}`;
     },
   );
   s = s.replace(WIKIPRON_STRIP_RE, "");
-  s = s.replace(/\0(\d+)\0/g, (_, idx) => reserved[Number(idx)] ?? "");
+  s = s.replace(RESERVE_RE, (_, idx) => reserved[Number(idx)] ?? "");
   return s;
 }
 
