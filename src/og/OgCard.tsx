@@ -36,8 +36,8 @@ export function OgCard({ id, lines, cta }: OgCardProps) {
 
       <div className="relative z-10 flex h-full flex-col px-16 py-12">
         <header className="flex items-baseline justify-between gap-6">
-          <p className="font-[family-name:var(--font-brand)] text-lg tracking-[0.18em] text-foreground/55 uppercase">
-            LYRIIC
+          <p className="font-[family-name:var(--font-brand)] text-lg tracking-[0.18em] text-foreground/55">
+            lyriic
           </p>
         </header>
 

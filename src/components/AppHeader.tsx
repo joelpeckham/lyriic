@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const brandClass =
-  "font-[family-name:var(--font-brand)] text-lg tracking-[0.18em] text-foreground/80 uppercase";
+  "font-[family-name:var(--font-brand)] text-lg tracking-[0.18em] text-foreground/80";
 
 type AppHeaderProps = {
   /** Absolute overlay for the editor canvas; in-flow for content pages. */
