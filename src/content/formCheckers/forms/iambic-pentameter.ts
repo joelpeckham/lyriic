@@ -41,7 +41,7 @@ export const iambicPentameterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech-driven stress will show as mismatches against the ideal grid.",
+    "lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings (an extra trailing weak syllable) count as on-meter; stronger speech-driven disagreements still surface as stress feedback.",
     "Blank verse, English sonnets, and heroic couplets all use this meter under different rhyme and stanza rules. lyriic’s dedicated Blank verse, Sonnet, and Heroic couplet checkers share the same ten-syllable iambic target; this page is the open, unbounded line cycle. Rhyme schemes are not enforced.",
   ],
   faqs: [
@@ -76,11 +76,11 @@ export const iambicPentameterForm: FormCheckerContent = {
     body: [
       "English iambic pentameter is five iambs per line: ten syllables with expected stress on positions 2, 4, 6, 8, and 10 (da-DUM × 5). lyriic’s catalog uses that single-line cycle with no fixed stanza length.",
       "The same ten-syllable iambic grid underlies blank verse (unrhymed), English sonnets, and heroic couplets. Those forms add rhyme or stanza constraints; this checker only targets the open line meter.",
-      "Real poems often invert the first foot, add a feminine ending, or loosen stress for speech. lyriic marks the ideal weak–strong grid from the dictionary so you can see where a draft matches or drifts.",
+      "Real poems often invert the first foot, add a feminine ending, or loosen stress for speech. lyriic’s teaching ticks show the ideal weak–strong grid; first-foot inversion and feminine endings are accepted as on-meter, while harder contour fights still flag as stress feedback.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English accentual-syllabic pentameter (5 iambs / 10 syllables). Intentionally omits rhyme, sonnet/blank-verse/couplet stanza rules, feminine endings, and free substitution. sampleLines use open-meter default of 4.",
+    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English accentual-syllabic pentameter (5 iambs / 10 syllables). Literary scansion accepts first-foot inversion and feminine +1; intentionally omits rhyme, sonnet/blank-verse/couplet stanza rules, and free mid-line substitution. sampleLines use open-meter default of 4.",
   ],
 };

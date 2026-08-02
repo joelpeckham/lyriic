@@ -28,4 +28,14 @@ describe("variants lookup", () => {
     expect(stressForSyllableCount("juliet", 3)?.length).toBe(3);
     expect(stressForSyllableCount("juliet", 2)).toEqual([1, 0]);
   });
+
+  it("exposes curated heaven 1-syl poetic compression", () => {
+    expect(syllableCountsForWord("heaven")).toEqual(
+      expect.arrayContaining([1, 2]),
+    );
+    expect(
+      lookupSyllableVariants("heaven").some((a) => a.syllables === 1),
+    ).toBe(true);
+    expect(stressForSyllableCount("heaven", 1)).toEqual([1]);
+  });
 });

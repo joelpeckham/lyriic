@@ -40,7 +40,7 @@ Iambic tetrameter is four iambs in a line: eight syllables with a rising weak–
 
 In English it is common in ballads, hymns, and lyric narrative — alone as a continuous meter, or alternating with six-syllable trimeter in common (ballad) meter. lyriic’s catalog treats each line as an open cycle of eight syllables with that iambic contour; stanza length and rhyme are left to you.
 
-When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+When stress-aware checking is on, lyriic marks the expected contour from dictionary stress. First-foot inversion and a feminine ninth syllable count as on-meter; harder drifts from the teaching grid still flag as stress feedback.
 
 ## Iamb (da-DUM)
 
@@ -54,11 +54,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic tetrameter expects four da-DUM feet: eight syllables with strong beats on positions 2, 4, 6, and 8.
 
-When the stress pack is loaded, lyriic marks that rising duple pattern from dictionary stress for each eight-syllable line.
+When the stress pack is loaded, lyriic marks that rising duple pattern. First-foot inversion and a feminine ninth syllable count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic targets eight syllables per line with an iambic (weak–strong) stress contour. Real poems often substitute a trochee, add a feminine ending, or vary the beat — mismatches are feedback, not a claim that every line must be perfectly regular.
+lyriic targets eight syllables per line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 lyriic does not enforce rhyme schemes (couplets, In Memoriam stanzas, long-meter hymn rhyme, and so on).
 

@@ -77,7 +77,7 @@ function stressTitle(id: string): string {
 const STRESS_EXPLAINER_BODIES: Record<string, string[]> = {
   "amphibrach-4": [
     "Amphibrachic tetrameter expects four da-DUM-da feet: twelve syllables with strong beats on positions 2, 5, 8, and 11 (weak–strong–weak, repeated).",
-    "lyriic checks this contour when the stress pack is loaded, comparing dictionary stress to that rocking grid alongside the twelve-syllable target.",
+    "lyriic checks this contour when the stress pack is loaded. A trailing feminine syllable counts as on-meter; dropped final weaks and harder speech disagreements still surface as stress feedback.",
   ],
   "anapest-3": [
     "Anapestic trimeter expects three da-da-DUM feet: nine syllables with strong beats on positions 3, 6, and 9.",
@@ -89,51 +89,51 @@ const STRESS_EXPLAINER_BODIES: Record<string, string[]> = {
   ],
   "dactyl-4": [
     "Dactylic tetrameter expects four DUM-da-da feet: twelve syllables with strong beats on positions 1, 4, 7, and 10.",
-    "With the stress pack loaded, lyriic compares dictionary stress to that falling triple contour for each twelve-syllable line.",
+    "With the stress pack loaded, lyriic compares dictionary stress to that falling triple contour. Catalexis (−1/−2 trailing weaks) counts as on-meter; harder disagreements still surface as stress feedback.",
   ],
   "dactyl-6": [
     "Dactylic hexameter, as modeled here, expects six DUM-da-da feet: eighteen syllables with strong beats on positions 1, 4, 7, 10, 13, and 16. Classical hexameter often allows substitutions and a shorter final foot; lyriic’s catalog uses a regular dactylic grid.",
-    "When the stress pack is loaded, lyriic checks dictionary stress against that eighteen-slot contour.",
+    "When the stress pack is loaded, lyriic checks dictionary stress against that eighteen-slot contour. Catalexis (−1/−2 trailing weaks) counts as on-meter; classical spondees and quantity stay out of scope.",
   ],
   "iamb-3": [
     "Iambic trimeter expects three da-DUM feet: six syllables with strong beats on positions 2, 4, and 6.",
-    "lyriic checks this weak–strong contour when the stress pack is loaded, alongside the six-syllable line target.",
+    "lyriic checks this weak–strong contour when the stress pack is loaded. First-foot inversion and a feminine seventh syllable count as on-meter; stronger disagreements still surface as stress feedback.",
   ],
   "iamb-4": [
     "Iambic tetrameter expects four da-DUM feet: eight syllables with strong beats on positions 2, 4, 6, and 8.",
-    "When the stress pack is loaded, lyriic marks that rising duple pattern from dictionary stress for each eight-syllable line.",
+    "When the stress pack is loaded, lyriic marks that rising duple pattern. First-foot inversion and a feminine ninth syllable count as on-meter; stronger disagreements still surface as stress feedback.",
   ],
   "iamb-5": [
     "Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.",
-    "lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.",
+    "lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.",
   ],
   "iamb-6": [
     "Iambic hexameter (alexandrine-style in English teaching) expects six da-DUM feet: twelve syllables with strong beats on positions 2, 4, 6, 8, 10, and 12.",
-    "With the stress pack loaded, lyriic compares dictionary stress to that twelve-syllable iambic contour.",
+    "With the stress pack loaded, lyriic compares dictionary stress to that twelve-syllable iambic contour. First-foot inversion and a feminine thirteenth syllable count as on-meter; stronger disagreements still surface as stress feedback.",
   ],
   "iamb-6-6-8-6": [
     "Short meter (S.M.) is iambic 6 / 6 / 8 / 6: three-foot lines stress positions 2, 4, and 6; the eight-syllable third line adds a fourth foot with strong beats on 2, 4, 6, and 8.",
-    "lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded. Rhyme schemes and tune pairing are not enforced.",
+    "lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded. First-foot inversions and feminine endings count as on-meter; rhyme schemes and tune pairing are not enforced.",
   ],
   "iamb-8-6": [
     "Common meter alternates an eight-syllable iambic line with a six-syllable one. The long line has strong beats on 2, 4, 6, and 8; the short line on 2, 4, and 6.",
-    "When the stress pack is loaded, lyriic checks that 8 / 6 iambic contour line by line through the ballad or hymn cycle.",
+    "When the stress pack is loaded, lyriic checks that 8 / 6 iambic contour line by line. First-foot inversions and feminine endings count as on-meter; harder substitutions still surface as stress feedback.",
   ],
   "iamb-8-6-8-6": [
     "A ballad-stanza (common-meter quatrain) cycle is iambic 8 / 6 / 8 / 6: long lines stress even positions through eight syllables; short lines do the same through six.",
-    "lyriic checks that repeating contour when the stress pack is loaded. Rhyme schemes (often ABCB or ABAB) are not enforced.",
+    "lyriic checks that repeating contour when the stress pack is loaded. First-foot inversions and feminine endings count as on-meter; rhyme schemes (often ABCB or ABAB) are not enforced.",
   ],
   "iamb-8-8": [
     "Long meter is paired eight-syllable iambic lines. Each line expects four da-DUM feet: strong beats on positions 2, 4, 6, and 8.",
-    "With the stress pack loaded, lyriic marks that 8 / 8 iambic contour for the hymn stanza cycle.",
+    "With the stress pack loaded, lyriic marks that 8 / 8 iambic contour. First-foot inversions and feminine endings count as on-meter; harder disagreements still surface as stress feedback.",
   ],
   "trochee-4": [
     "Trochaic tetrameter expects four DUM-da feet: eight syllables with strong beats on positions 1, 3, 5, and 7.",
-    "lyriic checks this falling duple contour when the stress pack is loaded. Catalectic lines that drop a final weak beat are common in the tradition and will read as short against a full eight-slot grid.",
+    "lyriic checks this falling duple contour when the stress pack is loaded. Catalexis (seven syllables ending strong) and first-foot inversion count as on-meter; harder disagreements still surface as stress feedback.",
   ],
   "trochee-8": [
     "Trochaic octameter expects eight DUM-da feet: sixteen syllables with strong beats on the odd positions (1, 3, 5, …, 15).",
-    "When the stress pack is loaded, lyriic compares dictionary stress to that long falling contour.",
+    "When the stress pack is loaded, lyriic compares dictionary stress to that long falling contour. Catalexis (fifteen syllables ending strong) and first-foot inversion count as on-meter; harder drifts still flag as stress feedback.",
   ],
   "trochee-8-7": [
     "Classic 8s & 7s hymn meter is trochaic: an eight-syllable line (strong on odd positions 1–7) alternating with a seven-syllable line that truncates after a final strong beat (1, 3, 5, 7). Odd lines end strong; the short line is catalectic.",

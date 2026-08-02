@@ -32,7 +32,7 @@ Song lines lean on falling dactylic rhythm, frequently truncating before a pure 
 
 English dactylic tetrameter is four dactyls per line: twelve syllables with expected stress on positions 1, 4, 7, and 10 (DUM-da-da DUM-da-da DUM-da-da DUM-da-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
 
-Catalexis — dropping one or more final unstressed syllables — is common in English practice and song, so many cited lines scan as eleven syllables (or fewer) ending on a strong beat. This checker models the full twelve-syllable teaching form; catalectic drafts will read as short.
+Catalexis — dropping one or more final unstressed syllables — is common in English practice and song, so many cited lines scan as eleven syllables (or fewer) ending on a strong beat. lyriic’s teaching ticks show the full twelve-syllable grid; catalectic lines that keep the falling contour count as on-meter.
 
 Do not confuse the English accentual-syllabic shape with classical quantitative dactylic tetrameter (Alcmanian verse and related Greek/Latin metres), which counts long and short syllables. Those traditions are outside this checker’s grid.
 
@@ -48,11 +48,11 @@ lyriic’s stress-aware view repeats the strong–weak–weak unit across the li
 
 Dactylic tetrameter expects four DUM-da-da feet: twelve syllables with strong beats on positions 1, 4, 7, and 10.
 
-With the stress pack loaded, lyriic compares dictionary stress to that falling triple contour for each twelve-syllable line.
+With the stress pack loaded, lyriic compares dictionary stress to that falling triple contour. Catalexis (−1/−2 trailing weaks) counts as on-meter; harder disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a twelve-syllable line with a dactylic (strong–weak–weak) stress contour. Catalectic lines that drop final light syllables — common in Browning and song — will show as short against this full-tetrameter grid.
+lyriic checks a twelve-syllable line with a dactylic (strong–weak–weak) stress contour. Catalectic lines that drop one or two final light syllables — common in Browning and song — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.
 
 Classical Alcmanian / quantitative dactylic tetrameter uses length, not English stress alone. lyriic does not enforce rhyme schemes or fixed stanza shapes.
 

@@ -51,6 +51,8 @@ export type MeterConfig = {
    * line’s syllable target). Empty / omitted = syllable-count only.
    */
   readonly stressPatterns?: readonly BinaryStressPattern[];
+  /** Dominant foot when stress-aware; drives literary allowances. */
+  readonly footId?: FootId;
   /** Soft expected lines per stanza/poem; null/undefined = unbounded. */
   readonly stanzaLines?: number | null;
   /** Named rhyme schemes for this form. Empty / omitted = none. */
@@ -430,11 +432,14 @@ export function resolveMeterConfig(input: ResolveMeterInput): MeterConfig {
       input.customPattern.length > 0 ? [...input.customPattern] : [8];
     const stressPatterns = stressPatternsForCycle(input.customFoot, pattern);
     const rhymeSchemes = customRhymeSchemes(input.customRhymePattern);
+    const footId =
+      input.customFoot === "none" ? undefined : input.customFoot;
     return {
       id: "custom",
       label: "Custom",
       pattern,
       stressPatterns,
+      footId,
       stanzaLines: null,
       rhymeSchemes: rhymeSchemes.length > 0 ? rhymeSchemes : undefined,
       description: formatCustomDescription(pattern, input.customFoot),
@@ -447,6 +452,7 @@ export function resolveMeterConfig(input: ResolveMeterInput): MeterConfig {
     label: entry.label,
     pattern: entry.pattern,
     stressPatterns: entry.stressPatterns,
+    footId: entry.footId,
     stanzaLines: entry.stanzaLines,
     rhymeSchemes: entry.rhymeSchemes,
     description: entry.description,

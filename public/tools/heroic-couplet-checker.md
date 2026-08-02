@@ -56,11 +56,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
 
-lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.
+lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 Tradition expects the two lines to rhyme (aa). This checker scores syllables and stress; open the zen editor for couplet rhyme dots. Caesura placement and closed vs. open rhetoric stay with you.
 

@@ -40,7 +40,7 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — will show as short against this full-tetrameter grid.",
+    "lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.",
     "Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.",
   ],
   faqs: [
@@ -74,12 +74,12 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     title: "How trochaic tetrameter works",
     body: [
       "English trochaic tetrameter is four trochees per line: eight syllables with expected stress on positions 1, 3, 5, and 7 (DUM-da DUM-da DUM-da DUM-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.",
-      "Catalexis — dropping the final unstressed syllable — is common in English practice, so many famous lines scan as seven syllables ending on a strong beat. This checker models the full eight-syllable teaching form; catalectic drafts will read as one syllable short.",
+      "Catalexis — dropping the final unstressed syllable — is common in English practice, so many famous lines scan as seven syllables ending on a strong beat. lyriic’s teaching ticks show the full eight-syllable grid; catalectic lines that keep the falling contour count as on-meter.",
       "Do not confuse the English accentual-syllabic shape with classical quantitative trochaic tetrameter (longer metra) or with Kalevala meter, which follows Finnic length and alliteration rules. Those traditions are outside this checker’s grid.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [8], stressPatterns [[1,0,1,0,1,0,1,0]], footId trochee, stanzaLines null (open). Matches English accentual-syllabic full (acatalectic) trochaic tetrameter (4 trochees / 8 syllables). Intentionally omits catalexis as a first-class target, rhyme, Kalevala length/alliteration rules, and classical quantitative tetrameter. sampleLines use open-meter default of 4; lines adapted from Longfellow’s Hiawatha (full 8-syllable examples).",
+    "Catalog: pattern [8], stressPatterns [[1,0,1,0,1,0,1,0]], footId trochee, stanzaLines null (open). Matches English accentual-syllabic full (acatalectic) trochaic tetrameter (4 trochees / 8 syllables). Literary scansion accepts catalexis (−1 ending strong) and first-foot inversion; intentionally omits rhyme, Kalevala length/alliteration rules, and classical quantitative tetrameter. sampleLines use open-meter default of 4; lines adapted from Longfellow’s Hiawatha (full 8-syllable examples).",
   ],
 };

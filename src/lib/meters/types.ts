@@ -3,6 +3,9 @@ import type { LineSyllableCount } from "@/lib/syllables/types";
 
 export type MeterStatus = "none" | "under" | "exact" | "over" | "stress";
 
+/** How an exact literary match landed against the ideal grid. */
+export type LiteraryFit = "ideal" | "inversion" | "feminine" | "catalexis";
+
 export type MeteredToken = {
   raw: string;
   word: string;
@@ -23,6 +26,13 @@ export type MeteredLine = {
   target: number | null;
   status: MeterStatus;
   tokens: MeteredToken[];
-  /** Expected binary stress when the preset is stress-aware; null otherwise. */
+  /** Ideal catalog contour when the preset is stress-aware; null otherwise. */
   expectedStress: readonly (0 | 1)[] | null;
+  /** How an exact literary match landed (omitted when not applicable). */
+  fit?: LiteraryFit;
+  /**
+   * Best-fitting acceptable contour for meter-break highlighting.
+   * May differ from `expectedStress` under inversion / feminine / catalexis.
+   */
+  matchedStress?: readonly (0 | 1)[] | null;
 };

@@ -38,7 +38,7 @@ Witch chants lean on falling trochaic rhythms, frequently catalectic.
 
 English trochaic tetrameter is four trochees per line: eight syllables with expected stress on positions 1, 3, 5, and 7 (DUM-da DUM-da DUM-da DUM-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
 
-Catalexis — dropping the final unstressed syllable — is common in English practice, so many famous lines scan as seven syllables ending on a strong beat. This checker models the full eight-syllable teaching form; catalectic drafts will read as one syllable short.
+Catalexis — dropping the final unstressed syllable — is common in English practice, so many famous lines scan as seven syllables ending on a strong beat. lyriic’s teaching ticks show the full eight-syllable grid; catalectic lines that keep the falling contour count as on-meter.
 
 Do not confuse the English accentual-syllabic shape with classical quantitative trochaic tetrameter (longer metra) or with Kalevala meter, which follows Finnic length and alliteration rules. Those traditions are outside this checker’s grid.
 
@@ -54,11 +54,11 @@ With the stress pack loaded, lyriic marks expected strong–weak beats from dict
 
 Trochaic tetrameter expects four DUM-da feet: eight syllables with strong beats on positions 1, 3, 5, and 7.
 
-lyriic checks this falling duple contour when the stress pack is loaded. Catalectic lines that drop a final weak beat are common in the tradition and will read as short against a full eight-slot grid.
+lyriic checks this falling duple contour when the stress pack is loaded. Catalexis (seven syllables ending strong) and first-foot inversion count as on-meter; harder disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — will show as short against this full-tetrameter grid.
+lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.
 
 Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.
 

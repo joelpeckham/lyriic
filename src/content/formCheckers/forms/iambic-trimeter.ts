@@ -40,7 +40,7 @@ export const iambicTrimeterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a six-syllable line with an iambic (weak–strong) stress contour. English poets commonly substitute feet, add a trailing weak syllable, or loosen stress for speech — those will show as mismatches against the ideal grid.",
+    "lyriic checks a six-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.",
     "Classical Greek and Latin iambic trimeter is a different quantitative meter, not this six-syllable English teaching form. lyriic does not enforce rhyme schemes or hymn/ballad stanza shapes.",
   ],
   faqs: [
@@ -80,6 +80,6 @@ export const iambicTrimeterForm: FormCheckerContent = {
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [6], stressPatterns [[0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English accentual-syllabic trimeter (3 iambs / 6 syllables). Intentionally omits rhyme, common-meter pairing, feminine endings, and classical quantitative trimeter/senarius rules. sampleLines use open-meter default of 4.",
+    "Catalog: pattern [6], stressPatterns [[0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English accentual-syllabic trimeter (3 iambs / 6 syllables). Literary scansion accepts first-foot inversion and feminine +1; intentionally omits rhyme, common-meter pairing, and classical quantitative trimeter/senarius rules. sampleLines use open-meter default of 4.",
   ],
 };

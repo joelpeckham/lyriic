@@ -47,6 +47,8 @@ type LineResult = {
   /** Per-syllable mismatch flags when count matches and stress expected. */
   stressMask: boolean[] | null;
   expectedStress: readonly (0 | 1)[] | null;
+  /** Contour rendered in stress ticks (matched literary length when stress-off). */
+  stressTicks: readonly (0 | 1)[] | null;
 };
 
 function formatDelta(delta: number): string {
@@ -247,31 +249,44 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
       const metered = buildMeteredLine(counted, index, {
         pattern: entry.pattern,
         stressPatterns: entry.stressPatterns,
+        footId: entry.footId,
       });
       const count = empty ? 0 : metered.total;
-      const syllableOk = !empty && count === target;
+      // Exact (incl. literary length fits) and stress-off (count ok) are syllable-OK.
+      const syllableOk =
+        !empty &&
+        (metered.status === "exact" || metered.status === "stress");
       const expectedStress = metered.expectedStress;
-      let stressOk = true;
+      const matchedStress = metered.matchedStress ?? null;
+      const stressOk = empty || metered.status !== "stress";
       let stressMask: boolean[] | null = null;
-      if (stressAware && syllableOk && expectedStress) {
-        const mask = stressMismatchMask(
+      const compareTo =
+        stressAware && !empty && metered.status === "stress"
+          ? (matchedStress ?? expectedStress)
+          : null;
+      if (compareTo) {
+        stressMask = stressMismatchMask(
           flattenTokenStress(metered.tokens),
-          expectedStress,
+          compareTo,
         );
-        stressMask = mask;
-        stressOk = metered.status !== "stress";
       }
+      // Length-shifted literary near-misses: ticks follow matchedStress length.
+      const stressTicks =
+        !empty && metered.status === "stress" && matchedStress
+          ? matchedStress
+          : expectedStress;
       return {
         count,
         target,
         delta: empty ? -target : count - target,
         syllableOk,
         stressOk,
-        ok: syllableOk && stressOk,
+        ok: !empty && metered.status === "exact",
         empty,
         status: empty ? "none" : metered.status,
         stressMask,
         expectedStress,
+        stressTicks,
       };
     });
   }, [lines, dictRevision, stressRevision, entry, stressAware]);
@@ -436,9 +451,9 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
                           count={result.empty ? 0 : result.count}
                           target={result.target}
                         />
-                        {stressAware && result.expectedStress ? (
+                        {stressAware && result.stressTicks ? (
                           <StressTicks
-                            expected={result.expectedStress}
+                            expected={result.stressTicks}
                             mask={
                               result.syllableOk ? result.stressMask : null
                             }

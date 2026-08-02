@@ -45,7 +45,7 @@ export const trochaicOctameterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic targets sixteen syllables per line with a trochaic (strong–weak) stress contour. Famous poems often drop the final weak syllable (catalexis) or shorten refrain lines — those will read short or mismatched against a full eight-foot grid.",
+    "lyriic targets sixteen syllables per line with a trochaic (strong–weak) stress contour. Catalexis (dropping the final weak syllable) counts as on-meter; shorter refrain or half-lines still read short against the full eight-foot grid.",
     "lyriic does not enforce internal rhyme, refrain structure, or stanza schemes (as in “The Raven” or bush-ballad quatrains).",
   ],
   faqs: [
@@ -78,13 +78,13 @@ export const trochaicOctameterForm: FormCheckerContent = {
     body: [
       "Trochaic octameter is eight trochees in a line: sixteen syllables with a falling strong–weak beat (DUM-da × 8). Strong beats fall on the odd positions (1, 3, 5, …, 15).",
       "In English the meter is uncommon at full length. Poe’s “The Raven” made it famous, mixing complete octameter with catalectic shorter lines. lyriic’s catalog treats each line as an open cycle of sixteen syllables with that trochaic contour; stanza length and rhyme are left to you.",
-      "When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.",
+      "When stress-aware checking is on, lyriic marks the expected contour from dictionary stress. Catalexis (fifteen syllables ending strong) counts as on-meter; harder drifts from the teaching grid still flag as stress feedback.",
     ],
     status: "ready",
   },
   footExplainerId: "trochee",
   stressExplainerId: "trochee-8",
   verificationNotes: [
-    "Catalog: pattern [16], footId trochee, stressPatterns [[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]], stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic trochaic octameter (eight feet / sixteen syllables). Intentionally omits catalexis (common in Poe, Tennyson, Kipling — 15-syllable lines ending strong), refrain/half-lines, internal rhyme, and fixed stanza schemes. Hiawatha is trochaic tetrameter, not octameter — not cited as an octameter exemplar.",
+    "Catalog: pattern [16], footId trochee, stressPatterns [[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0]], stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic trochaic octameter (eight feet / sixteen syllables). Literary scansion accepts catalexis (−1 ending strong) and first-foot inversion; intentionally omits refrain/half-lines, internal rhyme, and fixed stanza schemes. Hiawatha is trochaic tetrameter, not octameter — not cited as an octameter exemplar.",
   ],
 };

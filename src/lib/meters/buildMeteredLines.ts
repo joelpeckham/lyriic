@@ -15,6 +15,7 @@ function isBuildOptions(
 type CacheEntry = {
   pattern: readonly number[];
   stressPatterns: readonly BinaryStressPattern[] | undefined;
+  footId: BuildMeteredLineOptions["footId"];
   stressRevision: string;
   overridesKey: string;
   lineIndex: number;
@@ -50,6 +51,7 @@ function getMeteredLineCached(
     cached &&
     cached.pattern === options.pattern &&
     cached.stressPatterns === options.stressPatterns &&
+    cached.footId === options.footId &&
     cached.stressRevision === stressRevision &&
     cached.overridesKey === oKey &&
     cached.lineIndex === lineIndex
@@ -60,6 +62,7 @@ function getMeteredLineCached(
   cache.set(count, {
     pattern: options.pattern,
     stressPatterns: options.stressPatterns,
+    footId: options.footId,
     stressRevision,
     overridesKey: oKey,
     lineIndex,

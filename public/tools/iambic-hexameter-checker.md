@@ -54,11 +54,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic hexameter (alexandrine-style in English teaching) expects six da-DUM feet: twelve syllables with strong beats on positions 2, 4, 6, 8, 10, and 12.
 
-With the stress pack loaded, lyriic compares dictionary stress to that twelve-syllable iambic contour.
+With the stress pack loaded, lyriic compares dictionary stress to that twelve-syllable iambic contour. First-foot inversion and a feminine thirteenth syllable count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a twelve-syllable line with an iambic (weak–strong) stress contour. English poets commonly place a caesura near mid-line, substitute feet, or add a trailing weak syllable — those will show as mismatches against the ideal grid.
+lyriic checks a twelve-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; caesura placement and harder speech-driven disagreements still surface as stress feedback.
 
 The French classical alexandrine is a syllabic 6+6 line with an obligatory medial caesura, not identical to this English accentual-syllabic model. lyriic does not enforce caesura position, rhyme schemes, or Spenserian stanza shape.
 

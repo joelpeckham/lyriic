@@ -40,7 +40,7 @@ export const iambicHexameterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a twelve-syllable line with an iambic (weak–strong) stress contour. English poets commonly place a caesura near mid-line, substitute feet, or add a trailing weak syllable — those will show as mismatches against the ideal grid.",
+    "lyriic checks a twelve-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; caesura placement and harder speech-driven disagreements still surface as stress feedback.",
     "The French classical alexandrine is a syllabic 6+6 line with an obligatory medial caesura, not identical to this English accentual-syllabic model. lyriic does not enforce caesura position, rhyme schemes, or Spenserian stanza shape.",
   ],
   faqs: [
@@ -80,6 +80,6 @@ export const iambicHexameterForm: FormCheckerContent = {
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [12], stressPatterns [[0,1,0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English accentual-syllabic hexameter / alexandrine (6 iambs / 12 syllables). Intentionally omits French 6+6 caesura rules, rhyme, Spenserian stanza shape, feminine endings, and poulter’s-measure pairing. sampleLines use open-meter default of 4.",
+    "Catalog: pattern [12], stressPatterns [[0,1,0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English accentual-syllabic hexameter / alexandrine (6 iambs / 12 syllables). Literary scansion accepts first-foot inversion and feminine +1; intentionally omits French 6+6 caesura rules, rhyme, Spenserian stanza shape, and poulter’s-measure pairing. sampleLines use open-meter default of 4.",
   ],
 };

@@ -42,7 +42,7 @@ Trochaic octameter is eight trochees in a line: sixteen syllables with a falling
 
 In English the meter is uncommon at full length. Poe’s “The Raven” made it famous, mixing complete octameter with catalectic shorter lines. lyriic’s catalog treats each line as an open cycle of sixteen syllables with that trochaic contour; stanza length and rhyme are left to you.
 
-When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+When stress-aware checking is on, lyriic marks the expected contour from dictionary stress. Catalexis (fifteen syllables ending strong) counts as on-meter; harder drifts from the teaching grid still flag as stress feedback.
 
 ## Trochee (DUM-da)
 
@@ -56,11 +56,11 @@ With the stress pack loaded, lyriic marks expected strong–weak beats from dict
 
 Trochaic octameter expects eight DUM-da feet: sixteen syllables with strong beats on the odd positions (1, 3, 5, …, 15).
 
-When the stress pack is loaded, lyriic compares dictionary stress to that long falling contour.
+When the stress pack is loaded, lyriic compares dictionary stress to that long falling contour. Catalexis (fifteen syllables ending strong) and first-foot inversion count as on-meter; harder drifts still flag as stress feedback.
 
 ## Notes on this form
 
-lyriic targets sixteen syllables per line with a trochaic (strong–weak) stress contour. Famous poems often drop the final weak syllable (catalexis) or shorten refrain lines — those will read short or mismatched against a full eight-foot grid.
+lyriic targets sixteen syllables per line with a trochaic (strong–weak) stress contour. Catalexis (dropping the final weak syllable) counts as on-meter; shorter refrain or half-lines still read short against the full eight-foot grid.
 
 lyriic does not enforce internal rhyme, refrain structure, or stanza schemes (as in “The Raven” or bush-ballad quatrains).
 

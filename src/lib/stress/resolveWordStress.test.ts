@@ -34,7 +34,7 @@ describe("resolveWordStress", () => {
     expect(result.pattern).toEqual([1, 0]);
   });
 
-  it("treats single-letter function words as unstressed", () => {
+  it("treats weak function words as unstressed monosyllables", () => {
     expect(resolveWordStress("a")).toEqual({
       word: "a",
       pattern: [0],
@@ -42,6 +42,13 @@ describe("resolveWordStress", () => {
     });
     expect(resolveWordStress("I").pattern).toEqual([0]);
     expect(resolveWordStress("o").pattern).toEqual([0]);
+    expect(resolveWordStress("the")).toEqual({
+      word: "the",
+      pattern: [0],
+      source: "heuristic",
+    });
+    expect(resolveWordStress("of").pattern).toEqual([0]);
+    expect(resolveWordStress("and").pattern).toEqual([0]);
   });
 
   it("strips possessives like syllable lookup", () => {

@@ -56,11 +56,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Long meter is paired eight-syllable iambic lines. Each line expects four da-DUM feet: strong beats on positions 2, 4, 6, and 8.
 
-With the stress pack loaded, lyriic marks that 8 / 8 iambic contour for the hymn stanza cycle.
+With the stress pack loaded, lyriic marks that 8 / 8 iambic contour. First-foot inversions and feminine endings count as on-meter; harder disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. Real hymns may stretch “heavenly,” drop a syllable in singing, or substitute a foot — mismatches are feedback, not a claim that every line must be perfectly regular.
+lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. First-foot inversions and feminine endings count as on-meter; harder substitutions and speech-driven disagreements still surface as stress feedback.
 
 This checker scores syllables and stress. For ABAB rhyme dots while you draft, open the zen editor with Long meter. Doubled long metre (L.M.D.) and tune pairing stay out of scope here.
 

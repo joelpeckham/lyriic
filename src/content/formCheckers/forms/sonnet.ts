@@ -43,7 +43,7 @@ export const sonnetForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. Substitutions, feminine endings, and speech stress will show as mismatches against the ideal grid.",
+    "lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.",
     "This checker scores line count, syllable target, and iambic stress only. For Shakespearean, Petrarchan, or Spenserian rhyme dots while you draft, open the zen editor with the Sonnet meter.",
   ],
   faqs: [

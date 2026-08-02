@@ -1,4 +1,14 @@
 {
   "juliet": [{ "syllables": 2, "stress": [1, 0] }],
-  "envious": [{ "syllables": 2, "stress": [1, 0] }]
+  "envious": [{ "syllables": 2, "stress": [1, 0] }],
+  "heaven": [{ "syllables": 1, "stress": [1] }],
+  "even": [{ "syllables": 1, "stress": [1] }],
+  "flower": [{ "syllables": 1, "stress": [1] }],
+  "power": [{ "syllables": 1, "stress": [1] }],
+  "hour": [{ "syllables": 1, "stress": [1] }],
+  "prayer": [{ "syllables": 1, "stress": [1] }],
+  "spirit": [{ "syllables": 1, "stress": [1] }],
+  "being": [{ "syllables": 1, "stress": [1] }],
+  "devil": [{ "syllables": 1, "stress": [1] }],
+  "evil": [{ "syllables": 1, "stress": [1] }]
 }

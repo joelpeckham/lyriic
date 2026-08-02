@@ -44,7 +44,7 @@ export const commonMeterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. Real hymns and ballads often admit substitutions — mismatches are feedback, not a claim that every published line is perfectly regular.",
+    "lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. First-foot inversions and feminine endings count as on-meter; harder substitutions still surface as stress feedback — not a claim that every published line is perfectly regular.",
     "This checker scores syllables and stress only. For ABAB rhyme dots while you draft, open the zen editor with Common meter. Tune matching between hymn texts stays with you.",
   ],
   faqs: [

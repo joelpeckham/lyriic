@@ -34,7 +34,7 @@ export const anapesticTrimeterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a nine-syllable line with an anapestic (weak–weak–strong) stress contour. English poets often open with an iamb, drop an opening weak syllable, or loosen stress for speech — those will show as mismatches against the ideal grid.",
+    "lyriic checks a nine-syllable line with an anapestic (weak–weak–strong) stress contour. Opening substitutions and speech-driven stress may still flag against the teaching grid — useful feedback, not a claim that every published line is perfectly regular.",
     "Limericks mix this trimeter with shorter anapestic lines and an AABBA rhyme scheme. lyriic’s Limerick meter models that five-line cycle separately; this checker targets pure trimeter only. Rhyme is not enforced.",
   ],
   faqs: [
@@ -68,7 +68,7 @@ export const anapesticTrimeterForm: FormCheckerContent = {
     title: "How anapestic trimeter works",
     body: [
       "English anapestic trimeter is three anapests per line: nine syllables with expected stress on positions 3, 6, and 9 (da-da-DUM da-da-DUM da-da-DUM). lyriic’s catalog uses that single-line cycle with no fixed stanza length.",
-      "Anapests create a rolling, forward drive that English writers have used for comic limericks, light verse, and occasional serious lyrics. Substitutions — especially an opening iamb — are common in practice and will not match lyriic’s ideal grid.",
+      "Anapests create a rolling, forward drive that English writers have used for comic limericks, light verse, and occasional serious lyrics. Substitutions — especially an opening iamb — are common in practice and may still flag against lyriic’s teaching grid.",
       "Limericks pair these longer trimeter lines with shorter anapestic dimeter lines. That five-line alternating cycle is a separate meter in lyriic; here every line targets nine anapestic syllables.",
     ],
     status: "ready",

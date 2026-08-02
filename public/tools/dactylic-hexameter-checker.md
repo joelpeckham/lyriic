@@ -52,7 +52,7 @@ lyriic’s stress-aware view repeats the strong–weak–weak unit across the li
 
 Dactylic hexameter, as modeled here, expects six DUM-da-da feet: eighteen syllables with strong beats on positions 1, 4, 7, 10, 13, and 16. Classical hexameter often allows substitutions and a shorter final foot; lyriic’s catalog uses a regular dactylic grid.
 
-When the stress pack is loaded, lyriic checks dictionary stress against that eighteen-slot contour.
+When the stress pack is loaded, lyriic checks dictionary stress against that eighteen-slot contour. Catalexis (−1/−2 trailing weaks) counts as on-meter; classical spondees and quantity stay out of scope.
 
 ## Notes on this form
 

@@ -54,11 +54,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic trimeter expects three da-DUM feet: six syllables with strong beats on positions 2, 4, and 6.
 
-lyriic checks this weak–strong contour when the stress pack is loaded, alongside the six-syllable line target.
+lyriic checks this weak–strong contour when the stress pack is loaded. First-foot inversion and a feminine seventh syllable count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a six-syllable line with an iambic (weak–strong) stress contour. English poets commonly substitute feet, add a trailing weak syllable, or loosen stress for speech — those will show as mismatches against the ideal grid.
+lyriic checks a six-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 Classical Greek and Latin iambic trimeter is a different quantitative meter, not this six-syllable English teaching form. lyriic does not enforce rhyme schemes or hymn/ballad stanza shapes.
 

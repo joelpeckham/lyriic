@@ -43,7 +43,7 @@ export const balladStanzaForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. Folk and literary ballads often admit anapests, headless lines, or looser counts — mismatches are feedback against the teaching grid, not a claim that every published stanza is perfectly regular.",
+    "lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. First-foot inversions and feminine endings count as on-meter; harder substitutions still surface as stress feedback — not a claim that every published stanza is perfectly regular.",
     "Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. This checker stays on syllables and stress — open the zen editor for ABCB rhyme dots. Refrain and narrative stay with you.",
   ],
   faqs: [

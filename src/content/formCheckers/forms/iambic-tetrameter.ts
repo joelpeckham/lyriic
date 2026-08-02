@@ -40,7 +40,7 @@ export const iambicTetrameterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic targets eight syllables per line with an iambic (weak–strong) stress contour. Real poems often substitute a trochee, add a feminine ending, or vary the beat — mismatches are feedback, not a claim that every line must be perfectly regular.",
+    "lyriic targets eight syllables per line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.",
     "lyriic does not enforce rhyme schemes (couplets, In Memoriam stanzas, long-meter hymn rhyme, and so on).",
   ],
   faqs: [
@@ -73,13 +73,13 @@ export const iambicTetrameterForm: FormCheckerContent = {
     body: [
       "Iambic tetrameter is four iambs in a line: eight syllables with a rising weak–strong beat (da-DUM × 4). Strong beats fall on positions 2, 4, 6, and 8.",
       "In English it is common in ballads, hymns, and lyric narrative — alone as a continuous meter, or alternating with six-syllable trimeter in common (ballad) meter. lyriic’s catalog treats each line as an open cycle of eight syllables with that iambic contour; stanza length and rhyme are left to you.",
-      "When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.",
+      "When stress-aware checking is on, lyriic marks the expected contour from dictionary stress. First-foot inversion and a feminine ninth syllable count as on-meter; harder drifts from the teaching grid still flag as stress feedback.",
     ],
     status: "ready",
   },
   footExplainerId: "iamb",
   stressExplainerId: "iamb-4",
   verificationNotes: [
-    "Catalog: pattern [8], footId iamb, stressPatterns [[0,1,0,1,0,1,0,1]], stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic iambic tetrameter (four feet / eight syllables). Intentionally omits rhyme schemes, fixed stanza forms (triolet, In Memoriam, long meter), and classical quantitative tetrameter (longer metra-based line).",
+    "Catalog: pattern [8], footId iamb, stressPatterns [[0,1,0,1,0,1,0,1]], stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic iambic tetrameter (four feet / eight syllables). Literary scansion accepts first-foot inversion and feminine +1; intentionally omits rhyme schemes, fixed stanza forms (triolet, In Memoriam, long meter), and classical quantitative tetrameter (longer metra-based line).",
   ],
 };

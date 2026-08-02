@@ -54,11 +54,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 A ballad-stanza (common-meter quatrain) cycle is iambic 8 / 6 / 8 / 6: long lines stress even positions through eight syllables; short lines do the same through six.
 
-lyriic checks that repeating contour when the stress pack is loaded. Rhyme schemes (often ABCB or ABAB) are not enforced.
+lyriic checks that repeating contour when the stress pack is loaded. First-foot inversions and feminine endings count as on-meter; rhyme schemes (often ABCB or ABAB) are not enforced.
 
 ## Notes on this form
 
-lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. Folk and literary ballads often admit anapests, headless lines, or looser counts — mismatches are feedback against the teaching grid, not a claim that every published stanza is perfectly regular.
+lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. First-foot inversions and feminine endings count as on-meter; harder substitutions still surface as stress feedback — not a claim that every published stanza is perfectly regular.
 
 Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. This checker stays on syllables and stress — open the zen editor for ABCB rhyme dots. Refrain and narrative stay with you.
 

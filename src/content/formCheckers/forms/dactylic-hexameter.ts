@@ -79,6 +79,6 @@ export const dactylicHexameterForm: FormCheckerContent = {
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [18], stressPatterns [[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0]], footId dactyl, stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic teaching model of six pure dactyls / 18 syllables. Classical tradition is quantitative, allows spondees, and usually ends with a 2-syllable foot — intentionally omitted, along with caesura rules, elegiac pairing, and rhyme.",
+    "Catalog: pattern [18], stressPatterns [[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0]], footId dactyl, stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic teaching model of six pure dactyls / 18 syllables. Literary scansion accepts catalectic truncations (−1/−2 trailing weaks) via the shared dactyl foot rules. Classical tradition is quantitative and allows spondees — those substitutions, caesura rules, elegiac pairing, and rhyme stay out of scope.",
   ],
 };

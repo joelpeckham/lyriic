@@ -41,7 +41,7 @@ export const heroicCoupletForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.",
+    "lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.",
     "Tradition expects the two lines to rhyme (aa). This checker scores syllables and stress; open the zen editor for couplet rhyme dots. Caesura placement and closed vs. open rhetoric stay with you.",
   ],
   faqs: [

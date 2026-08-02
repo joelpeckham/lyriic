@@ -113,9 +113,11 @@ describe("buildMeteredLine", () => {
     const metered = buildMeteredLine(count, 0, {
       pattern: preset.pattern,
       stressPatterns: preset.stressPatterns,
+      footId: preset.footId,
     });
     expect(metered.total).toBe(10);
     expect(metered.status).toBe("exact");
+    expect(metered.fit).toBe("ideal");
     const juliet = metered.tokens.find((t) => t.word === "juliet");
     expect(juliet?.syllables).toBe(2);
   });
@@ -126,10 +128,15 @@ describe("buildMeteredLine", () => {
     const metered = buildMeteredLine(count, 0, {
       pattern: preset.pattern,
       stressPatterns: preset.stressPatterns,
+      footId: preset.footId,
       syllableOverrides: { juliet: 3 },
     });
     expect(metered.total).toBe(11);
-    expect(metered.status).toBe("over");
+    // 11 may land as feminine if contour fits; otherwise over.
+    expect(["over", "exact"]).toContain(metered.status);
+    if (metered.status === "exact") {
+      expect(metered.fit).toBe("feminine");
+    }
   });
 
   it("fits fire to 1 syllable when the line is one over target", () => {
@@ -160,6 +167,7 @@ describe("buildMeteredLine", () => {
       const metered = buildMeteredLine(count, 0, {
         pattern: preset.pattern,
         stressPatterns: preset.stressPatterns,
+        footId: preset.footId,
       });
       expect({ line, total: metered.total, status: metered.status }).toEqual({
         line,
@@ -167,5 +175,131 @@ describe("buildMeteredLine", () => {
         status: "exact",
       });
     }
+  });
+
+  it("accepts first-foot inversion as exact for iamb", () => {
+    // "poem" is trochaic [1,0]; ideal iamb [0,1] → inversion fit.
+    const count = countLine("poem");
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [2],
+      stressPatterns: [[0, 1]],
+      footId: "iamb",
+    });
+    expect(metered.status).toBe("exact");
+    expect(metered.fit).toBe("inversion");
+  });
+
+  it("accepts feminine ending as exact for iamb", () => {
+    const count = countLine("to love a rose now");
+    expect(count.total).toBe(5);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [4],
+      stressPatterns: [[0, 1, 0, 1]],
+      footId: "iamb",
+    });
+    expect(metered.total).toBe(5);
+    expect(metered.status).toBe("exact");
+    expect(metered.fit).toBe("feminine");
+  });
+
+  it("accepts catalexis as exact for trochee", () => {
+    const count = countLine("Tell me not in solemn words");
+    expect(count.total).toBe(7);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [8],
+      stressPatterns: [[1, 0, 1, 0, 1, 0, 1, 0]],
+      footId: "trochee",
+    });
+    expect(metered.total).toBe(7);
+    expect(metered.status).toBe("exact");
+    expect(metered.fit).toBe("catalexis");
+  });
+
+  it("still marks hard polysyllable stress fights as stress", () => {
+    // banana [0,1,0] fights both ideal [1,0,1] and inverted [0,1,1].
+    const count = countLine("banana");
+    expect(count.total).toBe(3);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [3],
+      stressPatterns: [[1, 0, 1]],
+      footId: "iamb",
+      stressOverrides: { banana: 1 },
+    });
+    // Override primary index 1 → [0,1,0]
+    expect(metered.tokens[0]!.stress).toEqual([0, 1, 0]);
+    expect(metered.status).toBe("stress");
+  });
+
+  it("prefers citation feminine when syllable compression would fail stress", () => {
+    // "even" has a −1 alt. Compressing to target 4 yields [1,0,1,0], which
+    // fails ideal/inversion; citation 5 matches inverted feminine.
+    const count = countLine("even a poem");
+    expect(count.total).toBe(5);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [4],
+      stressPatterns: [[0, 1, 0, 1]],
+      footId: "iamb",
+    });
+    expect(metered.total).toBe(5);
+    expect(metered.status).toBe("exact");
+    expect(metered.fit).toBe("feminine");
+    expect(metered.tokens.find((t) => t.word === "even")?.syllables).toBe(2);
+  });
+
+  it("marks feminine near-miss as stress not over", () => {
+    // 5 syllables with a polysyllable fight: length matches feminine, stress fails.
+    const count = countLine("to banana now");
+    expect(count.total).toBe(5);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [4],
+      stressPatterns: [[0, 1, 0, 1]],
+      footId: "iamb",
+    });
+    expect(metered.total).toBe(5);
+    expect(metered.status).toBe("stress");
+    expect(metered.fit).toBeUndefined();
+    expect(metered.matchedStress).toHaveLength(5);
+  });
+
+  it("marks catalexis near-miss as stress not under", () => {
+    const count = countLine("Tell me not in solemn words");
+    expect(count.total).toBe(7);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [8],
+      stressPatterns: [[1, 0, 1, 0, 1, 0, 1, 0]],
+      footId: "trochee",
+      // Force solemn onto [0,1], fighting catalectic trochee.
+      stressOverrides: { solemn: 1 },
+    });
+    expect(metered.total).toBe(7);
+    expect(metered.status).toBe("stress");
+    expect(metered.fit).toBeUndefined();
+  });
+
+  it("can accept feminine via same-syllable stress alts", () => {
+    // poem citation is trochaic; stress alts bend it to iamb for feminine.
+    const count = countLine("to poem a bit");
+    expect(count.total).toBe(5);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [4],
+      stressPatterns: [[0, 1, 0, 1]],
+      footId: "iamb",
+    });
+    expect(metered.total).toBe(5);
+    expect(metered.status).toBe("exact");
+    expect(metered.fit).toBe("feminine");
+  });
+
+  it("does not accept amphibrach feminine with a dactylic opening", () => {
+    const count = countLine("poetry on a river of silver and gold now");
+    expect(count.total).toBe(13);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: [12],
+      stressPatterns: [[0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]],
+      footId: "amphibrach",
+    });
+    expect(metered.total).toBe(13);
+    expect(metered.status).not.toBe("exact");
+    expect(metered.fit).not.toBe("feminine");
   });
 });

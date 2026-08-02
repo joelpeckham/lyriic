@@ -42,7 +42,7 @@ English iambic pentameter is five iambs per line: ten syllables with expected st
 
 The same ten-syllable iambic grid underlies blank verse (unrhymed), English sonnets, and heroic couplets. Those forms add rhyme or stanza constraints; this checker only targets the open line meter.
 
-Real poems often invert the first foot, add a feminine ending, or loosen stress for speech. lyriic marks the ideal weak–strong grid from the dictionary so you can see where a draft matches or drifts.
+Real poems often invert the first foot, add a feminine ending, or loosen stress for speech. lyriic’s teaching ticks show the ideal weak–strong grid; first-foot inversion and feminine endings are accepted as on-meter, while harder contour fights still flag as stress feedback.
 
 ## Iamb (da-DUM)
 
@@ -56,11 +56,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
 
-lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech-driven stress will show as mismatches against the ideal grid.
+lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings (an extra trailing weak syllable) count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 Blank verse, English sonnets, and heroic couplets all use this meter under different rhyme and stanza rules. lyriic’s dedicated Blank verse, Sonnet, and Heroic couplet checkers share the same ten-syllable iambic target; this page is the open, unbounded line cycle. Rhyme schemes are not enforced.
 

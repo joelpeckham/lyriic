@@ -42,7 +42,7 @@ export const blankVerseForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Blank verse traditionally does not rhyme; lyriic does not enforce rhyme or anti-rhyme. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.",
+    "lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Blank verse traditionally does not rhyme; lyriic does not enforce rhyme or anti-rhyme. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.",
     "stanzaLines is open: write as many lines as you like. This is not free verse — free verse drops regular meter. Sonnets and heroic couplets share the same pentameter contour but add fixed length or rhyme expectations lyriic does not model here.",
   ],
   faqs: [
@@ -77,11 +77,11 @@ export const blankVerseForm: FormCheckerContent = {
     body: [
       "Blank verse is unrhymed iambic pentameter: five iambs per line, ten syllables with expected stress on positions 2, 4, 6, 8, and 10. lyriic’s catalog uses that single-line cycle with no fixed stanza length.",
       "“Blank” means without end-rhyme, not without meter. Free verse drops the regular beat; blank verse keeps it. Shakespeare’s plays and Milton’s Paradise Lost are the classic English models; later poets often loosen stress while keeping the ten-slot line.",
-      "Feminine endings (an eleventh unstressed syllable), inverted first feet, and mid-line substitutions are common in the tradition. Against lyriic’s ideal grid those will read as mismatches — useful feedback, not a claim that every historical line is perfectly regular.",
+      "Feminine endings (an eleventh unstressed syllable) and inverted first feet are common in the tradition and count as on-meter in lyriic. Mid-line substitutions and harder speech stress still flag against the teaching grid — useful feedback, not a claim that every historical line is perfectly regular.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English teaching blank verse (unrhymed iambic pentameter). Intentionally omits rhyme/anti-rhyme enforcement, feminine endings, caesura rules, and verse-paragraph conventions. sampleLines use open-meter default of 4.",
+    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines null (open). Matches English teaching blank verse (unrhymed iambic pentameter). Literary scansion accepts first-foot inversion and feminine +1; intentionally omits rhyme/anti-rhyme enforcement, caesura rules, and verse-paragraph conventions. sampleLines use open-meter default of 4.",
   ],
 };

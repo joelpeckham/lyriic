@@ -11,6 +11,13 @@ export {
   fitLineSyllableVariants,
 } from "./fitSyllableVariants";
 export {
+  applyLiteraryMatch,
+  literaryCandidates,
+  matchLiteraryStress,
+  type LiteraryCandidate,
+  type LiteraryMatchResult,
+} from "./literaryAllowances";
+export {
   applyMetricalMonosyllables,
   flattenTokenStress,
   hasStressOverride,
@@ -79,4 +86,9 @@ export {
   type MeterSeed,
   type MeterSeedOverlays,
 } from "./seed";
-export type { MeteredLine, MeteredToken, MeterStatus } from "./types";
+export type {
+  LiteraryFit,
+  MeteredLine,
+  MeteredToken,
+  MeterStatus,
+} from "./types";

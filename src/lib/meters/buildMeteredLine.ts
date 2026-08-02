@@ -3,12 +3,13 @@ import {
   targetForLine,
   type BinaryStressPattern,
 } from "./presets";
+import { fitLineSyllableVariants } from "./fitSyllableVariants";
 import {
-  fitLineStressVariants,
-  fitLineSyllableVariants,
-} from "./fitSyllableVariants";
+  applyLiteraryMatch,
+  matchLiteraryStress,
+  type LiteraryMatchResult,
+} from "./literaryAllowances";
 import {
-  applyMetricalMonosyllables,
   flattenTokenStress,
   stressMismatchMask,
 } from "./scanLineStress";
@@ -16,6 +17,7 @@ import type { MeteredLine, MeteredToken, MeterStatus } from "./types";
 import type { StressCode } from "@/lib/data/dictPack";
 import { isStressReady } from "@/lib/data/stress";
 import { resolveWordStress } from "@/lib/stress";
+import type { FootId } from "./feet";
 import type { LineSyllableCount, WordToken } from "@/lib/syllables/types";
 
 export type { MeteredLine, MeteredToken, MeterStatus } from "./types";
@@ -24,6 +26,8 @@ export { stressMismatchMask } from "./scanLineStress";
 export type BuildMeteredLineOptions = {
   pattern: readonly number[];
   stressPatterns?: readonly BinaryStressPattern[];
+  /** Dominant foot; drives literary allowances (inversion, feminine, catalexis). */
+  footId?: FootId | null;
   stressOverrides?: Record<string, number>;
   syllableOverrides?: Record<string, number>;
 };
@@ -34,13 +38,27 @@ function isBuildOptions(
   return !Array.isArray(value);
 }
 
-function stressMatches(
-  actual: readonly StressCode[],
-  expected: BinaryStressPattern,
-): boolean {
-  const mask = stressMismatchMask(actual, expected);
-  if (mask === null) return false;
-  return !mask.some(Boolean);
+function cloneMeteredTokens(tokens: readonly MeteredToken[]): MeteredToken[] {
+  return tokens.map((t) => ({
+    ...t,
+    stress: t.stress.slice(),
+  }));
+}
+
+function restoreMeteredTokens(
+  tokens: MeteredToken[],
+  snapshot: readonly MeteredToken[],
+): void {
+  for (let i = 0; i < tokens.length; i++) {
+    const src = snapshot[i];
+    const dst = tokens[i];
+    if (!src || !dst) continue;
+    dst.syllables = src.syllables;
+    dst.stress = src.stress.slice();
+    dst.syllableStart = src.syllableStart;
+    dst.syllableEnd = src.syllableEnd;
+    dst.source = src.source;
+  }
 }
 
 export function buildMeteredLine(
@@ -64,6 +82,7 @@ export function buildMeteredLine(
   const {
     pattern,
     stressPatterns,
+    footId = null,
     stressOverrides = {},
     syllableOverrides = {},
   } = options;
@@ -109,45 +128,87 @@ export function buildMeteredLine(
   }
 
   let total = count.total;
+  const citationTotal = total;
+  const citationSnapshot =
+    target !== null && total !== target && total > 0
+      ? cloneMeteredTokens(tokens)
+      : null;
 
   // Dictionary / curated alts: bend syllable counts toward the meter target.
-  if (target !== null && total !== target && total > 0) {
+  if (citationSnapshot) {
     total = fitLineSyllableVariants(
       tokens,
       total,
-      target,
+      target!,
       syllableOverrides,
       stressOverrides,
       expectedStress,
     );
   }
 
-  // Poetic scansion: bend monosyllables to the meter when the count fits.
-  if (
-    expectedStress !== null &&
-    target !== null &&
-    total === target &&
-    total > 0
-  ) {
-    applyMetricalMonosyllables(tokens, expectedStress, stressOverrides);
-    // Same-syllable stress alts when count fits but contour still mismatches.
-    if (isStressReady() && !stressMatches(flattenTokenStress(tokens), expectedStress)) {
-      fitLineStressVariants(
-        tokens,
+  let fit: MeteredLine["fit"];
+  let matchedStress: MeteredLine["matchedStress"];
+
+  // Literary scansion: ideal + inversion / feminine / catalexis.
+  if (expectedStress !== null && total > 0) {
+    let literary: LiteraryMatchResult = matchLiteraryStress(
+      tokens,
+      expectedStress,
+      footId,
+      stressOverrides,
+      syllableOverrides,
+    );
+
+    // If syllable variants stole a valid feminine/catalexis reading, restore it.
+    if (
+      !literary.ok &&
+      citationSnapshot &&
+      total !== citationTotal
+    ) {
+      const citationLiterary = matchLiteraryStress(
+        citationSnapshot,
         expectedStress,
-        syllableOverrides,
+        footId,
         stressOverrides,
+        syllableOverrides,
       );
-      applyMetricalMonosyllables(tokens, expectedStress, stressOverrides);
+      if (citationLiterary.ok) {
+        restoreMeteredTokens(tokens, citationSnapshot);
+        total = citationTotal;
+        literary = citationLiterary;
+      }
+    }
+
+    if (literary.bentTokens) {
+      applyLiteraryMatch(tokens, literary.bentTokens);
+    }
+    matchedStress = literary.matchedStress;
+    if (literary.ok) {
+      fit = literary.fit;
     }
   }
-
-  const lineStress = flattenTokenStress(tokens);
 
   let status: MeterStatus = "none";
   if (target !== null) {
     if (total === 0 && !count.tokens.length) {
       status = "none";
+    } else if (fit) {
+      // Accepted literary contour (may differ in length from nominal target).
+      status = "exact";
+    } else if (
+      expectedStress !== null &&
+      isStressReady() &&
+      matchedStress != null &&
+      matchedStress.length === total
+    ) {
+      // Length matches a literary candidate; classify stress before under/over.
+      const lineStress = flattenTokenStress(tokens);
+      const mask = stressMismatchMask(lineStress, matchedStress);
+      if (mask !== null && mask.some(Boolean)) {
+        status = "stress";
+      } else {
+        status = "exact";
+      }
     } else if (total < target) {
       status = "under";
     } else if (total > target) {
@@ -155,8 +216,9 @@ export function buildMeteredLine(
     } else if (
       expectedStress !== null &&
       isStressReady() &&
-      !stressMatches(lineStress, expectedStress)
+      !stressMatchesIdeal(tokens, expectedStress)
     ) {
+      // Fallback when no length-matched literary candidate existed.
       status = "stress";
     } else {
       // Syllable count matches; treat as exact while stress pack is loading
@@ -165,5 +227,22 @@ export function buildMeteredLine(
     }
   }
 
-  return { total, target, status, tokens, expectedStress };
+  return {
+    total,
+    target,
+    status,
+    tokens,
+    expectedStress,
+    fit,
+    matchedStress: matchedStress ?? null,
+  };
+}
+
+function stressMatchesIdeal(
+  tokens: readonly MeteredToken[],
+  expected: BinaryStressPattern,
+): boolean {
+  const mask = stressMismatchMask(flattenTokenStress(tokens), expected);
+  if (mask === null) return false;
+  return !mask.some(Boolean);
 }

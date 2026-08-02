@@ -297,6 +297,7 @@ export function PoemEditor({
     () => ({
       pattern: meterConfig.pattern,
       stressPatterns: meterConfig.stressPatterns,
+      footId: meterConfig.footId,
       stressOverrides,
       syllableOverrides: overrides,
     }),

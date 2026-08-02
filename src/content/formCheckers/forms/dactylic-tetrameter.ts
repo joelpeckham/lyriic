@@ -34,7 +34,7 @@ export const dactylicTetrameterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a twelve-syllable line with a dactylic (strong–weak–weak) stress contour. Catalectic lines that drop final light syllables — common in Browning and song — will show as short against this full-tetrameter grid.",
+    "lyriic checks a twelve-syllable line with a dactylic (strong–weak–weak) stress contour. Catalectic lines that drop one or two final light syllables — common in Browning and song — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.",
     "Classical Alcmanian / quantitative dactylic tetrameter uses length, not English stress alone. lyriic does not enforce rhyme schemes or fixed stanza shapes.",
   ],
   faqs: [
@@ -68,12 +68,12 @@ export const dactylicTetrameterForm: FormCheckerContent = {
     title: "How dactylic tetrameter works",
     body: [
       "English dactylic tetrameter is four dactyls per line: twelve syllables with expected stress on positions 1, 4, 7, and 10 (DUM-da-da DUM-da-da DUM-da-da DUM-da-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.",
-      "Catalexis — dropping one or more final unstressed syllables — is common in English practice and song, so many cited lines scan as eleven syllables (or fewer) ending on a strong beat. This checker models the full twelve-syllable teaching form; catalectic drafts will read as short.",
+      "Catalexis — dropping one or more final unstressed syllables — is common in English practice and song, so many cited lines scan as eleven syllables (or fewer) ending on a strong beat. lyriic’s teaching ticks show the full twelve-syllable grid; catalectic lines that keep the falling contour count as on-meter.",
       "Do not confuse the English accentual-syllabic shape with classical quantitative dactylic tetrameter (Alcmanian verse and related Greek/Latin metres), which counts long and short syllables. Those traditions are outside this checker’s grid.",
     ],
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [12], stressPatterns [[1,0,0,1,0,0,1,0,0,1,0,0]], footId dactyl, stanzaLines null (open). Matches English accentual-syllabic full (acatalectic) dactylic tetrameter (4 dactyls / 12 syllables). Intentionally omits catalexis as a first-class target, rhyme, fixed stanza forms, and classical quantitative / Alcmanian tetrameter. sampleLines use open-meter default of 4; first line from Beatles (full 12-syllable example), others original teaching lines aimed at the 12-slot grid.",
+    "Catalog: pattern [12], stressPatterns [[1,0,0,1,0,0,1,0,0,1,0,0]], footId dactyl, stanzaLines null (open). Matches English accentual-syllabic full (acatalectic) dactylic tetrameter (4 dactyls / 12 syllables). Literary scansion accepts catalectic truncations (−1/−2 trailing weaks); intentionally omits rhyme, fixed stanza forms, and classical quantitative / Alcmanian tetrameter. sampleLines use open-meter default of 4; first line from Beatles (full 12-syllable example), others original teaching lines aimed at the 12-slot grid.",
   ],
 };

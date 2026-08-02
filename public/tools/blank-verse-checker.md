@@ -42,7 +42,7 @@ Blank verse is unrhymed iambic pentameter: five iambs per line, ten syllables wi
 
 “Blank” means without end-rhyme, not without meter. Free verse drops the regular beat; blank verse keeps it. Shakespeare’s plays and Milton’s Paradise Lost are the classic English models; later poets often loosen stress while keeping the ten-slot line.
 
-Feminine endings (an eleventh unstressed syllable), inverted first feet, and mid-line substitutions are common in the tradition. Against lyriic’s ideal grid those will read as mismatches — useful feedback, not a claim that every historical line is perfectly regular.
+Feminine endings (an eleventh unstressed syllable) and inverted first feet are common in the tradition and count as on-meter in lyriic. Mid-line substitutions and harder speech stress still flag against the teaching grid — useful feedback, not a claim that every historical line is perfectly regular.
 
 ## Iamb (da-DUM)
 
@@ -56,11 +56,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
 
-lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Blank verse traditionally does not rhyme; lyriic does not enforce rhyme or anti-rhyme. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.
+lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Blank verse traditionally does not rhyme; lyriic does not enforce rhyme or anti-rhyme. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 stanzaLines is open: write as many lines as you like. This is not free verse — free verse drops regular meter. Sonnets and heroic couplets share the same pentameter contour but add fixed length or rhyme expectations lyriic does not model here.
 

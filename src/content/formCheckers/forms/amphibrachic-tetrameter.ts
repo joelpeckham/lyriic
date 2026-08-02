@@ -40,7 +40,7 @@ export const amphibrachicTetrameterForm: FormCheckerContent = {
     },
   ],
   formNotes: [
-    "lyriic checks a twelve-syllable line with an amphibrachic (weak–strong–weak) stress contour. English poets commonly substitute feet, drop a final weak syllable (masculine ending), or loosen stress for speech — those will show as mismatches against the ideal grid.",
+    "lyriic checks a twelve-syllable line with an amphibrachic (weak–strong–weak) stress contour. A trailing feminine syllable counts as on-meter; dropped final weaks (masculine endings) and harder speech-driven disagreements still surface as stress feedback.",
     "Limericks and some comic verse are often scanned as amphibrachic or anapestic; lyriic’s limerick meter is a separate form. This checker does not enforce rhyme schemes, stanza shapes, or song-line phrasing.",
   ],
   faqs: [
@@ -80,6 +80,6 @@ export const amphibrachicTetrameterForm: FormCheckerContent = {
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [12], stressPatterns [[0,1,0,0,1,0,0,1,0,0,1,0]], footId amphibrach, stanzaLines null (open). Matches English accentual-syllabic amphibrachic tetrameter (4 amphibrachs / 12 syllables; stresses on 2, 5, 8, 11). Intentionally omits rhyme, fixed stanza shapes, masculine/feminine ending variants as first-class targets, limerick aabba rules, and Polish amphibrachic conventions. sampleLines use open-meter default of 4; lines adapted from Cohen, Woodworth, and Seuss (each 12 syllables).",
+    "Catalog: pattern [12], stressPatterns [[0,1,0,0,1,0,0,1,0,0,1,0]], footId amphibrach, stanzaLines null (open). Matches English accentual-syllabic amphibrachic tetrameter (4 amphibrachs / 12 syllables; stresses on 2, 5, 8, 11). Literary scansion accepts feminine +1; intentionally omits rhyme, fixed stanza shapes, masculine endings as first-class targets, limerick aabba rules, and Polish amphibrachic conventions. sampleLines use open-meter default of 4; lines adapted from Cohen, Woodworth, and Seuss (each 12 syllables).",
   ],
 };

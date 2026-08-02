@@ -54,11 +54,11 @@ When stress checking is enabled, lyriic marks the expected weak–strong–weak 
 
 Amphibrachic tetrameter expects four da-DUM-da feet: twelve syllables with strong beats on positions 2, 5, 8, and 11 (weak–strong–weak, repeated).
 
-lyriic checks this contour when the stress pack is loaded, comparing dictionary stress to that rocking grid alongside the twelve-syllable target.
+lyriic checks this contour when the stress pack is loaded. A trailing feminine syllable counts as on-meter; dropped final weaks and harder speech disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a twelve-syllable line with an amphibrachic (weak–strong–weak) stress contour. English poets commonly substitute feet, drop a final weak syllable (masculine ending), or loosen stress for speech — those will show as mismatches against the ideal grid.
+lyriic checks a twelve-syllable line with an amphibrachic (weak–strong–weak) stress contour. A trailing feminine syllable counts as on-meter; dropped final weaks (masculine endings) and harder speech-driven disagreements still surface as stress feedback.
 
 Limericks and some comic verse are often scanned as amphibrachic or anapestic; lyriic’s limerick meter is a separate form. This checker does not enforce rhyme schemes, stanza shapes, or song-line phrasing.
 

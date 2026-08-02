@@ -231,11 +231,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic trimeter expects three da-DUM feet: six syllables with strong beats on positions 2, 4, and 6.
 
-lyriic checks this weak–strong contour when the stress pack is loaded, alongside the six-syllable line target.
+lyriic checks this weak–strong contour when the stress pack is loaded. First-foot inversion and a feminine seventh syllable count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a six-syllable line with an iambic (weak–strong) stress contour. English poets commonly substitute feet, add a trailing weak syllable, or loosen stress for speech — those will show as mismatches against the ideal grid.
+lyriic checks a six-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 Classical Greek and Latin iambic trimeter is a different quantitative meter, not this six-syllable English teaching form. lyriic does not enforce rhyme schemes or hymn/ballad stanza shapes.
 
@@ -307,7 +307,7 @@ Iambic tetrameter is four iambs in a line: eight syllables with a rising weak–
 
 In English it is common in ballads, hymns, and lyric narrative — alone as a continuous meter, or alternating with six-syllable trimeter in common (ballad) meter. lyriic’s catalog treats each line as an open cycle of eight syllables with that iambic contour; stanza length and rhyme are left to you.
 
-When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+When stress-aware checking is on, lyriic marks the expected contour from dictionary stress. First-foot inversion and a feminine ninth syllable count as on-meter; harder drifts from the teaching grid still flag as stress feedback.
 
 ## Iamb (da-DUM)
 
@@ -321,11 +321,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic tetrameter expects four da-DUM feet: eight syllables with strong beats on positions 2, 4, 6, and 8.
 
-When the stress pack is loaded, lyriic marks that rising duple pattern from dictionary stress for each eight-syllable line.
+When the stress pack is loaded, lyriic marks that rising duple pattern. First-foot inversion and a feminine ninth syllable count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic targets eight syllables per line with an iambic (weak–strong) stress contour. Real poems often substitute a trochee, add a feminine ending, or vary the beat — mismatches are feedback, not a claim that every line must be perfectly regular.
+lyriic targets eight syllables per line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 lyriic does not enforce rhyme schemes (couplets, In Memoriam stanzas, long-meter hymn rhyme, and so on).
 
@@ -399,7 +399,7 @@ English iambic pentameter is five iambs per line: ten syllables with expected st
 
 The same ten-syllable iambic grid underlies blank verse (unrhymed), English sonnets, and heroic couplets. Those forms add rhyme or stanza constraints; this checker only targets the open line meter.
 
-Real poems often invert the first foot, add a feminine ending, or loosen stress for speech. lyriic marks the ideal weak–strong grid from the dictionary so you can see where a draft matches or drifts.
+Real poems often invert the first foot, add a feminine ending, or loosen stress for speech. lyriic’s teaching ticks show the ideal weak–strong grid; first-foot inversion and feminine endings are accepted as on-meter, while harder contour fights still flag as stress feedback.
 
 ## Iamb (da-DUM)
 
@@ -413,11 +413,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
 
-lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech-driven stress will show as mismatches against the ideal grid.
+lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings (an extra trailing weak syllable) count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 Blank verse, English sonnets, and heroic couplets all use this meter under different rhyme and stanza rules. lyriic’s dedicated Blank verse, Sonnet, and Heroic couplet checkers share the same ten-syllable iambic target; this page is the open, unbounded line cycle. Rhyme schemes are not enforced.
 
@@ -491,7 +491,7 @@ Blank verse is unrhymed iambic pentameter: five iambs per line, ten syllables wi
 
 “Blank” means without end-rhyme, not without meter. Free verse drops the regular beat; blank verse keeps it. Shakespeare’s plays and Milton’s Paradise Lost are the classic English models; later poets often loosen stress while keeping the ten-slot line.
 
-Feminine endings (an eleventh unstressed syllable), inverted first feet, and mid-line substitutions are common in the tradition. Against lyriic’s ideal grid those will read as mismatches — useful feedback, not a claim that every historical line is perfectly regular.
+Feminine endings (an eleventh unstressed syllable) and inverted first feet are common in the tradition and count as on-meter in lyriic. Mid-line substitutions and harder speech stress still flag against the teaching grid — useful feedback, not a claim that every historical line is perfectly regular.
 
 ## Iamb (da-DUM)
 
@@ -505,11 +505,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
 
-lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Blank verse traditionally does not rhyme; lyriic does not enforce rhyme or anti-rhyme. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.
+lyriic checks a ten-syllable line with an iambic (weak–strong) stress contour. Blank verse traditionally does not rhyme; lyriic does not enforce rhyme or anti-rhyme. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 stanzaLines is open: write as many lines as you like. This is not free verse — free verse drops regular meter. Sonnets and heroic couplets share the same pentameter contour but add fixed length or rhyme expectations lyriic does not model here.
 
@@ -597,11 +597,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
 
-lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. Substitutions, feminine endings, and speech stress will show as mismatches against the ideal grid.
+lyriic checks fourteen lines of iambic pentameter: ten syllables with a weak–strong stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 This checker scores line count, syllable target, and iambic stress only. For Shakespearean, Petrarchan, or Spenserian rhyme dots while you draft, open the zen editor with the Sonnet meter.
 
@@ -687,11 +687,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic hexameter (alexandrine-style in English teaching) expects six da-DUM feet: twelve syllables with strong beats on positions 2, 4, 6, 8, 10, and 12.
 
-With the stress pack loaded, lyriic compares dictionary stress to that twelve-syllable iambic contour.
+With the stress pack loaded, lyriic compares dictionary stress to that twelve-syllable iambic contour. First-foot inversion and a feminine thirteenth syllable count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a twelve-syllable line with an iambic (weak–strong) stress contour. English poets commonly place a caesura near mid-line, substitute feet, or add a trailing weak syllable — those will show as mismatches against the ideal grid.
+lyriic checks a twelve-syllable line with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; caesura placement and harder speech-driven disagreements still surface as stress feedback.
 
 The French classical alexandrine is a syllabic 6+6 line with an obligatory medial caesura, not identical to this English accentual-syllabic model. lyriic does not enforce caesura position, rhyme schemes, or Spenserian stanza shape.
 
@@ -761,7 +761,7 @@ Witch chants lean on falling trochaic rhythms, frequently catalectic.
 
 English trochaic tetrameter is four trochees per line: eight syllables with expected stress on positions 1, 3, 5, and 7 (DUM-da DUM-da DUM-da DUM-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
 
-Catalexis — dropping the final unstressed syllable — is common in English practice, so many famous lines scan as seven syllables ending on a strong beat. This checker models the full eight-syllable teaching form; catalectic drafts will read as one syllable short.
+Catalexis — dropping the final unstressed syllable — is common in English practice, so many famous lines scan as seven syllables ending on a strong beat. lyriic’s teaching ticks show the full eight-syllable grid; catalectic lines that keep the falling contour count as on-meter.
 
 Do not confuse the English accentual-syllabic shape with classical quantitative trochaic tetrameter (longer metra) or with Kalevala meter, which follows Finnic length and alliteration rules. Those traditions are outside this checker’s grid.
 
@@ -777,11 +777,11 @@ With the stress pack loaded, lyriic marks expected strong–weak beats from dict
 
 Trochaic tetrameter expects four DUM-da feet: eight syllables with strong beats on positions 1, 3, 5, and 7.
 
-lyriic checks this falling duple contour when the stress pack is loaded. Catalectic lines that drop a final weak beat are common in the tradition and will read as short against a full eight-slot grid.
+lyriic checks this falling duple contour when the stress pack is loaded. Catalexis (seven syllables ending strong) and first-foot inversion count as on-meter; harder disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — will show as short against this full-tetrameter grid.
+lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.
 
 Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.
 
@@ -855,7 +855,7 @@ Trochaic octameter is eight trochees in a line: sixteen syllables with a falling
 
 In English the meter is uncommon at full length. Poe’s “The Raven” made it famous, mixing complete octameter with catalectic shorter lines. lyriic’s catalog treats each line as an open cycle of sixteen syllables with that trochaic contour; stanza length and rhyme are left to you.
 
-When stress-aware checking is on, lyriic marks the expected contour from dictionary stress so you can see where a draft matches or drifts from the ideal grid.
+When stress-aware checking is on, lyriic marks the expected contour from dictionary stress. Catalexis (fifteen syllables ending strong) counts as on-meter; harder drifts from the teaching grid still flag as stress feedback.
 
 ## Trochee (DUM-da)
 
@@ -869,11 +869,11 @@ With the stress pack loaded, lyriic marks expected strong–weak beats from dict
 
 Trochaic octameter expects eight DUM-da feet: sixteen syllables with strong beats on the odd positions (1, 3, 5, …, 15).
 
-When the stress pack is loaded, lyriic compares dictionary stress to that long falling contour.
+When the stress pack is loaded, lyriic compares dictionary stress to that long falling contour. Catalexis (fifteen syllables ending strong) and first-foot inversion count as on-meter; harder drifts still flag as stress feedback.
 
 ## Notes on this form
 
-lyriic targets sixteen syllables per line with a trochaic (strong–weak) stress contour. Famous poems often drop the final weak syllable (catalexis) or shorten refrain lines — those will read short or mismatched against a full eight-foot grid.
+lyriic targets sixteen syllables per line with a trochaic (strong–weak) stress contour. Catalexis (dropping the final weak syllable) counts as on-meter; shorter refrain or half-lines still read short against the full eight-foot grid.
 
 lyriic does not enforce internal rhyme, refrain structure, or stanza schemes (as in “The Raven” or bush-ballad quatrains).
 
@@ -937,7 +937,7 @@ Another Book of Nonsense limerick; trimeter frames the A-rhyme lines around shor
 
 English anapestic trimeter is three anapests per line: nine syllables with expected stress on positions 3, 6, and 9 (da-da-DUM da-da-DUM da-da-DUM). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
 
-Anapests create a rolling, forward drive that English writers have used for comic limericks, light verse, and occasional serious lyrics. Substitutions — especially an opening iamb — are common in practice and will not match lyriic’s ideal grid.
+Anapests create a rolling, forward drive that English writers have used for comic limericks, light verse, and occasional serious lyrics. Substitutions — especially an opening iamb — are common in practice and may still flag against lyriic’s teaching grid.
 
 Limericks pair these longer trimeter lines with shorter anapestic dimeter lines. That five-line alternating cycle is a separate meter in lyriic; here every line targets nine anapestic syllables.
 
@@ -957,7 +957,7 @@ When the stress pack is loaded, lyriic marks that rising triple contour against 
 
 ## Notes on this form
 
-lyriic checks a nine-syllable line with an anapestic (weak–weak–strong) stress contour. English poets often open with an iamb, drop an opening weak syllable, or loosen stress for speech — those will show as mismatches against the ideal grid.
+lyriic checks a nine-syllable line with an anapestic (weak–weak–strong) stress contour. Opening substitutions and speech-driven stress may still flag against the teaching grid — useful feedback, not a claim that every published line is perfectly regular.
 
 Limericks mix this trimeter with shorter anapestic lines and an AABBA rhyme scheme. lyriic’s Limerick meter models that five-line cycle separately; this checker targets pure trimeter only. Rhyme is not enforced.
 
@@ -1111,7 +1111,7 @@ Song lines lean on falling dactylic rhythm, frequently truncating before a pure 
 
 English dactylic tetrameter is four dactyls per line: twelve syllables with expected stress on positions 1, 4, 7, and 10 (DUM-da-da DUM-da-da DUM-da-da DUM-da-da). lyriic’s catalog uses that single-line cycle with no fixed stanza length.
 
-Catalexis — dropping one or more final unstressed syllables — is common in English practice and song, so many cited lines scan as eleven syllables (or fewer) ending on a strong beat. This checker models the full twelve-syllable teaching form; catalectic drafts will read as short.
+Catalexis — dropping one or more final unstressed syllables — is common in English practice and song, so many cited lines scan as eleven syllables (or fewer) ending on a strong beat. lyriic’s teaching ticks show the full twelve-syllable grid; catalectic lines that keep the falling contour count as on-meter.
 
 Do not confuse the English accentual-syllabic shape with classical quantitative dactylic tetrameter (Alcmanian verse and related Greek/Latin metres), which counts long and short syllables. Those traditions are outside this checker’s grid.
 
@@ -1127,11 +1127,11 @@ lyriic’s stress-aware view repeats the strong–weak–weak unit across the li
 
 Dactylic tetrameter expects four DUM-da-da feet: twelve syllables with strong beats on positions 1, 4, 7, and 10.
 
-With the stress pack loaded, lyriic compares dictionary stress to that falling triple contour for each twelve-syllable line.
+With the stress pack loaded, lyriic compares dictionary stress to that falling triple contour. Catalexis (−1/−2 trailing weaks) counts as on-meter; harder disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a twelve-syllable line with a dactylic (strong–weak–weak) stress contour. Catalectic lines that drop final light syllables — common in Browning and song — will show as short against this full-tetrameter grid.
+lyriic checks a twelve-syllable line with a dactylic (strong–weak–weak) stress contour. Catalectic lines that drop one or two final light syllables — common in Browning and song — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.
 
 Classical Alcmanian / quantitative dactylic tetrameter uses length, not English stress alone. lyriic does not enforce rhyme schemes or fixed stanza shapes.
 
@@ -1215,7 +1215,7 @@ lyriic’s stress-aware view repeats the strong–weak–weak unit across the li
 
 Dactylic hexameter, as modeled here, expects six DUM-da-da feet: eighteen syllables with strong beats on positions 1, 4, 7, 10, 13, and 16. Classical hexameter often allows substitutions and a shorter final foot; lyriic’s catalog uses a regular dactylic grid.
 
-When the stress pack is loaded, lyriic checks dictionary stress against that eighteen-slot contour.
+When the stress pack is loaded, lyriic checks dictionary stress against that eighteen-slot contour. Catalexis (−1/−2 trailing weaks) counts as on-meter; classical spondees and quantity stay out of scope.
 
 ## Notes on this form
 
@@ -1305,11 +1305,11 @@ When stress checking is enabled, lyriic marks the expected weak–strong–weak 
 
 Amphibrachic tetrameter expects four da-DUM-da feet: twelve syllables with strong beats on positions 2, 5, 8, and 11 (weak–strong–weak, repeated).
 
-lyriic checks this contour when the stress pack is loaded, comparing dictionary stress to that rocking grid alongside the twelve-syllable target.
+lyriic checks this contour when the stress pack is loaded. A trailing feminine syllable counts as on-meter; dropped final weaks and harder speech disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks a twelve-syllable line with an amphibrachic (weak–strong–weak) stress contour. English poets commonly substitute feet, drop a final weak syllable (masculine ending), or loosen stress for speech — those will show as mismatches against the ideal grid.
+lyriic checks a twelve-syllable line with an amphibrachic (weak–strong–weak) stress contour. A trailing feminine syllable counts as on-meter; dropped final weaks (masculine endings) and harder speech-driven disagreements still surface as stress feedback.
 
 Limericks and some comic verse are often scanned as amphibrachic or anapestic; lyriic’s limerick meter is a separate form. This checker does not enforce rhyme schemes, stanza shapes, or song-line phrasing.
 
@@ -1397,11 +1397,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Iambic pentameter expects five da-DUM feet: ten syllables with strong beats on positions 2, 4, 6, 8, and 10. It is the default contour for blank verse, English sonnets, and heroic couplets in this catalog.
 
-lyriic checks that ten-slot weak–strong grid when the stress pack is loaded; substitutions and feminine endings are common in practice and will show as mismatches against the ideal.
+lyriic checks that ten-slot weak–strong grid when the stress pack is loaded. Common literary moves — first-foot inversion and a feminine eleventh syllable — count as on-meter; stronger disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. Substitutions, feminine endings, and speech stress are common and will show as mismatches against the ideal grid.
+lyriic checks two lines at ten syllables each with an iambic (weak–strong) stress contour. First-foot inversions and feminine endings count as on-meter; stronger speech-driven disagreements still surface as stress feedback.
 
 Tradition expects the two lines to rhyme (aa). This checker scores syllables and stress; open the zen editor for couplet rhyme dots. Caesura placement and closed vs. open rhetoric stay with you.
 
@@ -1487,11 +1487,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Common meter alternates an eight-syllable iambic line with a six-syllable one. The long line has strong beats on 2, 4, 6, and 8; the short line on 2, 4, and 6.
 
-When the stress pack is loaded, lyriic checks that 8 / 6 iambic contour line by line through the ballad or hymn cycle.
+When the stress pack is loaded, lyriic checks that 8 / 6 iambic contour line by line. First-foot inversions and feminine endings count as on-meter; harder substitutions still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. Real hymns and ballads often admit substitutions — mismatches are feedback, not a claim that every published line is perfectly regular.
+lyriic cycles an 8 / 6 iambic pattern across a four-line stanza: long lines target eight syllables with strong beats on 2, 4, 6, and 8; short lines target six with strong beats on 2, 4, and 6. First-foot inversions and feminine endings count as on-meter; harder substitutions still surface as stress feedback — not a claim that every published line is perfectly regular.
 
 This checker scores syllables and stress only. For ABAB rhyme dots while you draft, open the zen editor with Common meter. Tune matching between hymn texts stays with you.
 
@@ -1579,11 +1579,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Long meter is paired eight-syllable iambic lines. Each line expects four da-DUM feet: strong beats on positions 2, 4, 6, and 8.
 
-With the stress pack loaded, lyriic marks that 8 / 8 iambic contour for the hymn stanza cycle.
+With the stress pack loaded, lyriic marks that 8 / 8 iambic contour. First-foot inversions and feminine endings count as on-meter; harder disagreements still surface as stress feedback.
 
 ## Notes on this form
 
-lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. Real hymns may stretch “heavenly,” drop a syllable in singing, or substitute a foot — mismatches are feedback, not a claim that every line must be perfectly regular.
+lyriic targets eight syllables per line with an iambic (weak–strong) contour, cycling 8 / 8 across a four-line stanza. First-foot inversions and feminine endings count as on-meter; harder substitutions and speech-driven disagreements still surface as stress feedback.
 
 This checker scores syllables and stress. For ABAB rhyme dots while you draft, open the zen editor with Long meter. Doubled long metre (L.M.D.) and tune pairing stay out of scope here.
 
@@ -1663,7 +1663,7 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Short meter (S.M.) is iambic 6 / 6 / 8 / 6: three-foot lines stress positions 2, 4, and 6; the eight-syllable third line adds a fourth foot with strong beats on 2, 4, 6, and 8.
 
-lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded. Rhyme schemes and tune pairing are not enforced.
+lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded. First-foot inversions and feminine endings count as on-meter; rhyme schemes and tune pairing are not enforced.
 
 ## Notes on this form
 
@@ -1843,11 +1843,11 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 A ballad-stanza (common-meter quatrain) cycle is iambic 8 / 6 / 8 / 6: long lines stress even positions through eight syllables; short lines do the same through six.
 
-lyriic checks that repeating contour when the stress pack is loaded. Rhyme schemes (often ABCB or ABAB) are not enforced.
+lyriic checks that repeating contour when the stress pack is loaded. First-foot inversions and feminine endings count as on-meter; rhyme schemes (often ABCB or ABAB) are not enforced.
 
 ## Notes on this form
 
-lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. Folk and literary ballads often admit anapests, headless lines, or looser counts — mismatches are feedback against the teaching grid, not a claim that every published stanza is perfectly regular.
+lyriic checks a four-line cycle of 8 · 6 · 8 · 6 with iambic stress: long lines expect strong beats on 2, 4, 6, and 8; short lines on 2, 4, and 6. First-foot inversions and feminine endings count as on-meter; harder substitutions still surface as stress feedback — not a claim that every published stanza is perfectly regular.
 
 Tradition usually rhymes the second and fourth lines (ABCB); common measure often prefers ABAB. This checker stays on syllables and stress — open the zen editor for ABCB rhyme dots. Refrain and narrative stay with you.
 

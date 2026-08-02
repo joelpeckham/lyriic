@@ -132,14 +132,14 @@ export function posOnLine(
 
 /**
  * Per-syllable mismatch mask for lines already marked `status === "stress"`.
- * Relies on buildMeteredLine’s status semantics (pack ready, count match, mismatch).
+ * Compares against the best-fitting acceptable contour when available so
+ * accepted literary substitutions are not painted as breaks.
  */
 function mismatchMaskForStressLine(line: MeteredLine): boolean[] | null {
-  if (line.status !== "stress" || line.expectedStress === null) return null;
-  return stressMismatchMask(
-    flattenTokenStress(line.tokens),
-    line.expectedStress,
-  );
+  if (line.status !== "stress") return null;
+  const expected = line.matchedStress ?? line.expectedStress;
+  if (expected === null || expected === undefined) return null;
+  return stressMismatchMask(flattenTokenStress(line.tokens), expected);
 }
 
 function coordsAtPosSafe(

@@ -48,7 +48,7 @@ When stress-aware checking is on, lyriic marks the expected weak–strong pairs 
 
 Short meter (S.M.) is iambic 6 / 6 / 8 / 6: three-foot lines stress positions 2, 4, and 6; the eight-syllable third line adds a fourth foot with strong beats on 2, 4, 6, and 8.
 
-lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded. Rhyme schemes and tune pairing are not enforced.
+lyriic checks that 6.6.8.6 weak–strong contour when the stress pack is loaded. First-foot inversions and feminine endings count as on-meter; rhyme schemes and tune pairing are not enforced.
 
 ## Notes on this form
 

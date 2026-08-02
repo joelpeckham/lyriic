@@ -137,7 +137,7 @@ function baseStress(normalized: string, syllableCount: number): WordStress {
 
   return {
     word: normalized,
-    pattern: heuristicStress(syllableCount),
+    pattern: heuristicStress(syllableCount, normalized),
     source: "heuristic",
   };
 }
