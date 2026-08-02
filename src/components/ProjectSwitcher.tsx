@@ -166,7 +166,6 @@ export function ProjectSwitcher({
                   {draftListSecondary(
                     project.text,
                     project.updatedAt,
-                    Date.now(),
                     getMeterCatalogEntry(project.settings.meter).label,
                   )}
                 </span>

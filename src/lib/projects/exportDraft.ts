@@ -78,8 +78,8 @@ export function formatRelativeUpdatedAt(
 export function draftListSecondary(
   text: string,
   updatedAt: number,
-  now = Date.now(),
   meterLabel?: string,
+  now = Date.now(),
 ): string {
   const preview = firstVerseLine(text);
   if (preview) return preview;

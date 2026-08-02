@@ -45,23 +45,23 @@ describe("formatRelativeUpdatedAt", () => {
 describe("draftListSecondary", () => {
   it("prefers verse preview over empty cue", () => {
     const now = Date.now();
-    expect(draftListSecondary("first line\nsecond", now - 60_000, now)).toBe(
+    expect(draftListSecondary("first line\nsecond", now - 60_000)).toBe(
       "first line",
     );
   });
 
   it("shows Empty · relative time when no verse", () => {
     const now = Date.now();
-    expect(draftListSecondary("  \n  ", now - 60_000, now)).toBe(
+    expect(draftListSecondary("  \n  ", now - 60_000, undefined, now)).toBe(
       "Empty · 1m ago",
     );
   });
 
   it("accepts optional meter label for empty drafts", () => {
     const now = Date.now();
-    expect(
-      draftListSecondary("  \n  ", now - 60_000, now, "Haiku"),
-    ).toBe("Empty · Haiku");
+    expect(draftListSecondary("  \n  ", now - 60_000, "Haiku")).toBe(
+      "Empty · Haiku",
+    );
   });
 });
 
