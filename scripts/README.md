@@ -40,7 +40,7 @@ Perfect-rhyme key = IPA phones from the last primary stress (else secondary, els
 
 | Source | License | Role |
 |--------|---------|------|
-| [Open English WordNet 2025](https://github.com/globalwordnet/english-wordnet) | CC-BY 4.0 | Synset members + adjective `similar` |
+| [Open English WordNet 2025](https://github.com/globalwordnet/english-wordnet) | CC-BY 4.0 | Synset members + adjective `similar`; co-hyponym related fill |
 | [Wiktionary](https://kaikki.org/dictionary/) (kaikki.org / wiktextract) | CC-BY-SA | Additional synonym links |
 | [`wordfreq`](https://pypi.org/project/wordfreq/) | MIT | Zipf ranking at build time |
 
@@ -48,7 +48,7 @@ Perfect-rhyme key = IPA phones from the last primary stress (else secondary, els
 pnpm build:thesaurus
 ```
 
-Requires `lexicon.bin` from `build:pronunciation`. Writes `src/lib/data/packs/thesaurus.bin` (IDs into the shared lexicon plus a small overflow string table). Headwords restricted to the lexicon; synonyms grouped by usage (`n` / `v` / `a` / `r`). OEWN candidates ranked first within each usage, then Wiktionary fill (no cap).
+Requires `lexicon.bin` from `build:pronunciation`. Writes `src/lib/data/packs/thesaurus.bin` (IDs into the shared lexicon plus a small overflow string table). Headwords restricted to the lexicon; synonyms grouped by usage (`n` / `v` / `a` / `r`). Per usage: OEWN synset mates first (Zipf, no cap), then OEWN related/co-hyponym neighbors (Zipf, cap 16), then Wiktionary fill (Zipf, no cap). Related links siblings under a shared hypernym, hyponyms of those siblings, direct hyponyms, and hypernym members. At lookup, heads with both noun and verb senses hard-filter to the detected `n`/`v` usage when context provides one.
 
 ## Other
 

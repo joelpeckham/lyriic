@@ -2,8 +2,10 @@
  * Build a compact synonym map from Open English WordNet 2025 + Wiktionary.
  *
  * Primary: OEWN synset members + adjective `similar` links (CC-BY 4.0).
+ * Related: OEWN co-hyponym neighborhood (siblings, sibling-hyponyms, hyponyms,
+ * hypernym members), Zipf-capped per usage.
  * Depth: English Wiktionary synonyms via kaikki.org extract (CC-BY-SA).
- * Ranking: OEWN first (Zipf within), then Wiktionary fill (Zipf), per usage.
+ * Ranking: OEWN syns → OEWN related → Wiktionary fill (Zipf within each), per usage.
  * Requires: pip install wordfreq
  *
  * Single-word lemmas only; headwords must exist in the shared lexicon.
@@ -49,6 +51,9 @@ const outPath = join(root, "src/lib/data/packs/thesaurus.bin");
 
 /** @type {Usage[]} */
 const USAGE_ORDER = ["n", "v", "a", "r"];
+
+/** Max OEWN related (co-hyponym) lemmas kept per head × usage after Zipf rank. */
+const RELATED_CAP = 16;
 
 /**
  * @param {string} zipPath
@@ -108,7 +113,10 @@ function addSyn(map, head, syn, usage) {
 
 /**
  * @param {string} dir
- * @returns {Map<string, Map<Usage, Set<string>>>}
+ * @returns {{
+ *   syn: Map<string, Map<Usage, Set<string>>>,
+ *   related: Map<string, Map<Usage, Set<string>>>,
+ * }}
  */
 function loadOewnSynonyms(dir) {
   const files = readdirSync(dir).filter(
@@ -116,13 +124,13 @@ function loadOewnSynonyms(dir) {
       /^(noun|verb|adj|adv)\./.test(name) && name.endsWith(".json"),
   );
 
-  /** @type {Map<string, { members: string[], similar: string[], usage: Usage }>} */
+  /** @type {Map<string, { members: string[], similar: string[], hypernym: string[], usage: Usage }>} */
   const synsets = new Map();
 
   for (const file of files) {
     const usage = usageFromOewnFile(file);
     if (!usage) continue;
-    /** @type {Record<string, { members?: string[], similar?: string[] }>} */
+    /** @type {Record<string, { members?: string[], similar?: string[], hypernym?: string[] }>} */
     const data = JSON.parse(readFileSync(join(dir, file), "utf8"));
     for (const [id, synset] of Object.entries(data)) {
       /** @type {string[]} */
@@ -135,32 +143,101 @@ function loadOewnSynonyms(dir) {
       synsets.set(id, {
         members,
         similar: synset.similar ?? [],
+        hypernym: synset.hypernym ?? [],
         usage,
       });
     }
   }
 
+  /** @type {Map<string, string[]>} */
+  const childrenByParent = new Map();
+  for (const [id, { hypernym }] of synsets) {
+    for (const parentId of hypernym) {
+      let kids = childrenByParent.get(parentId);
+      if (!kids) {
+        kids = [];
+        childrenByParent.set(parentId, kids);
+      }
+      kids.push(id);
+    }
+  }
+
   /** @type {Map<string, Map<Usage, Set<string>>>} */
-  const map = new Map();
+  const syn = new Map();
+  /** @type {Map<string, Map<Usage, Set<string>>>} */
+  const related = new Map();
 
   for (const { members, similar, usage } of synsets.values()) {
     for (const a of members) {
-      for (const b of members) addSyn(map, a, b, usage);
+      for (const b of members) addSyn(syn, a, b, usage);
     }
     for (const simId of similar) {
       const other = synsets.get(simId);
       if (!other) continue;
       for (const a of members) {
-        for (const b of other.members) addSyn(map, a, b, usage);
+        for (const b of other.members) addSyn(syn, a, b, usage);
       }
       for (const a of other.members) {
-        for (const b of members) addSyn(map, a, b, other.usage);
+        for (const b of members) addSyn(syn, a, b, other.usage);
       }
     }
   }
 
-  console.log(`OEWN: ${map.size} heads from ${synsets.size} synsets`);
-  return map;
+  /**
+   * Link every member of `fromIds` → every member of `toIds` (one way).
+   * Sibling pairs still become mutual because each synset is processed; avoiding
+   * reverse cousin edges keeps high-frequency motion verbs from drowning heads
+   * like bathe when a distant sibling-of-parent lists them as cousins.
+   * @param {string[]} fromIds
+   * @param {string[]} toIds
+   */
+  function linkRelated(fromIds, toIds) {
+    for (const fromId of fromIds) {
+      const from = synsets.get(fromId);
+      if (!from) continue;
+      for (const toId of toIds) {
+        if (fromId === toId) continue;
+        const to = synsets.get(toId);
+        if (!to) continue;
+        for (const a of from.members) {
+          for (const b of to.members) {
+            addSyn(related, a, b, from.usage);
+          }
+        }
+      }
+    }
+  }
+
+  for (const [id, { hypernym }] of synsets) {
+    /** @type {Set<string>} */
+    const siblingIds = new Set();
+    for (const parentId of hypernym) {
+      for (const kid of childrenByParent.get(parentId) ?? []) {
+        if (kid !== id) siblingIds.add(kid);
+      }
+    }
+
+    /** @type {Set<string>} */
+    const cousinIds = new Set();
+    for (const sibId of siblingIds) {
+      for (const niece of childrenByParent.get(sibId) ?? []) {
+        cousinIds.add(niece);
+      }
+    }
+
+    const childIds = childrenByParent.get(id) ?? [];
+    const parentIds = hypernym.filter((p) => synsets.has(p));
+
+    linkRelated([id], [...siblingIds]);
+    linkRelated([id], [...cousinIds]);
+    linkRelated([id], childIds);
+    linkRelated([id], parentIds);
+  }
+
+  console.log(
+    `OEWN: ${syn.size} syn heads, ${related.size} related heads from ${synsets.size} synsets`,
+  );
+  return { syn, related };
 }
 
 /**
@@ -254,15 +331,16 @@ async function loadWiktionarySynonyms(gzPath) {
 }
 
 /**
- * OEWN syns first (freq-ranked), then Wiktionary fill (freq-ranked), per usage.
+ * OEWN syns → OEWN related (capped) → Wiktionary fill, each Zipf-ranked.
  *
  * @param {Map<Usage, Set<string>> | undefined} oewn
+ * @param {Map<Usage, Set<string>> | undefined} oewnRelated
  * @param {Map<Usage, Set<string>> | undefined} wikt
  * @param {string} head
  * @param {Map<string, number>} freq
  * @returns {Record<string, string[]> | null}
  */
-function selectSynonyms(oewn, wikt, head, freq) {
+function selectSynonyms(oewn, oewnRelated, wikt, head, freq) {
   /** @type {Record<string, string[]>} */
   const out = {};
   let total = 0;
@@ -274,10 +352,16 @@ function selectSynonyms(oewn, wikt, head, freq) {
     ).filter((s) => s !== head);
     const seen = new Set(primary);
     seen.add(head);
+    const related = selectByFrequency(
+      [...(oewnRelated?.get(usage) ?? [])].filter((s) => !seen.has(s)),
+      freq,
+      RELATED_CAP,
+    );
+    for (const s of related) seen.add(s);
     const fill = selectByFrequency([...(wikt?.get(usage) ?? [])], freq).filter(
       (s) => !seen.has(s),
     );
-    const list = [...primary, ...fill];
+    const list = [...primary, ...related, ...fill];
     if (list.length === 0) continue;
     out[usage] = list;
     total += list.length;
@@ -298,7 +382,7 @@ async function main() {
   const { words: lexWords } = decodeLexicon(readFileSync(lexiconPath));
   const lexSet = new Set(lexWords);
 
-  const oewn = loadOewnSynonyms(oewnDir);
+  const { syn: oewn, related: oewnRelated } = loadOewnSynonyms(oewnDir);
 
   console.log("Fetching / loading Wiktionary synonyms…");
   await ensureDownloaded(WIKT_URL, wiktPath);
@@ -308,22 +392,22 @@ async function main() {
   const heads = new Set();
   /** @type {Set<string>} */
   const toScore = new Set();
-  for (const [head, byUsage] of oewn) {
-    if (!lexSet.has(head)) continue;
-    heads.add(head);
-    toScore.add(head);
-    for (const syns of byUsage.values()) {
-      for (const s of syns) toScore.add(s);
+  /**
+   * @param {Map<string, Map<Usage, Set<string>>>} map
+   */
+  function absorbHeads(map) {
+    for (const [head, byUsage] of map) {
+      if (!lexSet.has(head)) continue;
+      heads.add(head);
+      toScore.add(head);
+      for (const syns of byUsage.values()) {
+        for (const s of syns) toScore.add(s);
+      }
     }
   }
-  for (const [head, byUsage] of wikt) {
-    if (!lexSet.has(head)) continue;
-    heads.add(head);
-    toScore.add(head);
-    for (const syns of byUsage.values()) {
-      for (const s of syns) toScore.add(s);
-    }
-  }
+  absorbHeads(oewn);
+  absorbHeads(oewnRelated);
+  absorbHeads(wikt);
 
   console.log(
     `Ranking ${heads.size} lexicon-overlap heads (${toScore.size} unique lemmas) by wordfreq…`,
@@ -335,7 +419,13 @@ async function main() {
   let skippedHeads = 0;
 
   for (const head of heads) {
-    const selected = selectSynonyms(oewn.get(head), wikt.get(head), head, freq);
+    const selected = selectSynonyms(
+      oewn.get(head),
+      oewnRelated.get(head),
+      wikt.get(head),
+      head,
+      freq,
+    );
     if (!selected) {
       skippedHeads += 1;
       continue;

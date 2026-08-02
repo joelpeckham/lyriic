@@ -22,15 +22,40 @@ describe("lookupSynonyms", () => {
     expect(syns[0]?.word).toBe("cadaver");
   });
 
-  it("ranks matching usage first", () => {
+  it("hard-filters to detected n/v when noun/verb-ambiguous", () => {
     __setThesaurusDataForTests({
       remains: { n: ["cadaver", "corpse"] },
       remain: { v: ["stay", "persist", "continue"] },
     });
-    const syns = lookupSynonyms("remains", "v");
-    expect(syns[0]?.word).toBe("stay");
+    const asVerb = lookupSynonyms("remains", "v");
+    expect(asVerb.map((s) => s.word)).toEqual(["stay", "persist", "continue"]);
+    expect(asVerb.every((s) => s.matchesUsage)).toBe(true);
+
+    const asNoun = lookupSynonyms("remains", "n");
+    expect(asNoun.map((s) => s.word)).toEqual(["cadaver", "corpse"]);
+    expect(asNoun.map((s) => s.word)).not.toContain("stay");
+  });
+
+  it("keeps all POS when usage is unset on noun/verb-ambiguous heads", () => {
+    __setThesaurusDataForTests({
+      bathe: { n: ["swim", "jackknife"], v: ["wash", "scrub"] },
+    });
+    const syns = lookupSynonyms("bathe");
+    expect(syns.map((s) => s.word)).toEqual(
+      expect.arrayContaining(["swim", "jackknife", "wash", "scrub"]),
+    );
+  });
+
+  it("ranks matching non-n/v usage first without hard-filtering", () => {
+    __setThesaurusDataForTests({
+      light: { n: ["lamp"], v: ["ignite"], a: ["bright", "pale"] },
+    });
+    const syns = lookupSynonyms("light", "a");
+    expect(syns[0]?.word).toBe("bright");
     expect(syns[0]?.matchesUsage).toBe(true);
-    expect(syns.find((s) => s.word === "cadaver")?.matchesUsage).toBe(false);
+    expect(syns.map((s) => s.word)).toEqual(
+      expect.arrayContaining(["lamp", "ignite"]),
+    );
   });
 
   it("does not pull adjective senses from false -s stems (news ↛ new)", () => {
@@ -49,21 +74,17 @@ describe("lookupSynonyms", () => {
       hop: { v: ["skip", "jump"] },
     });
     const syns = lookupSynonyms("hoped", "v");
-    expect(syns.filter((s) => s.matchesUsage).map((s) => s.word)).toEqual([
-      "wish",
-      "desire",
-    ]);
+    expect(syns.map((s) => s.word)).toEqual(["wish", "desire"]);
     expect(syns.map((s) => s.word)).not.toContain("skip");
   });
 
-  it("upgrades a synonym to matchesUsage across forms", () => {
+  it("marks shared lemmas as matchesUsage under n/v hard-filter", () => {
     __setThesaurusDataForTests({
       remains: { n: ["stay", "cadaver"] },
       remain: { v: ["stay", "persist"] },
     });
     const syns = lookupSynonyms("remains", "v");
-    expect(syns.find((s) => s.word === "stay")?.matchesUsage).toBe(true);
-    expect(syns.find((s) => s.word === "persist")?.matchesUsage).toBe(true);
-    expect(syns.find((s) => s.word === "cadaver")?.matchesUsage).toBe(false);
+    expect(syns.map((s) => s.word)).toEqual(["stay", "persist"]);
+    expect(syns.every((s) => s.matchesUsage)).toBe(true);
   });
 });

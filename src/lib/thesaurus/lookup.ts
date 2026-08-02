@@ -140,11 +140,26 @@ function dictionaryForms(key: string): string[] {
   });
 }
 
+/** True when any dictionary form has both noun and verb synonym groups. */
+function isNounVerbAmbiguous(forms: readonly string[]): boolean {
+  let hasN = false;
+  let hasV = false;
+  for (const form of forms) {
+    const groups = groupsFor(form);
+    if (!groups) continue;
+    if (groups.n?.length) hasN = true;
+    if (groups.v?.length) hasV = true;
+    if (hasN && hasV) return true;
+  }
+  return false;
+}
+
 /**
  * Sync lookup after {@link loadThesaurus} has resolved.
  * Returns [] for unknown words or if data is not yet loaded.
  * Also checks inflectional bases (remains → remain) so verb senses surface.
  * When `usage` is set, synonyms for that usage are marked and listed first.
+ * For noun/verb-ambiguous heads, a detected `n`/`v` hard-filters other POS out.
  */
 export function lookupSynonyms(
   word: string,
@@ -156,6 +171,10 @@ export function lookupSynonyms(
 
   const forms = dictionaryForms(key);
   const surfaceGroups = groupsFor(key);
+  const restrictNv =
+    isNounVerbAmbiguous(forms) && (usage === "n" || usage === "v")
+      ? usage
+      : null;
 
   /** Best tier per synonym: true = matches requested usage. */
   const best = new Map<string, boolean>();
@@ -178,8 +197,12 @@ export function lookupSynonyms(
 
     // Surface form (or missing surface): take all POS. Inflectional bases when
     // the surface already exists: verbs only (remains → remain, not news → new).
-    const usages: WordUsage[] =
+    let usages: WordUsage[] =
       form === key || !surfaceGroups ? USAGE_ORDER : ["v"];
+    if (restrictNv) {
+      usages = usages.filter((pos) => pos === restrictNv);
+      if (usages.length === 0) continue;
+    }
 
     if (usage && usages.includes(usage)) {
       for (const syn of groups[usage] ?? []) absorb(syn, true);

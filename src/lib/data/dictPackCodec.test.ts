@@ -88,6 +88,26 @@ describe("dictPackCodec", () => {
     expect(syns).toEqual(expect.arrayContaining(["death"]));
   });
 
+  it("includes OEWN co-hyponym neighbors for bathe", () => {
+    const lex = decodeLexicon(
+      new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
+    );
+    const pack = decodeThesaurus(
+      new Uint8Array(readFileSync(join(packsDir, "thesaurus.bin"))),
+    );
+    const bathe = pack.entries.find((e) => {
+      const head = resolveDictId(e.headId, lex.words, pack.overflowWords);
+      return head === "bathe";
+    });
+    expect(bathe).toBeDefined();
+    const verb = bathe!.usages.find((u) => u.usage === 1 /* v */);
+    expect(verb).toBeDefined();
+    const syns = verb!.synIds.map((id) =>
+      resolveDictId(id, lex.words, pack.overflowWords),
+    );
+    expect(syns).toEqual(expect.arrayContaining(["wash", "scrub"]));
+  });
+
   it("decodes stress pack aligned with lexicon", () => {
     const lex = decodeLexicon(
       new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
