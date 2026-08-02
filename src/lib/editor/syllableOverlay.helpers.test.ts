@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  COUNT_FONT_REM,
+  COUNT_PAD_TOP_REM,
+  RHYME_DOT_SIZE_REM,
+  RHYME_DOT_TO_COUNT_GAP_REM,
+} from "./constants";
+import {
   posOnLine,
   rhymeDotClass,
+  rhymeDotOffset,
   statusClass,
   tickClass,
 } from "./syllableOverlay";
@@ -53,5 +60,27 @@ describe("rhymeDotClass", () => {
         endWord: "fire",
       }),
     ).toBe("lyriic-rhyme-dot lyriic-rhyme-dot--muted lyriic-rhyme-dot--B");
+  });
+});
+
+describe("rhymeDotOffset", () => {
+  const rootFontPx = 16;
+  const countLeft = 400;
+  const rowTop = 100;
+
+  it("keeps a fixed root-rem gap from the count column", () => {
+    const { left } = rhymeDotOffset(countLeft, rowTop, rootFontPx);
+    const gapPx = countLeft - (left + RHYME_DOT_SIZE_REM * rootFontPx);
+    expect(gapPx).toBeCloseTo(RHYME_DOT_TO_COUNT_GAP_REM * rootFontPx);
+  });
+
+  it("aligns top to the count optical mid, independent of editor fontSize", () => {
+    const expectedTop =
+      rowTop + (COUNT_PAD_TOP_REM + COUNT_FONT_REM / 2) * rootFontPx;
+    // Editor font size is not an input — S and XL share the same mid.
+    expect(rhymeDotOffset(countLeft, rowTop, rootFontPx).top).toBe(expectedTop);
+    expect(rhymeDotOffset(countLeft, rowTop, rootFontPx).top).toBe(
+      rhymeDotOffset(countLeft + 50, rowTop, rootFontPx).top,
+    );
   });
 });

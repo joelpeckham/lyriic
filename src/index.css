@@ -319,6 +319,7 @@ html[data-contrast="more"].dark {
 .lyriic-count {
   position: absolute;
   box-sizing: border-box;
+  /* Keep padding-top / font-size in sync with COUNT_*_REM in editor/constants. */
   padding-top: 0.3rem;
   /* Gutter-only box (set in JS) — never a full-width strip over glyphs. */
   padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
@@ -417,6 +418,7 @@ html[data-contrast="more"].dark {
 .lyriic-rhyme-dot {
   position: absolute;
   box-sizing: border-box;
+  /* Keep size in sync with RHYME_DOT_SIZE_REM in editor/constants. */
   width: 0.55rem;
   height: 0.55rem;
   border-radius: 999px;

@@ -25,3 +25,19 @@ export const COUNT_GUTTER_REM = 3;
  * Same em/px contract as {@link COUNT_GUTTER_REM}.
  */
 export const RHYME_GUTTER_REM = 0.9;
+
+/**
+ * Syllable-count overlay typography — keep in sync with `.lyriic-count` in
+ * index.css. Root rem (not editor em) so gutter chrome stays stable across
+ * text-size prefs while verse scales.
+ */
+export const COUNT_FONT_REM = 0.875;
+export const COUNT_PAD_TOP_REM = 0.3;
+
+/**
+ * Painted rhyme-dot size and gap to the count column — keep in sync with
+ * `.lyriic-rhyme-dot` width/height in index.css. Root rem so spacing does not
+ * balloon with editor font-size.
+ */
+export const RHYME_DOT_SIZE_REM = 0.55;
+export const RHYME_DOT_TO_COUNT_GAP_REM = 0.35;

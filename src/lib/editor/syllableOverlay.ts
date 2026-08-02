@@ -4,7 +4,14 @@ import {
   type ViewUpdate,
 } from "@codemirror/view";
 
-import { COUNT_GUTTER_REM, RHYME_GUTTER_REM } from "@/lib/editor/constants";
+import {
+  COUNT_FONT_REM,
+  COUNT_GUTTER_REM,
+  COUNT_PAD_TOP_REM,
+  RHYME_DOT_SIZE_REM,
+  RHYME_DOT_TO_COUNT_GAP_REM,
+  RHYME_GUTTER_REM,
+} from "@/lib/editor/constants";
 import {
   mapSyllableMidpointToOffset,
   mapSyllableToOffset,
@@ -94,6 +101,23 @@ export function rhymeDotClass(rhyme: RhymeSchemeLine): string {
     }
   }
   return classes.join(" ");
+}
+
+/**
+ * Pin the painted rhyme dot to the count column using root-rem metrics so
+ * gap/vertical align stay stable across editor text-size prefs.
+ * `top` is the optical center (CSS uses translateY(-50%)).
+ */
+export function rhymeDotOffset(
+  countLeft: number,
+  rowTop: number,
+  rootFontPx: number,
+): { left: number; top: number } {
+  return {
+    left:
+      countLeft - (RHYME_DOT_TO_COUNT_GAP_REM + RHYME_DOT_SIZE_REM) * rootFontPx,
+    top: rowTop + (COUNT_PAD_TOP_REM + COUNT_FONT_REM / 2) * rootFontPx,
+  };
 }
 
 /** Keep overlay geometry on this doc line (avoids coords at line.to → next line). */
@@ -235,6 +259,9 @@ export const syllableOverlay = ViewPlugin.fromClass(
       const contentRect = view.contentDOM.getBoundingClientRect();
       const left = contentRect.left - hostRect.left;
       const width = contentRect.width;
+      const rootFontPx = parseFloat(
+        getComputedStyle(document.documentElement).fontSize || "16",
+      );
 
       const frag = document.createDocumentFragment();
       const doc = view.state.doc;
@@ -344,6 +371,8 @@ export const syllableOverlay = ViewPlugin.fromClass(
         const gutterPx = countGutterPx + rhymeSlotPx;
         const gutterLeft = left + Math.max(0, width - gutterPx);
 
+        const countLeft = gutterLeft + rhymeSlotPx;
+
         if (showRhymeScheme) {
           const rhyme = rhymeLines[lineNo - 1];
           if (rhyme && rhyme.letter && rhyme.status !== "empty") {
@@ -352,9 +381,14 @@ export const syllableOverlay = ViewPlugin.fromClass(
             dot.dataset.letter = rhyme.letter;
             // Label for React shadcn Tooltip (see RhymeDotTooltip).
             dot.dataset.tooltip = rhymeSchemeLineTitle(rhyme);
-            // Left edge of the right gutter, beside the syllable count.
-            dot.style.left = `${gutterLeft + rhymeSlotPx * 0.15}px`;
-            dot.style.top = `${rowTop + fontSize * 0.45}px`;
+            // Pin to count column (root rem) — not a fraction of the em slot.
+            const { left: dotLeft, top: dotTop } = rhymeDotOffset(
+              countLeft,
+              rowTop,
+              rootFontPx,
+            );
+            dot.style.left = `${dotLeft}px`;
+            dot.style.top = `${dotTop}px`;
             frag.append(dot);
           }
         }
@@ -365,7 +399,7 @@ export const syllableOverlay = ViewPlugin.fromClass(
           el.style.top = `${rowTop}px`;
           // Sit in the line’s right gutter only — a full-width strip used to
           // cover glyphs and could flicker the cursor at sub-pixel edges.
-          el.style.left = `${gutterLeft + rhymeSlotPx}px`;
+          el.style.left = `${countLeft}px`;
           el.style.width = `${Math.min(width, countGutterPx)}px`;
 
           if (overlay.target !== null && total > 0) {
