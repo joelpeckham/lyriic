@@ -106,10 +106,9 @@ export function analyzeRhymeScheme(
   lines: readonly string[],
   schemePattern: string,
 ): RhymeSchemeLine[] {
+  // Slant is progressive: classify perfect/end as soon as those packs are up.
   const packReady =
-    isRhymeIndexReady("perfect") &&
-    isRhymeIndexReady("end") &&
-    isRhymeIndexReady("slant");
+    isRhymeIndexReady("perfect") && isRhymeIndexReady("end");
   const endWords = lines.map(endWordOfLine);
   const period = schemePattern.length;
 

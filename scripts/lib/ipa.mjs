@@ -355,10 +355,10 @@ const VOWEL_FAMILY = new Map([
   ["ʉ", "U"],
   ["ɵ", "U"],
   ["ʌ", "V"],
-  ["ɜ", "V"],
-  ["ɝ", "V"],
-  ["ɚ", "V"],
-  ["ə", "V"],
+  ["ɜ", "ER"],
+  ["ɝ", "ER"],
+  ["ɚ", "ER"],
+  ["ə", "ə"],
   ["aɪ", "AI"],
   ["aʊ", "AU"],
   ["ɔɪ", "OI"],
@@ -366,6 +366,9 @@ const VOWEL_FAMILY = new Map([
   ["ʊə", "Uə"],
   ["ɛə", "Eə"],
 ]);
+
+/** Stop families eligible for one-segment coda truncation (mind ↔ time). */
+const TRUNCATE_STOP_FAMILIES = new Set(["T", "K", "P"]);
 
 /** @type {Map<string, string>} */
 const CODA_FAMILY = new Map([
@@ -409,7 +412,7 @@ export function vowelFamily(phone) {
 
 /**
  * Map coda phones (after the rhyme nucleus) to family segments.
- * Trailing reduced / syllabic nuclei count as coda (e.g. fire aɪɚ → ["V"]).
+ * Trailing reduced / syllabic nuclei count as coda (e.g. fire aɪɚ → ["ER"]).
  *
  * @param {{ phone: string, stress: 0 | 1 | 2, isVowel: boolean }[]} codaPhones
  * @returns {string[]}
@@ -444,9 +447,10 @@ const IPA_CLOSING_DIPHTHONGS = new Set(["aɪ", "aʊ", "ɔɪ"]);
 /**
  * Slant keys for one IPA (same stress anchor as perfect).
  * 1. Exact family half-rhyme: vowelFamily + codaFamily.
- * 2. Additive/subtractive: drop the final coda segment when ≥2 remain
- *    (mind ↔ time, hold ↔ coal) — not pure assonance (french ↛ members).
- * Build-time only. Trailing reduced after a closing diphthong stays in coda.
+ * 2. Additive/subtractive: drop a final stop (T/K/P) when ≥2 coda segments
+ *    remain (mind ↔ time, hold ↔ coal) — not affricates/fricatives/vowels
+ *    (french ↛ pen, city ↛ sit) and not pure assonance (french ↛ members).
+ * Open schwa alone is suppressed (the ↛ her). Build-time only.
  *
  * @param {string} ipa
  * @returns {string[]}
@@ -460,11 +464,15 @@ export function slantRhymeKeysFromIpa(ipa) {
   if (!fam) return [];
   const segs = codaFamilySegments(phones.slice(start + 1));
   const coda = segs.length === 0 ? "Ø" : segs.join("");
+  // Open schwa is too common / weak for a useful slant bucket.
+  if (fam === "ə" && coda === "Ø") return [];
   /** @type {string[]} */
   const keys = [`f:${fam}+${coda}`];
-  // Keep at least one coda segment so we never collapse to open-vowel noise.
   if (segs.length >= 2) {
-    keys.push(`f:${fam}+${segs.slice(0, -1).join("")}`);
+    const dropped = segs[segs.length - 1];
+    if (TRUNCATE_STOP_FAMILIES.has(dropped)) {
+      keys.push(`f:${fam}+${segs.slice(0, -1).join("")}`);
+    }
   }
   return keys;
 }

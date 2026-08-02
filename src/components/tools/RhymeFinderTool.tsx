@@ -9,18 +9,21 @@ import { getToolBySlug } from "@/content/tools";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { getLexicon, syllablesForId } from "@/lib/data/lexicon";
 import {
-  hasRhymeEntry,
   hasRhymeQueryEntry,
   isRhymeIndexReady,
   isRhymeQueryReady,
   loadRhymeIndex,
   loadRhymeQuery,
+  lookupRhymeIds,
   queryRhymeIds,
   type RhymeQueryOptions,
 } from "@/lib/rhyme";
 import { countWord } from "@/lib/syllables";
 import { normalizeLookupKey } from "@/lib/syllables/normalize";
-import { rankAndGroupRhymeIds } from "@/lib/wordLookup";
+import {
+  FINDER_RHYME_RANK_LIMIT,
+  rankAndGroupRhymeIds,
+} from "@/lib/wordLookup";
 import { cn } from "@/lib/utils";
 
 const tool = getToolBySlug("rhyme-finder")!;
@@ -92,9 +95,15 @@ export function RhymeFinderTool() {
     };
   }, [lookupKey, rhymeReady, queryOpts]);
 
+  // Lexicon membership (not perfect-only) so slant-only lemmas still get enable hints.
+  const inLexicon = useMemo(() => {
+    void dictRevision;
+    return !!lookupKey && (getLexicon()?.wordToId.has(lookupKey) ?? false);
+  }, [lookupKey, dictRevision]);
+
   // When current modes are empty, probe near packs for enable hints.
   const shouldProbeNear =
-    rhymeReady && !!lookupKey && rhymeIds.length === 0 && known;
+    rhymeReady && !!lookupKey && rhymeIds.length === 0 && inLexicon;
   const shouldProbeEnd = shouldProbeNear && !includeEndRhymes;
   const shouldProbeSlant = shouldProbeNear && !includeSlantRhymes;
   const [, setNearProbeTick] = useState(0);
@@ -115,11 +124,11 @@ export function RhymeFinderTool() {
   const endRhymesAvailable =
     shouldProbeEnd &&
     isRhymeIndexReady("end") &&
-    hasRhymeEntry(lookupKey, "end");
+    lookupRhymeIds(lookupKey, "end").length > 0;
   const slantRhymesAvailable =
     shouldProbeSlant &&
     isRhymeIndexReady("slant") &&
-    hasRhymeEntry(lookupKey, "slant");
+    lookupRhymeIds(lookupKey, "slant").length > 0;
 
   const groups = useMemo(() => {
     if (!dictReady || !lookupKey || rhymeIds.length === 0) return [];
@@ -135,6 +144,7 @@ export function RhymeFinderTool() {
       ids: rhymeIds,
       words: lex.words,
       tokenSyllables,
+      limit: FINDER_RHYME_RANK_LIMIT,
     });
   }, [rhymeIds, dictReady, dictRevision, lookupKey]);
 
@@ -150,7 +160,7 @@ export function RhymeFinderTool() {
       ? "empty-query"
       : !rhymeReady
         ? "loading-index"
-        : !known
+        : !known && !inLexicon
           ? "unknown"
           : rhymeIds.length === 0
             ? emptyHint

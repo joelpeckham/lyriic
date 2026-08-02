@@ -63,6 +63,7 @@ let testFixture: {
   perfect: RhymeModeData;
   end: RhymeModeData;
   slant: RhymeModeData;
+  ready: Record<RhymeMode, boolean>;
 } | null = null;
 
 let revision = 0;
@@ -147,7 +148,8 @@ function prefetchNextAfter(mode: RhymeMode): void {
           prefetchNextAfter("end");
         })
         .catch(() => {
-          // Prefetch is best-effort; query path will surface failures.
+          // Still idle-prefetch slant if end fails; query path surfaces errors.
+          prefetchNextAfter("end");
         });
     }, 2000);
     return;
@@ -180,7 +182,16 @@ export async function loadRhymeIndex(
 
 /** True once the given mode (default: any) has finished loading. */
 export function isRhymeIndexReady(mode?: RhymeMode): boolean {
-  if (testFixture) return true;
+  if (testFixture) {
+    if (!mode) {
+      return (
+        testFixture.ready.perfect ||
+        testFixture.ready.end ||
+        testFixture.ready.slant
+      );
+    }
+    return testFixture.ready[mode];
+  }
   if (mode) return storeFor(mode).isReady() && getLexicon() !== null;
   return (
     (perfectStore.isReady() || endStore.isReady() || slantStore.isReady()) &&
@@ -211,6 +222,7 @@ function activeLex(): {
 
 function activePack(mode: RhymeMode): RhymeModeData | null {
   if (testFixture) {
+    if (!testFixture.ready[mode]) return null;
     if (mode === "end") return testFixture.end;
     if (mode === "slant") return testFixture.slant;
     return testFixture.perfect;
@@ -396,6 +408,8 @@ export function __setRhymeDataForTests(
     byKeyEnd: Record<string, string[]>;
     byWordSlant?: Record<string, string | string[]>;
     byKeySlant?: Record<string, string[]>;
+    /** Per-mode readiness (default all true). Use `slant: false` to simulate unload. */
+    ready?: Partial<Record<RhymeMode, boolean>>;
   } | null,
 ): void {
   if (index === null) {
@@ -422,16 +436,22 @@ export function __setRhymeDataForTests(
   ].sort();
 
   const wordToId = new Map(words.map((w, i) => [w, i]));
+  const ready = {
+    perfect: index.ready?.perfect ?? true,
+    end: index.ready?.end ?? true,
+    slant: index.ready?.slant ?? true,
+  };
   testFixture = {
     words,
     wordToId,
     perfect: buildModeData(words, wordToId, index.byWord, index.byKey),
     end: buildModeData(words, wordToId, index.byWordEnd, index.byKeyEnd),
     slant: buildModeData(words, wordToId, byWordSlant, byKeySlant),
+    ready,
   };
-  readyAnnounced.perfect = true;
-  readyAnnounced.end = true;
-  readyAnnounced.slant = true;
+  readyAnnounced.perfect = ready.perfect;
+  readyAnnounced.end = ready.end;
+  readyAnnounced.slant = ready.slant;
   bumpRevision();
 }
 

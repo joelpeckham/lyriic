@@ -115,6 +115,35 @@ describe("analyzeRhymeScheme", () => {
     expect(rows.map((r) => r.status)).toEqual(["slantMatch", "slantMatch"]);
   });
 
+  it("classifies perfect matches when slant pack is not ready", () => {
+    __setRhymeDataForTests({
+      byWord: {
+        day: "eɪ",
+        way: "eɪ",
+      },
+      byKey: {
+        eɪ: ["day", "way"],
+      },
+      byWordEnd: {
+        day: "eɪ",
+        way: "eɪ",
+      },
+      byKeyEnd: {
+        eɪ: ["day", "way"],
+      },
+      byWordSlant: {
+        day: "f:E+Ø",
+        way: "f:E+Ø",
+      },
+      byKeySlant: {
+        "f:E+Ø": ["day", "way"],
+      },
+      ready: { slant: false },
+    });
+    const rows = analyzeRhymeScheme(["a quiet day", "another way"], "AA");
+    expect(rows.map((r) => r.status)).toEqual(["match", "match"]);
+  });
+
   it("flags mismatched same-letter peers", () => {
     fixtureRhymes();
     const rows = analyzeRhymeScheme(

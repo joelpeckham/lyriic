@@ -39,10 +39,10 @@ import type {
 } from "@/lib/editor/wordInteraction";
 import type { MeteredLine } from "@/lib/meters/types";
 import {
-  hasRhymeEntry,
   isRhymeIndexReady,
   loadRhymeIndex,
   loadRhymeQuery,
+  lookupRhymeIds,
   queryRhymeIds,
 } from "@/lib/rhyme";
 import { primaryStressIndex, resolveWordStress } from "@/lib/stress";
@@ -174,8 +174,9 @@ export function WordToolsPopover({
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
     setPrevOpen(open);
-    if (open) setPanel("actions");
-    else {
+    if (open) {
+      setPanel("actions");
+      // Reset on open so the close animation keeps the last toggle state.
       setIncludeEndRhymes(false);
       setIncludeSlantRhymes(false);
     }
@@ -538,14 +539,14 @@ export function WordToolsPopover({
     if (
       !includeEndRhymes &&
       isRhymeIndexReady("end") &&
-      hasRhymeEntry(display.word, "end")
+      lookupRhymeIds(display.word, "end").length > 0
     ) {
       return "No perfect rhymes — enable End rhymes for more matches.";
     }
     if (
       !includeSlantRhymes &&
       isRhymeIndexReady("slant") &&
-      hasRhymeEntry(display.word, "slant")
+      lookupRhymeIds(display.word, "slant").length > 0
     ) {
       return "No exact rhymes — enable Slant rhymes for more matches.";
     }

@@ -104,7 +104,7 @@ describe("slantRhymeKeysFromIpa (scripts/lib/ipa.mjs)", () => {
   it("does not family-match cat / cast (coda length)", () => {
     expect(slantRhymeKeysFromIpa("kæt")[0]).toBe("f:A+T");
     expect(slantRhymeKeysFromIpa("kæst")[0]).toBe("f:A+ST");
-    // Truncation is ST→S, not ST→T, so cat ↛ cast.
+    // Stop truncation is ST→S, not ST→T, so cat ↛ cast.
     expect(slantRhymeKeysFromIpa("kæst")[1]).toBe("f:A+S");
   });
 
@@ -127,17 +127,39 @@ describe("slantRhymeKeysFromIpa (scripts/lib/ipa.mjs)", () => {
     expect(mind).toContain(time[0]);
   });
 
-  it("does not slant-match french / members (no shared family or truncate)", () => {
+  it("does not truncate affricates (french ↛ pen / members)", () => {
     const french = slantRhymeKeysFromIpa("fɹˈɛntʃ");
+    const pen = slantRhymeKeysFromIpa("pˈɛn");
     const members = slantRhymeKeysFromIpa("mˈɛmbɚz");
-    // tʃ is one coda segment (CH), so truncate is NCH → N.
-    expect(french).toEqual(["f:E+NCH", "f:E+N"]);
-    expect(members).toEqual(["f:E+NPVS", "f:E+NPV"]);
+    // CH is not a stop — no NCH→N truncation into the E+N mega-bucket.
+    expect(french).toEqual(["f:E+NCH"]);
+    expect(pen).toEqual(["f:E+N"]);
+    expect(members).toEqual(["f:E+NPERS"]);
+    expect(french.some((k) => pen.includes(k))).toBe(false);
     expect(french.some((k) => members.includes(k))).toBe(false);
   });
 
-  it("keeps fire as AI+V (not reduced-only)", () => {
-    expect(slantRhymeKeysFromIpa("fˈaɪɚ")).toEqual(["f:AI+V"]);
+  it("does not truncate trailing vowel coda (city ↛ sit)", () => {
+    const city = slantRhymeKeysFromIpa("sˈɪti");
+    const sit = slantRhymeKeysFromIpa("sˈɪt");
+    expect(city).toEqual(["f:I+TI"]);
+    expect(sit).toEqual(["f:I+T"]);
+    expect(city.some((k) => sit.includes(k))).toBe(false);
+  });
+
+  it("keeps STRUT / NURSE / schwa apart (her ↛ the)", () => {
+    expect(slantRhymeKeysFromIpa("lˈʌv")[0]).toBe("f:V+F");
+    expect(slantRhymeKeysFromIpa("hˈɝ")).toEqual(["f:ER+Ø"]);
+    expect(slantRhymeKeysFromIpa("ðə")).toEqual([]);
+    expect(
+      slantRhymeKeysFromIpa("hˈɝ").some((k) =>
+        slantRhymeKeysFromIpa("ðə").includes(k),
+      ),
+    ).toBe(false);
+  });
+
+  it("keeps fire as AI+ER (NURSE coda, not STRUT)", () => {
+    expect(slantRhymeKeysFromIpa("fˈaɪɚ")).toEqual(["f:AI+ER"]);
   });
 
   it("returns empty when no vowel", () => {
