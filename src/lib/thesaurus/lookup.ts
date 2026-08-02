@@ -155,6 +155,40 @@ function isNounVerbAmbiguous(forms: readonly string[]): boolean {
 }
 
 /**
+ * Flat synonym list with usage tags for browse/filter UIs.
+ * Preserves Zipf order within each usage; usages follow n → v → a → r.
+ */
+export function lookupSynonymsForBrowse(
+  word: string,
+): Array<{ word: string; usage: WordUsage }> {
+  if (!testMap && (!store.get() || !getLexicon())) return [];
+  const key = normalizeLookupKey(word);
+  if (!key) return [];
+
+  const forms = dictionaryForms(key);
+  const surfaceGroups = groupsFor(key);
+  const seen = new Set<string>();
+  const out: Array<{ word: string; usage: WordUsage }> = [];
+
+  for (const form of forms) {
+    const groups = groupsFor(form);
+    if (!groups) continue;
+    const usages: WordUsage[] =
+      form === key || !surfaceGroups ? USAGE_ORDER : ["v"];
+    for (const pos of usages) {
+      for (const syn of groups[pos] ?? []) {
+        if (!syn || syn === key) continue;
+        const dedupeKey = `${syn}\0${pos}`;
+        if (seen.has(dedupeKey)) continue;
+        seen.add(dedupeKey);
+        out.push({ word: syn, usage: pos });
+      }
+    }
+  }
+  return out;
+}
+
+/**
  * Sync lookup after {@link loadThesaurus} has resolved.
  * Returns [] for unknown words or if data is not yet loaded.
  * Also checks inflectional bases (remains → remain) so verb senses surface.

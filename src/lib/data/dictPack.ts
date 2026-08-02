@@ -9,6 +9,9 @@ import {
 } from "./dictPackCodec";
 
 export type {
+  DefinitionSense,
+  DefinitionSourceCode,
+  DefinitionsPack,
   Lexicon,
   RhymeModeData,
   StressCode,
@@ -83,6 +86,15 @@ async function fetchBinary(url: string): Promise<Uint8Array> {
     throw new Error(`failed to fetch dict pack: ${res.status} ${url}`);
   }
   return new Uint8Array(await res.arrayBuffer());
+}
+
+/** Fetch a hashed pack URL and decode (worker when available). */
+export async function fetchAndDecodePack(
+  url: string,
+  kind: DictPackKind,
+): Promise<DecodedPack> {
+  const buffer = await fetchBinary(url);
+  return decodePackAsync(kind, buffer);
 }
 
 async function decodePackAsync(

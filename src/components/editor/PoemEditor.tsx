@@ -1,4 +1,11 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MutableRefObject,
+} from "react";
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
@@ -19,6 +26,7 @@ import {
   createPoemExtensions,
   externalValueSync,
 } from "@/lib/editor/createPoemExtensions";
+import { resolveWordTarget } from "@/lib/editor/resolveWordTarget";
 import {
   getSyllableOverlay,
   setMeterOverlayData,
@@ -59,6 +67,10 @@ type PoemEditorProps = {
   onClearStressOverride: (word: string) => void;
   /** Stable document identity (e.g. project id) for full remount. */
   documentKey: string;
+  /** Open the dictionary sheet for a word (from thesaurus/rhyme rows). */
+  onOpenDefinition?: (word: string) => void;
+  /** Parent reads caret/toolbar word when opening the dictionary from chrome. */
+  activeWordGetterRef?: MutableRefObject<() => string | null>;
 };
 
 const LIVE_COUNT_DEBOUNCE_MS = 500;
@@ -90,6 +102,8 @@ export function PoemEditor({
   onSetStressOverride,
   onClearStressOverride,
   documentKey,
+  onOpenDefinition,
+  activeWordGetterRef,
 }: PoemEditorProps) {
   const { prefs } = usePrefs();
   const parentRef = useRef<HTMLDivElement>(null);
@@ -107,10 +121,15 @@ export function PoemEditor({
   const [activeLineIndex, setActiveLineIndex] = useState(0);
   const [liveCountText, setLiveCountText] = useState("");
   const [wordTarget, setWordTarget] = useState<WordToolsTarget | null>(null);
+  const wordTargetRef = useRef<WordToolsTarget | null>(null);
 
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useLayoutEffect(() => {
+    wordTargetRef.current = wordTarget;
+  }, [wordTarget]);
 
   useLayoutEffect(() => {
     wordBridgeRef.current.setToolbar = (target) => {
@@ -123,6 +142,18 @@ export function PoemEditor({
       });
     };
   });
+
+  useLayoutEffect(() => {
+    if (!activeWordGetterRef) return;
+    activeWordGetterRef.current = () => {
+      const view = viewRef.current;
+      if (view) {
+        const atCaret = resolveWordTarget(view);
+        if (atCaret?.word) return atCaret.word;
+      }
+      return wordTargetRef.current?.word ?? null;
+    };
+  }, [activeWordGetterRef]);
 
   const overrideRevision = useMemo(
     () => overridesKey(overrides),
@@ -440,6 +471,14 @@ export function PoemEditor({
             tokenSyllables: tokenSyllablesFor(meteredLines, wordTarget),
           });
         }}
+        onOpenDefinition={
+          onOpenDefinition
+            ? (word) => {
+                closeWordUi();
+                onOpenDefinition(word);
+              }
+            : undefined
+        }
         onReplace={(from, to, insert) => {
           const view = viewRef.current;
           if (!view) return;

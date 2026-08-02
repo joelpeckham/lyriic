@@ -1,6 +1,6 @@
 /**
  * Binary dictionary pack decode (shared by main thread + worker).
- * Formats mirror scripts/lib/dictPack.mjs (LYXL / LYXP / LYXE / LYXR / LYXT).
+ * Formats mirror scripts/lib/dictPack.mjs (LYXL / LYXP / LYXE / LYXR / LYXT / LYXD).
  */
 
 export const DICT_PACK_VERSION = 1;
@@ -11,6 +11,9 @@ export const STRESS_PACK_VERSION = 2;
 /** Variants pack version (sparse alt list). */
 export const VARIANTS_PACK_VERSION = 1;
 
+/** Definitions digraph pack version. */
+export const DEFINITIONS_PACK_VERSION = 1;
+
 export const DICT_MAGIC = {
   lexicon: "LYXL",
   stress: "LYXS",
@@ -19,6 +22,7 @@ export const DICT_MAGIC = {
   rhymeEnd: "LYXE",
   rhymeSlant: "LYXR",
   thesaurus: "LYXT",
+  definitions: "LYXD",
 } as const;
 
 export type RhymePackMode = "perfect" | "end" | "slant";
@@ -78,6 +82,20 @@ export type ThesaurusPack = {
   /** head string → entry (built when lexicon is available) */
   byHead: Map<string, ThesaurusEntry>;
   entries: ThesaurusEntry[];
+};
+
+/** 0 = OEWN, 1 = Wiktionary fill. */
+export type DefinitionSourceCode = 0 | 1;
+
+export type DefinitionSense = {
+  usage: ThesaurusUsageCode;
+  source: DefinitionSourceCode;
+  gloss: string;
+};
+
+export type DefinitionsPack = {
+  /** wordId → senses */
+  byWordId: Map<number, DefinitionSense[]>;
 };
 
 const USAGE_CHARS = ["n", "v", "a", "r"] as const;
@@ -370,6 +388,64 @@ export function buildThesaurusByHead(
   return byHead;
 }
 
+export function decodeDefinitions(buf: Uint8Array): DefinitionsPack {
+  const magic = readMagic(buf);
+  if (magic !== DICT_MAGIC.definitions) {
+    throw new Error(`bad definitions magic: ${magic}`);
+  }
+  if (buf[4] !== DEFINITIONS_PACK_VERSION) {
+    throw new Error(`unsupported definitions version: ${buf[4]}`);
+  }
+  const entryCount = readU32LE(buf, 5);
+  let i = 9;
+  let wordId = 0;
+  const dec = new TextDecoder();
+  const byWordId = new Map<number, DefinitionSense[]>();
+  for (let e = 0; e < entryCount; e++) {
+    const [delta, afterDelta] = decodeUvarint(buf, i);
+    i = afterDelta;
+    if (e > 0 && delta === 0) {
+      throw new Error(`definitions duplicate wordId at entry ${e}`);
+    }
+    wordId += delta;
+    if (i >= buf.length) throw new Error("definitions pack truncated");
+    const senseCount = buf[i++]!;
+    if (senseCount === 0) {
+      throw new Error(`definitions entry wordId=${wordId} has empty senses`);
+    }
+    const senses = new Array<DefinitionSense>(senseCount);
+    for (let s = 0; s < senseCount; s++) {
+      if (i + 2 > buf.length) throw new Error("definitions pack truncated");
+      const usage = buf[i++]!;
+      const source = buf[i++]!;
+      if (usage > 3) {
+        throw new Error(
+          `definitions entry wordId=${wordId} has invalid usage ${usage}`,
+        );
+      }
+      if (source > 1) {
+        throw new Error(
+          `definitions entry wordId=${wordId} has invalid source ${source}`,
+        );
+      }
+      const [glossLen, afterLen] = decodeUvarint(buf, i);
+      i = afterLen;
+      if (i + glossLen > buf.length) {
+        throw new Error("definitions pack truncated");
+      }
+      const gloss = dec.decode(buf.subarray(i, i + glossLen));
+      i += glossLen;
+      senses[s] = {
+        usage: usage as ThesaurusUsageCode,
+        source: source as DefinitionSourceCode,
+        gloss,
+      };
+    }
+    byWordId.set(wordId, senses);
+  }
+  return { byWordId };
+}
+
 export type DictPackKind =
   | "lexicon"
   | "stress"
@@ -377,7 +453,8 @@ export type DictPackKind =
   | "rhyme-perfect"
   | "rhyme-end"
   | "rhyme-slant"
-  | "thesaurus";
+  | "thesaurus"
+  | "definitions";
 
 export type DecodedPack =
   | { kind: "lexicon"; data: Lexicon }
@@ -386,7 +463,8 @@ export type DecodedPack =
   | { kind: "rhyme-perfect"; data: RhymeModeData }
   | { kind: "rhyme-end"; data: RhymeModeData }
   | { kind: "rhyme-slant"; data: RhymeModeData }
-  | { kind: "thesaurus"; data: ThesaurusPack };
+  | { kind: "thesaurus"; data: ThesaurusPack }
+  | { kind: "definitions"; data: DefinitionsPack };
 
 export function decodePack(kind: DictPackKind, buf: Uint8Array): DecodedPack {
   switch (kind) {
@@ -404,5 +482,7 @@ export function decodePack(kind: DictPackKind, buf: Uint8Array): DecodedPack {
       return { kind, data: decodeRhymePack(buf, "slant") };
     case "thesaurus":
       return { kind, data: decodeThesaurus(buf) };
+    case "definitions":
+      return { kind, data: decodeDefinitions(buf) };
   }
 }

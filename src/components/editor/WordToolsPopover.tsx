@@ -7,7 +7,15 @@ import {
   type KeyboardEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { BookA, ChevronLeft, Copy, Hash, Music2, RotateCcw } from "lucide-react";
+import {
+  BookA,
+  BookOpen,
+  ChevronLeft,
+  Copy,
+  Hash,
+  Music2,
+  RotateCcw,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { WordAnchor } from "@/components/editor/WordAnchor";
@@ -115,6 +123,8 @@ type WordToolsPopoverProps = {
   /** Pin open while an interactive panel is up (no mouse-leave dismiss). */
   onStickyChange: (sticky: boolean) => void;
   onOpenLookup: (mode: WordLookupMode) => void;
+  /** Open the dictionary sheet for a candidate (closes this popover). */
+  onOpenDefinition?: (word: string) => void;
   onReplace: (from: number, to: number, insert: string) => void;
   onRestoreFocus: () => void;
   onSetOverride: (word: string, count: number) => void;
@@ -167,6 +177,7 @@ export function WordToolsPopover({
   onClose,
   onStickyChange,
   onOpenLookup: _onOpenLookup,
+  onOpenDefinition,
   onReplace,
   onRestoreFocus,
   onSetOverride,
@@ -1140,7 +1151,7 @@ export function WordToolsPopover({
                         size="icon-xs"
                         tabIndex={-1}
                         className={cn(
-                          "mr-0.5 shrink-0 text-muted-foreground",
+                          "shrink-0 text-muted-foreground",
                           coarseTouchTarget,
                         )}
                         aria-label={`Copy ${candidate.word}`}
@@ -1148,6 +1159,19 @@ export function WordToolsPopover({
                       >
                         <Copy />
                       </Button>
+                      {onOpenDefinition ? (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-xs"
+                          tabIndex={-1}
+                          className="mr-0.5 shrink-0 text-muted-foreground"
+                          aria-label={`Define ${candidate.word}`}
+                          onClick={() => onOpenDefinition(candidate.word)}
+                        >
+                          <BookOpen />
+                        </Button>
+                      ) : null}
                     </div>
                   );
                 })}

@@ -1,6 +1,7 @@
 export {
   loadThesaurus,
   lookupSynonyms,
+  lookupSynonymsForBrowse,
   prefetchThesaurus,
   type SynonymGroups,
   type ThesaurusCandidate,

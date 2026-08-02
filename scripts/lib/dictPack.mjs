@@ -7,6 +7,7 @@
  *   variants.bin  magic LYXV — sparse non-primary syl/stress alts by word id
  *   rhyme-*.bin   magic LYXP / LYXE / LYXR — IPA keys + word→key + key→wordIds
  *   thesaurus.bin magic LYXT — overflow words + head/synonym id entries
+ *   defs-*.bin    magic LYXD — per digraph definition senses by word id
  */
 
 import { brotliCompressSync, constants as zlibConstants, gzipSync } from "node:zlib";
@@ -19,6 +20,9 @@ export const STRESS_PACK_VERSION = 2;
 /** Variants pack version (sparse alt list). */
 export const VARIANTS_PACK_VERSION = 1;
 
+/** Definitions pack version. */
+export const DEFINITIONS_PACK_VERSION = 1;
+
 export const MAGIC = {
   lexicon: "LYXL",
   stress: "LYXS",
@@ -27,6 +31,7 @@ export const MAGIC = {
   rhymeEnd: "LYXE",
   rhymeSlant: "LYXR",
   thesaurus: "LYXT",
+  definitions: "LYXD",
 };
 
 /** @param {string} s */
@@ -442,6 +447,126 @@ export function decodeThesaurus(buf) {
     entries[e] = { headId, usages };
   }
   return { lexWordCount, overflowWords, entries };
+}
+
+/**
+ * Definition digraph pack (LYXD).
+ *
+ * @param {Array<{
+ *   wordId: number,
+ *   senses: Array<{ usage: number, source: number, gloss: string }>
+ * }>} entries sorted by wordId
+ * @returns {Buffer}
+ */
+export function encodeDefinitions(entries) {
+  const header = Buffer.alloc(9);
+  magicBytes(MAGIC.definitions).copy(header, 0);
+  header[4] = DEFINITIONS_PACK_VERSION;
+  header.writeUInt32LE(entries.length, 5);
+  /** @type {Buffer[]} */
+  const parts = [header];
+  const enc = new TextEncoder();
+  let prevWordId = 0;
+  for (let e = 0; e < entries.length; e++) {
+    const entry = entries[e];
+    if (entry.senses.length === 0 || entry.senses.length > 255) {
+      throw new Error(
+        `definitions entry wordId=${entry.wordId} has invalid senseCount ${entry.senses.length}`,
+      );
+    }
+    const delta = entry.wordId - prevWordId;
+    if (delta < 0) {
+      throw new Error("definitions entries must be sorted by wordId");
+    }
+    if (e > 0 && delta === 0) {
+      throw new Error(`definitions duplicate wordId ${entry.wordId}`);
+    }
+    parts.push(encodeUvarint(delta));
+    parts.push(Buffer.from([entry.senses.length]));
+    for (const sense of entry.senses) {
+      if (sense.usage < 0 || sense.usage > 3) {
+        throw new Error(
+          `definitions entry wordId=${entry.wordId} has invalid usage ${sense.usage}`,
+        );
+      }
+      if (sense.source !== 0 && sense.source !== 1) {
+        throw new Error(
+          `definitions entry wordId=${entry.wordId} has invalid source ${sense.source}`,
+        );
+      }
+      parts.push(Buffer.from([sense.usage, sense.source]));
+      const glossBytes = enc.encode(sense.gloss);
+      parts.push(encodeUvarint(glossBytes.length));
+      parts.push(Buffer.from(glossBytes));
+    }
+    prevWordId = entry.wordId;
+  }
+  return Buffer.concat(parts);
+}
+
+/**
+ * @param {Uint8Array | Buffer} buf
+ * @returns {{
+ *   entries: Array<{
+ *     wordId: number,
+ *     senses: Array<{ usage: number, source: number, gloss: string }>
+ *   }>
+ * }}
+ */
+export function decodeDefinitions(buf) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const magic = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
+  if (magic !== MAGIC.definitions) {
+    throw new Error(`bad definitions magic: ${magic}`);
+  }
+  if (u8[4] !== DEFINITIONS_PACK_VERSION) {
+    throw new Error(`unsupported definitions version: ${u8[4]}`);
+  }
+  const entryCount =
+    (u8[5] | (u8[6] << 8) | (u8[7] << 16) | (u8[8] << 24)) >>> 0;
+  let i = 9;
+  let wordId = 0;
+  const dec = new TextDecoder();
+  /** @type {Array<{ wordId: number, senses: Array<{ usage: number, source: number, gloss: string }> }>} */
+  const entries = new Array(entryCount);
+  for (let e = 0; e < entryCount; e++) {
+    const [delta, afterDelta] = decodeUvarint(u8, i);
+    i = afterDelta;
+    if (e > 0 && delta === 0) {
+      throw new Error(`definitions duplicate wordId at entry ${e}`);
+    }
+    wordId += delta;
+    if (i >= u8.length) throw new Error("definitions pack truncated");
+    const senseCount = u8[i++];
+    if (senseCount === 0) {
+      throw new Error(`definitions entry wordId=${wordId} has empty senses`);
+    }
+    /** @type {Array<{ usage: number, source: number, gloss: string }>} */
+    const senses = new Array(senseCount);
+    for (let s = 0; s < senseCount; s++) {
+      if (i + 2 > u8.length) throw new Error("definitions pack truncated");
+      const usage = u8[i++];
+      const source = u8[i++];
+      if (usage > 3) {
+        throw new Error(
+          `definitions entry wordId=${wordId} has invalid usage ${usage}`,
+        );
+      }
+      if (source > 1) {
+        throw new Error(
+          `definitions entry wordId=${wordId} has invalid source ${source}`,
+        );
+      }
+      const [glossLen, afterLen] = decodeUvarint(u8, i);
+      i = afterLen;
+      if (i + glossLen > u8.length) throw new Error("definitions pack truncated");
+      const gloss = dec.decode(u8.subarray(i, i + glossLen));
+      i += glossLen;
+      senses[s] = { usage, source, gloss };
+    }
+    entries[e] = { wordId, senses };
+  }
+  return { entries };
 }
 
 /**

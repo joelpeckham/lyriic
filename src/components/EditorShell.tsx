@@ -8,7 +8,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { useParams } from "react-router-dom";
-import { Settings } from "lucide-react";
+import { BookA, Settings } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppFooter } from "@/components/AppFooter";
@@ -43,6 +43,12 @@ import { cn } from "@/lib/utils";
 const SettingsSheet = lazy(() =>
   import("@/components/SettingsSheet").then((m) => ({
     default: m.SettingsSheet,
+  })),
+);
+
+const DefinitionSheet = lazy(() =>
+  import("@/components/DefinitionSheet").then((m) => ({
+    default: m.DefinitionSheet,
   })),
 );
 
@@ -111,6 +117,67 @@ function SettingsSheetGate({
         focusSection={focusSection}
       />
     </Suspense>
+  );
+}
+
+function DefinitionSheetGate({
+  open,
+  onOpenChange,
+  initialWord,
+  onRequestOpen,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  initialWord: string | null;
+  onRequestOpen: () => void;
+}) {
+  const [mounted, setMounted] = useState(open);
+  if (open && !mounted) {
+    setMounted(true);
+  }
+
+  const trigger = (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="size-10 text-muted-foreground hover:text-foreground"
+      aria-label="Open dictionary"
+      aria-expanded={open}
+      onClick={() => {
+        setMounted(true);
+        onRequestOpen();
+      }}
+    >
+      <BookA className="size-5" />
+    </Button>
+  );
+
+  if (!mounted) return trigger;
+
+  return (
+    <>
+      <Suspense
+        fallback={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-10 text-muted-foreground hover:text-foreground"
+            aria-label="Open dictionary"
+            aria-busy="true"
+            disabled
+          >
+            <BookA className="size-5" />
+          </Button>
+        }
+      >
+        {trigger}
+        <DefinitionSheet
+          open={open}
+          onOpenChange={onOpenChange}
+          initialWord={initialWord}
+        />
+      </Suspense>
+    </>
   );
 }
 
@@ -224,11 +291,20 @@ export function EditorShell() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsFocus, setSettingsFocus] =
     useState<SettingsFocusSection>(null);
+  const [definitionOpen, setDefinitionOpen] = useState(false);
+  const [definitionWord, setDefinitionWord] = useState<string | null>(null);
+  const activeWordGetterRef = useRef<() => string | null>(() => null);
   const [saveFailReason, setSaveFailReason] = useState<
     "quota" | "unavailable" | null
   >(null);
   const vvBottomInset = useVisualViewportBottomInset();
   const softKeyboardUp = vvBottomInset >= SOFT_KEYBOARD_INSET_PX;
+
+  function openDefinition(word?: string | null): void {
+    setSettingsOpen(false);
+    setDefinitionWord(word?.trim() || activeWordGetterRef.current() || null);
+    setDefinitionOpen(true);
+  }
 
   useMeterSeed(routeSlug, applyMeterSeed);
   // Phase 4: one-shot sessionStorage draft from SEO tools (after meter seed).
@@ -331,6 +407,8 @@ export function EditorShell() {
   };
 
   const openSettings = (section: SettingsFocusSection = null) => {
+    setDefinitionOpen(false);
+    setDefinitionWord(null);
     setSettingsFocus(section);
     setSettingsOpen(true);
   };
@@ -391,11 +469,24 @@ export function EditorShell() {
               onRename={renameProject}
               onDelete={deleteProject}
             />
+            <DefinitionSheetGate
+              open={definitionOpen}
+              onOpenChange={(open) => {
+                setDefinitionOpen(open);
+                if (!open) setDefinitionWord(null);
+              }}
+              initialWord={definitionWord}
+              onRequestOpen={() => openDefinition()}
+            />
             <SettingsSheetGate
               settings={active.settings}
               onChange={setSettings}
               open={settingsOpen}
               onOpenChange={(open) => {
+                if (open) {
+                  setDefinitionOpen(false);
+                  setDefinitionWord(null);
+                }
                 setSettingsOpen(open);
                 if (!open) setSettingsFocus(null);
               }}
@@ -418,6 +509,8 @@ export function EditorShell() {
             onSetStressOverride={setStressOverride}
             onClearStressOverride={clearStressOverride}
             documentKey={active.id}
+            onOpenDefinition={(word) => openDefinition(word)}
+            activeWordGetterRef={activeWordGetterRef}
           />
         </EditorErrorBoundary>
       </main>

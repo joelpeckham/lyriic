@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import {
+  decodeDefinitions,
   decodeLexicon,
   decodeRhymePack,
   decodeStress,
@@ -67,6 +68,90 @@ describe("dictPackCodec", () => {
     expect(familyBucket.map((id) => lex.words[id])).toEqual(
       expect.arrayContaining(["side"]),
     );
+  });
+
+  it("decodes a definitions digraph pack and resolves a head", async () => {
+    const lex = decodeLexicon(
+      new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
+    );
+    const lightId = lex.wordToId.get("light");
+    const nightId = lex.wordToId.get("night");
+    expect(lightId).toBeDefined();
+    expect(nightId).toBeDefined();
+    expect(lightId!).toBeLessThan(nightId!);
+
+    const { encodeDefinitions, decodeDefinitions: decodeDefsNode } =
+      await import("../../../scripts/lib/dictPack.mjs");
+    const sample = encodeDefinitions([
+      {
+        wordId: lightId!,
+        senses: [
+          { usage: 0, source: 0, gloss: "electromagnetic radiation" },
+          { usage: 2, source: 1, gloss: "of little weight" },
+        ],
+      },
+      {
+        wordId: nightId!,
+        senses: [{ usage: 0, source: 0, gloss: "the time of darkness" }],
+      },
+    ]);
+    const roundTrip = decodeDefsNode(sample);
+    expect(roundTrip.entries).toHaveLength(2);
+    expect(roundTrip.entries[0].wordId).toBe(lightId);
+    expect(roundTrip.entries[1].wordId).toBe(nightId);
+    expect(roundTrip.entries[0].senses[0].gloss).toBe(
+      "electromagnetic radiation",
+    );
+
+    const client = decodeDefinitions(new Uint8Array(sample));
+    expect(client.byWordId.get(lightId!)?.length).toBe(2);
+    expect(client.byWordId.get(nightId!)?.[0]?.gloss).toBe(
+      "the time of darkness",
+    );
+
+    await expect(
+      Promise.resolve().then(() =>
+        encodeDefinitions([
+          {
+            wordId: lightId!,
+            senses: [{ usage: 0, source: 0, gloss: "a" }],
+          },
+          {
+            wordId: lightId!,
+            senses: [{ usage: 0, source: 0, gloss: "b" }],
+          },
+        ]),
+      ),
+    ).rejects.toThrow(/duplicate wordId/);
+
+    await expect(
+      Promise.resolve().then(() =>
+        encodeDefinitions([
+          {
+            wordId: lightId!,
+            senses: [{ usage: 9, source: 0, gloss: "bad usage" }],
+          },
+        ]),
+      ),
+    ).rejects.toThrow(/invalid usage/);
+
+    const packBuf = new Uint8Array(
+      readFileSync(join(packsDir, "defs/defs-li.bin")),
+    );
+    const pack = decodeDefinitions(packBuf);
+    const senses = pack.byWordId.get(lightId!);
+    expect(senses?.length).toBeGreaterThan(0);
+    expect(senses![0]!.gloss.length).toBeGreaterThan(3);
+
+    // Wiktionary-only heads should retain multiple POS after fill fix.
+    let wiktMulti = 0;
+    for (const entrySenses of pack.byWordId.values()) {
+      if (entrySenses.every((s) => s.source === 1)) {
+        const usages = new Set(entrySenses.map((s) => s.usage));
+        if (usages.size > 1) wiktMulti += 1;
+      }
+    }
+    expect(wiktMulti).toBeGreaterThan(0);
   });
 
   it("decodes thesaurus and resolves a head", () => {

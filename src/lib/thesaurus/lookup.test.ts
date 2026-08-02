@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   __setThesaurusDataForTests,
   lookupSynonyms,
+  lookupSynonymsForBrowse,
 } from "./lookup";
 
 describe("lookupSynonyms", () => {
@@ -86,5 +87,50 @@ describe("lookupSynonyms", () => {
     const syns = lookupSynonyms("remains", "v");
     expect(syns.map((s) => s.word)).toEqual(["stay", "persist"]);
     expect(syns.every((s) => s.matchesUsage)).toBe(true);
+  });
+});
+
+describe("lookupSynonymsForBrowse", () => {
+  afterEach(() => {
+    __setThesaurusDataForTests(null);
+  });
+
+  it("emits the same lemma under multiple usages", () => {
+    __setThesaurusDataForTests({
+      remains: { n: ["stay", "cadaver"] },
+      remain: { v: ["stay", "persist"] },
+    });
+    const rows = lookupSynonymsForBrowse("remains");
+    expect(rows).toEqual(
+      expect.arrayContaining([
+        { word: "stay", usage: "n" },
+        { word: "stay", usage: "v" },
+        { word: "cadaver", usage: "n" },
+        { word: "persist", usage: "v" },
+      ]),
+    );
+    expect(rows.filter((r) => r.word === "stay")).toHaveLength(2);
+  });
+
+  it("merges inflectional bases like lookupSynonyms", () => {
+    __setThesaurusDataForTests({
+      remains: { n: ["cadaver"] },
+      remain: { v: ["stay", "persist"] },
+    });
+    const rows = lookupSynonymsForBrowse("remains");
+    expect(rows.map((r) => r.word)).toEqual(
+      expect.arrayContaining(["cadaver", "stay", "persist"]),
+    );
+  });
+
+  it("does not pull adjective senses from false -s stems (news ↛ new)", () => {
+    __setThesaurusDataForTests({
+      news: { n: ["tidings", "info"] },
+      new: { a: ["fresh", "novel"] },
+    });
+    expect(lookupSynonymsForBrowse("news").map((r) => r.word)).toEqual([
+      "tidings",
+      "info",
+    ]);
   });
 });

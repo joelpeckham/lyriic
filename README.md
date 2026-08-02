@@ -50,6 +50,12 @@ Rebuild the thesaurus pack (Open English WordNet + Wiktionary; downloads when mi
 pnpm build:thesaurus
 ```
 
+Rebuild definition digraph packs (OEWN glosses + Wiktionary fill; requires lexicon):
+
+```bash
+pnpm build:definitions
+```
+
 Runtime dictionaries live under `src/lib/data/packs/` as compact binary assets (not JSON).
 
 ## Syllable counting

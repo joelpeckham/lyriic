@@ -50,6 +50,19 @@ pnpm build:thesaurus
 
 Requires `lexicon.bin` from `build:pronunciation`. Writes `src/lib/data/packs/thesaurus.bin` (IDs into the shared lexicon plus a small overflow string table). Headwords restricted to the lexicon; synonyms grouped by usage (`n` / `v` / `a` / `r`). Per usage: OEWN synset mates first (Zipf, no cap), then OEWN related/co-hyponym neighbors (Zipf, cap 16), then Wiktionary fill (Zipf, no cap). Related links siblings under a shared hypernym, hyponyms of those siblings, direct hyponyms, and hypernym members. At lookup, heads with both noun and verb senses hard-filter to the detected `n`/`v` usage when context provides one.
 
+## Definitions
+
+| Source | License | Role |
+|--------|---------|------|
+| [Open English WordNet 2025](https://github.com/globalwordnet/english-wordnet) | CC-BY 4.0 | Primary synset glosses |
+| [Wiktionary](https://kaikki.org/dictionary/) (kaikki.org / wiktextract) | CC-BY-SA | Gloss fill for lexicon heads with no OEWN senses |
+
+```bash
+pnpm build:definitions
+```
+
+Requires `lexicon.bin` from `build:pronunciation`. Writes letter-pair packs under `src/lib/data/packs/defs/defs-{pair}.bin` (magic `LYXD`). Shards by the first two letters of each normalized lemma (`light` → `li`; one-letter / non-letter second char → `a_`; non `a–z` start → `_`). Runtime loads only the digraph pack for the looked-up word (LRU-cached). Senses capped per usage; OEWN first, then Wiktionary fill for missing heads.
+
 ## Other
 
 - `build-seo-content.mjs` — SEO / agent markdown mirrors
