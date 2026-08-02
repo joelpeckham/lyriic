@@ -358,7 +358,7 @@ html[data-contrast="more"].dark {
   pointer-events: none;
   user-select: none;
   /* Inside the line box (not the gap above) so wraps/next lines stay clear. */
-  transform: translate(-50%, 0.12em);
+  transform: translate(-50%, -0.02em);
 }
 
 .lyriic-stress-mark--weak {
