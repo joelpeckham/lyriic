@@ -592,30 +592,28 @@ export function SettingsSheet({
               }
             />
 
-            {stressAware ? (
-              <>
-                <SettingsToggle
-                  id="show-stress"
-                  label="Stress marks"
-                  hint="Marks above stressed and unstressed syllables"
-                  icon={Waves}
-                  checked={settings.showStress}
-                  onCheckedChange={(showStress) =>
-                    onChange({ ...settings, showStress })
-                  }
-                />
+            <SettingsToggle
+              id="show-stress"
+              label="Stress marks"
+              hint="Marks above stressed and unstressed syllables"
+              icon={Waves}
+              checked={settings.showStress}
+              onCheckedChange={(showStress) =>
+                onChange({ ...settings, showStress })
+              }
+            />
 
-                <SettingsToggle
-                  id="show-meter-breaks"
-                  label="Meter breaks"
-                  hint="Highlight syllables that break the pattern"
-                  icon={CircleDot}
-                  checked={settings.showMeterBreaks}
-                  onCheckedChange={(showMeterBreaks) =>
-                    onChange({ ...settings, showMeterBreaks })
-                  }
-                />
-              </>
+            {stressAware ? (
+              <SettingsToggle
+                id="show-meter-breaks"
+                label="Meter breaks"
+                hint="Highlight syllables that break the pattern"
+                icon={CircleDot}
+                checked={settings.showMeterBreaks}
+                onCheckedChange={(showMeterBreaks) =>
+                  onChange({ ...settings, showMeterBreaks })
+                }
+              />
             ) : null}
 
             {hasRhymeOverlay ? (
