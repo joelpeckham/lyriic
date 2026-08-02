@@ -22,6 +22,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Slider } from "@/components/ui/slider";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import {
   getLexicon,
@@ -120,6 +121,52 @@ function normalizeSearchQuery(raw: string): string {
   return normalizeLookupKey(normalizeWord(raw.trim()));
 }
 
+/** Min/max known syllable counts among candidates; ignores unknown (≤0). */
+function syllableBounds(
+  rows: ReadonlyArray<{ syllables: number }>,
+): { min: number; max: number } | null {
+  let min = Infinity;
+  let max = -Infinity;
+  for (const row of rows) {
+    if (row.syllables <= 0) continue;
+    if (row.syllables < min) min = row.syllables;
+    if (row.syllables > max) max = row.syllables;
+  }
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return null;
+  return { min, max };
+}
+
+function rangesEqual(
+  a: readonly [number, number],
+  b: readonly [number, number],
+): boolean {
+  return a[0] === b[0] && a[1] === b[1];
+}
+
+function syllableRangeLabel(min: number, max: number): string {
+  if (min === max) return `${min} syllable${min === 1 ? "" : "s"}`;
+  return `${min}–${max} syllables`;
+}
+
+/** Stricter-than-full-bounds selection, clamped to current candidate bounds. */
+function activeSyllableRange(
+  bounds: { min: number; max: number } | null,
+  range: [number, number] | null,
+): [number, number] | null {
+  if (!bounds || bounds.min === bounds.max || !range) return null;
+  const lo = Math.min(
+    Math.max(range[0], bounds.min),
+    bounds.max,
+  );
+  const hi = Math.min(
+    Math.max(range[1], bounds.min),
+    bounds.max,
+  );
+  const clamped: [number, number] = [Math.min(lo, hi), Math.max(lo, hi)];
+  if (rangesEqual(clamped, [bounds.min, bounds.max])) return null;
+  return clamped;
+}
+
 export function DefinitionSheet({
   open,
   onOpenChange,
@@ -150,14 +197,15 @@ export function DefinitionSheet({
   } | null>(null);
 
   const [synSub, setSynSub] = useState("");
-  const [synSylMin, setSynSylMin] = useState("");
-  const [synSylMax, setSynSylMax] = useState("");
+  /** User syllable range override; null means full candidate bounds. */
+  const [synSylRange, setSynSylRange] = useState<[number, number] | null>(null);
 
   const [rhymeSub, setRhymeSub] = useState("");
   const [includeEndRhymes, setIncludeEndRhymes] = useState(false);
   const [includeSlantRhymes, setIncludeSlantRhymes] = useState(false);
-  const [rhymeSylMin, setRhymeSylMin] = useState("");
-  const [rhymeSylMax, setRhymeSylMax] = useState("");
+  const [rhymeSylRange, setRhymeSylRange] = useState<[number, number] | null>(
+    null,
+  );
 
   const [suggestOpen, setSuggestOpen] = useState(false);
   const [highlight, setHighlight] = useState(-1);
@@ -176,11 +224,9 @@ export function DefinitionSheet({
       setIncludeEndRhymes(false);
       setIncludeSlantRhymes(false);
       setSynSub("");
-      setSynSylMin("");
-      setSynSylMax("");
+      setSynSylRange(null);
       setRhymeSub("");
-      setRhymeSylMin("");
-      setRhymeSylMax("");
+      setRhymeSylRange(null);
       setSuggestOpen(false);
       setHighlight(-1);
     }
@@ -314,14 +360,12 @@ export function DefinitionSheet({
 
   function clearSynFilters(): void {
     setSynSub("");
-    setSynSylMin("");
-    setSynSylMax("");
+    setSynSylRange(null);
   }
 
   function clearRhymeFilters(): void {
     setRhymeSub("");
-    setRhymeSylMin("");
-    setRhymeSylMax("");
+    setRhymeSylRange(null);
   }
 
   function closeSuggestions(): void {
@@ -445,26 +489,29 @@ export function DefinitionSheet({
         }))
       : [];
 
+  const synBounds = syllableBounds(synRows);
+  const rhymeBounds = syllableBounds(rhymeRows);
+  const synActiveRange = activeSyllableRange(synBounds, synSylRange);
+  const rhymeActiveRange = activeSyllableRange(rhymeBounds, rhymeSylRange);
+
   const synFilters = {
     substring: synSub,
-    syllableMin: synSylMin ? Number(synSylMin) : null,
-    syllableMax: synSylMax ? Number(synSylMax) : null,
+    syllableMin: synActiveRange?.[0] ?? null,
+    syllableMax: synActiveRange?.[1] ?? null,
   };
   const rhymeFilters = {
     substring: rhymeSub,
-    syllableMin: rhymeSylMin ? Number(rhymeSylMin) : null,
-    syllableMax: rhymeSylMax ? Number(rhymeSylMax) : null,
+    syllableMin: rhymeActiveRange?.[0] ?? null,
+    syllableMax: rhymeActiveRange?.[1] ?? null,
   };
 
   const filteredSyns = filterCandidates(synRows, synFilters, LIST_CAP);
   const filteredRhymes = filterCandidates(rhymeRows, rhymeFilters, LIST_CAP);
 
   const synFiltersActive =
-    Boolean(synSub.trim()) || Boolean(synSylMin) || Boolean(synSylMax);
+    Boolean(synSub.trim()) || synActiveRange != null;
   const rhymeFiltersActive =
-    Boolean(rhymeSub.trim()) ||
-    Boolean(rhymeSylMin) ||
-    Boolean(rhymeSylMax);
+    Boolean(rhymeSub.trim()) || rhymeActiveRange != null;
 
   const senseGroups = senses ? groupSenses(senses) : [];
   const attribution = senses ? sourceAttribution(senses) : null;
@@ -696,14 +743,14 @@ export function DefinitionSheet({
                           : "No synonyms for this word."
                 }
                 hasCandidates={synRows.length > 0}
+                candidateCount={synRows.length}
                 filtersActive={synFiltersActive}
                 onClearFilters={clearSynFilters}
                 substring={synSub}
                 onSubstringChange={setSynSub}
-                syllableMin={synSylMin}
-                syllableMax={synSylMax}
-                onSyllableMinChange={setSynSylMin}
-                onSyllableMaxChange={setSynSylMax}
+                syllableBounds={synBounds}
+                syllableRange={synSylRange}
+                onSyllableRangeChange={setSynSylRange}
                 rows={filteredSyns}
                 truncated={filteredSyns.length === LIST_CAP}
                 showUsage
@@ -726,14 +773,14 @@ export function DefinitionSheet({
                           : "No rhymes for this word."
                 }
                 hasCandidates={rhymeRows.length > 0}
+                candidateCount={rhymeRows.length}
                 filtersActive={rhymeFiltersActive}
                 onClearFilters={clearRhymeFilters}
                 substring={rhymeSub}
                 onSubstringChange={setRhymeSub}
-                syllableMin={rhymeSylMin}
-                syllableMax={rhymeSylMax}
-                onSyllableMinChange={setRhymeSylMin}
-                onSyllableMaxChange={setRhymeSylMax}
+                syllableBounds={rhymeBounds}
+                syllableRange={rhymeSylRange}
+                onSyllableRangeChange={setRhymeSylRange}
                 rows={filteredRhymes}
                 truncated={filteredRhymes.length === LIST_CAP}
                 onNavigate={navigateTo}
@@ -765,14 +812,14 @@ function BrowseSection({
   title,
   emptyLabel,
   hasCandidates,
+  candidateCount,
   filtersActive,
   onClearFilters,
   substring,
   onSubstringChange,
-  syllableMin,
-  syllableMax,
-  onSyllableMinChange,
-  onSyllableMaxChange,
+  syllableBounds: bounds,
+  syllableRange,
+  onSyllableRangeChange,
   rows,
   truncated,
   showUsage,
@@ -783,14 +830,14 @@ function BrowseSection({
   title: string;
   emptyLabel: string;
   hasCandidates: boolean;
+  candidateCount: number;
   filtersActive: boolean;
   onClearFilters: () => void;
   substring: string;
   onSubstringChange: (value: string) => void;
-  syllableMin: string;
-  syllableMax: string;
-  onSyllableMinChange: (value: string) => void;
-  onSyllableMaxChange: (value: string) => void;
+  syllableBounds: { min: number; max: number } | null;
+  syllableRange: [number, number] | null;
+  onSyllableRangeChange: (value: [number, number] | null) => void;
   rows: BrowseRow[];
   truncated: boolean;
   showUsage?: boolean;
@@ -798,56 +845,54 @@ function BrowseSection({
   onCopy: (word: string) => void;
   rhymeControls?: ReactNode;
 }) {
-  const [filterOpen, setFilterOpen] = useState(filtersActive);
-  const [prevActive, setPrevActive] = useState(filtersActive);
-  if (filtersActive !== prevActive) {
-    setPrevActive(filtersActive);
-    if (filtersActive) setFilterOpen(true);
+  const [open, setOpen] = useState(hasCandidates);
+  const [prevHasCandidates, setPrevHasCandidates] = useState(hasCandidates);
+  if (hasCandidates !== prevHasCandidates) {
+    setPrevHasCandidates(hasCandidates);
+    if (hasCandidates) setOpen(true);
   }
 
-  const canFilter = hasCandidates || filtersActive;
+  const sliderEnabled = bounds != null && bounds.min !== bounds.max;
+  const activeRange = activeSyllableRange(bounds, syllableRange);
+  const sliderValue: [number, number] =
+    bounds == null
+      ? [1, 1]
+      : (activeRange ?? [bounds.min, bounds.max]);
+  const sliderLabel = bounds
+    ? syllableRangeLabel(sliderValue[0], sliderValue[1])
+    : "Syllables unknown";
 
   return (
     <section className="flex flex-col gap-3">
-      <p className="text-xs tracking-wide text-muted-foreground uppercase">
-        {title}
-      </p>
+      <button
+        type="button"
+        className="flex w-full items-center gap-2 text-left outline-none focus-visible:underline"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <span className="text-xs tracking-wide text-muted-foreground uppercase">
+          {title}
+        </span>
+        {candidateCount > 0 ? (
+          <span className="tabular-nums text-xs text-muted-foreground">
+            {candidateCount}
+          </span>
+        ) : null}
+        <ChevronDown
+          className={cn(
+            "ml-auto size-3.5 shrink-0 text-muted-foreground transition-transform",
+            open && "rotate-180",
+          )}
+        />
+      </button>
 
-      {rhymeControls}
+      {open ? (
+        <>
+          {rhymeControls}
 
-      {canFilter ? (
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:text-foreground focus-visible:underline"
-              aria-expanded={filterOpen}
-              onClick={() => setFilterOpen((open) => !open)}
-            >
-              Filter
-              <ChevronDown
-                className={cn(
-                  "size-3.5 transition-transform",
-                  filterOpen && "rotate-180",
-                )}
-              />
-            </button>
-            {filtersActive ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="xs"
-                className="text-muted-foreground"
-                onClick={onClearFilters}
-              >
-                Clear filters
-              </Button>
-            ) : null}
-          </div>
-
-          {filterOpen ? (
-            <div className="grid grid-cols-[1fr_auto_auto] items-end gap-2">
-              <div className="min-w-0">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
                 <Label className="sr-only">
                   Filter {title.toLowerCase()} by text
                 </Label>
@@ -860,91 +905,109 @@ function BrowseSection({
                   className="h-8"
                 />
               </div>
-              <div className="w-14">
-                <Label className="sr-only">Min syllables</Label>
-                <Input
-                  inputMode="numeric"
-                  value={syllableMin}
-                  onChange={(e) =>
-                    onSyllableMinChange(e.target.value.replace(/\D/g, ""))
-                  }
-                  placeholder="Min"
-                  className="h-8 px-2 tabular-nums"
-                />
-              </div>
-              <div className="w-14">
-                <Label className="sr-only">Max syllables</Label>
-                <Input
-                  inputMode="numeric"
-                  value={syllableMax}
-                  onChange={(e) =>
-                    onSyllableMaxChange(e.target.value.replace(/\D/g, ""))
-                  }
-                  placeholder="Max"
-                  className="h-8 px-2 tabular-nums"
-                />
-              </div>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-
-      {rows.length === 0 ? (
-        <div className="flex flex-col gap-1.5">
-          <p className="text-sm text-muted-foreground">{emptyLabel}</p>
-          {filtersActive ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="xs"
-              className="self-start"
-              onClick={onClearFilters}
-            >
-              Clear filters
-            </Button>
-          ) : null}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1.5">
-          {truncated ? (
-            <p className="text-xs text-muted-foreground">
-              Showing first {LIST_CAP}.
-            </p>
-          ) : null}
-          <ul className="flex flex-col gap-0.5">
-            {rows.map((row) => (
-              <li
-                key={`${row.word}-${row.usage ?? ""}`}
-                className="flex items-center gap-0.5 rounded-md hover:bg-muted/70"
-              >
-                <button
-                  type="button"
-                  className="flex min-w-0 flex-1 items-center justify-between gap-2 px-1.5 py-1 text-left text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
-                  onClick={() => onNavigate(row.word)}
-                >
-                  <span className="min-w-0 truncate">{row.word}</span>
-                  <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
-                    {showUsage && row.usage
-                      ? `${USAGE_LABELS[row.usage]} · `
-                      : null}
-                    {row.syllables}
-                  </span>
-                </button>
+              {filtersActive ? (
                 <Button
                   type="button"
                   variant="ghost"
-                  size="icon-xs"
-                  className="mr-0.5 shrink-0 text-muted-foreground"
-                  aria-label={`Copy ${row.word}`}
-                  onClick={() => onCopy(row.word)}
+                  size="xs"
+                  className="shrink-0 text-muted-foreground"
+                  onClick={onClearFilters}
                 >
-                  <Copy />
+                  Clear
                 </Button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+              ) : null}
+            </div>
+
+            <div className="flex flex-col gap-1.5 px-0.5">
+              <div className="flex items-center justify-between gap-2">
+                <Label className="text-xs text-muted-foreground">
+                  Syllables
+                </Label>
+                <span className="tabular-nums text-xs text-muted-foreground">
+                  {sliderLabel}
+                </span>
+              </div>
+              <Slider
+                min={bounds?.min ?? 1}
+                max={bounds?.max ?? 1}
+                step={1}
+                value={sliderValue}
+                disabled={!sliderEnabled}
+                onValueChange={(next) => {
+                  if (!bounds || !sliderEnabled) return;
+                  const range: [number, number] = [
+                    next[0] ?? bounds.min,
+                    next[1] ?? bounds.max,
+                  ];
+                  if (rangesEqual(range, [bounds.min, bounds.max])) {
+                    onSyllableRangeChange(null);
+                  } else {
+                    onSyllableRangeChange(range);
+                  }
+                }}
+                aria-label={`Filter ${title.toLowerCase()} by syllable count`}
+              />
+            </div>
+          </div>
+
+          {rows.length === 0 ? (
+            <div className="flex flex-col gap-1.5">
+              <p className="text-sm text-muted-foreground">{emptyLabel}</p>
+              {filtersActive ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  className="self-start"
+                  onClick={onClearFilters}
+                >
+                  Clear filters
+                </Button>
+              ) : null}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-1.5">
+              {truncated ? (
+                <p className="text-xs text-muted-foreground">
+                  Showing first {LIST_CAP}.
+                </p>
+              ) : null}
+              <ul className="flex flex-col gap-0.5">
+                {rows.map((row) => (
+                  <li
+                    key={`${row.word}-${row.usage ?? ""}`}
+                    className="flex items-center gap-0.5 rounded-md hover:bg-muted/70"
+                  >
+                    <button
+                      type="button"
+                      className="flex min-w-0 flex-1 items-center justify-between gap-2 px-1.5 py-1 text-left text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+                      onClick={() => onNavigate(row.word)}
+                    >
+                      <span className="min-w-0 truncate">{row.word}</span>
+                      <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
+                        {showUsage && row.usage
+                          ? `${USAGE_LABELS[row.usage]} · `
+                          : null}
+                        {row.syllables}
+                      </span>
+                    </button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-xs"
+                      className="mr-0.5 shrink-0 text-muted-foreground"
+                      aria-label={`Copy ${row.word}`}
+                      onClick={() => onCopy(row.word)}
+                    >
+                      <Copy />
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      ) : null}
     </section>
   );
 }
