@@ -7,7 +7,7 @@ export type ContrastPref = "default" | "more";
 
 export const FONT_SIZE_MIN = 1;
 export const FONT_SIZE_MAX = 3;
-export const DEFAULT_FONT_SIZE = 1.75;
+export const DEFAULT_FONT_SIZE = 1.5;
 
 export type AppPrefs = {
   theme: ThemePref;

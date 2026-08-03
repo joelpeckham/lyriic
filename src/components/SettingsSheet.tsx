@@ -80,8 +80,8 @@ type SettingsSheetProps = {
 
 const FONT_SIZE_OPTIONS = [
   { value: 1.25, label: "S", aria: "Small" },
-  { value: 1.5, label: "M", aria: "Medium" },
-  { value: DEFAULT_FONT_SIZE, label: "L", aria: "Large" },
+  { value: DEFAULT_FONT_SIZE, label: "M", aria: "Medium" },
+  { value: 1.75, label: "L", aria: "Large" },
   { value: 2.25, label: "XL", aria: "Extra large" },
 ] as const;
 
