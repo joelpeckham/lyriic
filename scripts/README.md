@@ -25,11 +25,18 @@ Fuses US English sources, preference order Misaki gold → CMUdict → Misaki si
 pnpm build:pronunciation
 ```
 
+Curated inputs under `scripts/data/`:
+
+- `poetic-compressions.json` — meter-fit syllable/stress alts (citation primary unchanged)
+- `teaching-lexicon.json` — classroom proper names / elisions missing from citation dicts
+- `elision-bridges.json` — apostrophe form → citation lemma (emits `src/lib/data/elisionBridges.generated.ts`)
+
 Writes:
 
 - `src/lib/data/packs/lexicon.bin` — front-coded lemmas + syllable counts
 - `src/lib/data/packs/stress.bin` — packed per-syllable stress (0/1/2) keyed by lexicon word id
-- `src/lib/data/packs/variants.bin` — sparse non-primary syllable/stress alts (from merge IPA alts + `scripts/data/poetic-compressions.json`)
+- `src/lib/data/packs/variants.bin` — sparse non-primary syllable/stress alts (from merge IPA alts + `poetic-compressions.json`)
+- `src/lib/data/elisionBridges.generated.ts` — runtime apostrophe↔lemma map
 - `src/lib/data/packs/rhyme-perfect.bin` — perfect-rhyme ID index
 - `src/lib/data/packs/rhyme-end.bin` — end-rhyme ID index
 - `src/lib/data/packs/rhyme-slant.bin` — slant-rhyme ID index (family + one-segment coda truncate)

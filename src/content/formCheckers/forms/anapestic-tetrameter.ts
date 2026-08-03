@@ -61,10 +61,10 @@ export const anapesticTetrameterForm: FormCheckerContent = {
     },
   ],
   sampleLines: [
-    "'Twas the night before Christmas when all through the house",
-    "Not a creature was stirring not even a mouse",
     "And the sheen of their spears was like stars on the sea",
+    "Not a creature was stirring not even a mouse",
     "In the light of the moon on the hill by the bay",
+    "As they rode through the night with a song on the wind",
   ],
   cta: "Continue in the editor",
   meterExplainer: {
@@ -80,6 +80,6 @@ export const anapesticTetrameterForm: FormCheckerContent = {
   footExplainerId: "anapest",
   stressExplainerId: "anapest-4",
   verificationNotes: [
-    "Catalog: pattern [12], footId anapest, stressPatterns [[0,0,1,0,0,1,0,0,1,0,0,1]], stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic anapestic tetrameter (four feet / twelve syllables). Intentionally omits rhyme schemes, headless/anacrustic openings common in Moore and Seuss, and classical Greek quantitative uses (e.g. tragic parodos).",
+    "Catalog: pattern [12], footId anapest, stressPatterns [[0,0,1,0,0,1,0,0,1,0,0,1]], stanzaLines null (open; checker UI uses 4 sample/line slots). Matches English accentual-syllabic anapestic tetrameter (four feet / twelve syllables). Intentionally omits rhyme schemes, headless/anacrustic openings common in Moore and Seuss, feminine endings, mid-line substitutions, ±1 syllable without a named literary contour, and classical Greek quantitative uses (e.g. tragic parodos). sampleLines are teaching lines that pass the ideal twelve-beat grid (Moore’s Christmas opener is famous but headless/stress-loose).",
   ],
 };

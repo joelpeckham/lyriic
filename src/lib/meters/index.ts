@@ -19,9 +19,14 @@ export {
 } from "./literaryAllowances";
 export {
   applyMetricalMonosyllables,
+  countHardStressFailures,
   flattenTokenStress,
   hasStressOverride,
 } from "./scanLineStress";
+export {
+  formatLiteraryFitLabel,
+  formatMeterMatchLabel,
+} from "./literaryFitLabel";
 export { formatMeterLabel } from "./meterLabel";
 export {
   mapSyllableToOffset,

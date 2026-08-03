@@ -29,18 +29,18 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     {
       title: "A Midsummer Night's Dream (fairy / Puck speeches)",
       author: "William Shakespeare",
-      note: "Fairy dialogue often in catalectic trochaic tetrameter, distinct from the play’s blank-verse stretches.",
+      note: "Fairy dialogue often in catalectic trochaic tetrameter, distinct from the play’s blank-verse stretches. Athenian may need a three-syllable poetic reading to land cleanly on the teaching grid.",
       excerpt: "Through the forest have I gone. / But Athenian found I none,",
     },
     {
       title: "Macbeth (the Weird Sisters)",
       author: "William Shakespeare",
-      note: "Witch chants lean on falling trochaic rhythms, frequently catalectic.",
+      note: "Witch chants lean on falling trochaic rhythms, frequently catalectic. The rain-line is mixed in speech and may not match a pure trochaic grid.",
       excerpt: "When shall we three meet again / In thunder, lightning, or in rain?",
     },
   ],
   formNotes: [
-    "lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.",
+    "lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; first-foot inversion is also accepted. Harder disagreements still surface as stress feedback.",
     "Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.",
   ],
   faqs: [
@@ -80,6 +80,6 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [8], stressPatterns [[1,0,1,0,1,0,1,0]], footId trochee, stanzaLines null (open). Matches English accentual-syllabic full (acatalectic) trochaic tetrameter (4 trochees / 8 syllables). Literary scansion accepts catalexis (−1 ending strong) and first-foot inversion; intentionally omits rhyme, Kalevala length/alliteration rules, and classical quantitative tetrameter. sampleLines use open-meter default of 4; lines adapted from Longfellow’s Hiawatha (full 8-syllable examples).",
+    "Catalog: pattern [8], stressPatterns [[1,0,1,0,1,0,1,0]], footId trochee, stanzaLines null (open). Matches English accentual-syllabic full (acatalectic) trochaic tetrameter (4 trochees / 8 syllables). Literary scansion accepts catalexis (−1 ending strong) and first-foot inversion; intentionally omits rhyme, Kalevala length/alliteration rules, classical quantitative tetrameter, mid-line substitutions, and ±1 syllable without a named literary contour. sampleLines use open-meter default of 4; Hiawatha names (Gitche, Gumee, Nokomis) seeded in the teaching lexicon.",
   ],
 };

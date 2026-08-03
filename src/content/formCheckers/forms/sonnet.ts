@@ -69,12 +69,12 @@ export const sonnetForm: FormCheckerContent = {
     "The evening air is cool against my face;",
     "The tide returns to claim the stones again.",
     "I think of days that will not come around,",
-    "Of promises that fade before they bloom,",
+    "Of vows that fade before the flowers bloom,",
     "Of letters left unanswered on the desk,",
     "Of doors that close before the night is done.",
     "And still the moon climbs slow above the hill,",
     "And still the harbor lights reflect the bay.",
-    "If words can hold what memory lets go,",
+    "If words can hold what silence lets go by,",
     "Then let these lines keep watch until the dawn,",
     "When light returns and names the world anew,",
     "And what was lost is somehow found in you.",
@@ -93,6 +93,6 @@ export const sonnetForm: FormCheckerContent = {
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 14, rhymeSchemes shakespearean/petrarchan/spenserian. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits volta placement and thematic structure. sampleLines: 14 original lines at 10 syllables (dict primary).",
+    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 14, rhymeSchemes shakespearean/petrarchan/spenserian. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits volta placement, thematic structure, mid-line substitutions, and ±1 syllable without a named literary contour. sampleLines: 14 original lines aimed at exact iambic pentameter under dict primary + literary allowances.",
   ],
 };

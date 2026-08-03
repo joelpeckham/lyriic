@@ -16,7 +16,7 @@ Closed couplets often complete a thought within the pair; open or enjambed coupl
 
 Whan that Aprille with his shoures soote / The droghte of March hath perced to the roote,
 
-Early English mastery of rhymed iambic pentameter couplets (often called riding rhyme).
+Early English mastery of rhymed iambic pentameter couplets (often called riding rhyme). Middle English spelling and sounded final -e are outside the modern citation dictionary, so this excerpt will not score as on-meter here.
 
 ### Absalom and Achitophel — John Dryden
 
@@ -28,13 +28,13 @@ Restoration satire that helped set the neoclassical heroic-couplet standard.
 
 A little learning is a dangerous thing; / Drink deep, or taste not the Pierian spring:
 
-Often cited for closed, balanced couplets and epigrammatic wit.
+Often cited for closed, balanced couplets and epigrammatic wit. Meter-fit accepts the traditional two-syllable reading of dangerous (dang’rous).
 
 ### The Rape of the Lock — Alexander Pope
 
 What dire offence from am'rous causes springs, / What mighty contests rise from trivial things,
 
-Mock-heroic narrative built largely in polished heroic couplets.
+Mock-heroic narrative built largely in polished heroic couplets. Apostrophe spellings such as am’rous and poetic compressions of trivial are supported in meter-fit.
 
 ## How the heroic couplet works
 

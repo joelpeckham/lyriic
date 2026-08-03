@@ -749,13 +749,13 @@ Largely catalectic trochaic tetrameter — seven syllables ending on a stress, n
 
 Through the forest have I gone. / But Athenian found I none,
 
-Fairy dialogue often in catalectic trochaic tetrameter, distinct from the play’s blank-verse stretches.
+Fairy dialogue often in catalectic trochaic tetrameter, distinct from the play’s blank-verse stretches. Athenian may need a three-syllable poetic reading to land cleanly on the teaching grid.
 
 ### Macbeth (the Weird Sisters) — William Shakespeare
 
 When shall we three meet again / In thunder, lightning, or in rain?
 
-Witch chants lean on falling trochaic rhythms, frequently catalectic.
+Witch chants lean on falling trochaic rhythms, frequently catalectic. The rain-line is mixed in speech and may not match a pure trochaic grid.
 
 ## How trochaic tetrameter works
 
@@ -781,7 +781,7 @@ lyriic checks this falling duple contour when the stress pack is loaded. Catalex
 
 ## Notes on this form
 
-lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.
+lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; first-foot inversion is also accepted. Harder disagreements still surface as stress feedback.
 
 Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.
 
@@ -1357,7 +1357,7 @@ Closed couplets often complete a thought within the pair; open or enjambed coupl
 
 Whan that Aprille with his shoures soote / The droghte of March hath perced to the roote,
 
-Early English mastery of rhymed iambic pentameter couplets (often called riding rhyme).
+Early English mastery of rhymed iambic pentameter couplets (often called riding rhyme). Middle English spelling and sounded final -e are outside the modern citation dictionary, so this excerpt will not score as on-meter here.
 
 ### Absalom and Achitophel — John Dryden
 
@@ -1369,13 +1369,13 @@ Restoration satire that helped set the neoclassical heroic-couplet standard.
 
 A little learning is a dangerous thing; / Drink deep, or taste not the Pierian spring:
 
-Often cited for closed, balanced couplets and epigrammatic wit.
+Often cited for closed, balanced couplets and epigrammatic wit. Meter-fit accepts the traditional two-syllable reading of dangerous (dang’rous).
 
 ### The Rape of the Lock — Alexander Pope
 
 What dire offence from am'rous causes springs, / What mighty contests rise from trivial things,
 
-Mock-heroic narrative built largely in polished heroic couplets.
+Mock-heroic narrative built largely in polished heroic couplets. Apostrophe spellings such as am’rous and poetic compressions of trivial are supported in meter-fit.
 
 ## How the heroic couplet works
 

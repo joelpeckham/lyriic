@@ -15,7 +15,7 @@ You are authoring SEO content for one lyriic form-checker page. Work only on the
 2. Fill all slots in the form file; set `status: "ready"`.
 3. Prefer an inline `meterExplainer: { id, title, body, status: "ready" }` on the form file (avoids merge conflicts on `shared.ts`). Reuse `footExplainerId` / `stressExplainerId` / `meterExplainerId` for shared library refs. Only edit `shared.ts` in the dedicated shared-explainer pre-pass.
 4. **Verify implementation:** compare catalog `pattern`, `stressPatterns` / `footId`, and `stanzaLines` against sources. Record findings in `verificationNotes` (what we enforce vs rhyme/theme rules we intentionally omit).
-5. Supply `sampleLines` that are close to the syllable targets (and plausible stress for stress-aware meters).
+5. Supply `sampleLines` that **pass** the checker with packs loaded (`status === "exact"`). The golden suite in `sampleLines.meter.test.ts` enforces this for every ready form. Prefer dict-friendly wording; do not rely on Middle English, headless anapests, or mid-line substitutions the engine intentionally omits.
 6. Tone: factual, concise, matches `forms/haiku.ts` — not promotional AI-slop.
 
 ## Slot checklist
@@ -32,6 +32,13 @@ You are authoring SEO content for one lyriic form-checker page. Work only on the
 | `verificationNotes` | Catalog vs tradition |
 
 When editing a shared explainer, set its `status: "ready"` and replace stub body copy.
+
+## Scansion guardrails (do not widen in content passes)
+
+- Do **not** treat ±1 syllable as close enough without a named literary contour (feminine / catalexis / inversion already in `literaryAllowances.ts`).
+- Do **not** assume Middle English final *-e*, anapest headless openings, or mid-line substitutions will Match — note them as intentionally omitted in `verificationNotes`.
+- Do **not** change citation syllable primaries to poetic short forms; meter-fit uses `variants.bin` / `poetic-compressions.json` instead.
+- Famous-poem excerpts may illustrate tradition without Matching; say so in the note when they need historical or loose scansion.
 
 ## Out of scope
 

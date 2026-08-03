@@ -26,13 +26,13 @@ Largely catalectic trochaic tetrameter — seven syllables ending on a stress, n
 
 Through the forest have I gone. / But Athenian found I none,
 
-Fairy dialogue often in catalectic trochaic tetrameter, distinct from the play’s blank-verse stretches.
+Fairy dialogue often in catalectic trochaic tetrameter, distinct from the play’s blank-verse stretches. Athenian may need a three-syllable poetic reading to land cleanly on the teaching grid.
 
 ### Macbeth (the Weird Sisters) — William Shakespeare
 
 When shall we three meet again / In thunder, lightning, or in rain?
 
-Witch chants lean on falling trochaic rhythms, frequently catalectic.
+Witch chants lean on falling trochaic rhythms, frequently catalectic. The rain-line is mixed in speech and may not match a pure trochaic grid.
 
 ## How trochaic tetrameter works
 
@@ -58,7 +58,7 @@ lyriic checks this falling duple contour when the stress pack is loaded. Catalex
 
 ## Notes on this form
 
-lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; harder disagreements still surface as stress feedback.
+lyriic checks an eight-syllable line with a trochaic (strong–weak) stress contour. Catalectic lines that drop the final unstressed syllable — common in Blake and Shakespeare — count as on-meter when they keep the falling contour; first-foot inversion is also accepted. Harder disagreements still surface as stress feedback.
 
 Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.
 

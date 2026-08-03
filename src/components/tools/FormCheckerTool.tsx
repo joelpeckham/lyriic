@@ -9,15 +9,18 @@ import {
 } from "@/content/formCheckers";
 import { useDictRevision } from "@/hooks/useDictRevision";
 import { useStressRevision } from "@/hooks/useStressRevision";
+import { useVariantsRevision } from "@/hooks/useVariantsRevision";
 import { loadStress } from "@/lib/data/stress";
 import {
   buildMeteredLine,
   flattenTokenStress,
+  formatMeterMatchLabel,
   formCheckerLineCount,
   getMeterCatalogEntry,
   isStressAwareMeterConfig,
   stressMismatchMask,
   targetForLine,
+  type LiteraryFit,
 } from "@/lib/meters";
 import { countLine } from "@/lib/syllables";
 import {
@@ -44,18 +47,15 @@ type LineResult = {
   ok: boolean;
   empty: boolean;
   status: "none" | "under" | "exact" | "over" | "stress";
+  fit?: LiteraryFit;
   /** Per-syllable mismatch flags when count matches and stress expected. */
   stressMask: boolean[] | null;
   expectedStress: readonly (0 | 1)[] | null;
   /** Contour rendered in stress ticks (matched literary length when stress-off). */
   stressTicks: readonly (0 | 1)[] | null;
+  /** Status chip: Matches, Matches · catalexis, Stress off, ±N. */
+  matchLabel: string;
 };
-
-function formatDelta(delta: number): string {
-  if (delta === 0) return "0";
-  if (delta > 0) return `+${delta}`;
-  return `−${Math.abs(delta)}`;
-}
 
 function splitDraftLines(text: string): string[] {
   return text.replace(/\r\n/g, "\n").split("\n");
@@ -231,6 +231,7 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
   const [pasteText, setPasteText] = useState("");
   const dictRevision = useDictRevision();
   const stressRevision = useStressRevision();
+  const variantsRevision = useVariantsRevision();
   const baseId = useId();
 
   useEffect(() => {
@@ -242,6 +243,7 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
   const results = useMemo(() => {
     void dictRevision;
     void stressRevision;
+    void variantsRevision;
     return lines.map((line, index): LineResult => {
       const target = targetForLine(entry.pattern, index) ?? 0;
       const empty = line.trim().length === 0;
@@ -275,21 +277,31 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
         !empty && metered.status === "stress" && matchedStress
           ? matchedStress
           : expectedStress;
+      const delta = empty ? -target : count - target;
+      const status = empty ? "none" : metered.status;
       return {
         count,
         target,
-        delta: empty ? -target : count - target,
+        delta,
         syllableOk,
         stressOk,
         ok: !empty && metered.status === "exact",
         empty,
-        status: empty ? "none" : metered.status,
+        status,
+        fit: metered.fit,
         stressMask,
         expectedStress,
         stressTicks,
+        matchLabel: formatMeterMatchLabel(
+          status,
+          metered.fit,
+          delta,
+          empty,
+          target,
+        ),
       };
     });
-  }, [lines, dictRevision, stressRevision, entry, stressAware]);
+  }, [lines, dictRevision, stressRevision, variantsRevision, entry, stressAware]);
 
   const allOk = results.length > 0 && results.every((result) => result.ok);
   const draftText = lines.join("\n");
@@ -471,13 +483,7 @@ export function FormCheckerTool({ meterId }: FormCheckerToolProps) {
                               : "text-[var(--lyriic-over)]",
                         )}
                       >
-                        {result.empty
-                          ? `Need ${result.target}`
-                          : result.ok
-                            ? "Matches"
-                            : result.status === "stress"
-                              ? "Stress off"
-                              : formatDelta(result.delta)}
+                        {result.matchLabel}
                       </p>
                     </div>
                   </div>

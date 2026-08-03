@@ -215,6 +215,67 @@ describe("buildMeteredLine", () => {
     expect(metered.fit).toBe("catalexis");
   });
 
+  it("fits Pope dangerous via poetic compression", () => {
+    const preset = getMeterPreset("heroic-couplet")!;
+    const count = countLine("A little learning is a dangerous thing");
+    expect(count.total).toBe(11);
+    const metered = buildMeteredLine(count, 0, {
+      pattern: preset.pattern,
+      stressPatterns: preset.stressPatterns,
+      footId: preset.footId,
+    });
+    expect(metered.total).toBe(10);
+    expect(metered.status).toBe("exact");
+    expect(
+      metered.tokens.find((t) => t.word === "dangerous")?.syllables,
+    ).toBe(2);
+  });
+
+  it("fits elided am'rous and o'er on heroic couplet", () => {
+    const preset = getMeterPreset("heroic-couplet")!;
+    const amorous = buildMeteredLine(
+      countLine("What dire offence from am'rous causes springs"),
+      0,
+      {
+        pattern: preset.pattern,
+        stressPatterns: preset.stressPatterns,
+        footId: preset.footId,
+      },
+    );
+    expect(amorous.status).toBe("exact");
+    expect(amorous.tokens.find((t) => t.word === "am'rous")?.syllables).toBe(2);
+
+    const oer = buildMeteredLine(
+      countLine("The moon sails o'er the quiet silver bay"),
+      0,
+      {
+        pattern: preset.pattern,
+        stressPatterns: preset.stressPatterns,
+        footId: preset.footId,
+      },
+    );
+    expect(oer.status).toBe("exact");
+    expect(oer.tokens.find((t) => t.word === "o'er")?.syllables).toBe(1);
+  });
+
+  it("accepts Hiawatha teaching names on trochaic tetrameter", () => {
+    const preset = getMeterPreset("trochaic-tetrameter")!;
+    for (const line of [
+      "By the shores of Gitche Gumee",
+      "Stood the wigwam of Nokomis",
+    ]) {
+      const metered = buildMeteredLine(countLine(line), 0, {
+        pattern: preset.pattern,
+        stressPatterns: preset.stressPatterns,
+        footId: preset.footId,
+      });
+      expect({ line, status: metered.status }).toEqual({
+        line,
+        status: "exact",
+      });
+    }
+  });
+
   it("still marks hard polysyllable stress fights as stress", () => {
     // banana [0,1,0] fights both ideal [1,0,1] and inverted [0,1,1].
     const count = countLine("banana");

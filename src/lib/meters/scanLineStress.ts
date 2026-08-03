@@ -47,7 +47,9 @@ export function applyMetricalMonosyllables(
  * otherwise null (not comparable).
  *
  * Primary (1) and unstressed (0) must match the expected bit; secondary (2)
- * matches either (wildcard).
+ * matches either (wildcard). Soft cases (secondary wildcards, already-bent
+ * monosyllables) never appear here — they are resolved before comparison.
+ * Remaining `true` flags are hard open-class / polysyllable disagreements.
  */
 export function stressMismatchMask(
   actual: readonly StressCode[],
@@ -56,10 +58,23 @@ export function stressMismatchMask(
   if (actual.length !== expected.length) return null;
   return expected.map((bit, i) => {
     const code = actual[i]!;
-    if (code === 2) return false;
+    if (code === 2) return false; // soft: secondary wildcard
     const binary: 0 | 1 = code === 0 ? 0 : 1;
     return binary !== bit;
   });
+}
+
+/**
+ * Count hard stress failures (primary/unstressed fights). Soft wildcards (2)
+ * do not count. Exact literary match requires zero hard failures.
+ */
+export function countHardStressFailures(
+  actual: readonly StressCode[],
+  expected: BinaryStressPattern,
+): number {
+  const mask = stressMismatchMask(actual, expected);
+  if (mask === null) return expected.length;
+  return mask.reduce((n, bit) => n + (bit ? 1 : 0), 0);
 }
 
 /** Flatten token stress into a line contour. */

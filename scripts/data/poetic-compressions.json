@@ -10,5 +10,11 @@
   "spirit": [{ "syllables": 1, "stress": [1] }],
   "being": [{ "syllables": 1, "stress": [1] }],
   "devil": [{ "syllables": 1, "stress": [1] }],
-  "evil": [{ "syllables": 1, "stress": [1] }]
+  "evil": [{ "syllables": 1, "stress": [1] }],
+  "dangerous": [{ "syllables": 2, "stress": [1, 0] }],
+  "trivial": [{ "syllables": 2, "stress": [1, 0] }],
+  "amorous": [{ "syllables": 2, "stress": [1, 0] }],
+  "athenian": [{ "syllables": 3, "stress": [0, 1, 0] }],
+  "pierian": [{ "syllables": 3, "stress": [0, 1, 0] }],
+  "memory": [{ "syllables": 2, "stress": [1, 0] }]
 }

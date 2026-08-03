@@ -18,7 +18,7 @@ export const heroicCoupletForm: FormCheckerContent = {
     {
       title: "The Canterbury Tales",
       author: "Geoffrey Chaucer",
-      note: "Early English mastery of rhymed iambic pentameter couplets (often called riding rhyme).",
+      note: "Early English mastery of rhymed iambic pentameter couplets (often called riding rhyme). Middle English spelling and sounded final -e are outside the modern citation dictionary, so this excerpt will not score as on-meter here.",
       excerpt: "Whan that Aprille with his shoures soote / The droghte of March hath perced to the roote,",
     },
     {
@@ -30,13 +30,13 @@ export const heroicCoupletForm: FormCheckerContent = {
     {
       title: "An Essay on Criticism",
       author: "Alexander Pope",
-      note: "Often cited for closed, balanced couplets and epigrammatic wit.",
+      note: "Often cited for closed, balanced couplets and epigrammatic wit. Meter-fit accepts the traditional two-syllable reading of dangerous (dang’rous).",
       excerpt: "A little learning is a dangerous thing; / Drink deep, or taste not the Pierian spring:",
     },
     {
       title: "The Rape of the Lock",
       author: "Alexander Pope",
-      note: "Mock-heroic narrative built largely in polished heroic couplets.",
+      note: "Mock-heroic narrative built largely in polished heroic couplets. Apostrophe spellings such as am’rous and poetic compressions of trivial are supported in meter-fit.",
       excerpt: "What dire offence from am'rous causes springs, / What mighty contests rise from trivial things,",
     },
   ],
@@ -79,6 +79,6 @@ export const heroicCoupletForm: FormCheckerContent = {
     status: "ready",
   },
   verificationNotes: [
-    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 2, rhymeSchemes couplet AA. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits caesura rules and closed/open couplet rhetoric. sampleLines length 2.",
+    "Catalog: pattern [10], stressPatterns [[0,1,0,1,0,1,0,1,0,1]], footId iamb, stanzaLines 2, rhymeSchemes couplet AA. Form checker is syllable/stress only; rhyme overlays live in the zen editor. Intentionally omits caesura rules, closed/open couplet rhetoric, Middle English final -e (Chaucer), mid-line substitutions, and ±1 syllable without a named literary contour. sampleLines length 2 (Pope); meter-fit uses curated poetic compressions for dangerous / Pierian.",
   ],
 };

@@ -9,6 +9,7 @@ import {
   type SyllableVariantAlt,
   type VariantsPack,
 } from "@/lib/data/dictPack";
+import { ELISION_BRIDGES } from "@/lib/data/elisionBridges.generated";
 import { getLexicon, loadLexicon, syllablesForId } from "@/lib/data/lexicon";
 import { lookupStress } from "@/lib/data/stress";
 import { normalizeWord } from "@/lib/syllables/normalize";
@@ -124,16 +125,10 @@ function resolveWordId(normalized: string): number | undefined {
   return undefined;
 }
 
-/** Non-primary alts for a word (empty when none / pack not ready). */
-export function lookupSyllableVariants(
-  word: string,
+function altsForWordId(
+  pack: VariantsPack,
+  id: number,
 ): ResolvedSyllableVariant[] {
-  const pack = store.get();
-  if (!pack) return [];
-  const normalized = normalizeWord(word);
-  if (!normalized) return [];
-  const id = resolveWordId(normalized);
-  if (id === undefined) return [];
   const alts = pack.byWordId.get(id);
   if (!alts || alts.length === 0) return [];
   return alts.map((alt) => ({
@@ -142,9 +137,96 @@ export function lookupSyllableVariants(
   }));
 }
 
+function pushUniqueAlt(
+  out: ResolvedSyllableVariant[],
+  seen: Set<string>,
+  alt: ResolvedSyllableVariant,
+): void {
+  const key = `${alt.syllables}:${alt.stress.join(",")}`;
+  if (seen.has(key)) return;
+  seen.add(key);
+  out.push(alt);
+}
+
+/** Non-primary alts for a word (empty when none / pack not ready). */
+export function lookupSyllableVariants(
+  word: string,
+): ResolvedSyllableVariant[] {
+  const pack = store.get();
+  if (!pack) return [];
+  const normalized = normalizeWord(word);
+  if (!normalized) return [];
+
+  const out: ResolvedSyllableVariant[] = [];
+  const seen = new Set<string>();
+
+  const id = resolveWordId(normalized);
+  if (id !== undefined) {
+    for (const alt of altsForWordId(pack, id)) {
+      pushUniqueAlt(out, seen, alt);
+    }
+  }
+
+  // Apostrophe/elided spellings → citation lemma alts (and citation primary).
+  const bridged = ELISION_BRIDGES[normalized];
+  if (bridged) {
+    const bridgeId = resolveWordId(bridged);
+    if (bridgeId !== undefined) {
+      for (const alt of altsForWordId(pack, bridgeId)) {
+        pushUniqueAlt(out, seen, alt);
+      }
+      const primarySyl = syllablesForId(bridgeId);
+      const primaryStress = lookupStress(bridged);
+      if (
+        primarySyl !== undefined &&
+        primarySyl >= 1 &&
+        primaryStress &&
+        primaryStress.length === primarySyl
+      ) {
+        pushUniqueAlt(out, seen, {
+          syllables: primarySyl,
+          stress: primaryStress.slice(),
+        });
+      }
+    }
+  }
+
+  return out;
+}
+
+/**
+ * Resolve primary syllable count + stress for a normalized lemma, falling
+ * back to an elision-bridge citation lemma when the surface form is absent.
+ */
+function resolvePrimaryReading(normalized: string): {
+  syllables: number;
+  stress: StressCode[];
+} | null {
+  const id = resolveWordId(normalized);
+  if (id !== undefined) {
+    const syl = syllablesForId(id);
+    const stress = lookupStress(normalized);
+    if (syl !== undefined && syl >= 1 && stress && stress.length === syl) {
+      return { syllables: syl, stress };
+    }
+  }
+
+  const bridged = ELISION_BRIDGES[normalized];
+  if (!bridged) return null;
+  const bridgeId = resolveWordId(bridged);
+  if (bridgeId === undefined) return null;
+  const syl = syllablesForId(bridgeId);
+  const stress = lookupStress(bridged);
+  if (syl === undefined || syl < 1 || !stress || stress.length !== syl) {
+    return null;
+  }
+  return { syllables: syl, stress };
+}
+
 /**
  * Stress pattern for a specific syllable count: citation primary when it
- * matches `n`, else the first same-count alt from variants.bin.
+ * matches `n`, else the first same-count alt from variants.bin (including
+ * elision-bridge alts when the surface form is not in the lexicon).
  */
 export function stressForSyllableCount(
   word: string,
@@ -155,11 +237,11 @@ export function stressForSyllableCount(
 
   const normalized = normalizeWord(word);
   if (!normalized) return undefined;
-  const id = resolveWordId(normalized);
-  if (id === undefined) return undefined;
-  const primarySyl = syllablesForId(id);
-  if (primarySyl === n) {
-    return lookupStress(normalized);
+
+  const primary = resolvePrimaryReading(normalized);
+  if (!primary) return undefined;
+  if (primary.syllables === n) {
+    return primary.stress.slice();
   }
 
   for (const alt of lookupSyllableVariants(normalized)) {
@@ -172,11 +254,12 @@ export function stressForSyllableCount(
 export function syllableCountsForWord(word: string): number[] {
   const normalized = normalizeWord(word);
   if (!normalized) return [];
-  const id = resolveWordId(normalized);
-  if (id === undefined) return [];
-  const primary = syllablesForId(id);
+
+  const primary = resolvePrimaryReading(normalized);
+  if (!primary) return [];
+
   const counts = new Set<number>();
-  if (primary !== undefined && primary >= 1) counts.add(primary);
+  counts.add(primary.syllables);
   for (const alt of lookupSyllableVariants(normalized)) {
     if (alt.syllables >= 1) counts.add(alt.syllables);
   }
