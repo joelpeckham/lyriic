@@ -1,6 +1,5 @@
 import {
   Suspense,
-  lazy,
   useEffect,
   useRef,
   useState,
@@ -15,6 +14,7 @@ import { AppFooter } from "@/components/AppFooter";
 import { AppHeader } from "@/components/AppHeader";
 import { ProjectSwitcher } from "@/components/ProjectSwitcher";
 import type { SettingsFocusSection } from "@/components/SettingsSheet";
+import { SheetErrorBoundary } from "@/components/SheetErrorBoundary";
 import { EditorErrorBoundary } from "@/components/editor/EditorErrorBoundary";
 import { PoemEditor } from "@/components/editor/PoemEditor";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
   SOFT_KEYBOARD_INSET_PX,
   useVisualViewportBottomInset,
 } from "@/hooks/useVisualViewportBottomInset";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { formatActiveMeterChip } from "@/lib/meters/chipLabel";
 import { writerDocumentMeta } from "@/lib/meters/seed";
 import {
@@ -40,13 +41,13 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 import { handleAppShortcut } from "@/lib/shortcuts";
 import { cn } from "@/lib/utils";
 
-const SettingsSheet = lazy(() =>
+const SettingsSheet = lazyWithRetry(() =>
   import("@/components/SettingsSheet").then((m) => ({
     default: m.SettingsSheet,
   })),
 );
 
-const DefinitionSheet = lazy(() =>
+const DefinitionSheet = lazyWithRetry(() =>
   import("@/components/DefinitionSheet").then((m) => ({
     default: m.DefinitionSheet,
   })),
@@ -471,29 +472,33 @@ export function EditorShell() {
               onRename={renameProject}
               onDelete={deleteProject}
             />
-            <DefinitionSheetGate
-              open={definitionOpen}
-              onOpenChange={(open) => {
-                setDefinitionOpen(open);
-                if (!open) setDefinitionWord(null);
-              }}
-              initialWord={definitionWord}
-              onRequestOpen={() => openDefinition()}
-            />
-            <SettingsSheetGate
-              settings={active.settings}
-              onChange={setSettings}
-              open={settingsOpen}
-              onOpenChange={(open) => {
-                if (open) {
-                  setDefinitionOpen(false);
-                  setDefinitionWord(null);
-                }
-                setSettingsOpen(open);
-                if (!open) setSettingsFocus(null);
-              }}
-              focusSection={settingsFocus}
-            />
+            <SheetErrorBoundary label="Retry dictionary">
+              <DefinitionSheetGate
+                open={definitionOpen}
+                onOpenChange={(open) => {
+                  setDefinitionOpen(open);
+                  if (!open) setDefinitionWord(null);
+                }}
+                initialWord={definitionWord}
+                onRequestOpen={() => openDefinition()}
+              />
+            </SheetErrorBoundary>
+            <SheetErrorBoundary label="Retry settings">
+              <SettingsSheetGate
+                settings={active.settings}
+                onChange={setSettings}
+                open={settingsOpen}
+                onOpenChange={(open) => {
+                  if (open) {
+                    setDefinitionOpen(false);
+                    setDefinitionWord(null);
+                  }
+                  setSettingsOpen(open);
+                  if (!open) setSettingsFocus(null);
+                }}
+                focusSection={settingsFocus}
+              />
+            </SheetErrorBoundary>
           </nav>
         }
       />

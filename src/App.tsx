@@ -1,39 +1,41 @@
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { EditorShell } from "./components/EditorShell";
 import { Grain } from "./components/Grain";
+import { RouteErrorBoundary } from "./components/RouteErrorBoundary";
 import { Toaster } from "./components/ui/sonner";
+import { lazyWithRetry } from "./lib/lazyWithRetry";
 
-const RootRoute = lazy(() =>
+const RootRoute = lazyWithRetry(() =>
   import("./components/pages/RootRoute").then((m) => ({
     default: m.RootRoute,
   })),
 );
-const AboutPage = lazy(() =>
+const AboutPage = lazyWithRetry(() =>
   import("./components/pages/AboutPage").then((m) => ({
     default: m.AboutPage,
   })),
 );
-const FaqPage = lazy(() =>
+const FaqPage = lazyWithRetry(() =>
   import("./components/pages/FaqPage").then((m) => ({ default: m.FaqPage })),
 );
-const PrivacyPage = lazy(() =>
+const PrivacyPage = lazyWithRetry(() =>
   import("./components/pages/PrivacyPage").then((m) => ({
     default: m.PrivacyPage,
   })),
 );
-const ToolsIndexPage = lazy(() =>
+const ToolsIndexPage = lazyWithRetry(() =>
   import("./components/pages/ToolsIndexPage").then((m) => ({
     default: m.ToolsIndexPage,
   })),
 );
-const ToolRoute = lazy(() =>
+const ToolRoute = lazyWithRetry(() =>
   import("./components/pages/toolRoutes").then((m) => ({
     default: m.ToolRoute,
   })),
 );
-const WriteRoute = lazy(() =>
+const WriteRoute = lazyWithRetry(() =>
   import("./components/pages/WriteRoute").then((m) => ({
     default: m.WriteRoute,
   })),
@@ -42,10 +44,13 @@ const WriteRoute = lazy(() =>
 function RouteFallback() {
   return (
     <div
-      className="min-h-dvh bg-background"
+      className="flex min-h-dvh flex-1 flex-col items-center justify-center bg-background px-6 font-[family-name:var(--font-ui)] text-sm text-muted-foreground"
       aria-busy="true"
+      aria-live="polite"
       aria-label="Loading"
-    />
+    >
+      Loading…
+    </div>
   );
 }
 
@@ -54,18 +59,20 @@ export function App() {
     <>
       <Grain />
       <BrowserRouter>
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
-            <Route path="/" element={<RootRoute />} />
-            <Route path="/write" element={<EditorShell />} />
-            <Route path="/write/:slug" element={<WriteRoute />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/faq" element={<FaqPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/tools" element={<ToolsIndexPage />} />
-            <Route path="/tools/:slug" element={<ToolRoute />} />
-          </Routes>
-        </Suspense>
+        <RouteErrorBoundary>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/" element={<RootRoute />} />
+              <Route path="/write" element={<EditorShell />} />
+              <Route path="/write/:slug" element={<WriteRoute />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/faq" element={<FaqPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/tools" element={<ToolsIndexPage />} />
+              <Route path="/tools/:slug" element={<ToolRoute />} />
+            </Routes>
+          </Suspense>
+        </RouteErrorBoundary>
       </BrowserRouter>
       <Toaster position="bottom-center" />
     </>

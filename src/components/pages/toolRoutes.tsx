@@ -1,4 +1,4 @@
-import { Suspense, lazy, type ComponentType, type LazyExoticComponent } from "react";
+import { Suspense, type ComponentType, type LazyExoticComponent } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 import { FormToolPage } from "@/components/pages/FormToolPage";
@@ -9,10 +9,11 @@ import {
   meterIdFromCheckerSlug,
 } from "@/content/formCheckers";
 import { getToolBySlug } from "@/content/tools";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 type ToolComponent = LazyExoticComponent<ComponentType>;
 
-const FormCheckerLazy = lazy(() =>
+const FormCheckerLazy = lazyWithRetry(() =>
   import("@/components/tools/FormCheckerTool").then((m) => ({
     default: m.FormCheckerTool,
   })),
@@ -20,12 +21,12 @@ const FormCheckerLazy = lazy(() =>
 
 /** slug → lazy tool interactive (utility tools only; form checkers share one chunk). */
 const TOOL_COMPONENTS: Record<string, ToolComponent> = {
-  "syllable-counter": lazy(() =>
+  "syllable-counter": lazyWithRetry(() =>
     import("@/components/tools/SyllableCounterTool").then((m) => ({
       default: m.SyllableCounterTool,
     })),
   ),
-  "rhyme-finder": lazy(() =>
+  "rhyme-finder": lazyWithRetry(() =>
     import("@/components/tools/RhymeFinderTool").then((m) => ({
       default: m.RhymeFinderTool,
     })),
