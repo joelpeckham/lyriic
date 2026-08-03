@@ -137,17 +137,19 @@ export function autoDraftNameFromText(
 
 /**
  * Soft title from poem text while auto-naming is active (flag or placeholder).
- * `autoNamed: false` locks the name after a manual rename (even to Untitled).
+ * Empty content falls back to a date stub; `autoNamed: false` locks the name.
  * Returns null when the name should stay as-is.
  */
 export function softDraftNameFromText(
   currentName: string,
   text: string,
-  options?: { autoNamed?: boolean },
+  options?: { autoNamed?: boolean; now?: number },
 ): string | null {
   if (options?.autoNamed === false) return null;
   const canAuto =
     options?.autoNamed === true || isPlaceholderDraftName(currentName);
   if (!canAuto) return null;
-  return autoDraftNameFromText(text);
+  return (
+    autoDraftNameFromText(text) ?? defaultDraftName(options?.now ?? Date.now())
+  );
 }

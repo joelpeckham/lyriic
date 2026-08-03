@@ -129,7 +129,17 @@ describe("softDraftNameFromText", () => {
 
   it("leaves locked user names alone", () => {
     expect(softDraftNameFromText("My poem", "new first line")).toBeNull();
-    expect(softDraftNameFromText("Untitled", "   ")).toBeNull();
+  });
+
+  it("defaults empty content to a date stub", () => {
+    const now = Date.UTC(2026, 7, 1, 18, 30);
+    expect(softDraftNameFromText("soft rain falls", "   ", {
+      autoNamed: true,
+      now,
+    })).toBe(defaultDraftName(now));
+    expect(softDraftNameFromText("Untitled", "", { now })).toBe(
+      defaultDraftName(now),
+    );
   });
 
   it("keeps updating when autoNamed is true", () => {

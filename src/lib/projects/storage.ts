@@ -14,6 +14,7 @@ import {
 import { readJson, writeJson } from "@/lib/storageJson";
 import { normalizeStressOverridesRecord } from "@/lib/stress/overrides";
 import { normalizeOverridesRecord } from "@/lib/syllables/overrides";
+import { defaultDraftName } from "./exportDraft";
 import type { Project, ProjectsState } from "./types";
 
 export const STORAGE_KEY = "lyriic.projects.v1";
@@ -53,13 +54,13 @@ export function createProjectId(): string {
 }
 
 export function createEmptyProject(
-  name = "Untitled",
+  name?: string,
   settings: EditorSettings = DEFAULT_SETTINGS,
 ): Project {
   const now = Date.now();
   return {
     id: createProjectId(),
-    name,
+    name: name ?? defaultDraftName(now),
     text: "",
     settings: normalizeSettings(settings),
     overrides: {},
@@ -89,7 +90,7 @@ function normalizeProject(raw: unknown): Project | null {
 
   return {
     id: p.id,
-    name: p.name.trim() || "Untitled",
+    name: p.name.trim() || defaultDraftName(p.updatedAt),
     text: p.text,
     settings: normalizeSettings(p.settings),
     overrides: normalizeOverridesRecord(p.overrides),

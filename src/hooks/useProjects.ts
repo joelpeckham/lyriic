@@ -4,6 +4,7 @@ import { isReusableEmptyDraft } from "@/lib/meters/seed";
 import {
   defaultDraftName,
   downloadTextFile,
+  isPlaceholderDraftName,
   softDraftNameFromText,
 } from "@/lib/projects/exportDraft";
 import {
@@ -344,9 +345,12 @@ export function useProjects() {
       }
       const softName = softDraftNameFromText("Untitled", text);
       const project = {
-        ...createEmptyProject(softName ?? "Untitled", current.settings),
+        ...createEmptyProject(
+          softName ?? defaultDraftName(),
+          current.settings,
+        ),
         text,
-        ...(softName ? { autoNamed: true } : {}),
+        autoNamed: true,
         updatedAt: Date.now(),
       };
       return {
@@ -362,7 +366,7 @@ export function useProjects() {
     settings: EditorSettings,
     options?: { name?: string; reuseEmpty?: boolean },
   ) {
-    const name = options?.name ?? "Untitled";
+    const name = options?.name ?? defaultDraftName();
     const reuseEmpty = options?.reuseEmpty ?? true;
     commit((prev) => {
       const current = getActiveProject(prev);
@@ -387,10 +391,9 @@ export function useProjects() {
 
       if (reuseId) {
         const reused = prev.projects.find((p) => p.id === reuseId)!;
-        const nextName =
-          reused.name.trim() === "Untitled" || !reused.name.trim()
-            ? name
-            : reused.name;
+        const nextName = isPlaceholderDraftName(reused.name)
+          ? name
+          : reused.name;
         const nextSettings = normalizeSettings(settings);
         const overridesCleared =
           Object.keys(reused.overrides).length > 0 ||
@@ -431,7 +434,7 @@ export function useProjects() {
   }
 
   function renameProject(id: string, name: string) {
-    const trimmed = name.trim() || "Untitled";
+    const trimmed = name.trim() || defaultDraftName();
     commit((prev) => ({
       ...prev,
       projects: prev.projects.map((p) =>
