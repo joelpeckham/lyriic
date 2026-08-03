@@ -94,6 +94,7 @@ function normalizeProject(raw: unknown): Project | null {
     settings: normalizeSettings(p.settings),
     overrides: normalizeOverridesRecord(p.overrides),
     stressOverrides: normalizeStressOverridesRecord(p.stressOverrides),
+    ...(typeof p.autoNamed === "boolean" ? { autoNamed: p.autoNamed } : {}),
     updatedAt: p.updatedAt,
   };
 }

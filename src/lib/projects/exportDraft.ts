@@ -119,14 +119,35 @@ export function isPlaceholderDraftName(name: string): boolean {
 }
 
 /**
- * Soft title from first verse when the current name is still a placeholder.
+ * Auto draft title: first three whitespace-separated words, truncated.
+ * Returns null when text has no words.
+ */
+export function autoDraftNameFromText(
+  text: string,
+  maxLen = 30,
+): string | null {
+  const trimmed = text.trim();
+  if (!trimmed) return null;
+  const words = trimmed.split(/\s+/).slice(0, 3);
+  if (words.length === 0) return null;
+  const joined = words.join(" ");
+  if (joined.length <= maxLen) return joined;
+  return joined.slice(0, maxLen);
+}
+
+/**
+ * Soft title from poem text while auto-naming is active (flag or placeholder).
+ * `autoNamed: false` locks the name after a manual rename (even to Untitled).
  * Returns null when the name should stay as-is.
  */
 export function softDraftNameFromText(
   currentName: string,
   text: string,
+  options?: { autoNamed?: boolean },
 ): string | null {
-  if (!isPlaceholderDraftName(currentName)) return null;
-  if (!text.trim()) return null;
-  return firstVerseLine(text);
+  if (options?.autoNamed === false) return null;
+  const canAuto =
+    options?.autoNamed === true || isPlaceholderDraftName(currentName);
+  if (!canAuto) return null;
+  return autoDraftNameFromText(text);
 }

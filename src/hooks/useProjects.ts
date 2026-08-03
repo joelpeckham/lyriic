@@ -44,16 +44,13 @@ function applyTextToProject(
     if (project.id !== projectId) return project;
     if (project.text === text) return project;
     changed = true;
-    const wasEmpty = project.text.trim().length === 0;
-    const nowHasText = text.trim().length > 0;
-    const softName =
-      wasEmpty && nowHasText
-        ? softDraftNameFromText(project.name, text)
-        : null;
+    const softName = softDraftNameFromText(project.name, text, {
+      autoNamed: project.autoNamed,
+    });
     return {
       ...project,
       text,
-      ...(softName ? { name: softName } : {}),
+      ...(softName ? { name: softName, autoNamed: true } : {}),
       updatedAt: Date.now(),
     };
   });
@@ -349,6 +346,7 @@ export function useProjects() {
       const project = {
         ...createEmptyProject(softName ?? "Untitled", current.settings),
         text,
+        ...(softName ? { autoNamed: true } : {}),
         updatedAt: Date.now(),
       };
       return {
@@ -437,7 +435,14 @@ export function useProjects() {
     commit((prev) => ({
       ...prev,
       projects: prev.projects.map((p) =>
-        p.id === id ? { ...p, name: trimmed, updatedAt: Date.now() } : p,
+        p.id === id
+          ? {
+              ...p,
+              name: trimmed,
+              autoNamed: false,
+              updatedAt: Date.now(),
+            }
+          : p,
       ),
     }));
   }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  autoDraftNameFromText,
   countPoemLines,
   defaultDraftName,
   draftFilename,
@@ -91,16 +92,59 @@ describe("isPlaceholderDraftName", () => {
   });
 });
 
+describe("autoDraftNameFromText", () => {
+  it("uses the first three whitespace-separated words", () => {
+    expect(autoDraftNameFromText("\n  soft rain\nfalls hard")).toBe(
+      "soft rain falls",
+    );
+    expect(autoDraftNameFromText("an old pond")).toBe("an old pond");
+    expect(autoDraftNameFromText("once")).toBe("once");
+  });
+
+  it("truncates to 30 characters", () => {
+    expect(
+      autoDraftNameFromText("supercalifragilistic expialidocious wonderful"),
+    ).toBe("supercalifragilistic expialido");
+    expect(autoDraftNameFromText("a".repeat(40)).length).toBe(30);
+  });
+
+  it("ignores the rest of a pasted poem", () => {
+    const paste = "Once upon a midnight dreary while I pondered weak and weary";
+    expect(autoDraftNameFromText(paste)).toBe("Once upon a");
+  });
+
+  it("returns null for empty text", () => {
+    expect(autoDraftNameFromText("   ")).toBeNull();
+    expect(autoDraftNameFromText("")).toBeNull();
+  });
+});
+
 describe("softDraftNameFromText", () => {
-  it("renames placeholders from the first verse line", () => {
-    expect(softDraftNameFromText("Untitled", "\n  soft rain  \nfalls")).toBe(
-      "soft rain",
+  it("renames placeholders from the first three words", () => {
+    expect(softDraftNameFromText("Untitled", "\n  soft rain\nfalls hard")).toBe(
+      "soft rain falls",
     );
     expect(softDraftNameFromText("Haiku", "an old pond")).toBe("an old pond");
   });
 
-  it("leaves user names alone", () => {
+  it("leaves locked user names alone", () => {
     expect(softDraftNameFromText("My poem", "new first line")).toBeNull();
     expect(softDraftNameFromText("Untitled", "   ")).toBeNull();
+  });
+
+  it("keeps updating when autoNamed is true", () => {
+    expect(
+      softDraftNameFromText("soft rain", "soft rain falls tonight", {
+        autoNamed: true,
+      }),
+    ).toBe("soft rain falls");
+  });
+
+  it("stays locked after a manual rename", () => {
+    expect(
+      softDraftNameFromText("Untitled", "new words here", {
+        autoNamed: false,
+      }),
+    ).toBeNull();
   });
 });
