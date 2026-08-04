@@ -35,7 +35,6 @@ import {
   downloadTextFile,
   draftFilename,
 } from "@/lib/projects/exportDraft";
-import { saveProjectsState } from "@/lib/projects/storage";
 import type { EditorSettings } from "@/lib/settings";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 import { handleAppShortcut } from "@/lib/shortcuts";
@@ -284,6 +283,8 @@ export function EditorShell() {
     renameProject,
     deleteProject,
     saveStatus,
+    historyStripEpoch,
+    persistActive,
     storageQuarantined,
     dismissStorageQuarantine,
     downloadQuarantineBackup,
@@ -353,18 +354,19 @@ export function EditorShell() {
       const clear = window.setTimeout(() => setSaveFailReason(null), 0);
       return () => window.clearTimeout(clear);
     }
-    // Diagnose once per error episode (avoid re-writing on every keystroke).
-    const result = saveProjectsState({
-      version: 1,
-      activeId: active.id,
-      projects,
-    });
+    // Diagnose once per error episode via the strip-aware persist path.
+    const result = persistActive();
     if (!result.ok) {
       const set = window.setTimeout(() => setSaveFailReason(result.reason), 0);
       return () => window.clearTimeout(set);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reason only when status flips
   }, [saveStatus]);
+
+  useEffect(() => {
+    if (historyStripEpoch === 0) return;
+    toast("Saved without undo history — storage full");
+  }, [historyStripEpoch]);
 
   const handleCopyPoem = () => {
     void copyText(active.text).then((ok) => {
@@ -387,16 +389,10 @@ export function EditorShell() {
   };
 
   const handleRetrySave = () => {
-    const result = saveProjectsState({
-      version: 1,
-      activeId: active.id,
-      projects,
-    });
+    const result = persistActive();
     if (result.ok) {
-      // Re-enter the projects autosave path so saveStatus clears.
-      setText(active.text);
       setSaveFailReason(null);
-      toast("Draft saved");
+      if (!result.strippedHistory) toast("Draft saved");
       return;
     }
     setSaveFailReason(result.reason);
@@ -516,6 +512,7 @@ export function EditorShell() {
             onSetStressOverride={setStressOverride}
             onClearStressOverride={clearStressOverride}
             documentKey={active.id}
+            initialHistory={active.history}
             onOpenDefinition={(word) => openDefinition(word)}
             activeWordGetterRef={activeWordGetterRef}
           />

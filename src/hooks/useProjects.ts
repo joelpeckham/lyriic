@@ -7,12 +7,14 @@ import {
   isPlaceholderDraftName,
   softDraftNameFromText,
 } from "@/lib/projects/exportDraft";
+import { historyJsonEqual } from "@/lib/editor/historyPersist";
 import {
   createEmptyProject,
   getActiveProject,
   loadProjectsState,
   readQuarantinedBackup,
   saveProjectsState,
+  stripProjectsHistory,
   STORAGE_KEY,
   type SaveResult,
 } from "@/lib/projects/storage";
@@ -30,27 +32,46 @@ export const AUTOSAVE_MS = 300;
 
 export type SaveStatus = "ok" | "error" | "idle";
 
-type PendingText = {
+type PendingEdit = {
   projectId: string;
   text: string;
+  /** Serialized CM history; undefined means empty stack (omit on project). */
+  history: unknown | undefined;
 };
+
+type HistoryMode = "set" | "clear" | "keep";
 
 function applyTextToProject(
   prev: ProjectsState,
   projectId: string,
   text: string,
+  historyMode: HistoryMode = "keep",
+  history?: unknown,
 ): ProjectsState {
   let changed = false;
   const projects = prev.projects.map((project) => {
     if (project.id !== projectId) return project;
-    if (project.text === text) return project;
+
+    const nextHistory =
+      historyMode === "keep"
+        ? project.history
+        : historyMode === "clear"
+          ? undefined
+          : history;
+
+    const textSame = project.text === text;
+    const historySame = historyJsonEqual(project.history, nextHistory);
+    if (textSame && historySame) return project;
+
     changed = true;
     const softName = softDraftNameFromText(project.name, text, {
       autoNamed: project.autoNamed,
     });
+    const { history: _prevHistory, ...rest } = project;
     return {
-      ...project,
+      ...rest,
       text,
+      ...(nextHistory !== undefined ? { history: nextHistory } : {}),
       ...(softName ? { name: softName, autoNamed: true } : {}),
       updatedAt: Date.now(),
     };
@@ -70,9 +91,11 @@ export function useProjects() {
   const [storageQuarantined, setStorageQuarantined] = useState(
     boot.quarantined,
   );
+  /** Increments when a save drops undo stacks to fit quota (UI toast). */
+  const [historyStripEpoch, setHistoryStripEpoch] = useState(0);
 
   const stateRef = useRef(state);
-  const pendingTextRef = useRef<PendingText | null>(null);
+  const pendingTextRef = useRef<PendingEdit | null>(null);
   const textTimerRef = useRef<number | null>(null);
   const quarantineBootstrapped = useRef(false);
   const active = getActiveProject(state);
@@ -83,11 +106,23 @@ export function useProjects() {
 
   function persist(next: ProjectsState): SaveResult {
     const result = saveProjectsState(next);
+    if (result.ok && result.strippedHistory) {
+      const stripped = stripProjectsHistory(next);
+      stateRef.current = stripped;
+      setState(stripped);
+      setHistoryStripEpoch((epoch) => epoch + 1);
+    }
     setSaveStatus(result.ok ? "ok" : "error");
     if (!result.ok) {
       console.warn("[lyriic] Project save failed:", result.reason);
     }
     return result;
+  }
+
+  /** Flush pending edits and persist — strip-aware path for diagnose/retry. */
+  function persistActive(): SaveResult {
+    flushPendingText(true);
+    return persist(stateRef.current);
   }
 
   // After a quarantine reset, persist the fresh empty state so the next load
@@ -118,6 +153,8 @@ export function useProjects() {
       stateRef.current,
       pending.projectId,
       pending.text,
+      "set",
+      pending.history,
     );
     return next === stateRef.current ? null : next;
   }
@@ -191,9 +228,33 @@ export function useProjects() {
     persist(next);
   }
 
-  function setText(text: string) {
+  function setText(text: string, history?: unknown) {
     const projectId = stateRef.current.activeId;
-    pendingTextRef.current = { projectId, text };
+    // Second arg omitted (e.g. retry-save): keep undo only when text is unchanged.
+    if (arguments.length < 2) {
+      clearTextTimer();
+      const withPending = consumePendingText();
+      if (withPending) stateRef.current = withPending;
+      const current = getActiveProject(stateRef.current);
+      const historyMode: HistoryMode =
+        current.text === text ? "keep" : "clear";
+      const next = applyTextToProject(
+        stateRef.current,
+        projectId,
+        text,
+        historyMode,
+      );
+      if (next !== stateRef.current) {
+        stateRef.current = next;
+        setState(next);
+      } else if (withPending) {
+        setState(withPending);
+      }
+      persist(stateRef.current);
+      return;
+    }
+
+    pendingTextRef.current = { projectId, text, history };
     clearTextTimer();
     // Same debounce boundary as persistence: one timer updates React + storage.
     textTimerRef.current = window.setTimeout(() => {
@@ -341,7 +402,8 @@ export function useProjects() {
     commit((prev) => {
       const current = getActiveProject(prev);
       if (current.text.trim().length === 0) {
-        return applyTextToProject(prev, current.id, text);
+        // External replace: poem text changes, undo stack must not predate it.
+        return applyTextToProject(prev, current.id, text, "clear");
       }
       const softName = softDraftNameFromText("Untitled", text);
       const project = {
@@ -472,6 +534,7 @@ export function useProjects() {
     projects: state.projects,
     active,
     saveStatus,
+    historyStripEpoch,
     storageQuarantined,
     setText,
     setSettings,
@@ -485,6 +548,7 @@ export function useProjects() {
     applyMeterSeed,
     renameProject,
     deleteProject,
+    persistActive,
     dismissStorageQuarantine,
     downloadQuarantineBackup,
   };

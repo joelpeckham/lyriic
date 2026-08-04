@@ -11,6 +11,7 @@ import {
   normalizeSettings,
   type EditorSettings,
 } from "@/lib/settings";
+import { normalizeHistory } from "@/lib/editor/historyPersist";
 import { readJson, writeJson } from "@/lib/storageJson";
 import { normalizeStressOverridesRecord } from "@/lib/stress/overrides";
 import { normalizeOverridesRecord } from "@/lib/syllables/overrides";
@@ -37,7 +38,7 @@ export function hasPersistedDraft(
 }
 
 export type SaveResult =
-  | { ok: true }
+  | { ok: true; strippedHistory?: boolean }
   | { ok: false; reason: "quota" | "unavailable" };
 
 export type LoadResult = {
@@ -78,6 +79,18 @@ export function createInitialState(): ProjectsState {
   };
 }
 
+/** Drop persisted undo stacks (quota fallback — keep poem text). */
+export function stripProjectsHistory(state: ProjectsState): ProjectsState {
+  let changed = false;
+  const projects = state.projects.map((project) => {
+    if (project.history === undefined) return project;
+    changed = true;
+    const { history: _removed, ...rest } = project;
+    return rest;
+  });
+  return changed ? { ...state, projects } : state;
+}
+
 function normalizeProject(raw: unknown): Project | null {
   if (!raw || typeof raw !== "object") return null;
   const p = raw as Record<string, unknown>;
@@ -88,6 +101,8 @@ function normalizeProject(raw: unknown): Project | null {
     return null;
   }
 
+  const history = normalizeHistory(p.history);
+
   return {
     id: p.id,
     name: p.name.trim() || defaultDraftName(p.updatedAt),
@@ -96,6 +111,7 @@ function normalizeProject(raw: unknown): Project | null {
     overrides: normalizeOverridesRecord(p.overrides),
     stressOverrides: normalizeStressOverridesRecord(p.stressOverrides),
     ...(typeof p.autoNamed === "boolean" ? { autoNamed: p.autoNamed } : {}),
+    ...(history !== undefined ? { history } : {}),
     updatedAt: p.updatedAt,
   };
 }
@@ -243,14 +259,27 @@ export function saveProjectsState(
     : null,
 ): SaveResult {
   const result = writeJson(storage, STORAGE_KEY, state);
-  if (!result.ok) {
-    console.warn(
-      "[lyriic] Failed to persist projects",
-      result.reason === "quota" ? "(quota exceeded)" : result.error,
-    );
-    return { ok: false, reason: result.reason };
+  if (result.ok) return { ok: true };
+
+  // Quota: retry once without undo stacks so poem text still saves.
+  if (result.reason === "quota") {
+    const stripped = stripProjectsHistory(state);
+    if (stripped !== state) {
+      const retry = writeJson(storage, STORAGE_KEY, stripped);
+      if (retry.ok) {
+        console.warn(
+          "[lyriic] Persisted projects without undo history (quota)",
+        );
+        return { ok: true, strippedHistory: true };
+      }
+    }
   }
-  return { ok: true };
+
+  console.warn(
+    "[lyriic] Failed to persist projects",
+    result.reason === "quota" ? "(quota exceeded)" : result.error,
+  );
+  return { ok: false, reason: result.reason };
 }
 
 export function getActiveProject(state: ProjectsState): Project {

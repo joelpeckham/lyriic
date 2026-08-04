@@ -1,5 +1,5 @@
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { Annotation, type Extension } from "@codemirror/state";
+import { type EditorState, type Extension } from "@codemirror/state";
 import {
   drawSelection,
   EditorView,
@@ -13,11 +13,11 @@ import {
   type WordInteractionHandlers,
 } from "@/lib/editor/wordInteraction";
 
-/** Marks a full-doc replace driven by the React `value` prop (not user typing). */
-export const externalValueSync = Annotation.define<boolean>();
-
 export type PoemExtensionOptions = {
-  onDocChange: (text: string, info: { userEdit: boolean }) => void;
+  onDocChange: (
+    text: string,
+    info: { userEdit: boolean; state: EditorState },
+  ) => void;
   onActiveLineChange: (lineIndex: number) => void;
   onWordInteraction?: WordInteractionHandlers;
 };
@@ -79,10 +79,11 @@ export function createPoemExtensions({
       : []),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) {
-        const userEdit = !update.transactions.some((tr) =>
-          tr.annotation(externalValueSync),
-        );
-        onDocChange(update.state.doc.toString(), { userEdit });
+        // External replaces use view.setState (not annotated transactions).
+        onDocChange(update.state.doc.toString(), {
+          userEdit: true,
+          state: update.state,
+        });
       }
       if (update.selectionSet || update.docChanged) {
         const head = update.state.selection.main.head;

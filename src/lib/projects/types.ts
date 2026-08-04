@@ -13,6 +13,8 @@ export type Project = {
    * Absent/false for legacy drafts so existing titles stay locked.
    */
   autoNamed?: boolean;
+  /** CodeMirror historyField JSON (`{ done, undone }`). Absent = empty stack. */
+  history?: unknown;
   updatedAt: number;
 };
 

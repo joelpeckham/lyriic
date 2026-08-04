@@ -6,7 +6,7 @@ import {
   useState,
   type MutableRefObject,
 } from "react";
-import { Compartment, EditorState } from "@codemirror/state";
+import { Compartment, type Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 import { RhymeDotTooltip } from "@/components/editor/RhymeDotTooltip";
@@ -24,8 +24,12 @@ import { isStressReady, loadStress } from "@/lib/data/stress";
 import { isVariantsReady, loadVariants } from "@/lib/data/variants";
 import {
   createPoemExtensions,
-  externalValueSync,
 } from "@/lib/editor/createPoemExtensions";
+import {
+  createEditorStateWithHistory,
+  historyJsonEqual,
+  serializeEditorHistory,
+} from "@/lib/editor/historyPersist";
 import { resolveWordTarget } from "@/lib/editor/resolveWordTarget";
 import {
   getSyllableOverlay,
@@ -60,7 +64,11 @@ import { cn } from "@/lib/utils";
 
 type PoemEditorProps = {
   value: string;
-  onChange: (value: string) => void;
+  /**
+   * Fired on user edits. `history` is CodeMirror historyField JSON when the
+   * parent persists undo/redo; embeds may ignore the second argument.
+   */
+  onChange: (value: string, history?: unknown) => void;
   settings: EditorSettings;
   /** Active project overrides — threaded into counting + cache invalidation. */
   overrides: Record<string, number>;
@@ -71,6 +79,11 @@ type PoemEditorProps = {
   onClearStressOverride: (word: string) => void;
   /** Stable document identity (e.g. project id) for full remount. */
   documentKey: string;
+  /**
+   * Persisted CM history for this draft. Used on mount and when `value` is
+   * replaced externally (e.g. cross-tab sync).
+   */
+  initialHistory?: unknown;
   /** Open the dictionary sheet for a word (from thesaurus/rhyme rows). */
   onOpenDefinition?: (word: string) => void;
   /** Parent reads caret/toolbar word when opening the dictionary from chrome. */
@@ -116,6 +129,7 @@ export function PoemEditor({
   onSetStressOverride,
   onClearStressOverride,
   documentKey,
+  initialHistory,
   onOpenDefinition,
   activeWordGetterRef,
   variant = "zen",
@@ -129,6 +143,9 @@ export function PoemEditor({
   const viewRef = useRef<EditorView | null>(null);
   const themeCompartment = useRef(new Compartment());
   const onChangeRef = useRef(onChange);
+  const initialHistoryRef = useRef(initialHistory);
+  const extensionsRef = useRef<Extension[]>([]);
+  const replacingDocRef = useRef(false);
   const variantRef = useRef(variant);
   const autoFocusRef = useRef(autoFocus);
   const fontSizeRef = useRef(resolvedFontSize);
@@ -148,6 +165,10 @@ export function PoemEditor({
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useLayoutEffect(() => {
+    initialHistoryRef.current = initialHistory;
+  }, [initialHistory]);
 
   useLayoutEffect(() => {
     variantRef.current = variant;
@@ -332,32 +353,38 @@ export function PoemEditor({
     if (!parent) return;
 
     const themeComp = themeCompartment.current;
-    const state = EditorState.create({
-      doc: value,
-      extensions: [
-        themeComp.of(
-          zenEditorTheme(fontSizeRef.current, {
-            compactLineGap,
-            variant: variantRef.current,
-          }),
-        ),
-        ...createPoemExtensions({
-          onDocChange: (text, { userEdit }) => {
-            setLiveText(text);
-            setWordTarget(null);
-            if (userEdit) onChangeRef.current(text);
-          },
-          onActiveLineChange: setActiveLineIndex,
-          onWordInteraction: {
-            onToolbarChange: (target) => {
-              wordBridgeRef.current.setToolbar(target);
-            },
-            onOpenLookup: (request) => {
-              wordBridgeRef.current.openLookup(request);
-            },
-          },
+    const extensions: Extension[] = [
+      themeComp.of(
+        zenEditorTheme(fontSizeRef.current, {
+          compactLineGap,
+          variant: variantRef.current,
         }),
-      ],
+      ),
+      ...createPoemExtensions({
+        onDocChange: (text, { userEdit, state }) => {
+          setLiveText(text);
+          setWordTarget(null);
+          if (userEdit && !replacingDocRef.current) {
+            onChangeRef.current(text, serializeEditorHistory(state));
+          }
+        },
+        onActiveLineChange: setActiveLineIndex,
+        onWordInteraction: {
+          onToolbarChange: (target) => {
+            wordBridgeRef.current.setToolbar(target);
+          },
+          onOpenLookup: (request) => {
+            wordBridgeRef.current.openLookup(request);
+          },
+        },
+      }),
+    ];
+    extensionsRef.current = extensions;
+
+    const state = createEditorStateWithHistory({
+      doc: value,
+      extensions,
+      history: initialHistoryRef.current,
     });
 
     const view = new EditorView({ state, parent });
@@ -380,22 +407,43 @@ export function PoemEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only
   }, []);
 
-  // Sync external document changes (project switch uses remount; this covers
-  // rare external sets without remounting).
+  // Sync external document / history changes (project switch uses remount;
+  // this covers cross-tab sync without remounting). Replace state so undo stays coherent.
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
     const current = view.state.doc.toString();
-    if (current === value) {
+    const liveHistory = serializeEditorHistory(view.state);
+    const historySame = historyJsonEqual(
+      liveHistory,
+      initialHistoryRef.current,
+    );
+    if (current === value && historySame) {
       setLiveText((prev) => (prev === value ? prev : value));
       return;
     }
-    view.dispatch({
-      changes: { from: 0, to: current.length, insert: value },
-      annotations: externalValueSync.of(true),
-    });
+    const hadFocus = view.hasFocus;
+    replacingDocRef.current = true;
+    try {
+      view.setState(
+        createEditorStateWithHistory({
+          doc: value,
+          extensions: extensionsRef.current,
+          history: initialHistoryRef.current,
+        }),
+      );
+      // extensionsRef still has the mount-time theme.of(...); reapply current prefs.
+      view.dispatch({
+        effects: themeCompartment.current.reconfigure(
+          zenEditorTheme(resolvedFontSize, { compactLineGap, variant }),
+        ),
+      });
+    } finally {
+      replacingDocRef.current = false;
+    }
+    if (hadFocus) view.focus();
     setLiveText(value);
-  }, [value]);
+  }, [value, initialHistory, resolvedFontSize, compactLineGap, variant]);
 
   // Font size / line-gap / variant → theme compartment.
   useEffect(() => {
