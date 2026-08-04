@@ -18,6 +18,12 @@ import {
   STORAGE_KEY,
   type SaveResult,
 } from "@/lib/projects/storage";
+import {
+  mergeRemotePreservingLocalEdit,
+  mergeRemoteProjectsState,
+  resolveTabActiveId,
+  writeTabActiveId,
+} from "@/lib/projects/tabActive";
 import type { Project, ProjectsState } from "@/lib/projects/types";
 import { normalizeSettings, type EditorSettings } from "@/lib/settings";
 import {
@@ -83,9 +89,24 @@ function settingsEqual(a: EditorSettings, b: EditorSettings): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
+function bootProjectsState(): {
+  state: ProjectsState;
+  quarantined: boolean;
+} {
+  const loaded = loadProjectsState();
+  const activeId = resolveTabActiveId(
+    loaded.state.projects,
+    loaded.state.activeId,
+  );
+  return {
+    state: { ...loaded.state, activeId },
+    quarantined: loaded.quarantined,
+  };
+}
+
 export function useProjects() {
   // Lazy once: capture quarantine flag with the same load as initial state.
-  const [boot] = useState(loadProjectsState);
+  const [boot] = useState(bootProjectsState);
   const [state, setState] = useState<ProjectsState>(boot.state);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [storageQuarantined, setStorageQuarantined] = useState(
@@ -189,18 +210,29 @@ export function useProjects() {
     const onStorage = (event: StorageEvent) => {
       if (event.key !== STORAGE_KEY) return;
 
-      // Cross-tab: if this tab still has unsaved keystrokes, keep local and
-      // write back (last-writer with awareness). Otherwise accept remote.
-      if (pendingTextRef.current) {
+      // Cross-tab: accept remote projects while keeping this tab's open draft.
+      // Pending keystrokes win only for the draft still being edited (no
+      // resurrection of remote deletes; sibling drafts take remote).
+      const pendingProjectId = pendingTextRef.current?.projectId;
+      if (pendingProjectId) {
         flushPendingText(true);
-        persist(stateRef.current);
-        return;
+      } else {
+        clearTextTimer();
       }
 
-      clearTextTimer();
       const { state: remote } = loadProjectsState();
-      stateRef.current = remote;
-      setState(remote);
+      const prev = stateRef.current;
+      const merged = pendingProjectId
+        ? mergeRemotePreservingLocalEdit(remote, prev, pendingProjectId)
+        : mergeRemoteProjectsState(remote, prev.activeId, prev.projects);
+      if (merged.activeId !== prev.activeId) {
+        writeTabActiveId(merged.activeId);
+      }
+      stateRef.current = merged;
+      setState(merged);
+      if (pendingProjectId) {
+        persist(merged);
+      }
     };
 
     window.addEventListener("storage", onStorage);
@@ -222,6 +254,9 @@ export function useProjects() {
         persist(withText);
       }
       return;
+    }
+    if (next.activeId !== prev.activeId) {
+      writeTabActiveId(next.activeId);
     }
     stateRef.current = next;
     setState(next);

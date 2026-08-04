@@ -15,7 +15,7 @@ export const PRIVACY_SECTIONS = [
   },
   {
     h2: "What stays on your device",
-    body: "Drafts (poem text, settings, syllable/stress overrides, and undo/redo history) are saved in your browser's local storage under the key lyriic.projects.v1. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.",
+    body: "Drafts (poem text, settings, syllable/stress overrides, and undo/redo history) are saved in your browser's local storage under the key lyriic.projects.v1. Which draft a browser tab has open is kept in session storage under lyriic.activeProjectId.v1 so tabs can work on different drafts while content for the same draft stays in sync. Appearance preferences (theme, contrast, and font size) use lyriic.prefs.v1. There is no account and no cloud sync — data stays on this device unless you clear site data or your browser removes it.",
   },
   {
     h2: "What we do not collect",
@@ -39,7 +39,7 @@ export const PRIVACY_SECTIONS = [
   },
   {
     h2: "Cookies and local storage",
-    body: "lyriic does not use non-essential cookies or tracking technologies. Local storage holds drafts and appearance preferences that are strictly necessary to provide the editor and settings you use. For that reason there is no cookie or storage consent banner.",
+    body: "lyriic does not use non-essential cookies or tracking technologies. Local storage holds drafts and appearance preferences, and session storage holds each tab's open-draft selection — all strictly necessary to provide the editor and settings you use. For that reason there is no cookie or storage consent banner.",
   },
   {
     h2: "Sale of data and profiling",

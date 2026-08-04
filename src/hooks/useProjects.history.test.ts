@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react";
+import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { STORAGE_KEY } from "@/lib/projects/storage";
@@ -32,10 +32,12 @@ function memoryLocalStorage() {
 describe("useProjects setText history modes", () => {
   beforeEach(() => {
     vi.stubGlobal("localStorage", memoryLocalStorage());
+    vi.stubGlobal("sessionStorage", memoryLocalStorage());
     vi.useFakeTimers();
   });
 
   afterEach(() => {
+    cleanup();
     vi.useRealTimers();
     vi.unstubAllGlobals();
   });
