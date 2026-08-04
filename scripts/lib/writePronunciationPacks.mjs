@@ -6,6 +6,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 
 import {
+  encodeIpa,
   encodeLexicon,
   encodeRhymePack,
   encodeStress,
@@ -18,6 +19,7 @@ import {
  * @param {Record<string, number>} input.syllables
  * @param {Record<string, number>} input.stressPacked word → packed u32
  * @param {Record<string, Array<{ syllables: number, packedStress: number }>>} [input.variantsByWord]
+ * @param {Record<string, string>} [input.ipaByWord] word → primary display IPA
  * @param {Record<string, string | string[]>} input.byWord
  * @param {Record<string, string[]>} input.byKey
  * @param {Record<string, string | string[]>} input.byWordEnd
@@ -27,6 +29,7 @@ import {
  * @param {string} input.lexiconPath
  * @param {string} input.stressPath
  * @param {string} input.variantsPath
+ * @param {string} input.ipaPath
  * @param {string} input.perfectPath
  * @param {string} input.endPath
  * @param {string} input.slantPath
@@ -35,6 +38,7 @@ export function writePronunciationPacks({
   syllables,
   stressPacked,
   variantsByWord = {},
+  ipaByWord = {},
   byWord,
   byKey,
   byWordEnd,
@@ -44,6 +48,7 @@ export function writePronunciationPacks({
   lexiconPath,
   stressPath,
   variantsPath,
+  ipaPath,
   perfectPath,
   endPath,
   slantPath,
@@ -53,9 +58,12 @@ export function writePronunciationPacks({
   const sylArr = new Uint8Array(words.length);
   /** @type {number[]} */
   const stressArr = new Array(words.length);
+  /** @type {string[]} */
+  const ipaArr = new Array(words.length);
   for (let i = 0; i < words.length; i++) {
     sylArr[i] = syllables[words[i]] ?? 0;
     stressArr[i] = stressPacked[words[i]] ?? 0;
+    ipaArr[i] = ipaByWord[words[i]] ?? "";
   }
 
   /** @type {Array<{ wordId: number, alts: Array<{ syllables: number, packedStress: number }> }>} */
@@ -103,6 +111,7 @@ export function writePronunciationPacks({
   const lexBuf = encodeLexicon(words, sylArr);
   const stressBuf = encodeStress(stressArr);
   const variantsBuf = encodeVariants(variantEntries);
+  const ipaBuf = encodeIpa(ipaArr);
   const perfectBuf = buildMode(byWord, byKey, "perfect");
   const endBuf = buildMode(byWordEnd, byKeyEnd, "end");
   const slantBuf = buildMode(byWordSlant, byKeySlant, "slant");
@@ -110,12 +119,14 @@ export function writePronunciationPacks({
   mkdirSync(dirname(lexiconPath), { recursive: true });
   mkdirSync(dirname(stressPath), { recursive: true });
   mkdirSync(dirname(variantsPath), { recursive: true });
+  mkdirSync(dirname(ipaPath), { recursive: true });
   mkdirSync(dirname(perfectPath), { recursive: true });
   mkdirSync(dirname(endPath), { recursive: true });
   mkdirSync(dirname(slantPath), { recursive: true });
   writeFileSync(lexiconPath, lexBuf);
   writeFileSync(stressPath, stressBuf);
   writeFileSync(variantsPath, variantsBuf);
+  writeFileSync(ipaPath, ipaBuf);
   writeFileSync(perfectPath, perfectBuf);
   writeFileSync(endPath, endBuf);
   writeFileSync(slantPath, slantBuf);
@@ -123,9 +134,15 @@ export function writePronunciationPacks({
   reportPackSize(`lexicon → ${lexiconPath}`, lexBuf);
   reportPackSize(`stress → ${stressPath}`, stressBuf);
   reportPackSize(`variants → ${variantsPath}`, variantsBuf);
+  reportPackSize(`ipa → ${ipaPath}`, ipaBuf);
   reportPackSize(`rhyme-perfect → ${perfectPath}`, perfectBuf);
   reportPackSize(`rhyme-end → ${endPath}`, endBuf);
   reportPackSize(`rhyme-slant → ${slantPath}`, slantBuf);
 
-  return { wordCount: words.length, variantEntryCount: variantEntries.length };
+  const ipaFilled = ipaArr.reduce((n, s) => n + (s ? 1 : 0), 0);
+  return {
+    wordCount: words.length,
+    variantEntryCount: variantEntries.length,
+    ipaFilled,
+  };
 }

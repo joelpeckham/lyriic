@@ -12,6 +12,7 @@ export type {
   DefinitionSense,
   DefinitionSourceCode,
   DefinitionsPack,
+  IpaPack,
   Lexicon,
   RhymeModeData,
   StressCode,

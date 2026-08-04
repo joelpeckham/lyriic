@@ -5,6 +5,7 @@
  *   lexicon.bin   magic LYXL — front-coded words + syllable bytes
  *   stress.bin    magic LYXS — packed per-syllable stress (u32 × wordCount, v2)
  *   variants.bin  magic LYXV — sparse non-primary syl/stress alts by word id
+ *   ipa.bin       magic LYXI — primary display IPA strings (wordCount, length-prefixed)
  *   rhyme-*.bin   magic LYXP / LYXE / LYXR — IPA keys + word→key + key→wordIds
  *   thesaurus.bin magic LYXT — overflow words + head/synonym id entries
  *   defs-*.bin    magic LYXD — per digraph definition senses by word id
@@ -23,10 +24,14 @@ export const VARIANTS_PACK_VERSION = 1;
 /** Definitions pack version. */
 export const DEFINITIONS_PACK_VERSION = 1;
 
+/** IPA display pack version. */
+export const IPA_PACK_VERSION = 1;
+
 export const MAGIC = {
   lexicon: "LYXL",
   stress: "LYXS",
   variants: "LYXV",
+  ipa: "LYXI",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
   rhymeSlant: "LYXR",
@@ -203,6 +208,58 @@ export function decodeStress(buf) {
       0;
   }
   return { packed };
+}
+
+/**
+ * Dense primary display IPA strings aligned with lexicon word ids.
+ * Empty string means no IPA for that id.
+ *
+ * @param {string[]} ipas parallel to lexicon words
+ * @returns {Buffer}
+ */
+export function encodeIpa(ipas) {
+  const count = ipas.length;
+  const header = Buffer.alloc(9);
+  magicBytes(MAGIC.ipa).copy(header, 0);
+  header[4] = IPA_PACK_VERSION;
+  header.writeUInt32LE(count, 5);
+  /** @type {Buffer[]} */
+  const parts = [header];
+  const enc = new TextEncoder();
+  for (let i = 0; i < count; i++) {
+    const text = ipas[i] ?? "";
+    const bytes = enc.encode(text);
+    parts.push(encodeUvarint(bytes.length));
+    if (bytes.length > 0) parts.push(Buffer.from(bytes));
+  }
+  return Buffer.concat(parts);
+}
+
+/**
+ * @param {Uint8Array | Buffer} buf
+ * @returns {{ ipas: string[] }}
+ */
+export function decodeIpa(buf) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const magic = String.fromCharCode(u8[0], u8[1], u8[2], u8[3]);
+  if (magic !== MAGIC.ipa) throw new Error(`bad ipa magic: ${magic}`);
+  if (u8[4] !== IPA_PACK_VERSION) {
+    throw new Error(`unsupported ipa version: ${u8[4]}`);
+  }
+  const count =
+    (u8[5] | (u8[6] << 8) | (u8[7] << 16) | (u8[8] << 24)) >>> 0;
+  let i = 9;
+  const dec = new TextDecoder();
+  /** @type {string[]} */
+  const ipas = new Array(count);
+  for (let n = 0; n < count; n++) {
+    const [len, afterLen] = decodeUvarint(u8, i);
+    i = afterLen;
+    if (i + len > u8.length) throw new Error("ipa pack truncated");
+    ipas[n] = len === 0 ? "" : dec.decode(u8.subarray(i, i + len));
+    i += len;
+  }
+  return { ipas };
 }
 
 /**

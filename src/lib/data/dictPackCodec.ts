@@ -1,6 +1,6 @@
 /**
  * Binary dictionary pack decode (shared by main thread + worker).
- * Formats mirror scripts/lib/dictPack.mjs (LYXL / LYXP / LYXE / LYXR / LYXT / LYXD).
+ * Formats mirror scripts/lib/dictPack.mjs (LYXL / LYXS / LYXV / LYXI / LYXP / LYXE / LYXR / LYXT / LYXD).
  */
 
 export const DICT_PACK_VERSION = 1;
@@ -14,10 +14,14 @@ export const VARIANTS_PACK_VERSION = 1;
 /** Definitions digraph pack version. */
 export const DEFINITIONS_PACK_VERSION = 1;
 
+/** IPA display pack version. */
+export const IPA_PACK_VERSION = 1;
+
 export const DICT_MAGIC = {
   lexicon: "LYXL",
   stress: "LYXS",
   variants: "LYXV",
+  ipa: "LYXI",
   rhymePerfect: "LYXP",
   rhymeEnd: "LYXE",
   rhymeSlant: "LYXR",
@@ -47,6 +51,11 @@ export type Lexicon = {
 /** Packed per-word stress patterns aligned with lexicon word ids. */
 export type StressPack = {
   packed: Uint32Array;
+};
+
+/** Primary display IPA strings aligned with lexicon word ids ("" = none). */
+export type IpaPack = {
+  ipas: string[];
 };
 
 /** One non-primary syllable/stress alternate. */
@@ -237,6 +246,30 @@ export function decodeStress(buf: Uint8Array): StressPack {
     packed[i] = readU32LE(buf, o);
   }
   return { packed };
+}
+
+export function decodeIpa(buf: Uint8Array): IpaPack {
+  const magic = readMagic(buf);
+  if (magic !== DICT_MAGIC.ipa) {
+    throw new Error(`bad ipa magic: ${magic}`);
+  }
+  if (buf[4] !== IPA_PACK_VERSION) {
+    throw new Error(`unsupported ipa version: ${buf[4]}`);
+  }
+  const count = readU32LE(buf, 5);
+  let i = 9;
+  const dec = new TextDecoder();
+  const ipas = new Array<string>(count);
+  for (let n = 0; n < count; n++) {
+    const [len, afterLen] = decodeUvarint(buf, i);
+    i = afterLen;
+    if (i + len > buf.length) {
+      throw new Error("ipa pack truncated");
+    }
+    ipas[n] = len === 0 ? "" : dec.decode(buf.subarray(i, i + len));
+    i += len;
+  }
+  return { ipas };
 }
 
 export function decodeVariants(buf: Uint8Array): VariantsPack {
@@ -450,6 +483,7 @@ export type DictPackKind =
   | "lexicon"
   | "stress"
   | "variants"
+  | "ipa"
   | "rhyme-perfect"
   | "rhyme-end"
   | "rhyme-slant"
@@ -460,6 +494,7 @@ export type DecodedPack =
   | { kind: "lexicon"; data: Lexicon }
   | { kind: "stress"; data: StressPack }
   | { kind: "variants"; data: VariantsPack }
+  | { kind: "ipa"; data: IpaPack }
   | { kind: "rhyme-perfect"; data: RhymeModeData }
   | { kind: "rhyme-end"; data: RhymeModeData }
   | { kind: "rhyme-slant"; data: RhymeModeData }
@@ -474,6 +509,8 @@ export function decodePack(kind: DictPackKind, buf: Uint8Array): DecodedPack {
       return { kind, data: decodeStress(buf) };
     case "variants":
       return { kind, data: decodeVariants(buf) };
+    case "ipa":
+      return { kind, data: decodeIpa(buf) };
     case "rhyme-perfect":
       return { kind, data: decodeRhymePack(buf, "perfect") };
     case "rhyme-end":

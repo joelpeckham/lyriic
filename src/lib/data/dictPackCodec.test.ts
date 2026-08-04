@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   decodeDefinitions,
+  decodeIpa,
   decodeLexicon,
   decodeRhymePack,
   decodeStress,
@@ -208,6 +209,21 @@ describe("dictPackCodec", () => {
       lex.syllables[poem!]!,
     );
     expect(pattern).toEqual([1, 0]);
+  });
+
+  it("decodes ipa pack aligned with lexicon", () => {
+    const lex = decodeLexicon(
+      new Uint8Array(readFileSync(join(packsDir, "lexicon.bin"))),
+    );
+    const ipa = decodeIpa(
+      new Uint8Array(readFileSync(join(packsDir, "ipa.bin"))),
+    );
+    expect(ipa.ipas.length).toBe(lex.words.length);
+    const poem = lex.wordToId.get("poem");
+    expect(poem).toBeDefined();
+    expect(ipa.ipas[poem!]).toBe("pˈoʊəm");
+    const filled = ipa.ipas.reduce((n, s) => n + (s ? 1 : 0), 0);
+    expect(filled).toBeGreaterThan(200_000);
   });
 
   it("decodes variants pack with fire and curated juliet alts", () => {

@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
 import { useDictRevision } from "@/hooks/useDictRevision";
+import { useFitText } from "@/hooks/useFitText";
+import { isIpaReady, loadIpa, lookupIpa } from "@/lib/data/ipa";
 import {
   getLexicon,
   isLexiconReady,
@@ -209,6 +211,12 @@ export function DefinitionSheet({
 
   const [suggestOpen, setSuggestOpen] = useState(false);
   const [highlight, setHighlight] = useState(-1);
+  /** Cold-pack IPA load result, keyed by lemma so a lemma change clears stale text. */
+  const [ipaCold, setIpaCold] = useState<{
+    lemma: string;
+    text: string | null;
+  } | null>(null);
+  const headwordRef = useRef<HTMLHeadingElement>(null);
 
   const [prevOpen, setPrevOpen] = useState(false);
   if (open !== prevOpen) {
@@ -221,6 +229,7 @@ export function DefinitionSheet({
       setDefLoad(null);
       setThesaurusLoad(null);
       setRhymeLoad(null);
+      setIpaCold(null);
       setIncludeEndRhymes(false);
       setIncludeSlantRhymes(false);
       setSynSub("");
@@ -310,6 +319,34 @@ export function DefinitionSheet({
       cancelled = true;
     };
   }, [defKey, defCached, activeWord]);
+
+  // Display IPA for the resolved lemma (falls back to surface form).
+  // Warm pack: derive during render. Cold pack: keyed state so lemma changes
+  // drop stale text without a synchronous setState in the effect.
+  const ipaLemma =
+    defState === "ready" && resolvedLemma ? resolvedLemma : activeWord;
+  const ipaText = !ipaLemma
+    ? null
+    : isIpaReady()
+      ? (lookupIpa(ipaLemma) ?? null)
+      : ipaCold?.lemma === ipaLemma
+        ? ipaCold.text
+        : null;
+  useEffect(() => {
+    if (!ipaLemma || isIpaReady()) return;
+    let cancelled = false;
+    void loadIpa()
+      .then(() => {
+        if (cancelled) return;
+        setIpaCold({ lemma: ipaLemma, text: lookupIpa(ipaLemma) ?? null });
+      })
+      .catch(() => {
+        if (!cancelled) setIpaCold({ lemma: ipaLemma, text: null });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [ipaLemma]);
 
   // Load thesaurus for synonym browse (independent of rhyme toggles).
   useEffect(() => {
@@ -528,6 +565,11 @@ export function DefinitionSheet({
     resolvedLemma !== activeWord &&
     defState === "ready";
 
+  const headwordStyle = useFitText(headwordRef, titleLemma || " ", {
+    minRem: 1.75,
+    maxRem: 3.75,
+  });
+
   const activeOptionId =
     listVisible && highlight >= 0
       ? `${listboxId}-opt-${highlight}`
@@ -537,7 +579,7 @@ export function DefinitionSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="gap-0 overflow-hidden"
+        className="gap-0 overflow-hidden data-[side=right]:w-[min(100%,40rem)]"
         onOpenAutoFocus={(event) => {
           // Prefill (Define / word tools): do not focus search — keeps the soft
           // keyboard down and avoids opening autocomplete on the seeded word.
@@ -655,17 +697,34 @@ export function DefinitionSheet({
             </div>
           ) : (
             <>
-              <section className="flex flex-col gap-3">
-                <div className="flex flex-col gap-0.5">
-                  <h2 className="font-[family-name:var(--font-brand)] text-2xl tracking-tight text-foreground">
-                    {titleLemma}
-                  </h2>
+              <section className="flex flex-col gap-6">
+                <header className="flex flex-col gap-2">
+                  <div className="min-w-0">
+                    <h2
+                      ref={headwordRef}
+                      className="font-[family-name:var(--font-brand)] leading-[1.15] text-foreground whitespace-nowrap"
+                      style={headwordStyle}
+                    >
+                      {titleLemma}
+                    </h2>
+                  </div>
+                  {ipaText ? (
+                    <p
+                      className={cn(
+                        "font-[family-name:var(--font-editor)] text-[0.9375rem] leading-snug",
+                        "tracking-[0.04em] text-muted-foreground",
+                      )}
+                      lang="en-fonipa"
+                    >
+                      /{ipaText}/
+                    </p>
+                  ) : null}
                   {showResolvedNote ? (
                     <p className="text-xs text-muted-foreground">
                       from “{activeWord}”
                     </p>
                   ) : null}
-                </div>
+                </header>
 
                 {defState === "loading" ? (
                   <p className="text-sm text-muted-foreground">Loading…</p>
@@ -694,17 +753,18 @@ export function DefinitionSheet({
                   </p>
                 ) : null}
 
-                {defState === "ready" && senseGroups.length > 0
-                  ? senseGroups.map((group) => (
-                      <div key={group.usage} className="flex flex-col gap-2">
-                        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                {defState === "ready" && senseGroups.length > 0 ? (
+                  <div className="flex flex-col gap-6">
+                    {senseGroups.map((group) => (
+                      <div key={group.usage} className="flex flex-col gap-2.5">
+                        <p className="font-sans text-[0.6875rem] font-medium tracking-[0.14em] text-muted-foreground uppercase">
                           {USAGE_LABELS[group.usage]}
                         </p>
-                        <ol className="flex list-decimal flex-col gap-2 pl-5 marker:text-muted-foreground">
+                        <ol className="flex list-decimal flex-col gap-3 pl-5 marker:text-muted-foreground/70">
                           {group.senses.map((sense, index) => (
                             <li
                               key={`${group.usage}-${index}-${sense.gloss.slice(0, 24)}`}
-                              className="pl-1 font-[family-name:var(--font-editor)] text-sm leading-relaxed text-foreground"
+                              className="pl-1.5 font-[family-name:var(--font-editor)] text-[0.9375rem] leading-[1.6] text-foreground text-pretty"
                             >
                               {sense.gloss}
                               {mixedSources ? (
@@ -718,11 +778,12 @@ export function DefinitionSheet({
                           ))}
                         </ol>
                       </div>
-                    ))
-                  : null}
+                    ))}
+                  </div>
+                ) : null}
 
                 {attribution ? (
-                  <p className="text-muted-foreground text-xs leading-relaxed">
+                  <p className="text-muted-foreground/80 text-xs leading-relaxed">
                     {attribution}
                   </p>
                 ) : null}

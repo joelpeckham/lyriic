@@ -8,6 +8,7 @@
  *   src/lib/data/packs/lexicon.bin
  *   src/lib/data/packs/stress.bin
  *   src/lib/data/packs/variants.bin
+ *   src/lib/data/packs/ipa.bin
  *   src/lib/data/packs/rhyme-perfect.bin
  *   src/lib/data/packs/rhyme-end.bin
  *   src/lib/data/packs/rhyme-slant.bin
@@ -69,6 +70,7 @@ const packsDir = join(root, "src/lib/data/packs");
 const lexiconOutPath = join(packsDir, "lexicon.bin");
 const stressOutPath = join(packsDir, "stress.bin");
 const variantsOutPath = join(packsDir, "variants.bin");
+const ipaOutPath = join(packsDir, "ipa.bin");
 const perfectOutPath = join(packsDir, "rhyme-perfect.bin");
 const endOutPath = join(packsDir, "rhyme-end.bin");
 const slantOutPath = join(packsDir, "rhyme-slant.bin");
@@ -245,6 +247,8 @@ async function main() {
   const stressPacked = Object.create(null);
   /** @type {Record<string, Array<{ syllables: number, packedStress: number }>>} */
   const variantsByWord = Object.create(null);
+  /** @type {Record<string, string>} */
+  const ipaByWord = Object.create(null);
   /** @type {Record<string, string | string[]>} */
   const byWord = Object.create(null);
   /** @type {Record<string, string[]>} */
@@ -266,6 +270,7 @@ async function main() {
   let skippedNoRhyme = 0;
 
   for (const [word, entry] of merged) {
+    ipaByWord[word] = entry.primary;
     const syl = syllableCountFromIpa(entry.primary);
     if (syl >= 1) {
       syllables[word] = syl;
@@ -538,10 +543,11 @@ async function main() {
   const end = rankBuckets(bucketsEnd);
   const slant = rankBuckets(bucketsSlant);
 
-  const { wordCount, variantEntryCount } = writePronunciationPacks({
+  const { wordCount, variantEntryCount, ipaFilled } = writePronunciationPacks({
     syllables,
     stressPacked,
     variantsByWord,
+    ipaByWord,
     byWord,
     byKey: perfect.byKey,
     byWordEnd,
@@ -551,6 +557,7 @@ async function main() {
     lexiconPath: lexiconOutPath,
     stressPath: stressOutPath,
     variantsPath: variantsOutPath,
+    ipaPath: ipaOutPath,
     perfectPath: perfectOutPath,
     endPath: endOutPath,
     slantPath: slantOutPath,
@@ -560,6 +567,7 @@ async function main() {
     `Syllables: ${sylEntries} / ${wordCount} lexicon words`,
   );
   console.log(`Stress patterns: ${stressEntries} words`);
+  console.log(`Display IPA: ${ipaFilled} / ${wordCount} words`);
   console.log(
     `Teaching lexicon: ${teachingInjected} injected, ${teachingOverridden} overridden`,
   );
