@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 
 import { EditorShell } from "./components/EditorShell";
 import { Grain } from "./components/Grain";
@@ -71,6 +72,7 @@ export function App() {
         </RouteErrorBoundary>
       </BrowserRouter>
       <Toaster position="bottom-center" />
+      <Analytics />
     </>
   );
 }
