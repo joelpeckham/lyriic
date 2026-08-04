@@ -155,6 +155,7 @@ async function main() {
     const ROUTES = [
       "/",
       "/about",
+      "/write",
       "/faq",
       "/privacy",
       "/tools",
@@ -177,6 +178,18 @@ async function main() {
       const out = routeToFile(route);
       mkdirSync(dirname(out), { recursive: true });
       writeFileSync(out, html);
+
+      if (route === "/write") {
+        if (!html.includes("seo-shell")) {
+          throw new Error("Prerendered /write must include seo-shell");
+        }
+        if (html.includes("Why I built it") || html.includes("A failed poem")) {
+          throw new Error(
+            "Prerendered /write must not include About landing copy",
+          );
+        }
+      }
+
       console.log(`Prerendered ${route} → ${out}`);
     }
   } finally {

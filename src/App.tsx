@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { EditorShell } from "./components/EditorShell";
 import { Grain } from "./components/Grain";
+import { WriteRoute } from "./components/pages/WriteRoute";
 import { RouteErrorBoundary } from "./components/RouteErrorBoundary";
 import { Toaster } from "./components/ui/sonner";
 import { lazyWithRetry } from "./lib/lazyWithRetry";
@@ -33,11 +34,6 @@ const ToolsIndexPage = lazyWithRetry(() =>
 const ToolRoute = lazyWithRetry(() =>
   import("./components/pages/toolRoutes").then((m) => ({
     default: m.ToolRoute,
-  })),
-);
-const WriteRoute = lazyWithRetry(() =>
-  import("./components/pages/WriteRoute").then((m) => ({
-    default: m.WriteRoute,
   })),
 );
 

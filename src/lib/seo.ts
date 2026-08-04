@@ -6,6 +6,12 @@ export const SITE_TITLE =
 export const SITE_DESCRIPTION =
   "Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser.";
 
+/** Bare `/write` editor document meta (distinct from the home landing). */
+export const WRITE_TITLE = "Write poetry & lyrics — lyriic";
+
+export const WRITE_DESCRIPTION =
+  "A free, local-first zen editor for writing poetry and lyrics in meter. Per-line syllable counts, optional meter rulers, and quiet rhyme and synonym helpers — all in your browser.";
+
 /** Default / home OG image (JPEG kept for the long-lived `/og.jpg` URL). */
 export const OG_IMAGE = `${SITE_URL}/og.jpg`;
 

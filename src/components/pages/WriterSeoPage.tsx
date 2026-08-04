@@ -1,12 +1,15 @@
 import { getMeterCatalogEntry } from "@/lib/meters/presets";
 import { writerDocumentMeta } from "@/lib/meters/seed";
 
-/** Static shell for prerender / crawlers. Client hydrates the live editor. */
+/**
+ * Static shell for prerender / crawlers on `/write/:slug`.
+ * `seo-shell` is hidden under `html.js` until the live editor mounts.
+ */
 export function WriterSeoPage({ slug }: { slug: string }) {
   const entry = getMeterCatalogEntry(slug);
   const meta = writerDocumentMeta(slug);
   return (
-    <article className="mx-auto max-w-2xl px-4 py-16 font-[family-name:var(--font-ui)]">
+    <article className="seo-shell mx-auto max-w-2xl px-4 py-16 font-[family-name:var(--font-ui)]">
       <h1 className="font-[family-name:var(--font-brand)] text-3xl tracking-tight text-foreground">
         {entry.label} writer
       </h1>

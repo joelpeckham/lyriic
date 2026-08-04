@@ -11,6 +11,7 @@ import { FormToolPage } from "@/components/pages/FormToolPage";
 import { PrivacyPage } from "@/components/pages/PrivacyPage";
 import { ToolPage } from "@/components/pages/ToolPage";
 import { ToolsIndexPage } from "@/components/pages/ToolsIndexPage";
+import { WriteSeoPage } from "@/components/pages/WriteSeoPage";
 import { WriterSeoPage } from "@/components/pages/WriterSeoPage";
 import { FormCheckerTool } from "@/components/tools/FormCheckerTool";
 import { RhymeFinderTool } from "@/components/tools/RhymeFinderTool";
@@ -37,6 +38,8 @@ import { WRITER_PRERENDER_SLUGS, writerDocumentMeta } from "@/lib/meters/seed";
 import {
   SITE_DESCRIPTION,
   SITE_TITLE,
+  WRITE_DESCRIPTION,
+  WRITE_TITLE,
   absoluteUrl,
 } from "@/lib/seo";
 
@@ -81,7 +84,7 @@ function installMemoryLocalStorage(): void {
 
 installMemoryLocalStorage();
 
-function metaForRoute(route: string): {
+export function metaForRoute(route: string): {
   title: string;
   description: string;
   path: string;
@@ -113,6 +116,13 @@ function metaForRoute(route: string): {
       title: TOOLS_INDEX_TITLE,
       description: TOOLS_INDEX_DESCRIPTION,
       path: "/tools",
+    };
+  }
+  if (route === "/write") {
+    return {
+      title: WRITE_TITLE,
+      description: WRITE_DESCRIPTION,
+      path: "/write",
     };
   }
 
@@ -188,6 +198,7 @@ function App({ route }: { route: string }) {
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/tools" element={<ToolsIndexPage />} />
+        <Route path="/write" element={<WriteSeoPage />} />
         <Route
           path="/write/:slug"
           element={

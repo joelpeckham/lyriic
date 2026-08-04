@@ -36,7 +36,10 @@ import {
   draftFilename,
 } from "@/lib/projects/exportDraft";
 import type { EditorSettings } from "@/lib/settings";
-import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
+import {
+  WRITE_DESCRIPTION,
+  WRITE_TITLE,
+} from "@/lib/seo";
 import { handleAppShortcut } from "@/lib/shortcuts";
 import { cn } from "@/lib/utils";
 
@@ -327,8 +330,8 @@ export function EditorShell() {
     ? writerMeta.title
     : namedDraft
       ? `${active.name.trim()} · lyriic`
-      : SITE_TITLE;
-  const pageDescription = writerMeta?.description ?? SITE_DESCRIPTION;
+      : WRITE_TITLE;
+  const pageDescription = writerMeta?.description ?? WRITE_DESCRIPTION;
   const pagePath = writerMeta?.path ?? "/write";
 
   useDocumentMeta({
