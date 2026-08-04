@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { PoemEditor } from "@/components/editor/PoemEditor";
 import {
@@ -9,8 +9,15 @@ import {
   LINE_GAP_EM,
   WRAP_LEADING,
 } from "@/lib/editor/constants";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import type { EditorSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
+
+const DefinitionSheet = lazyWithRetry(() =>
+  import("@/components/DefinitionSheet").then((m) => ({
+    default: m.DefinitionSheet,
+  })),
+);
 
 /** About demos stay below editor prefs — a step under SettingsSheet S/M. */
 const ABOUT_FONT_S = 1;
@@ -121,10 +128,19 @@ export function AboutPoemEditor({
   const [stressOverrides, setStressOverrides] = useState<
     Record<string, number>
   >({});
+  const [definitionOpen, setDefinitionOpen] = useState(false);
+  const [definitionWord, setDefinitionWord] = useState<string | null>(null);
+  const [definitionMounted, setDefinitionMounted] = useState(false);
   // Client-only: document is undefined during prerender, so SSR stays static.
   const [live, setLive] = useState(
     () => eager && typeof document !== "undefined",
   );
+
+  function openDefinition(word: string): void {
+    setDefinitionMounted(true);
+    setDefinitionWord(word.trim() || null);
+    setDefinitionOpen(true);
+  }
 
   useEffect(() => {
     if (live) return;
@@ -199,10 +215,23 @@ export function AboutPoemEditor({
           variant="embed"
           autoFocus={false}
           fontSizeRem={fontSizeRem}
+          onOpenDefinition={openDefinition}
         />
       ) : (
         <StaticVerseFallback text={text} marksActive={marksActive} />
       )}
+      {definitionMounted ? (
+        <Suspense fallback={null}>
+          <DefinitionSheet
+            open={definitionOpen}
+            onOpenChange={(open) => {
+              setDefinitionOpen(open);
+              if (!open) setDefinitionWord(null);
+            }}
+            initialWord={definitionWord}
+          />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

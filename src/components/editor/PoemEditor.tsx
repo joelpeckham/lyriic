@@ -27,7 +27,6 @@ import {
 } from "@/lib/editor/createPoemExtensions";
 import {
   createEditorStateWithHistory,
-  historyJsonEqual,
   serializeEditorHistory,
 } from "@/lib/editor/historyPersist";
 import { resolveWordTarget } from "@/lib/editor/resolveWordTarget";
@@ -407,18 +406,15 @@ export function PoemEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only
   }, []);
 
-  // Sync external document / history changes (project switch uses remount;
-  // this covers cross-tab sync without remounting). Replace state so undo stays coherent.
+  // Sync external document changes (project switch uses remount; this covers
+  // cross-tab sync without remounting). When the live doc already matches
+  // `value` (e.g. local user edits echoed back from a parent that doesn't
+  // track history), skip setState so selection/undo aren't clobbered.
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
     const current = view.state.doc.toString();
-    const liveHistory = serializeEditorHistory(view.state);
-    const historySame = historyJsonEqual(
-      liveHistory,
-      initialHistoryRef.current,
-    );
-    if (current === value && historySame) {
+    if (current === value) {
       setLiveText((prev) => (prev === value ? prev : value));
       return;
     }
