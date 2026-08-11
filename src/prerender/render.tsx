@@ -8,6 +8,8 @@ import { Route, Routes, StaticRouter } from "react-router-dom";
 import { AboutPage } from "@/components/pages/AboutPage";
 import { FaqPage } from "@/components/pages/FaqPage";
 import { FormToolPage } from "@/components/pages/FormToolPage";
+import { PoemPage } from "@/components/pages/PoemPage";
+import { PoemsIndexPage } from "@/components/pages/PoemsIndexPage";
 import { PrivacyPage } from "@/components/pages/PrivacyPage";
 import { ToolPage } from "@/components/pages/ToolPage";
 import { ToolsIndexPage } from "@/components/pages/ToolsIndexPage";
@@ -26,6 +28,12 @@ import {
   isFormCheckerSlug,
   meterIdFromCheckerSlug,
 } from "@/content/formCheckers";
+import {
+  getPoemPageBySlug,
+  isPoemSlug,
+  POEMS_INDEX_DESCRIPTION,
+  POEMS_INDEX_TITLE,
+} from "@/content/poems";
 import {
   PRIVACY_DESCRIPTION,
   PRIVACY_TITLE,
@@ -119,6 +127,28 @@ export function metaForRoute(route: string): {
       path: "/tools",
     };
   }
+  if (route === "/poems") {
+    return {
+      title: POEMS_INDEX_TITLE,
+      description: POEMS_INDEX_DESCRIPTION,
+      path: "/poems",
+    };
+  }
+
+  const poemMatch = /^\/poems\/([^/]+)$/.exec(route);
+  if (poemMatch) {
+    const poemSlug = poemMatch[1]!;
+    const page = getPoemPageBySlug(poemSlug);
+    if (!page) {
+      throw new Error(`Unknown poem prerender route: ${route}`);
+    }
+    return {
+      title: page.title,
+      description: page.description,
+      path: page.path,
+    };
+  }
+
   if (route === "/write") {
     return {
       title: WRITE_TITLE,
@@ -192,6 +222,10 @@ function App({ route }: { route: string }) {
   const tool = slug && !formPage ? getToolBySlug(slug) : undefined;
   const writeMatch = /^\/write\/([^/]+)$/.exec(route);
   const writeSlug = writeMatch?.[1];
+  const poemMatch = /^\/poems\/([^/]+)$/.exec(route);
+  const poemSlug = poemMatch?.[1];
+  const poemPage =
+    poemSlug && isPoemSlug(poemSlug) ? getPoemPageBySlug(poemSlug) : undefined;
 
   return (
     <StaticRouter location={route}>
@@ -201,6 +235,11 @@ function App({ route }: { route: string }) {
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/tools" element={<ToolsIndexPage />} />
+        <Route path="/poems" element={<PoemsIndexPage />} />
+        <Route
+          path="/poems/:slug"
+          element={poemPage ? <PoemPage page={poemPage} /> : null}
+        />
         <Route path="/write" element={<WriteSeoPage />} />
         <Route
           path="/write/:slug"

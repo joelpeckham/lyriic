@@ -17,12 +17,14 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     {
       title: "The Song of Hiawatha",
       author: "Henry Wadsworth Longfellow",
+      href: "/poems/the-song-of-hiawatha",
       note: "Sustained English epic in full trochaic tetrameter; often the classroom exemplar of the complete eight-syllable line.",
       excerpt: "By the shores of Gitche Gumee, / By the shining Big-Sea-Water,",
     },
     {
       title: "The Tyger",
       author: "William Blake",
+      href: "/poems/the-tyger",
       note: "Largely catalectic trochaic tetrameter — seven syllables ending on a stress, not the full eight-beat grid.",
       excerpt: "Tyger Tyger, burning bright, / In the forests of the night;",
     },

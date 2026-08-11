@@ -23,12 +23,14 @@ export const iambicTetrameterForm: FormCheckerContent = {
     {
       title: "Stopping by Woods on a Snowy Evening",
       author: "Robert Frost",
+      href: "/poems/stopping-by-woods-on-a-snowy-evening",
       note: "Sustained iambic tetrameter with a tight AABA rhyme scheme lyriic does not check.",
       excerpt: "Whose woods these are I think I know.",
     },
     {
       title: "I Wandered Lonely as a Cloud",
       author: "William Wordsworth",
+      href: "/poems/i-wandered-lonely-as-a-cloud",
       note: "Daffodil lyric often cited for tetrameter; some lines admit light substitutions.",
       excerpt: "I wandered lonely as a cloud",
     },

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 import { ContentPageLayout } from "@/components/pages/ContentPageLayout";
 import { MoreToolsNav } from "@/components/tools/MoreToolsNav";
@@ -94,7 +95,16 @@ export function FormToolPage({ page, children }: FormToolPageProps) {
             {page.famousPoems.map((poem) => (
               <li key={`${poem.title}-${poem.author ?? ""}`}>
                 <p className="text-foreground">
-                  <span className="font-medium">{poem.title}</span>
+                  {poem.href ? (
+                    <Link
+                      to={poem.href}
+                      className="font-medium underline-offset-2 hover:underline"
+                    >
+                      {poem.title}
+                    </Link>
+                  ) : (
+                    <span className="font-medium">{poem.title}</span>
+                  )}
                   {poem.author ? (
                     <span className="text-muted-foreground">
                       {" "}

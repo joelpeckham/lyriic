@@ -15,6 +15,8 @@ function ogImageForPath(path) {
   if (path === "/" || path === "") return "https://lyriic.com/og.jpg";
   const toolMatch = /^\/tools\/([^/]+)\/?$/.exec(path);
   if (toolMatch) return `https://lyriic.com/og/${toolMatch[1]}.png`;
+  const poemMatch = /^\/poems\/([^/]+)\/?$/.exec(path);
+  if (poemMatch) return `https://lyriic.com/og/${poemMatch[1]}.png`;
   return "https://lyriic.com/og.jpg";
 }
 
@@ -144,12 +146,16 @@ async function main() {
     const { listComposedFormToolPages } = await vite.ssrLoadModule(
       "/src/content/formCheckers/index.ts",
     );
+    const { listPoemPages } = await vite.ssrLoadModule(
+      "/src/content/poems/index.ts",
+    );
     const { WRITER_PRERENDER_SLUGS } = await vite.ssrLoadModule(
       "/src/lib/meters/seed.ts",
     );
     const { render } = await vite.ssrLoadModule("/src/prerender/render.tsx");
 
     const formRoutes = listComposedFormToolPages().map((page) => page.path);
+    const poemRoutes = listPoemPages().map((page) => page.path);
     const writerRoutes = WRITER_PRERENDER_SLUGS.map((slug) => `/write/${slug}`);
 
     const ROUTES = [
@@ -162,7 +168,9 @@ async function main() {
       "/tools/syllable-counter",
       "/tools/rhyme-finder",
       "/tools/rhyme-checker",
+      "/poems",
       ...formRoutes,
+      ...poemRoutes,
       ...writerRoutes,
     ];
 

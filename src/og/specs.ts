@@ -1,5 +1,6 @@
 import type { PoemLine } from "@/components/editor/PoemLines";
 import { listComposedFormToolPages } from "@/content/formCheckers";
+import { listPoemPages } from "@/content/poems";
 import { getToolBySlug } from "@/content/tools";
 import { isStressAwareMeter } from "@/lib/meters";
 
@@ -82,9 +83,27 @@ function formCheckerSpecs(): OgSpec[] {
   }));
 }
 
-/** All OG cards: home, utility tools, every form checker. */
+function poemAnalysisSpecs(): OgSpec[] {
+  return listPoemPages().map((page) => {
+    const title =
+      page.poemTitle.length <= 36 ? page.poemTitle : page.h1.slice(0, 36);
+    return {
+      id: page.slug,
+      path: page.path,
+      lines: twoLines(title, `${page.author} — analysis & meaning`),
+      cta: shortenCta(page.cta),
+    };
+  });
+}
+
+/** All OG cards: home, utility tools, form checkers, poem analyses. */
 export function listOgSpecs(): OgSpec[] {
-  return [HOME_SPEC, ...utilitySpecs(), ...formCheckerSpecs()];
+  return [
+    HOME_SPEC,
+    ...utilitySpecs(),
+    ...formCheckerSpecs(),
+    ...poemAnalysisSpecs(),
+  ];
 }
 
 export function getOgSpecByPath(path: string): OgSpec | undefined {

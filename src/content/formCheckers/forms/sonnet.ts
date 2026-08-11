@@ -23,6 +23,14 @@ export const sonnetForm: FormCheckerContent = {
         "Shall I compare thee to a summer’s day? / Thou art more lovely and more temperate:",
     },
     {
+      title: "Sonnet 73 (“That time of year thou mayst in me behold”)",
+      author: "William Shakespeare",
+      href: "/poems/sonnet-73",
+      note: "Three aging metaphors and a couplet on love strengthened by mortality.",
+      excerpt:
+        "That time of year thou mayst in me behold / When yellow leaves, or none, or few, do hang",
+    },
+    {
       title: "Sonnet 130 (“My mistress’ eyes are nothing like the sun”)",
       author: "William Shakespeare",
       note: "Anti-blazon that still follows the English rhyme and meter template.",
@@ -32,6 +40,7 @@ export const sonnetForm: FormCheckerContent = {
     {
       title: "Sonnet 43 (“How do I love thee? Let me count the ways.”)",
       author: "Elizabeth Barrett Browning",
+      href: "/poems/how-do-i-love-thee",
       note: "Petrarchan structure in English; often taught for the octave–sestet turn.",
       excerpt: "How do I love thee? Let me count the ways.",
     },

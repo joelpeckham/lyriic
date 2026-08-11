@@ -6,7 +6,7 @@ import {
   useState,
   type MutableRefObject,
 } from "react";
-import { Compartment, type Extension } from "@codemirror/state";
+import { Compartment, EditorState, type Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 import { RhymeDotTooltip } from "@/components/editor/RhymeDotTooltip";
@@ -92,6 +92,11 @@ type PoemEditorProps = {
   /** Focus the CM view on mount. Default true for zen; about embeds pass false. */
   autoFocus?: boolean;
   /**
+   * When true, the document cannot be edited (analysis pages). Word tools and
+   * overlays still work for exploration.
+   */
+  readOnly?: boolean;
+  /**
    * Override prefs font size for this instance (rem). About embeds pass a
    * fixed S/M so demos ignore the user’s editor size preference.
    */
@@ -133,6 +138,7 @@ export function PoemEditor({
   activeWordGetterRef,
   variant = "zen",
   autoFocus = true,
+  readOnly = false,
   fontSizeRem,
   className,
 }: PoemEditorProps) {
@@ -147,6 +153,7 @@ export function PoemEditor({
   const replacingDocRef = useRef(false);
   const variantRef = useRef(variant);
   const autoFocusRef = useRef(autoFocus);
+  const readOnlyRef = useRef(readOnly);
   const fontSizeRef = useRef(resolvedFontSize);
   const meteredLinesRef = useRef<readonly MeteredLine[]>([]);
   /** Single mutable bridge for CM → React word UI. */
@@ -359,6 +366,9 @@ export function PoemEditor({
           variant: variantRef.current,
         }),
       ),
+      ...(readOnlyRef.current
+        ? [EditorState.readOnly.of(true), EditorView.editable.of(false)]
+        : []),
       ...createPoemExtensions({
         onDocChange: (text, { userEdit, state }) => {
           setLiveText(text);

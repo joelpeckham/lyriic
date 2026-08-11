@@ -37,6 +37,16 @@ const ToolRoute = lazyWithRetry(() =>
     default: m.ToolRoute,
   })),
 );
+const PoemsIndexPage = lazyWithRetry(() =>
+  import("./components/pages/PoemsIndexPage").then((m) => ({
+    default: m.PoemsIndexPage,
+  })),
+);
+const PoemRoute = lazyWithRetry(() =>
+  import("./components/pages/PoemRoute").then((m) => ({
+    default: m.PoemRoute,
+  })),
+);
 
 function RouteFallback() {
   return (
@@ -67,6 +77,8 @@ export function App() {
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/tools" element={<ToolsIndexPage />} />
               <Route path="/tools/:slug" element={<ToolRoute />} />
+              <Route path="/poems" element={<PoemsIndexPage />} />
+              <Route path="/poems/:slug" element={<PoemRoute />} />
             </Routes>
           </Suspense>
         </RouteErrorBoundary>

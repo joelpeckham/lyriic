@@ -18,6 +18,12 @@ Shall I compare thee to a summer’s day? / Thou art more lovely and more temper
 
 Classic English (Shakespearean) sonnet: three quatrains and a couplet in iambic pentameter.
 
+### Sonnet 73 (“That time of year thou mayst in me behold”) — William Shakespeare
+
+That time of year thou mayst in me behold / When yellow leaves, or none, or few, do hang
+
+Three aging metaphors and a couplet on love strengthened by mortality.
+
 ### Sonnet 130 (“My mistress’ eyes are nothing like the sun”) — William Shakespeare
 
 My mistress’ eyes are nothing like the sun; / Coral is far more red than her lips’ red;

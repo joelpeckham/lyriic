@@ -18,10 +18,12 @@ import { TOOLS_INDEX_INTRO } from "../src/content/toolsIndex.ts";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const publicDir = join(root, "public");
 const toolsDir = join(publicDir, "tools");
+const poemsDir = join(publicDir, "poems");
 const SITE = "https://lyriic.com";
 const LASTMOD = new Date().toISOString().slice(0, 10);
 
 mkdirSync(toolsDir, { recursive: true });
+mkdirSync(poemsDir, { recursive: true });
 
 const vite = await createServer({
   root,
@@ -34,6 +36,12 @@ const vite = await createServer({
 const formCheckers = await vite.ssrLoadModule("/src/content/formCheckers/index.ts");
 const formPages = formCheckers.listComposedFormToolPages();
 const zenCta = formCheckers.ZEN_EDITOR_PITCH.cta;
+
+/** @type {{ listPoemPages: () => Array<Record<string, any>>, POEMS_INDEX_H1: string, POEMS_INDEX_INTRO: string }} */
+const poemsModule = await vite.ssrLoadModule("/src/content/poems/index.ts");
+const poemPages = poemsModule.listPoemPages();
+const poemsIndexH1 = poemsModule.POEMS_INDEX_H1;
+const poemsIndexIntro = poemsModule.POEMS_INDEX_INTRO;
 
 await vite.close();
 
@@ -75,6 +83,78 @@ function formToolMarkdown(page) {
   sections.push(`## Open the editor\n`);
   sections.push(`${zenCta}: ${SITE}/\n`);
   sections.push(`Open with ${page.label} meter: ${SITE}${page.writePath}\n`);
+  return sections.join("\n");
+}
+
+function poemMarkdown(page) {
+  const sections = [];
+  sections.push(`# ${page.h1}\n`);
+  sections.push(
+    `${page.poemTitle} — ${page.author}${page.yearPublished ? ` (${page.yearPublished})` : ""}\n`,
+  );
+  sections.push(`${page.intro}\n`);
+  sections.push(`## The poem\n`);
+  sections.push("```\n" + page.text + "\n```\n");
+  if (page.isExcerpt && page.excerptNote) {
+    sections.push(`${page.excerptNote}\n`);
+  }
+  sections.push(
+    `Text from [${page.fullTextSource.label}](${page.fullTextSource.url}). Public domain in the US (${page.publicDomainBasis}).\n`,
+  );
+  if (page.summary?.length) {
+    sections.push(`## Summary\n`);
+    for (const p of page.summary) sections.push(`${p}\n`);
+  }
+  if (page.meaning?.length) {
+    sections.push(`## Meaning and interpretation\n`);
+    for (const p of page.meaning) sections.push(`${p}\n`);
+  }
+  if (page.themes?.length) {
+    sections.push(`## Themes\n`);
+    for (const theme of page.themes) {
+      sections.push(`### ${theme.theme}\n\n${theme.discussion}\n`);
+    }
+  }
+  if (page.formAndMeter?.length) {
+    sections.push(`## Form and meter\n`);
+    for (const p of page.formAndMeter) sections.push(`${p}\n`);
+  }
+  if (page.literaryDevices?.length) {
+    sections.push(`## Literary devices\n`);
+    for (const device of page.literaryDevices) {
+      sections.push(`### ${device.device}\n`);
+      if (device.example) sections.push(`> ${device.example}\n`);
+      sections.push(`${device.discussion}\n`);
+    }
+  }
+  if (page.historicalContext?.length) {
+    sections.push(`## Historical context\n`);
+    for (const p of page.historicalContext) sections.push(`${p}\n`);
+  }
+  if (page.criticalViews?.length) {
+    sections.push(`## What critics say\n`);
+    for (const view of page.criticalViews) {
+      const by = view.author ? `${view.author}, ` : "";
+      sections.push(
+        `> “${view.quote}”\n>\n> — ${by}[${view.source}](${view.url})\n`,
+      );
+    }
+  }
+  if (page.faqs?.length) {
+    sections.push(`## Common questions\n`);
+    for (const item of page.faqs) {
+      sections.push(`### ${item.q}\n\n${item.plain}\n`);
+    }
+  }
+  if (page.sources?.length) {
+    sections.push(`## References\n`);
+    for (const source of page.sources) {
+      const pub = source.publisher ? ` — ${source.publisher}` : "";
+      sections.push(`- [${source.label}](${source.url})${pub}\n`);
+    }
+  }
+  sections.push(`## Open the editor\n`);
+  sections.push(`${page.cta}: ${SITE}/write\n`);
   return sections.join("\n");
 }
 
@@ -126,6 +206,18 @@ ${TOOL_PAGES.map(
 
 ${formToolLinks}
 
+## Poem analyses
+
+${poemsIndexIntro}
+
+- [All poem analyses](${SITE}/poems)
+${poemPages
+  .map(
+    (page) =>
+      `- [${page.poemTitle}](${SITE}${page.path}) — ${page.author} — [${SITE}/poems/${page.slug}.md](${SITE}/poems/${page.slug}.md)`,
+  )
+  .join("\n")}
+
 ## Pricing
 
 Free. No account required.
@@ -173,10 +265,34 @@ for (const page of formPages) {
   writeFileSync(join(toolsDir, `${page.slug}.md`), formToolMarkdown(page));
 }
 
+const poemsIndexMd = `# ${poemsIndexH1}
+
+${poemsIndexIntro}
+
+${poemPages
+  .map(
+    (page) =>
+      `- [${page.poemTitle}](${SITE}${page.path}) — ${page.author} — [${page.slug}.md](${SITE}/poems/${page.slug}.md)`,
+  )
+  .join("\n")}
+`;
+writeFileSync(join(publicDir, "poems.md"), poemsIndexMd);
+
+for (const page of poemPages) {
+  writeFileSync(join(poemsDir, `${page.slug}.md`), poemMarkdown(page));
+}
+
 const formLlmsLinks = formPages
   .map(
     (page) =>
       `- [${page.h1}](${SITE}${page.path}): ${page.pattern.join("-")} checker — [${page.slug}.md](${SITE}/tools/${page.slug}.md)`,
+  )
+  .join("\n");
+
+const poemLlmsLinks = poemPages
+  .map(
+    (page) =>
+      `- [${page.poemTitle}](${SITE}${page.path}): ${page.author} analysis — [${page.slug}.md](${SITE}/poems/${page.slug}.md)`,
   )
   .join("\n");
 
@@ -204,6 +320,11 @@ ${TOOL_PAGES.map((tool) => {
 ### Form checkers
 
 ${formLlmsLinks}
+
+## Poem analyses
+
+- [All poem analyses](${SITE}/poems): ${poemsIndexIntro} — also [poems.md](${SITE}/poems.md)
+${poemLlmsLinks}
 
 ## How it works
 
@@ -236,6 +357,7 @@ ${tool.faqs.map((item) => `## ${item.q}\n\n${item.plain}`).join("\n\n")}
 ).join("\n---\n\n");
 
 const formSections = formPages.map((page) => formToolMarkdown(page)).join("\n---\n\n");
+const poemSections = poemPages.map((page) => poemMarkdown(page)).join("\n---\n\n");
 
 const llmsFull = `${aboutMd}
 
@@ -257,6 +379,14 @@ ${toolSections}
 ${formSections}
 ---
 
+# Poem analyses
+
+${poemsIndexMd}
+---
+
+${poemSections}
+---
+
 # Privacy
 
 ${PRIVACY_EFFECTIVE}
@@ -276,12 +406,18 @@ const urls = [
   { loc: `${SITE}/faq`, priority: "0.6", changefreq: "monthly" },
   { loc: `${SITE}/privacy`, priority: "0.4", changefreq: "yearly" },
   { loc: `${SITE}/tools`, priority: "0.8", changefreq: "monthly" },
+  { loc: `${SITE}/poems`, priority: "0.8", changefreq: "weekly" },
   ...TOOL_PAGES.map((tool) => ({
     loc: `${SITE}${tool.path}`,
     priority: "0.8",
     changefreq: "monthly",
   })),
   ...formPages.map((page) => ({
+    loc: `${SITE}${page.path}`,
+    priority: "0.8",
+    changefreq: "monthly",
+  })),
+  ...poemPages.map((page) => ({
     loc: `${SITE}${page.path}`,
     priority: "0.8",
     changefreq: "monthly",
@@ -294,6 +430,7 @@ const urls = [
   { loc: `${SITE}/about.md`, priority: "0.5", changefreq: "monthly" },
   { loc: `${SITE}/faq.md`, priority: "0.4", changefreq: "monthly" },
   { loc: `${SITE}/privacy.md`, priority: "0.3", changefreq: "yearly" },
+  { loc: `${SITE}/poems.md`, priority: "0.5", changefreq: "weekly" },
   ...TOOL_PAGES.map((tool) => ({
     loc: `${SITE}/tools/${tool.slug}.md`,
     priority: "0.4",
@@ -302,6 +439,11 @@ const urls = [
   ...formPages.map((page) => ({
     loc: `${SITE}/tools/${page.slug}.md`,
     priority: "0.4",
+    changefreq: "monthly",
+  })),
+  ...poemPages.map((page) => ({
+    loc: `${SITE}/poems/${page.slug}.md`,
+    priority: "0.5",
     changefreq: "monthly",
   })),
   { loc: `${SITE}/llms.txt`, priority: "0.3", changefreq: "monthly" },
@@ -326,5 +468,5 @@ ${urls
 writeFileSync(join(publicDir, "sitemap.xml"), sitemap);
 
 console.log(
-  `Wrote about.md, faq.md, privacy.md, tools/*.md (${TOOL_PAGES.length} utility + ${formPages.length} form checkers), llms.txt, llms-full.txt, sitemap.xml`,
+  `Wrote about.md, faq.md, privacy.md, poems.md, tools/*.md (${TOOL_PAGES.length} utility + ${formPages.length} form checkers), poems/*.md (${poemPages.length}), llms.txt, llms-full.txt, sitemap.xml`,
 );

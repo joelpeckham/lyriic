@@ -18,6 +18,7 @@ export const trochaicOctameterForm: FormCheckerContent = {
     {
       title: "The Raven",
       author: "Edgar Allan Poe",
+      href: "/poems/the-raven",
       note: "Classroom staple for trochaic octameter; stanzas mix full sixteen-syllable lines with shorter catalectic refrain lines.",
       excerpt:
         "Once upon a midnight dreary, while I pondered, weak and weary,",

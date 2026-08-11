@@ -16,6 +16,8 @@ export type FamousPoem = {
   author?: string;
   note?: string;
   excerpt?: string;
+  /** Optional in-app analysis page (e.g. `/poems/sonnet-73`). */
+  href?: string;
 };
 
 export type Explainer = {

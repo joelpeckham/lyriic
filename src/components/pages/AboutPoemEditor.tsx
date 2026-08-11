@@ -55,6 +55,8 @@ type AboutPoemEditorProps = {
    * (hero). Otherwise wait until near the viewport.
    */
   eager?: boolean;
+  /** Lock the document (poem analysis pages). Word tools still work. */
+  readOnly?: boolean;
 };
 
 function StaticVerseFallback({
@@ -118,6 +120,7 @@ export function AboutPoemEditor({
   "aria-label": ariaLabel,
   className,
   eager = false,
+  readOnly = false,
 }: AboutPoemEditorProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const fontSizeRem = useAboutEmbedFontSize();
@@ -214,6 +217,7 @@ export function AboutPoemEditor({
           }}
           variant="embed"
           autoFocus={false}
+          readOnly={readOnly}
           fontSizeRem={fontSizeRem}
           onOpenDefinition={openDefinition}
         />
