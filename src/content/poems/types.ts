@@ -1,4 +1,6 @@
 import type { ToolFaq } from "@/content/formCheckers/types";
+import { isMeterCatalogId } from "@/lib/meters/presets";
+import { writerPath } from "@/lib/meters/seed";
 import type { EditorSettings } from "@/lib/settings";
 
 export type ContentStatus = "stub" | "ready";
@@ -20,28 +22,43 @@ export type PoemCatalogEntry = {
   notes?: string;
 };
 
-export type PoemSourceLink = {
-  label: string;
+export type PoemCitation = {
+  /** Stable kebab id, e.g. "poetry-foundation-mikics". */
+  id: string;
+  source: string;
+  author?: string;
   url: string;
-  publisher?: string;
+  /** Verified quote — required when featured in criticalViews. */
+  quote?: string;
 };
+
+export type PoemParagraph = {
+  type: "p";
+  text: string;
+  /** Citation ids rendered as superscripts after the paragraph. */
+  cites?: string[];
+};
+
+export type PoemExcerpt = {
+  type: "excerpt";
+  /** 1–3 verse lines; blank lines only for stanza breaks. */
+  lines: string;
+};
+
+export type PoemBlock = PoemParagraph | PoemExcerpt;
 
 export type PoemTheme = {
   theme: string;
-  discussion: string;
+  blocks: PoemBlock[];
 };
 
 export type PoemLiteraryDevice = {
   device: string;
-  example?: string;
-  discussion: string;
+  blocks: PoemBlock[];
 };
 
 export type PoemCriticalView = {
-  source: string;
-  author?: string;
-  quote: string;
-  url: string;
+  citeId: string;
 };
 
 /** Authorable per-poem SEO + analysis content. */
@@ -57,37 +74,55 @@ export type PoemAnalysisContent = {
   description: string;
   h1: string;
   intro: string;
-  /** Full poem or excerpt shown in the embedded editor. */
-  text: string;
-  isExcerpt?: boolean;
-  excerptNote?: string;
-  fullTextSource: PoemSourceLink;
+  /** Link to a public-domain full text (Wikisource, Gutenberg, etc.). */
+  fullTextSource: {
+    label: string;
+    url: string;
+    publisher?: string;
+  };
   editorSettings: EditorSettings;
-  summary: string[];
-  meaning: string[];
+  summary: PoemBlock[];
+  meaning: PoemBlock[];
   themes: PoemTheme[];
-  formAndMeter: string[];
+  formAndMeter: PoemBlock[];
   literaryDevices: PoemLiteraryDevice[];
-  historicalContext: string[];
+  historicalContext: PoemBlock[];
+  /** Primary evidence store — bibliography + inline cite targets. */
+  citations: PoemCitation[];
+  /** Featured pull-quotes; each citeId must resolve to a citation with quote. */
   criticalViews: PoemCriticalView[];
   faqs: ToolFaq[];
-  sources: PoemSourceLink[];
   cta: string;
 };
 
 /** Composed page model for PoemPage / SEO mirrors. */
 export type ComposedPoemPage = PoemAnalysisContent & {
   path: string;
+  writePath: string;
 };
 
 export function poemPath(slug: string): string {
   return `/poems/${slug}`;
 }
 
+export function poemWritePath(settings: EditorSettings): string {
+  const meter = settings.meter;
+  if (
+    meter &&
+    meter !== "none" &&
+    meter !== "custom" &&
+    isMeterCatalogId(meter)
+  ) {
+    return writerPath(meter);
+  }
+  return "/write";
+}
+
 export function composePoemPage(poem: PoemAnalysisContent): ComposedPoemPage {
   return {
     ...poem,
     path: poemPath(poem.slug),
+    writePath: poemWritePath(poem.editorSettings),
   };
 }
 

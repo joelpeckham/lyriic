@@ -1,5 +1,6 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemMeterSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const sonnet73Poem: PoemAnalysisContent = {
   slug: "sonnet-73",
@@ -7,148 +8,57 @@ export const sonnet73Poem: PoemAnalysisContent = {
   poemTitle: "Sonnet 73",
   author: "William Shakespeare",
   yearPublished: 1609,
-  publicDomainBasis:
-    "Shakespeare's Sonnets were first published in 1609, placing this poem in the US public domain.",
+  publicDomainBasis: "Shakespeare’s Sonnets were first published in 1609 and are public domain.",
   title: "Sonnet 73 Analysis & Meaning — William Shakespeare — lyriic",
-  description:
-    "Read a concise analysis of Shakespeare's Sonnet 73, including its aging metaphors, form, themes, and meaning.",
+  description: "Sonnet 73 analysis of aging, mortality, autumn, twilight, fire, love, and Shakespearean sonnet form.",
   h1: "Sonnet 73 analysis",
-  intro:
-    "This Sonnet 73 analysis explains how Shakespeare turns autumn, twilight, and a dying fire into a meditation on aging, mortality, and love.",
-  text: `That time of year thou mayst in me behold
-When yellow leaves, or none, or few, do hang
-Upon those boughs which shake against the cold,
-Bare ruin'd choirs, where late the sweet birds sang.
-
-In me thou see'st the twilight of such day
-As after sunset fadeth in the west,
-Which by and by black night doth take away,
-Death's second self, that seals up all in rest.
-
-In me thou see'st the glowing of such fire
-That on the ashes of his youth doth lie,
-As the death-bed whereon it must expire,
-Consum'd with that which it was nourish'd by.
-
-This thou perceiv'st, which makes thy love more strong,
-To love that well which thou must leave ere long.`,
-  fullTextSource: {
-    label: "Sonnet 73",
-    url: "https://www.poetryfoundation.org/poems/45099/sonnet-73-that-time-of-year-thou-mayst-in-me-behold",
-    publisher: "The Poetry Foundation",
-  },
-  editorSettings: poemMeterSettings("sonnet", {
-    showRhymeScheme: true,
-  }),
+  intro: "This Sonnet 73 analysis explains how three diminishing images turn aging into an argument for intensified love.",
+  fullTextSource: { label: "Sonnet 73", url: "https://www.poetryfoundation.org/poems/45099/sonnet-73-that-time-of-year-thou-mayst-in-me-behold", publisher: "Poetry Foundation" },
+  editorSettings: poemMeterSettings("sonnet", { showRhymeScheme: true, showMeterBreaks: true }),
   summary: [
-    "The speaker asks the beloved to see signs of decline in him: late autumn, fading daylight, and a fire nearly consumed by its own fuel.",
-    "The three images move toward shorter and more immediate endings. The couplet turns this mortality into a claim about love: knowing that separation is near makes the beloved's love more intense.",
+    p("The speaker asks the beloved to see him as late autumn, fading twilight, and a fire nearly consumed by its own fuel.", ["sonnet73-text"]),
+    excerpt(`That time of year thou mayst in me behold
+When yellow leaves, or none, or few, do hang`),
+    p("The final couplet turns decline into an emotional claim: awareness of approaching separation makes love stronger.", ["sonnet73-shakespeare-online"]),
   ],
   meaning: [
-    "The poem is not simply a description of old age. It stages the speaker's gradual approach to disappearance, narrowing from a season to a day and then to the final glow of a fire.",
-    "The couplet makes loss part of love's value. The beloved loves what must soon be left, so awareness of impermanence becomes a reason to cherish the relationship more strongly.",
+    p("The metaphors narrow in scale from a season to a day and then to the last glow of a fire. Mortality becomes increasingly immediate."),
+    excerpt(`In me thou see’st the glowing of such fire
+That on the ashes of his youth doth lie,`),
+    p("The couplet makes impermanence part of love’s value. What must soon be left is cherished more carefully now.", ["sonnet73-shakespeare-online"]),
   ],
   themes: [
-    {
-      theme: "Aging and mortality",
-      discussion:
-        "Autumn's sparse leaves, twilight's vanishing light, and the fire's last glow all make bodily decline visible. 'Death's second self' links ordinary sleep and darkness to the finality of death.",
-    },
-    {
-      theme: "Time and impermanence",
-      discussion:
-        "Each quatrain measures a smaller remainder of time: the end of a year, the end of a day, and the end of a fire. This compression makes mortality feel increasingly immediate.",
-    },
-    {
-      theme: "Love strengthened by loss",
-      discussion:
-        "The final couplet argues that love can grow stronger when both people recognize that the beloved and the relationship are temporary.",
-    },
+    { theme: "Aging and mortality", blocks: [p("Sparse leaves, vanishing light, and dying embers make bodily decline visible. “Death’s second self” joins ordinary sleep to mortality.")] },
+    { theme: "Time and compression", blocks: [excerpt(`Which by and by black night doth take away,
+Death’s second self, that seals up all in rest.`), p("Each quatrain measures a smaller remainder of time, compressing the speaker’s future.")] },
+    { theme: "Love strengthened by loss", blocks: [p("The closing argument is paradoxical: the beloved’s knowledge of impending separation intensifies attachment.")] },
   ],
   formAndMeter: [
-    "This is a Shakespearean sonnet: three quatrains followed by a rhyming couplet, with the rhyme scheme ABAB CDCD EFEF GG.",
-    "The poem is written chiefly in iambic pentameter. The repeated openings 'In me thou see'st' give the second and third quatrains a parallel structure.",
-    "The couplet supplies the turn from images of decline to the emotional consequence of perceiving them.",
+    p("This is a Shakespearean sonnet: three quatrains and a couplet, with ABAB CDCD EFEF GG rhyme and chiefly iambic pentameter."),
+    p("The repeated “In me thou see’st” creates parallel structure, while the couplet turns image into conclusion."),
   ],
   literaryDevices: [
-    {
-      device: "Extended metaphor",
-      example: "That time of year thou mayst in me behold",
-      discussion:
-        "The speaker successively compares himself to late autumn, twilight, and a dying fire. Together, the metaphors describe different scales of the same decline.",
-    },
-    {
-      device: "Personification",
-      example: "Which by and by black night doth take away",
-      discussion:
-        "Night acts like an agent that removes the remaining light, giving the transition toward death a deliberate, unavoidable force.",
-    },
-    {
-      device: "Paradox",
-      example: "Which makes thy love more strong",
-      discussion:
-        "The speaker's weakening and approaching loss produce stronger love. The poem therefore makes mortality painful but also emotionally productive.",
-    },
-    {
-      device: "Compressed imagery",
-      example: "Bare ruin'd choirs, where late the sweet birds sang",
-      discussion:
-        "The ruined choir suggests both leafless branches and abandoned places of song. Its silence turns the loss of youth into a vivid, almost architectural image.",
-    },
+    { device: "Extended metaphor", blocks: [excerpt(`In me thou see’st the twilight of such day
+As after sunset fadeth in the west,`), p("Autumn, twilight, and fire are successive versions of the same approach toward disappearance.")] },
+    { device: "Personification", blocks: [excerpt(`Which by and by black night doth take away`), p("Night acts as an agent that removes the remaining light, giving death an unavoidable force.")] },
+    { device: "Paradox", blocks: [excerpt(`This thou perceiv’st, which makes thy love more strong,
+To love that well which thou must leave ere long.`), p("Weakening and approaching loss produce stronger love, making mortality emotionally productive.")] },
   ],
   historicalContext: [
-    "The sonnets were published in the 1609 Quarto under Shakespeare's name. Sonnet 73 belongs to the group traditionally associated with the Fair Youth, though the poems do not establish a complete biographical narrative.",
-    "The poem's 'ruin'd choirs' can evoke stripped church interiors and the loss of former music, while also functioning as a natural image of bare branches. The sonnet uses that layered image to connect personal aging with cultural and seasonal change.",
+    p("The sonnets appeared in the 1609 Quarto. Sonnet 73 is traditionally associated with the Fair Youth sequence, though the poems do not establish a complete biography."),
+    p("The poem’s “ruin’d choirs” can evoke both bare branches and stripped church interiors, layering personal aging with cultural memory.", ["sonnet73-shakespeare-online"]),
   ],
-  criticalViews: [
-    {
-      source: "Shakespeare Online, quoting John Berryman",
-      author: "John Berryman",
-      quote:
-        "The fundamental emotion [in Sonnet 73] is self-pity. Not an attractive emotion. What renders it pathetic, in the good instead of the bad sense, is the sinister diminution of the time concept, quatrain by quatrain.",
-      url: "https://www.shakespeare-online.com/sonnets/73detail.html",
-    },
-    {
-      source: "Shakespeare Online, quoting John Crowe Ransom",
-      author: "John Crowe Ransom",
-      quote:
-        "The structure is good, the three quatrains offering distinct yet equivalent figures for the time of life of the unsuccessful and to-be-pitied lover.",
-      url: "https://www.shakespeare-online.com/sonnets/73detail.html",
-    },
+  citations: [
+    { id: "sonnet73-text", source: "Poetry Foundation", url: "https://www.poetryfoundation.org/poems/45099/sonnet-73-that-time-of-year-thou-mayst-in-me-behold" },
+    { id: "sonnet73-shakespeare-online", source: "Shakespeare Online", author: "John Berryman", quote: "The fundamental emotion [in Sonnet 73] is self-pity. Not an attractive emotion. What renders it pathetic, in the good instead of the bad sense, is the sinister diminution of the time concept, quatrain by quatrain.", url: "https://www.shakespeare-online.com/sonnets/73detail.html" },
+    { id: "sonnet73-ransom", source: "Shakespeare Online", author: "John Crowe Ransom", quote: "The structure is good, the three quatrains offering distinct yet equivalent figures for the time of life of the unsuccessful and to-be-pitied lover.", url: "https://www.shakespeare-online.com/sonnets/73detail.html" },
+    { id: "sonnet73-wikisource", source: "Wikisource", url: "https://en.wikisource.org/wiki/Shakespeare%27s_Sonnets" },
   ],
+  criticalViews: [{ citeId: "sonnet73-shakespeare-online" }, { citeId: "sonnet73-ransom" }],
   faqs: [
-    {
-      q: "What is the main meaning of Sonnet 73?",
-      plain:
-        "The speaker presents aging and mortality through three images, then argues that knowing loss is near can make love more devoted and intense.",
-    },
-    {
-      q: "What are the three metaphors in Sonnet 73?",
-      plain:
-        "The three quatrains compare the speaker to late autumn, fading twilight, and a dying fire. Each image represents a later stage of decline and a shorter remaining span.",
-    },
-    {
-      q: "What is the form and meter of Sonnet 73?",
-      plain:
-        "It is a Shakespearean sonnet of fourteen lines in three quatrains and a final couplet, written chiefly in iambic pentameter with an ABAB CDCD EFEF GG rhyme scheme.",
-    },
-    {
-      q: "What does the final couplet of Sonnet 73 mean?",
-      plain:
-        "The couplet says that the beloved's awareness of the speaker's approaching loss makes love stronger: what must soon be left is loved more carefully now.",
-    },
+    { q: "What is the main meaning?", plain: "Three images of decline lead to the idea that approaching loss can make love more intense." },
+    { q: "What are the three metaphors?", plain: "The speaker compares himself to late autumn, fading twilight, and a dying fire." },
+    { q: "What is the form?", plain: "It is a Shakespearean sonnet in iambic pentameter with ABAB CDCD EFEF GG rhyme." },
   ],
-  sources: [
-    {
-      label: "Sonnet 73 text",
-      url: "https://www.poetryfoundation.org/poems/45099/sonnet-73-that-time-of-year-thou-mayst-in-me-behold",
-      publisher: "The Poetry Foundation",
-    },
-    {
-      label: "Analysis and critical commentary",
-      url: "https://www.shakespeare-online.com/sonnets/73detail.html",
-      publisher: "Shakespeare Online",
-    },
-  ],
-  cta: "Write with this poem's meter in the editor",
+  cta: "Write with this poem’s meter in the editor",
 };

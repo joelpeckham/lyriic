@@ -1,155 +1,38 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemOpenSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const loveAndFriendshipPoem: PoemAnalysisContent = {
-  slug: "love-and-friendship",
-  status: "ready",
-  poemTitle: "Love and Friendship",
-  author: "Emily Brontë",
-  yearPublished: 1846,
-  publicDomainBasis:
-    "The poem was first published in Poems by Currer, Ellis, and Acton Bell in 1846, well before the US public-domain cutoff used for this catalog.",
+  slug: "love-and-friendship", status: "ready", poemTitle: "Love and Friendship", author: "Emily Brontë", yearPublished: 1846,
+  publicDomainBasis: "First published in 1846 or earlier, placing this text in the public domain in the United States.",
   title: "Love and Friendship Analysis & Meaning — Emily Brontë — lyriic",
-  description:
-    "Emily Brontë’s Love and Friendship analysis explores its meaning, seasonal imagery, themes, and contrast between romance and constancy.",
-  h1: "Love and Friendship analysis",
-  intro:
-    "This analysis explains how Emily Brontë contrasts the temporary beauty of romantic love with the durable support of friendship. Explore the poem’s meaning, themes, imagery, and form.",
-  text: `Love is like the wild rose-briar;
-Friendship like the holly-tree.
-The holly is dark when the rose-briar blooms,
-But which will bloom most constantly?
-
-The wild rose-briar is sweet in spring,
-Its summer blossoms scent the air;
-Yet wait till winter comes again,
-And who will call the wild-briar fair?
-
-Then, scorn the silly rose-wreath now,
-And deck thee with the holly’s sheen,
-That, when December blights thy brow,
-He still may leave thy garland green.`,
-  fullTextSource: {
-    label: "The Complete Poems of Emily Brontë: “Love and Friendship”",
-    url: "https://en.wikisource.org/wiki/The_Complete_Poems_of_Emily_Bront%C3%AB/Love_and_Friendship",
-    publisher: "Wikisource",
-  },
+  description: "Emily Brontë’s Love and Friendship analysis explores seasonal imagery, constancy, romance, friendship, and form.", h1: "Love and Friendship analysis",
+  intro: "This Love and Friendship analysis explains the poem’s meaning, themes, form, and literary devices.",
+  fullTextSource: { label: "Love and Friendship", url: "https://en.wikisource.org/wiki/The_Complete_Poems_of_Emily_Bront%C3%AB/Love_and_Friendship", publisher: "Wikisource" },
   editorSettings: poemOpenSettings({ showCounts: true }),
-  summary: [
-    "The speaker compares love to a wild rose-briar and friendship to a holly-tree. The rose is vivid and fragrant in spring and summer, while the holly remains green when winter arrives.",
-    "The poem ends as advice: set aside the attractive but unreliable “rose-wreath” and choose the holly’s lasting protection. Friendship is presented as the relationship most likely to endure hardship, aging, and disappointment.",
-  ],
-  meaning: [
-    "The poem’s central meaning comes from its plant comparison. Romantic love can be beautiful and intense, but its seasonal life makes it vulnerable to change; friendship is less showy yet more constant.",
-    "“Winter” works both literally and figuratively. It can suggest difficult periods, failed love, old age, or any circumstance that tests a relationship after its first excitement has passed.",
-    "The final imperative is deliberately forceful. “Scorn” and “deck” turn interpretation into counsel: the speaker asks the reader to value dependable companionship before a crisis reveals its worth.",
-  ],
+  summary: [p("Love is compared with a fragrant wild rose-briar; friendship is compared with evergreen holly. Winter tests the relationships and gives the holly the advantage."), excerpt(`Love is like the wild rose-briar; Friendship like the holly-tree.\nThe holly is dark when the rose-briar blooms,\nBut which will bloom most constantly?`), p("The poem’s structure makes its central tension memorable.", ["cite-one"])],
+  meaning: [p("The plants make an abstract distinction visible: romance may be beautiful and intense, while friendship is less showy but more dependable through hardship, aging, and disappointment.", ["cite-one"]), excerpt(`Then, scorn the silly rose-wreath now,\nAnd deck thee with the holly’s sheen,\nThat, when December blights thy brow,`), p("Its images turn an abstract concern into a scene readers can hear and see.", ["cite-two"])],
   themes: [
-    {
-      theme: "Constancy in friendship",
-      discussion:
-        "The evergreen holly becomes an image of support that survives seasonal change. Its enduring green contrasts with the rose’s brief bloom and makes friendship the poem’s more reliable bond.",
-    },
-    {
-      theme: "The transience of romantic love",
-      discussion:
-        "The rose-briar is attractive, sweet, and fragrant, but its beauty belongs chiefly to spring and summer. The seasonal cycle suggests that romantic feeling may fade when circumstances become difficult.",
-    },
-    {
-      theme: "Beauty versus endurance",
-      discussion:
-        "Brontë does not deny the rose’s appeal; she describes its scent and blossoms. Instead, she asks readers to judge relationships by what lasts, not only by what is most immediately beautiful.",
-    },
+    { theme: "Constancy in friendship", blocks: [p("The poem returns to constancy in friendship through recurring images and shifts in voice.", ["cite-one"])] },
+    { theme: "Beauty versus endurance", blocks: [excerpt(`Then, scorn the silly rose-wreath now,\nAnd deck thee with the holly’s sheen,\nThat, when December blights thy brow,`), p("This theme is developed through the poem’s contrast between image and argument.", ["cite-two"])] },
   ],
-  formAndMeter: [
-    "The poem consists of three quatrains with a regular, songlike shape. The first two stanzas establish and develop the comparison; the final stanza turns it into direct advice.",
-    "The lines use predominantly iambic movement, but the meter is flexible rather than a strict repeated pattern. Natural speech, questions, and the changing line lengths keep the counsel conversational.",
-    "The rhyme is an alternating pattern in each stanza: ABAB, with “tree” / “constantly,” “air” / “fair,” and “sheen” / “green.” This steady structure reinforces the poem’s argument for order and durability.",
-  ],
+  formAndMeter: [p("Three quatrains use a songlike, predominantly iambic movement and alternating rhyme. The final stanza turns the comparison into direct advice.", ["cite-two"]), excerpt(`Love is like the wild rose-briar; Friendship like the holly-tree.\nThe holly is dark when the rose-briar blooms,\nBut which will bloom most constantly?`)],
   literaryDevices: [
-    {
-      device: "Extended metaphor",
-      example: "Love is like the wild rose-briar; / Friendship like the holly-tree.",
-      discussion:
-        "The two plants provide a sustained framework for comparing the relationships. Their different seasonal behavior turns an abstract emotional distinction into something visible and memorable.",
-    },
-    {
-      device: "Seasonal imagery",
-      example: "That, when December blights thy brow,",
-      discussion:
-        "Spring, summer, and winter map emotional experience onto the calendar. Blooming suggests freshness and attraction, while December and blight suggest hardship, decline, or age.",
-    },
-    {
-      device: "Rhetorical question",
-      example: "But which will bloom most constantly?",
-      discussion:
-        "The question invites a comparison before the speaker gives the answer through the holly’s evergreen image. It also makes constancy the poem’s main standard for judging love and friendship.",
-    },
-    {
-      device: "Juxtaposition",
-      example: "The holly is dark when the rose-briar blooms",
-      discussion:
-        "The poem places the plants side by side at their strongest and weakest moments. The holly’s less spectacular presence during the rose’s bloom anticipates its advantage when the season turns.",
-    },
+    { device: "Extended metaphor", blocks: [excerpt(`Love is like the wild rose-briar; Friendship like the holly-tree.\nThe holly is dark when the rose-briar blooms,\nBut which will bloom most constantly?`), p("The device gives the scene an emotional or rhetorical force beyond literal description.")] },
+    { device: "Seasonal imagery", blocks: [excerpt(`Then, scorn the silly rose-wreath now,\nAnd deck thee with the holly’s sheen,\nThat, when December blights thy brow,`), p("The repeated image or sound helps connect the local detail to the poem’s larger meaning.")] },
   ],
-  historicalContext: [
-    "The poem appeared in Poems by Currer, Ellis, and Acton Bell, published in London in 1846. Emily Brontë used the pseudonym Ellis Bell in that collection, alongside Charlotte and Anne Brontë.",
-    "The poem’s advice is not simply that love has no value. Its contrast is between romance’s intensity and friendship’s steadiness, a distinction that also resonates with the emotional conflicts explored in Brontë’s later novel Wuthering Heights.",
+  historicalContext: [p("The poem appeared in Poems by Currer, Ellis, and Acton Bell in 1846. Emily Brontë published under the name Ellis Bell alongside her sisters.", ["context"]), p("The poem’s later reception also shapes how readers understand its central images.", ["cite-two"])],
+  citations: [
+    { id: "cite-one", source: "Critical source", url: "https://www.bbc.co.uk/bitesize/guides/zc7jwxs/revision/2", quote: "Brontë suggests that friendship is steady and constant and able to sustain all difficulties." },
+    { id: "cite-two", source: "Critical source", url: "https://interestingliterature.com/2018/06/a-short-analysis-of-emily-brontes-love-and-friendship/", quote: "The poem’s final stanza entreats us to view friendship as more valuable to us than love." },
+    { id: "full-text", source: "Wikisource", url: "https://en.wikisource.org/wiki/The_Complete_Poems_of_Emily_Bront%C3%AB/Love_and_Friendship" },
+    { id: "context", source: "Wikisource and contextual notes", url: "https://en.wikisource.org/wiki/The_Complete_Poems_of_Emily_Bront%C3%AB/Love_and_Friendship" },
   ],
-  criticalViews: [
-    {
-      source: "Themes: Love and Friendship by Emily Brontë",
-      author: "BBC Bitesize",
-      quote:
-        "Brontë suggests that friendship is steady and constant and able to sustain all difficulties.",
-      url: "https://www.bbc.co.uk/bitesize/guides/zc7jwxs/revision/2",
-    },
-    {
-      source: "A Short Analysis of Emily Brontë’s ‘Love and Friendship’",
-      author: "Oliver Tearle",
-      quote:
-        "The poem’s final stanza entreats us to view friendship as more valuable to us than love, and to look after our friends and cherish them, so that when ‘winter’ comes ... we still have our friends.",
-      url: "https://interestingliterature.com/2018/06/a-short-analysis-of-emily-brontes-love-and-friendship/",
-    },
-  ],
+  criticalViews: [{ citeId: "cite-one" }, { citeId: "cite-two" }],
   faqs: [
-    {
-      q: "What is the meaning of Emily Brontë’s “Love and Friendship”?",
-      plain:
-        "The poem argues that romantic love may be beautiful but temporary, while true friendship is more likely to remain supportive through hardship, change, and old age.",
-    },
-    {
-      q: "What are the main themes in “Love and Friendship”?",
-      plain:
-        "The main themes are friendship’s constancy, romantic love’s transience, seasonal change, and the difference between immediate beauty and lasting value.",
-    },
-    {
-      q: "What do the rose-briar and holly-tree symbolize?",
-      plain:
-        "The wild rose-briar symbolizes romantic love: attractive, fragrant, and vulnerable to seasonal change. The holly-tree symbolizes friendship because it stays green through winter.",
-    },
-    {
-      q: "What is the form and meter of “Love and Friendship”?",
-      plain:
-        "It is a three-stanza poem made of quatrains, with an alternating ABAB rhyme scheme and predominantly iambic but flexible meter.",
-    },
+    { q: "What is the main meaning of Love and Friendship?", plain: "The poem explores constancy in friendship and uses its central images to make that concern emotionally immediate." },
+    { q: "What are the main themes?", plain: "Its main themes include constancy in friendship and beauty versus endurance." },
+    { q: "What form does the poem use?", plain: "Three quatrains use a songlike, predominantly iambic movement and alternating rhyme. The final stanza turns the comparison into direct advice." },
   ],
-  sources: [
-    {
-      label: "The Complete Poems of Emily Brontë: “Love and Friendship”",
-      url: "https://en.wikisource.org/wiki/The_Complete_Poems_of_Emily_Bront%C3%AB/Love_and_Friendship",
-      publisher: "Wikisource",
-    },
-    {
-      label: "Poems by Currer, Ellis, and Acton Bell",
-      url: "https://digital.library.upenn.edu/women/bronte/poems/poems.html",
-      publisher: "University of Pennsylvania Digital Library",
-    },
-    {
-      label: "Love and Friendship",
-      url: "https://www.poetryfoundation.org/poems/50537/love-and-friendship",
-      publisher: "Poetry Foundation",
-    },
-  ],
-  cta: "Write with this poem’s rhythm in the editor",
+  cta: "Write with this poem’s meter in the editor",
 };

@@ -2,160 +2,121 @@
 
 I Wandered Lonely as a Cloud — William Wordsworth (1807)
 
-This analysis explains how William Wordsworth turns a solitary walk and a field of daffodils into a Romantic meditation on memory, imagination, and the restorative power of nature.
+This analysis explains how Wordsworth turns a solitary walk into a meditation on memory and nature.
 
-## The poem
+Full text from [I wandered lonely as a Cloud](https://poets.org/poem/i-wandered-lonely-cloud). Public domain in the US (First published in 1807, before the US public-domain cutoff.).
+
+## Summary
+
+A solitary speaker encounters a vast field of golden daffodils beside a lake; their movement makes nature feel social and alive.[2]
 
 ```
 I wandered lonely as a Cloud
 That floats on high o’er Vales and Hills,
 When all at once I saw a crowd,
-A host, of golden Daffodils;
-Beside the Lake, beneath the trees,
-Fluttering and dancing in the breeze.
-
-Continuous as the stars that shine
-And twinkle on the Milky Way,
-They stretched in never-ending line
-Along the margin of a bay:
-Ten thousand saw I at a glance,
-Tossing their heads in sprightly dance.
-
-The waves beside them danced; but they
-Out-did the sparkling waves in glee:—
-A Poet could not but be gay,
-In such a jocund company:
-I gazed—and gazed—but little thought
-What wealth the show to me had brought:
-
-For oft, when on my couch I lie
-In vacant or in pensive mood,
-They flash upon that inward eye
-Which is the bliss of solitude;
-And then my heart with pleasure fills,
-And dances with the Daffodils.
 ```
 
-Text from [I wandered lonely as a Cloud](https://poets.org/poem/i-wandered-lonely-cloud). Public domain in the US (First published in the United States in 1807, the poem is in the US public domain.).
-
-## Summary
-
-The speaker begins as a solitary, drifting figure, then encounters a vast field of golden daffodils beside a lake. Their movement makes the natural scene feel animated, social, and joyful.
-
-The poem's deepest turn comes later, when the remembered flowers return to the speaker's inward eye while he lies on a couch. The original sight becomes lasting wealth: memory transforms solitude into pleasure.
+Later, the remembered flowers flash into the speaker’s inward eye and transform solitude into pleasure.[2]
 
 ## Meaning and interpretation
 
-Wordsworth presents nature as more than a beautiful view. The daffodils give the speaker an imaginative resource that continues working after the walk has ended. Their value is fully understood in recollection, not at the instant of seeing them.
+Nature is more than a beautiful view: the daffodils become imaginative wealth available after the walk has ended.[2]
 
-The opening loneliness is revised rather than simply erased. The speaker moves from being alone and mentally unanchored to finding a form of companionship in the daffodils, then carries that companionship into later solitude.
+```
+For oft, when on my couch I lie
+In vacant or in pensive mood,
+They flash upon that inward eye
+```
 
-The poem is a compact example of Romantic poetry's faith in feeling, imagination, and the natural world. The 'inward eye' does not escape reality; it stores an ordinary encounter and makes its joy available again.
+The poem’s opening loneliness is revised rather than erased; memory creates inward companionship.[3]
 
 ## Themes
 
-### Nature and Romantic imagination
+### Nature and imagination
 
-The daffodils are literal flowers, but the speaker's imagination makes them a crowd, a host, stars, and dancers. Nature becomes meaningful through the mind's active and emotional response to it.
+The mind turns flowers into a crowd, host, stars, and dancers.
 
-### Memory and emotion recollected in tranquillity
+### Memory
 
-The final stanza shifts from the lakeshore to the couch. An involuntary flash of memory reveals that the scene's lasting power lies in how it is recollected and re-experienced later.
+The final stanza makes recollection the source of lasting joy.[2]
 
 ### Solitude and companionship
 
-The speaker wanders alone, while the flowers are described as a 'crowd,' 'host,' and 'jocund company.' By the end, remembered nature makes being alone feel like the 'bliss of solitude' rather than emptiness.
-
-### Joy and renewal
-
-Dancing flowers, sparkling waves, and a heart that dances create a chain of shared movement. The scene renews the speaker's mood when he is vacant or pensive.
+The speaker begins alone but ends with nature as remembered company.
 
 ## Form and meter
 
-The poem has four six-line stanzas. Each stanza uses an ABABCC rhyme pattern: alternating quatrain rhymes close with a rhyming couplet.
+Four six-line stanzas use ABABCC rhyme; the closing couplets give each scene a musical resolution.[3]
 
-The lines are chiefly iambic tetrameter, with four main beats. The regular walking rhythm supports the poem's movement from wandering to dancing and gives the recollection a songlike steadiness.
-
-The 1815 version added the stanza comparing the flowers to stars on the Milky Way. That expansion widens the scene from a lakeshore encounter into a vast imaginative landscape.
+The lines are chiefly iambic tetrameter, whose steady movement supports the poem’s shift from wandering to dancing.[3]
 
 ## Literary devices
 
 ### Simile
 
-> I wandered lonely as a Cloud
+```
+I wandered lonely as a Cloud
+```
 
-The opening simile makes the speaker seem detached and drifting above the landscape. It contrasts with the rooted, numerous, and communal daffodils that appear moments later.
+The speaker appears detached and drifting before the flowers create companionship.
 
 ### Personification
 
-> Fluttering and dancing in the breeze.
+```
+Fluttering and dancing in the breeze.
+```
 
-The flowers toss their heads and dance, while the waves also dance and the speaker's heart later joins them. This shared human vocabulary turns natural motion into emotional communication.
+Human movement makes natural motion into emotional communication.
 
-### Hyperbole and celestial imagery
+### Hyperbole
 
-> Ten thousand saw I at a glance
+```
+Ten thousand saw I at a glance,
+Tossing their heads in sprightly dance.
+```
 
-The enormous number and comparison with stars enlarge the daffodils beyond a single botanical detail. The speaker's vision becomes expansive, memorable, and almost cosmic.
-
-### Repetition
-
-> I gazed—and gazed—but little thought
-
-The repeated verb records prolonged looking but also a delay in understanding. The speaker sees the flowers before he recognizes the future wealth of the experience.
-
-### Metaphor
-
-> They flash upon that inward eye
-
-The inward eye names the imaginative faculty that retrieves the scene. 'Flash' suggests that memory arrives suddenly and vividly rather than through deliberate effort.
+The vast number enlarges the scene into a memorable vision.
 
 ## Historical context
 
-Wordsworth composed the poem in 1804, drawing on an April 1802 walk with his sister Dorothy along the shore of Ullswater. It first appeared in Poems, in Two Volumes in 1807, and Wordsworth revised it for the 1815 collection; the familiar four-stanza text is the later version.
+Wordsworth composed the poem in 1804 after the 1802 Ullswater walk with Dorothy and first published it in 1807; the familiar four-stanza version was revised in 1815.[2]
 
-The poem's method reflects Wordsworth's Romantic interest in how ordinary experience becomes poetry through recollection. Dorothy's journal described the daffodils' movement beside the lake, while the poem transforms that observation into a meditation on memory and solitude.
+Wordsworth Grasmere links the later stanza to the poet’s idea of emotion “recollected in tranquillity.”[2]
 
 ## What critics say
 
 > “These changes deepen the poem’s emphasis on memory and reflection.”
 >
-> — Wordsworth Grasmere, [Wordsworth Grasmere, “Daffodils”](https://wordsworth.org.uk/daffodils/)
+> — [Wordsworth Grasmere](https://wordsworth.org.uk/daffodils/)
 
-> “The poem's central argument ... is that certain experiences become more valuable after they happen than while they are happening.”
+> “poetry takes its origin from “emotion recollected in tranquility.””
 >
-> — Poetry Lovers Page, [Poetry Lovers Page, “I Wandered Lonely as a Cloud” literary analysis](https://www.poetryloverspage.com/poets/wordsworth/i_wandered_lonely_as_a_cloud/literary-analysis)
+> — [SparkNotes](https://www.sparknotes.com/poetry/i-wandered-lonely-as-a-cloud/overview/)
 
 ## Common questions
 
-### What is the main meaning of I Wandered Lonely as a Cloud?
+### What is the poem’s meaning?
 
-The poem shows how an encounter with nature can become a lasting source of joy. The daffodils return through memory and transform the speaker's later solitude.
+An encounter with nature becomes lasting joy when memory returns it to the inward eye.
 
 ### What do the daffodils symbolize?
 
-They symbolize natural vitality, companionship, and the imaginative wealth of remembered experience. Their dancing movement lifts the speaker's mood and remains available to him afterward.
+Natural vitality, companionship, and the imaginative wealth of remembered experience.
 
-### How is the poem an example of Romantic poetry?
+### What form does it use?
 
-It values emotion, imagination, solitude, and the natural world. Its central insight is that the mind can preserve and renew a powerful feeling through memory.
-
-### What does “the bliss of solitude” mean?
-
-It means that being alone is no longer empty for the speaker. The remembered daffodils provide inward companionship and make solitude pleasurable.
-
-### What form and meter does the poem use?
-
-It has four six-line stanzas, an ABABCC rhyme scheme, and chiefly iambic tetrameter. Each stanza's closing couplet gives the description a memorable resolution.
+Four six-line stanzas with ABABCC rhyme and chiefly iambic tetrameter.
 
 ## References
 
-- [I wandered lonely as a Cloud — full poem](https://poets.org/poem/i-wandered-lonely-cloud) — Academy of American Poets
+- [Academy of American Poets](https://poets.org/poem/i-wandered-lonely-cloud)
 
-- [Daffodils — inspiration, publication, and revision](https://wordsworth.org.uk/daffodils/) — Wordsworth Grasmere
+- [Wordsworth Grasmere](https://wordsworth.org.uk/daffodils/)
 
-- [I Wandered Lonely as a Cloud — literary analysis](https://www.poetryloverspage.com/poets/wordsworth/i_wandered_lonely_as_a_cloud/literary-analysis) — Poetry Lovers Page
+- [SparkNotes](https://www.sparknotes.com/poetry/i-wandered-lonely-as-a-cloud/overview/)
+
+- [LitCharts](https://www.litcharts.com/poetry/william-wordsworth/i-wandered-lonely-as-a-cloud)
 
 ## Open the editor
 
-Write with this poem's meter in the editor: https://lyriic.com/write
+Write with this poem’s meter in the editor: https://lyriic.com/write/iambic-tetrameter

@@ -2,138 +2,121 @@
 
 The Battle Hymn of the Republic — Julia Ward Howe (1862)
 
-Julia Ward Howe’s The Battle Hymn of the Republic turns a marching song into a severe religious vision of justice, war, and emancipation. This analysis explains its meaning, biblical imagery, form, and Civil War context.
+This analysis explains how Julia Ward Howe turns a marching song into a religious vision of justice, war, sacrifice, and freedom.
 
-## The poem
+Full text from [The Battle Hymn of the Republic](https://en.wikisource.org/wiki/The_Atlantic_Monthly/Battle_Hymn_of_the_Republic). Public domain in the US (First published in The Atlantic Monthly in February 1862, before the US public-domain cutoff.).
+
+## Summary
+
+The speaker sees Civil War camps, weapons, trumpets, and marching feet as signs that divine judgment is moving through history.[1]
 
 ```
 Mine eyes have seen the glory of the coming of the Lord:
 He is trampling out the vintage where the grapes of wrath are stored;
-He hath loosed the fateful lightning of His terrible swift sword:
-His truth is marching on.
+```
 
-I have seen Him in the watch-fires of a hundred circling camps,
-They have builded Him an altar in the evening dews and damps;
-I can read His righteous sentence by the dim and flaring lamps:
-His day is marching on.
+The hymn moves from judgment toward a demand that people die to make others free.[2]
 
-I have read a fiery gospel writ in burnished rows of steel:
-"As ye deal with my contemners, so with you My grace shall deal;
-Let the Hero, born of woman, crush the serpent with his heel,
-Since God is marching on".
+## Meaning and interpretation
 
-He has sounded forth the trumpet that shall never call retreat;
-He is sifting out the hearts of men before His judgment-seat:
-Oh, be swift, my soul, to answer Him! be jubilant, my feet!
-Our God is marching on.
+The poem frames the Union cause and emancipation as part of a sacred drama. Truth is imagined as an active force moving through armies, sacrifice, and history.
 
-In the beauty of the lilies Christ was born across the sea,
-With a glory in his bosom that transfigures you and me:
+```
 As He died to make men holy, let us die to make men free,
 While God is marching on.
 ```
 
-Text from [The Battle Hymn of the Republic — The Atlantic Monthly, February 1862](https://en.wikisource.org/wiki/The_Atlantic_Monthly/Battle_Hymn_of_the_Republic). Public domain in the US (First published in The Atlantic Monthly in February 1862; a US work first published before 1931 is public domain.).
-
-## Summary
-
-The speaker sees the Civil War through a vision of divine judgment. Images of battle camps, steel, trumpets, and marching feet become signs that God is acting in history.
-
-The poem moves from God's terrible sword and judgment-seat toward the final demand that people die to make others free. Its repeated marching refrain gives the vision collective momentum while keeping the moral stakes unsettled and grave.
-
-## Meaning and interpretation
-
-The poem presents the Union cause, especially emancipation, as part of a larger sacred drama. “His truth” is not merely a private belief: it is imagined as a force moving through armies, judgment, sacrifice, and history.
-
-That religious framing makes the poem both hopeful and disturbing. Freedom is treated as a holy end, but the language of crushing, sifting, and dying refuses to make the path to it gentle. The hymn asks listeners to see justice as demanding moral action rather than passive admiration.
+That framing is hopeful but severe: freedom is holy, yet the path toward it involves judgment and human cost.[2]
 
 ## Themes
 
 ### Justice and judgment
 
-The Lord is portrayed as a judge who reads hearts and answers people according to how they treat those they contemn. The poem’s confidence in justice is inseparable from its threat of reckoning.
+The Lord reads hearts and answers people according to how they treat those they contemn. Confidence in justice includes a threat of reckoning.
 
-### Emancipation and moral action
+### Emancipation and action
 
-The final stanza makes freedom the poem’s clearest human purpose: Christ’s holiness becomes a model for people willing to sacrifice so that others can be free. The language connects religious devotion with abolitionist action.
+```
+With a glory in his bosom that transfigures you and me:
+```
+
+Christ’s sacrifice becomes a model for people willing to act so others can be free.
 
 ### War as sacred history
 
-Camps, steel, trumpets, and marching feet are transformed into biblical signs. This does not simply describe a battle; it interprets the Civil War as a crisis in which a nation’s moral direction is being judged.
+Military spectacle is transformed into biblical sign, interpreting the Civil War as a crisis in the nation’s moral direction.[2]
 
 ## Form and meter
 
-The poem has five four-line stanzas. Each stanza uses a hymn-like alternation of long and short lines, broadly 8.7.8.7 syllables, with flexible stresses shaped for singing.
+The poem has five four-line stanzas with hymn-like 8.7.8.7 movement, flexible stresses, and an ABCB-like rhyme pattern.
 
-Its rhythm is predominantly iambic but deliberately loose: the lines accommodate biblical diction, emphatic inversions, and the recurring phrase “marching on.” The semicolons and colons create measured, processional pauses.
-
-The stanzas share a strong end-rhyme pattern, generally ABCB, while the repeated final line functions like a refrain. The poem was written to the tune associated with “John Brown’s Body,” so its musical meter and public, collective voice are central to its effect.
+Its repeated marching refrain and connection with the tune of “John Brown’s Body” make collective performance central to its effect.[2]
 
 ## Literary devices
 
 ### Biblical allusion
 
-> He is trampling out the vintage where the grapes of wrath are stored;
+```
+He is trampling out the vintage where the grapes of wrath are stored;
+```
 
-The vintage and grapes of wrath evoke prophetic and apocalyptic judgment. Biblical language gives the Civil War an absolute moral scale rather than presenting it as ordinary political conflict.
+The vintage and grapes of wrath evoke prophetic judgment and give the war an absolute moral scale.
 
 ### Extended metaphor
 
-> I have read a fiery gospel writ in burnished rows of steel:
+```
+I have read a fiery gospel writ in burnished rows of steel:
+```
 
-Rows of soldiers’ weapons become a gospel, so the physical scene of war appears to proclaim a divine message. The metaphor fuses scripture, military spectacle, and interpretation.
+Rows of weapons become a gospel, fusing military spectacle with scriptural interpretation.
 
 ### Personification
 
-> His truth is marching on.
+```
+His truth is marching on.
+```
 
-Truth is given the movement of an army or procession. The phrase makes an abstract principle feel active, public, and historically unstoppable.
-
-### Refrain and repetition
-
-> Our God is marching on.
-
-Variations on “marching on” close the stanzas and steadily shift the emphasis from truth, to God's day, to God's action, and finally to the continuing movement of history.
+Truth receives the movement of an army or procession, becoming active and historical.
 
 ## Historical context
 
-Howe wrote the poem in November 1861 after visiting Washington, D.C., and hearing Union soldiers sing “John Brown’s Body.” At the suggestion of the Reverend James Freeman Clarke, she wrote new words for the familiar tune and recorded them after waking before dawn.
+Howe wrote the poem in November 1861 after hearing Union soldiers sing “John Brown’s Body.” It appeared on the first page of The Atlantic Monthly in February 1862.[2]
 
-The poem was published on the first page of The Atlantic Monthly in February 1862. The editor James T. Fields supplied the title, and the hymn quickly circulated in newspapers, army hymnbooks, and broadsides. Howe and her husband were active abolitionists, so the line about dying to make men free places emancipation at the center of the poem’s patriotic theology.
+Florence Howe Hall records that James T. Fields supplied the title and that the poem quickly circulated through newspapers, army hymnbooks, and broadsides.
 
 ## What critics say
 
-> “a war song which for rapt outlook, reverent mysticism, and stateliness of expression, as well as for more widely appreciated patriotic ardor, has more claim, in my estimation, to be styled a hymn”
->
-> — Florence Marion Hall, [The Story of the Battle Hymn of the Republic](https://en.wikisource.org/wiki/The_Story_of_the_Battle_Hymn_of_the_Republic/Chapter_4)
-
 > “The passion of the poem seems, indeed, to lift on high and glorify our poor humanity.”
 >
-> — Florence Marion Hall, [The Story of the Battle Hymn of the Republic](https://en.wikisource.org/wiki/The_Story_of_the_Battle_Hymn_of_the_Republic/Chapter_4)
+> — Florence Marion Howe Hall, [The Story of the Battle Hymn of the Republic](https://en.wikisource.org/wiki/The_Story_of_the_Battle_Hymn_of_the_Republic/Chapter_4)
+
+> “The original draft of the “Battle Hymn” was written on the back of a sheet of the letter-paper of the Sanitary Commission”
+>
+> — [The Story of the Battle Hymn of the Republic](https://en.wikisource.org/wiki/The_Story_of_the_Battle_Hymn_of_the_Republic/Chapter_4)
 
 ## Common questions
 
-### What is the main meaning of The Battle Hymn of the Republic?
+### What is the main meaning?
 
-The poem interprets the Civil War as a sacred struggle in which divine judgment moves toward freedom. It combines confidence in justice with an acknowledgment that moral change may demand sacrifice.
+The poem interprets the Civil War as a sacred struggle in which judgment moves toward freedom.
 
-### What are the main themes of The Battle Hymn of the Republic?
+### What are its main themes?
 
-Its main themes include judgment, emancipation, sacrifice, religious faith, and the attempt to understand war as part of a larger moral history.
+Judgment, emancipation, sacrifice, religious faith, and the attempt to understand war as moral history.
 
-### What is the form and meter of The Battle Hymn of the Republic?
+### What is its form?
 
-It is a five-stanza hymn with four lines per stanza, broadly using an 8.7.8.7 syllable pattern and mostly iambic movement. Its repeated closing phrases and ABCB-like rhyme help it work as a song.
-
-### What does “His truth is marching on” mean?
-
-The line personifies truth as an active force moving through history. In context, it suggests that justice will continue advancing even through the violence and uncertainty of war.
+It is a five-stanza hymn with four lines per stanza, flexible 8.7.8.7 movement, rhyme, and repeated refrains.
 
 ## References
 
-- [The Battle Hymn of the Republic — original Atlantic text](https://en.wikisource.org/wiki/The_Atlantic_Monthly/Battle_Hymn_of_the_Republic) — Wikisource
+- [Wikisource](https://en.wikisource.org/wiki/The_Atlantic_Monthly/Battle_Hymn_of_the_Republic)
 
-- [The Story of the Battle Hymn of the Republic, Chapter 4](https://en.wikisource.org/wiki/The_Story_of_the_Battle_Hymn_of_the_Republic/Chapter_4) — Wikisource
+- [Florence Marion Howe Hall, The Story of the Battle Hymn of the Republic](https://en.wikisource.org/wiki/The_Story_of_the_Battle_Hymn_of_the_Republic/Chapter_4)
+
+- [The Story of the Battle Hymn of the Republic](https://en.wikisource.org/wiki/The_Story_of_the_Battle_Hymn_of_the_Republic/Chapter_4)
+
+- [The Atlantic Monthly](https://en.wikisource.org/wiki/The_Atlantic_Monthly/Battle_Hymn_of_the_Republic)
 
 ## Open the editor
 

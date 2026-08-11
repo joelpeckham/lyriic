@@ -209,10 +209,10 @@ export function getPoemPageBySlug(slug: string): ComposedPoemPage | undefined {
 /** Index page SEO chrome. */
 export const POEMS_INDEX_TITLE = "Poem Analyses for Students — lyriic";
 export const POEMS_INDEX_DESCRIPTION =
-  "Cited analyses of classic poems students study — meaning, themes, form, and critical views — with each poem in a live annotated editor.";
+  "Cited analyses of classic poems students study — meaning, themes, form, and critical views — with key lines shown in a live annotated editor.";
 export const POEMS_INDEX_H1 = "Poem analyses";
 export const POEMS_INDEX_INTRO =
-  "Close readings of poems students often meet in class. Each page embeds the poem in lyriic’s editor and gathers well-cited views on meaning, themes, form, and context — with links to the sources.";
+  "Close readings of poems students often meet in class. Each page sprinkles key lines in lyriic’s editor beside well-cited views on meaning, themes, form, and context.";
 
 /**
  * Assert no copyrighted-skip poems are registered, every registered slug is in
@@ -243,8 +243,14 @@ export function assertPoemRegistryInvariants(): void {
   }
 }
 
-export type { ComposedPoemPage, PoemAnalysisContent } from "./types";
-export { poemPath, composePoemPage } from "./types";
+export type {
+  ComposedPoemPage,
+  PoemAnalysisContent,
+  PoemBlock,
+  PoemCitation,
+} from "./types";
+export { poemPath, composePoemPage, poemWritePath } from "./types";
+export { p, excerpt } from "./blocks";
 export {
   POEM_CATALOG,
   getCatalogEntry,

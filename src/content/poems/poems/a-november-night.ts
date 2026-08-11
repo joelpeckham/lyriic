@@ -1,240 +1,49 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemOpenSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const aNovemberNightPoem: PoemAnalysisContent = {
-  slug: "a-november-night",
-  status: "ready",
-  poemTitle: "A November Night",
-  author: "Sara Teasdale",
-  yearPublished: 1917,
-  publicDomainBasis:
-    "First published in Sara Teasdale's 1917 collection Love Songs, the poem is in the US public domain.",
+  slug: "a-november-night", status: "ready", poemTitle: "A November Night", author: "Sara Teasdale", yearPublished: 1915,
+  publicDomainBasis: "First published in the 1910s; public domain under the project’s US screening policy.",
   title: "A November Night Analysis & Meaning — Sara Teasdale — lyriic",
-  description:
-    "A November Night analysis and meaning: explore Sara Teasdale's romantic imagery, changing light, fog, solitude, form, and themes.",
-  h1: "A November Night analysis",
-  intro:
-    "This analysis explains how Sara Teasdale turns a city walk into a dreamlike landscape of lights, spring memories, fog, and wished-for solitude. Read the full poem, its meaning, themes, form, and literary devices.",
-  text: `There! See the line of lights,
-A chain of stars down either side the street—
-Why can't you lift the chain and give it to me,
-A necklace for my throat? I'd twist it round
-And you could play with it. You smile at me
-As though I were a little dreamy child
-Behind whose eyes the fairies live. . . . And see,
-The people on the street look up at us
-All envious. We are a king and queen,
-Our royal carriage is a motor bus,
-We watch our subjects with a haughty joy. . . .
-
-How still you are! Have you been hard at work
-And are you tired to-night? It is so long
-Since I have seen you—four whole days, I think.
-My heart is crowded full of foolish thoughts
-Like early flowers in an April meadow,
-And I must give them to you, all of them,
-Before they fade. The people I have met,
-The play I saw, the trivial, shifting things
-That loom too big or shrink too little, shadows
-That hurry, gesturing along a wall,
-Haunting or gay—and yet they all grow real
-And take their proper size here in my heart
-When you have seen them. . . . There's the Plaza now,
-A lake of light! To-night it almost seems
-That all the lights are gathered in your eyes,
-Drawn somehow toward you. See the open park
-Lying below us with a million lamps
-Scattered in wise disorder like the stars.
-
-We look down on them as God must look down
-On constellations floating under Him
-Tangled in clouds. . . . Come, then, and let us walk
-Since we have reached the park. It is our garden,
-All black and blossomless this winter night,
-But we bring April with us, you and I;
-We set the whole world on the trail of spring.
-I think that every path we ever took
-Has marked our footprints in mysterious fire,
-Delicate gold that only fairies see.
-When they wake up at dawn in hollow tree-trunks
-And come out on the drowsy park, they look
-Along the empty paths and say, "Oh, here
-They went, and here, and here, and here! Come, see,
-Here is their bench, take hands and let us dance
-About it in a windy ring and make
-A circle round it only they can cross
-When they come back again!" . . . Look at the lake—
-
-Do you remember how we watched the swans
-That night in late October while they slept?
-Swans must have stately dreams, I think. But now
-The lake bears only thin reflected lights
-That shake a little. How I long to take
-One from the cold black water—new-made gold
-To give you in your hand! And see, and see,
-There is a star, deep in the lake, a star!
-Oh, dimmer than a pearl—if you stoop down
-Your hand could almost reach it up to me. . . .
-
-There was a new frail yellow moon to-night—
-I wish you could have had it for a cup
-With stars like dew to fill it to the brim. . . .
-
-How cold it is! Even the lights are cold;
-They have put shawls of fog around them, see!
-What if the air should grow so dimly white
-That we would lose our way along the paths
-Made new by walls of moving mist receding
-The more we follow. . . . What a silver night!
-
-That was our bench the time you said to me
-The long new poem—but how different now,
-How eerie with the curtain of the fog
-Making it strange to all the friendly trees!
-There is no wind, and yet great curving scrolls
-Carve themselves, ever changing, in the mist.
-Walk on a little, let me stand here watching
-To see you, too, grown strange to me and far. . . .
-I used to wonder how the park would be
-If one night we could have it all alone—
-No lovers with close arm-encircled waists
-To whisper and break in upon our dreams.
-And now we have it! Every wish comes true!
-We are alone now in a fleecy world;
-Even the stars have gone. We two alone!`,
-  fullTextSource: {
-    label: "Love Songs (1917): “A November Night”",
-    url: "https://en.wikisource.org/wiki/Love_Songs_(1917)/A_November_Night",
-    publisher: "Wikisource",
-  },
+  description: "A November Night analysis: Teasdale’s romantic imagery, fog, solitude, form, and changing light.",
+  h1: "A November Night analysis", intro: "Teasdale turns a city walk into a dreamlike world of lights, memory, fog, and intimacy.",
+  fullTextSource: { label: "Love Songs (1917): A November Night", url: "https://en.wikisource.org/wiki/Love_Songs_(1917)/A_November_Night", publisher: "Wikisource" },
   editorSettings: poemOpenSettings({ showCounts: true }),
-  summary: [
-    "A speaker shares a stream of affectionate observations with a quiet companion during a night ride and walk. Ordinary lights, a motor bus, a park, a lake, and a moon become parts of an enchanted private world.",
-    "As the couple enters the fog, the poem's bright excitement becomes eerie stillness. Their wish to have the park entirely to themselves comes true, but the final solitude is beautiful and unsettling at once.",
-  ],
-  meaning: [
-    "The poem presents love as a way of changing perception. The speaker does not merely describe the city; she remakes it as a kingdom, a garden, and a landscape of fairy gold because intimacy makes ordinary things seem newly significant.",
-    "April is an emotional season the couple carries with them into November. Their shared memories and affection create spring in a black, blossomless park, suggesting that love can resist the calendar without escaping change.",
-    "The ending complicates the speaker's wish for privacy. When the fog removes familiar trees, paths, and stars, being alone becomes both fulfillment and estrangement: the beloved is close, yet also appears 'grown strange' and far.",
-  ],
+  summary: [p("A speaker shares affectionate observations with a quiet companion. Streetlights, a bus, a park, a lake, and a moon become parts of a private enchanted world."), excerpt(`There! See the line of lights,
+A chain of stars down either side the street—
+Why can't you lift the chain and give it to me,`), p("As fog arrives, the wished-for solitude becomes beautiful and unsettling.", ["november-analysis"])],
+  meaning: [p("Love changes perception: ordinary public objects become royal, celestial, or fairy-tale images. April is an emotional season the couple carries into November.", ["november-analysis"]), excerpt(`It is our garden,
+All black and blossomless this winter night,
+But we bring April with us, you and I;`), p("The ending complicates privacy: the beloved remains close while the fog makes the familiar world strange.")],
   themes: [
-    {
-      theme: "Love and transformed perception",
-      discussion:
-        "The speaker turns streetlights into stars, a bus into a royal carriage, and footprints into fairy fire. These comparisons show how affection changes the scale and meaning of the everyday world.",
-    },
-    {
-      theme: "Light and darkness",
-      discussion:
-        "Light first produces abundance and wonder: the street is a chain of stars and the Plaza a lake of light. Later the lights grow cold and fog-covered, so the movement toward darkness also becomes a movement toward uncertainty.",
-    },
-    {
-      theme: "Memory and seasonal contrast",
-      discussion:
-        "Memories of April, late October, an earlier bench, and a 'long new poem' layer past moments over the present walk. The speaker's emotional spring exists inside a November landscape.",
-    },
-    {
-      theme: "Solitude and estrangement",
-      discussion:
-        "The couple wants the park without other lovers, but the fulfilled wish removes the familiar social and natural world. Their private 'fleecy world' feels intimate because it is also isolated and strange.",
-    },
+    { theme: "Love and perception", blocks: [p("Affection changes the scale of the everyday, turning a motor bus into a royal carriage and lamps into stars.")] },
+    { theme: "Light and darkness", blocks: [excerpt(`How cold it is! Even the lights are cold;
+They have put shawls of fog around them, see!`), p("Wonder gradually becomes uncertainty as light is covered.")] },
+    { theme: "Solitude and estrangement", blocks: [excerpt(`We are alone now in a fleecy world;
+Even the stars have gone.`), p("The fulfilled wish for privacy also removes familiar points of reference.")] },
   ],
-  formAndMeter: [
-    "The poem is an 83-line lyric in irregular blank verse rather than a fixed stanza pattern. Its long, conversational lines move through changing scenes as quickly as the speaker's thoughts.",
-    "The rhythm often approaches iambic pentameter, but Teasdale varies line length, stresses, and pauses to preserve the spontaneity of speech. There is no regular end-rhyme scheme.",
-    "Frequent enjambment carries descriptions and questions across line breaks. As Obvious State notes, this spillover gives the poem an urgent flow that suits the speaker's breathless romantic excitement.",
-  ],
+  formAndMeter: [p("This is an irregular, long-lined lyric with uneven sections and no fixed end-rhyme scheme. Many lines approach pentameter, but conversational variation controls the pace.", ["november-form"]), p("Enjambment lets descriptions spill forward like the speaker’s excited talk.")],
   literaryDevices: [
-    {
-      device: "Extended metaphor",
-      example: "Our royal carriage is a motor bus",
-      discussion:
-        "The speaker recasts an ordinary bus ride as a royal procession. The metaphor establishes the poem's central habit of making private feeling reshape public reality.",
-    },
-    {
-      device: "Simile",
-      example: "Like early flowers in an April meadow",
-      discussion:
-        "The speaker compares her thoughts to flowers that must be given before they fade. The image connects emotional abundance with both beauty and impermanence.",
-    },
-    {
-      device: "Personification",
-      example: "They have put shawls of fog around them",
-      discussion:
-        "The fog is imagined as clothing the lights. This makes the weather seem intentional and domestic while also covering the world in a soft, increasingly obscuring layer.",
-    },
-    {
-      device: "Enjambment",
-      example: "What if the air should grow so dimly white / That we would lose our way",
-      discussion:
-        "The sentence crosses the line break just as the fog threatens to erase the path. The syntax creates forward motion while making the reader feel the possibility of losing direction.",
-    },
+    { device: "Extended metaphor", blocks: [excerpt(`Our royal carriage is a motor bus,
+We watch our subjects with a haughty joy.`), p("The metaphor remakes public transit as a private coronation.")] },
+    { device: "Simile", blocks: [excerpt(`Like early flowers in an April meadow,
+And I must give them to you, all of them,`), p("Thoughts become flowers whose beauty includes their vulnerability to fading.")] },
+    { device: "Personification", blocks: [p("Fog puts shawls around lights and turns weather into an active force that obscures the landscape.")] },
   ],
-  historicalContext: [
-    "A November Night appeared in Love Songs, published by The Macmillan Company in 1917. Teasdale's collection was assembled during the period when lyric poetry often centered intimate emotion, musical language, and concentrated natural imagery.",
-    "Sara Teasdale is known for lyric poems concerned with love, beauty, and death. The poem's first-person address and its accumulation of sensory images make the speaker's emotional state inseparable from the landscape she describes.",
-    "The poem is public domain in the United States because its book publication predates 1931. The Wikisource text preserves the original period punctuation and spelling used here.",
+  historicalContext: [p("The poem appeared in Teasdale’s Love Songs, published in 1917. Its intimate urban setting and concentrated imagery fit her lyric focus on love and perception.", ["november-history"]), excerpt(`That was our bench the time you said to me
+The long new poem—but how different now,`), p("Memory overlays the present walk, making the setting both familiar and changed.")],
+  citations: [
+    { id: "november-text", source: "Wikisource", url: "https://en.wikisource.org/wiki/Love_Songs_(1917)/A_November_Night" },
+    { id: "november-analysis", source: "Poem Analysis", url: "https://poemanalysis.com/sara-teasdale/a-november-night/", quote: "A November Night is a long poem filled with beautiful and haunting images." },
+    { id: "november-form", source: "Poem Analysis", url: "https://poemanalysis.com/sara-teasdale/a-november-night/", quote: "The majority of the lines are written in pentameter." },
+    { id: "november-history", source: "Wikisource", url: "https://en.wikisource.org/wiki/Love_Songs_(1917)/A_November_Night", quote: "Love Songs (1917)." },
   ],
-  criticalViews: [
-    {
-      source: "Emma Baldwin, “A November Night”",
-      author: "Emma Baldwin",
-      quote:
-        "A woman shares her vivid, dreamy thoughts with a quiet partner on a cold night walk.",
-      url: "https://poemanalysis.com/sara-teasdale/a-november-night/",
-    },
-    {
-      source: "Emma Baldwin, “A November Night”",
-      author: "Emma Baldwin",
-      quote:
-        "Their wished-for solitude finally arrives, leaving them alone in a strange and silent world.",
-      url: "https://poemanalysis.com/sara-teasdale/a-november-night/",
-    },
-    {
-      source: "Obvious State, “A November Night by Sara Teasdale”",
-      quote:
-        "And of course, it perfectly suits the breathless exuberance of first love that the poem captures.",
-      url: "https://obviousstate.com/blogs/journal/a-november-night-by-sara-teasdale",
-    },
-  ],
+  criticalViews: [{ citeId: "november-analysis" }, { citeId: "november-form" }],
   faqs: [
-    {
-      q: "What is the meaning of “A November Night”?",
-      plain:
-        "The poem shows love transforming an ordinary night into a magical world. Its ending adds uncertainty: the couple's desired solitude is fulfilled, but fog makes the beloved and the familiar park seem strange.",
-    },
-    {
-      q: "What are the main themes in “A November Night”?",
-      plain:
-        "The main themes are love's power to transform perception, light and darkness, memory and seasonal change, and the tension between intimacy and isolation.",
-    },
-    {
-      q: "What is the form of “A November Night”?",
-      plain:
-        "It is an irregular lyric of 83 long, conversational lines, with a rhythm that often approaches iambic pentameter. It has no fixed end-rhyme scheme and relies heavily on enjambment.",
-    },
-    {
-      q: "Why is the ending of “A November Night” unsettling?",
-      plain:
-        "The couple gets the private park the speaker once wished for, but fog removes the stars and makes familiar places strange. The fulfilled wish therefore feels both romantic and isolating.",
-    },
+    { q: "What is the meaning?", plain: "Love transforms an ordinary night into a magical world, but fog makes fulfilled solitude feel strange." },
+    { q: "What are the themes?", plain: "Love, transformed perception, light and darkness, memory, and intimacy versus isolation." },
+    { q: "What form does it use?", plain: "It is an irregular lyric with long conversational lines, variable pentameter, and no fixed rhyme scheme." },
   ],
-  sources: [
-    {
-      label: "Love Songs (1917): “A November Night”",
-      url: "https://en.wikisource.org/wiki/Love_Songs_(1917)/A_November_Night",
-      publisher: "Wikisource",
-    },
-    {
-      label: "“A November Night” analysis",
-      url: "https://poemanalysis.com/sara-teasdale/a-november-night/",
-      publisher: "Poem Analysis",
-    },
-    {
-      label: "A November Night by Sara Teasdale",
-      url: "https://obviousstate.com/blogs/journal/a-november-night-by-sara-teasdale",
-      publisher: "Obvious State",
-    },
-  ],
-  cta: "Write with this poem's meter in the editor",
+  cta: "Write with this poem’s rhythm in the editor",
 };

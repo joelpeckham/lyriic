@@ -2,126 +2,122 @@
 
 Ultimately — Ernest Hemingway (1923)
 
-This Ultimately analysis explains how Ernest Hemingway turns the act of telling the truth into a vivid physical struggle. Read the poem’s meaning, themes, free-verse form, and key devices.
+This four-line poem turns the act of telling the truth into a vivid physical struggle between hesitation and overflow.
 
-## The poem
+Full text from [Ultimately](https://en.wikisource.org/wiki/Ultimately). Public domain in the US (Published before 1931 and public domain in the United States.).
+
+## Summary
+
+An unnamed man tries to speak truth, beginning with dryness and ending with an uncontrolled bodily overflow.[2]
 
 ```
 He tried to spit out the truth;
 Dry mouthed at first,
+```
+
+The poem refuses to make honesty elegant: truth leaves saliva on the speaker’s chin.[4]
+
+## Meaning and interpretation
+
+“Dry mouthed” suggests hesitation, while “drooled,” “slobbed,” and “dribbling” make release humiliatingly physical.[2]
+
+```
 He drooled and slobbed in the end;
 Truth dribbling his chin.
 ```
 
-Text from [Ultimately by Ernest Hemingway](https://en.wikisource.org/wiki/Ultimately). Public domain in the US (Wikisource identifies the poem as public domain in the United States because it was published before January 1, 1931.).
-
-## Summary
-
-An unnamed man tries to express the truth, but the effort changes from difficult restraint into an uncontrolled physical overflow. The poem compresses that entire movement into four blunt lines.
-
-Its final image refuses to make honesty elegant. Truth comes out as saliva, leaving the speaker—or the man described—exposed, messy, and unable to regain control.
-
-## Meaning and interpretation
-
-The poem presents truth as something that can be both difficult to begin and impossible to contain. “Dry mouthed” suggests hesitation or inexperience, while “drooled,” “slobbed,” and “dribbling” make the eventual release humiliatingly bodily.
-
-The poem does not decide whether this release is liberating or damaging. It can be read as a warning about the consequences of beginning an uncomfortable confession, or as a portrait of how prolonged dishonesty makes later honesty awkward and excessive.
-
-By making truth a substance in the mouth, Hemingway removes it from abstract moral language. The reader experiences honesty through taste, moisture, and embarrassment rather than through a stated lesson.
+The poem leaves open whether confession is liberating or damaging; once begun, it may be impossible to contain.[4]
 
 ## Themes
 
 ### Truth and hesitation
 
-The movement from a dry mouth to an overflowing one dramatizes the difficulty of starting to speak honestly. The unnamed man’s reason for hesitating is withheld, leaving the reader to supply the social or personal pressure.
+The movement from dryness to overflow dramatizes the difficulty of beginning to speak honestly.
 
 ### Loss of control
 
-The verbs become increasingly uncontrolled: he tries, then drools, slobbers, and dribbles. Once the truth begins to emerge, the poem imagines it as a physical process that cannot be neatly managed.
+```
+He drooled and slobbed in the end;
+```
+
+The verbs become increasingly involuntary, turning honesty into a physical process.
 
 ### Embarrassment and exposure
 
-Saliva on the chin makes the truth-teller look vulnerable and undignified. Honesty may be necessary, but the poem rejects the comforting idea that it is always clean, noble, or rhetorically polished.
+Saliva on the chin rejects the comforting idea that truth-telling is always clean or noble.[4]
 
 ## Form and meter
 
-“Ultimately” is a four-line, single-stanza free-verse poem. It has no fixed metrical pattern, and its short lines are shaped more by syntax, punctuation, and escalating verbs than by regular feet.
+“Ultimately” is a four-line free-verse poem with no fixed metrical pattern.[2]
 
-Poem Analysis identifies an ABCC rhyme scheme, with the first two line endings functioning as near rhyme. The final “end”/“chin” pairing is not a full rhyme, so the poem’s sound remains rough rather than neatly resolved.
-
-The semicolons divide the poem into stages: attempted speech, initial dryness, later overflow, and the final visible result. The compact structure makes the change in bodily condition feel immediate.
+Semicolons divide attempted speech, dryness, overflow, and the final visible result; rough sound links keep the ending unresolved.[4]
 
 ## Literary devices
 
-### Personification and metaphor
+### Metaphor
 
-> He tried to spit out the truth;
+```
+He tried to spit out the truth;
+```
 
-Truth is treated as a physical substance that can be spat out. This metaphor makes an abstract moral or verbal act visceral and gives honesty a presence inside the speaker’s mouth.
+Truth becomes a substance in the mouth rather than an abstract moral idea.
 
 ### Sensory imagery
 
-> He drooled and slobbed in the end;
+```
+He drooled and slobbed in the end;
+```
 
-The diction activates touch, taste, and sight. “Drooled” and “slobbed” are deliberately unattractive words, forcing the reader to confront the discomfort of the scene instead of sentimentalizing confession.
-
-### Alliteration and consonance
-
-> tried to spit out the truth
-
-The repeated t sounds in “tried” and “truth,” followed by the dense d sounds in “drooled” and “dribbling,” give the poem a rough verbal texture that echoes its physical subject.
+Unattractive diction makes honesty tactile and embarrassing.[2]
 
 ### Progression
 
-> Dry mouthed at first, / He drooled and slobbed in the end;
+```
+Dry mouthed at first,
+He drooled and slobbed in the end;
+```
 
-The paired time markers establish a before-and-after structure. The poem moves from absence of moisture to excess, turning a tiny bodily change into its central narrative arc.
+The time markers create a compressed before-and-after narrative.
 
 ## Historical context
 
-The poem was published in 1922 in the New Orleans literary magazine The Double Dealer and was included in Hemingway’s 1923 collection Three Stories and Ten Poems. The Hemingway Society records it as appearing alongside work by William Faulkner.
+The poem appears in Hemingway’s early collection Three Stories & Ten Poems, published in 1923.[3]
 
-This early publication places “Ultimately” at the beginning of Hemingway’s professional literary career, before the novels and stories that established his reputation. Its compression already tests the spare, concrete language associated with his later style.
-
-The collection’s title and publication history connect the poem to Hemingway’s early experiments across genres. Its four-line fable-like structure uses very little explanation, making the reader infer why the truth is difficult and what its release costs.
+Its extreme compression anticipates the concrete, spare style associated with Hemingway’s later work.[3]
 
 ## What critics say
 
 > “The striking images in these lines depict truth as something messy and uncontrollable.”
 >
-> — [Poem Analysis, “Ultimately”](https://poemanalysis.com/ernest-hemingway/ultimately/)
+> — [Poem Analysis](https://poemanalysis.com/ernest-hemingway/ultimately/)
 
-> “Once that decision is made internally, there is no going back, and you will find yourself helpless after.”
+> “This four line poem is written in free verse and has a rhyme scheme of ABCC.”
 >
-> — [Dusty Reviews, “Ultimately”](https://dustyreviews.com/2025/08/06/ultimately/)
+> — [Dusty Reviews](https://dustyreviews.com/2025/08/06/ultimately/)
 
 ## Common questions
 
-### What is the main meaning of “Ultimately”?
+### What is the main meaning?
 
-The poem suggests that telling the truth can be difficult to begin but impossible to contain once it starts. It presents honesty as messy, physical, and potentially humiliating rather than automatically noble or graceful.
+Truth is difficult to begin but may become impossible to contain once it starts.
 
-### What does the spit symbolize in “Ultimately”?
+### What does spit symbolize?
 
-The spit symbolizes truth made physical. It shows how a buried or resisted truth can move from a dry, hesitant mouth to an uncontrolled overflow.
+It makes truth physical, messy, and potentially humiliating.
 
-### What themes appear in “Ultimately”?
+### What is the form?
 
-The main themes are truth and hesitation, loss of control, and embarrassment or exposure. The poem leaves open whether confession is a relief, a danger, or both.
-
-### What is the form and meter of “Ultimately”?
-
-It is a four-line, single-stanza free-verse poem with no fixed meter. Its sound depends on rough rhyme, alliteration, punctuation, and the progression from “dry mouthed” to “dribbling.”
+A four-line free-verse poem whose punctuation and rough sound carry its progression.
 
 ## References
 
-- [Poem text and US public-domain notice](https://en.wikisource.org/wiki/Ultimately) — Wikisource
+- [Wikisource](https://en.wikisource.org/wiki/Ultimately)
 
-- [Three Stories and Ten Poems](https://gutenberg.org/files/59603/59603-h/59603-h.htm) — Project Gutenberg
+- [Poem Analysis](https://poemanalysis.com/ernest-hemingway/ultimately/)
 
-- [Publication history in The Double Dealer](https://www.hemingwaysociety.org/seeking-double-dealer-part-i) — The Hemingway Society
+- [Project Gutenberg](https://www.gutenberg.org/files/59603/59603-h/59603-h.htm)
 
-- [Form, imagery, and interpretation](https://poemanalysis.com/ernest-hemingway/ultimately/) — Poem Analysis
+- [Dusty Reviews](https://dustyreviews.com/2025/08/06/ultimately/)
 
 ## Open the editor
 

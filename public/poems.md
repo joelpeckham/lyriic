@@ -1,6 +1,6 @@
 # Poem analyses
 
-Close readings of poems students often meet in class. Each page embeds the poem in lyriic’s editor and gathers well-cited views on meaning, themes, form, and context — with links to the sources.
+Close readings of poems students often meet in class. Each page sprinkles key lines in lyriic’s editor beside well-cited views on meaning, themes, form, and context.
 
 - [A Day of Sunshine](https://lyriic.com/poems/a-day-of-sunshine) — Henry Wadsworth Longfellow — [a-day-of-sunshine.md](https://lyriic.com/poems/a-day-of-sunshine.md)
 - [A Dream Within a Dream](https://lyriic.com/poems/a-dream-within-a-dream) — Edgar Allan Poe — [a-dream-within-a-dream.md](https://lyriic.com/poems/a-dream-within-a-dream.md)
@@ -51,7 +51,7 @@ Close readings of poems students often meet in class. Each page embeds the poem 
 - [Ozymandias](https://lyriic.com/poems/ozymandias) — Percy Bysshe Shelley — [ozymandias.md](https://lyriic.com/poems/ozymandias.md)
 - [Paradise Lost](https://lyriic.com/poems/paradise-lost) — John Milton — [paradise-lost.md](https://lyriic.com/poems/paradise-lost.md)
 - [Pastoral](https://lyriic.com/poems/pastoral) — William Carlos Williams — [pastoral.md](https://lyriic.com/poems/pastoral.md)
-- [Paul Revere's Ride](https://lyriic.com/poems/paul-reveres-ride) — Henry Wadsworth Longfellow — [paul-reveres-ride.md](https://lyriic.com/poems/paul-reveres-ride.md)
+- [Paul Revere’s Ride](https://lyriic.com/poems/paul-reveres-ride) — Henry Wadsworth Longfellow — [paul-reveres-ride.md](https://lyriic.com/poems/paul-reveres-ride.md)
 - [Perplexed Music](https://lyriic.com/poems/perplexed-music) — Elizabeth Barrett Browning — [perplexed-music.md](https://lyriic.com/poems/perplexed-music.md)
 - [Richard Cory](https://lyriic.com/poems/richard-cory) — Edwin Arlington Robinson — [richard-cory.md](https://lyriic.com/poems/richard-cory.md)
 - [She Walks in Beauty](https://lyriic.com/poems/she-walks-in-beauty) — Lord Byron — [she-walks-in-beauty.md](https://lyriic.com/poems/she-walks-in-beauty.md)
@@ -78,7 +78,7 @@ Close readings of poems students often meet in class. Each page embeds the poem 
 - [The Tyger](https://lyriic.com/poems/the-tyger) — William Blake — [the-tyger.md](https://lyriic.com/poems/the-tyger.md)
 - [The Walrus and the Carpenter](https://lyriic.com/poems/the-walrus-and-the-carpenter) — Lewis Carroll — [the-walrus-and-the-carpenter.md](https://lyriic.com/poems/the-walrus-and-the-carpenter.md)
 - [The Waste Land](https://lyriic.com/poems/the-waste-land) — T. S. Eliot — [the-waste-land.md](https://lyriic.com/poems/the-waste-land.md)
-- [The World Is Too Much With Us](https://lyriic.com/poems/the-world-is-too-much-with-us) — William Wordsworth — [the-world-is-too-much-with-us.md](https://lyriic.com/poems/the-world-is-too-much-with-us.md)
+- [The World Is Too Much with Us](https://lyriic.com/poems/the-world-is-too-much-with-us) — William Wordsworth — [the-world-is-too-much-with-us.md](https://lyriic.com/poems/the-world-is-too-much-with-us.md)
 - [There Will Come Soft Rains](https://lyriic.com/poems/there-will-come-soft-rains) — Sara Teasdale — [there-will-come-soft-rains.md](https://lyriic.com/poems/there-will-come-soft-rains.md)
 - [Thirteen Ways of Looking at a Blackbird](https://lyriic.com/poems/thirteen-ways-of-looking-at-a-blackbird) — Wallace Stevens — [thirteen-ways-of-looking-at-a-blackbird.md](https://lyriic.com/poems/thirteen-ways-of-looking-at-a-blackbird.md)
 - [To the Virgins, to Make Much of Time](https://lyriic.com/poems/to-the-virgins-to-make-much-of-time) — Robert Herrick — [to-the-virgins-to-make-much-of-time.md](https://lyriic.com/poems/to-the-virgins-to-make-much-of-time.md)

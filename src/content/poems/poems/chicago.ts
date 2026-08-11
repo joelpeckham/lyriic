@@ -1,179 +1,21 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemOpenSettings } from "../settings";
-
+import type { PoemAnalysisContent } from "../types";
 export const chicagoPoem: PoemAnalysisContent = {
-  slug: "chicago",
-  status: "ready",
-  poemTitle: "Chicago",
-  author: "Carl Sandburg",
-  yearPublished: 1914,
-  publicDomainBasis:
-    "First published in Poetry magazine in March 1914, Chicago is in the public domain in the United States.",
-  title: "Chicago Analysis & Meaning — Carl Sandburg — lyriic",
-  description:
-    "Chicago analysis and meaning: Carl Sandburg’s free-verse celebration of industrial labor, urban toughness, and a city that laughs at its flaws.",
-  h1: "Chicago analysis",
-  intro:
-    "Carl Sandburg’s “Chicago” answers the city’s critics by admitting its violence, poverty, and corruption before celebrating its work, pride, and vitality. Read the full poem with an analysis of its free verse, imagery, rhetoric, and historical setting.",
-  text: `Hog Butcher for the World,
-
+ slug:"chicago",status:"ready",poemTitle:"Chicago",author:"Carl Sandburg",yearPublished:1914,publicDomainBasis:"First published in Poetry in 1914, before the US public-domain cutoff.",title:"Chicago Analysis & Meaning — Carl Sandburg — lyriic",description:"Analysis of Sandburg’s free-verse city poem, labor, pride, violence, and resilience.",h1:"Chicago analysis",intro:"Sandburg admits Chicago’s violence and hunger before celebrating its labor, energy, and civic pride.",
+ fullTextSource:{label:"Chicago",url:"https://www.poetryfoundation.org/poetrymagazine/poems/12840/chicago",publisher:"Poetry Foundation"},editorSettings:poemOpenSettings(),
+ summary:[p("The speaker names Chicago through industrial occupations, concedes its vice and brutality, then answers its critics with an image of a laughing worker."),excerpt(`Hog Butcher for the World,
 Tool Maker, Stacker of Wheat,
-
-Player with Railroads and the Nation's Freight Handler;
-
-Stormy, husky, brawling,
-
-City of the Big Shoulders:
-
-They tell me you are wicked and I believe them, for I have seen your painted women under the gas lamps luring the farm boys.
-
-And they tell me you are crooked and I answer: Yes, it is true I have seen the gunman kill and go free to kill again.
-
-And they tell me you are brutal and my reply is: On the faces of women and children I have seen the marks of wanton hunger.
-
-And having answered so I turn once more to those who sneer at this my city, and I give them back the sneer and say to them:
-
-Come and show me another city with lifted head singing so proud to be alive and coarse and strong and cunning.
-
-Flinging magnetic curses amid the toil of piling job on job, here is a tall bold slugger set vivid against the little soft cities;
-
-Fierce as a dog with tongue lapping for action, cunning as a savage pitted against the wilderness,
-
-Bareheaded,
-
+Player with Railroads and the Nation's Freight Handler;`),p("The city’s greatness is grounded in work rather than polished respectability.")],
+ meaning:[p("The defense persuades because it does not pretend Chicago is innocent. Pride and social damage coexist in the same urban body."),excerpt(`Come and show me another city with lifted head singing so proud to be alive and coarse and strong and cunning.`),p("The final laughter makes resilience a public, physical act.",["sandburg-nps"])],
+ themes:[{theme:"Industrial labor",blocks:[p("The opening catalogue identifies Chicago through slaughtering, tools, grain, and freight.")]},{theme:"Clear-eyed civic pride",blocks:[p("Crime and hunger are admitted before the speaker celebrates the city.")]},{theme:"Youth and resilience",blocks:[excerpt(`Building, breaking, rebuilding,
+Under the smoke, dust all over his mouth, laughing with white teeth,`),p("Rebuilding turns hardship into continued motion.")]}],
+ formAndMeter:[p("This is free verse with no fixed stanza, rhyme scheme, or regular meter. Its form comes from catalogues, punctuation, and changing line length."),p("Long sentences are interrupted by one-word action lines such as “Shoveling” and “Laughing!”, creating a physical rhythm.")],
+ literaryDevices:[{device:"Personification",blocks:[excerpt(`here is a tall bold slugger set vivid against the little soft cities;`),p("Chicago becomes a working fighter with sweat, teeth, ribs, and laughter.")]},{device:"Catalogue",blocks:[excerpt(`Bareheaded,
 Shoveling,
-
-Wrecking,
-
-Planning,
-
-Building, breaking, rebuilding,
-
-Under the smoke, dust all over his mouth, laughing with white teeth,
-
-Under the terrible burden of destiny laughing as a young man laughs,
-
-Laughing even as an ignorant fighter laughs who has never lost a battle,
-
-Bragging and laughing that under his wrist is the pulse, and under his ribs the heart of the people,
-
-Laughing!
-
-Laughing the stormy, husky, brawling laughter of Youth, half-naked, sweating, proud to be Hog Butcher, Tool Maker, Stacker of Wheat, Player with Railroads and Freight Handler to the Nation.`,
-  fullTextSource: {
-    label: "Chicago",
-    url: "https://www.poetryfoundation.org/poetrymagazine/poems/12840/chicago",
-    publisher: "Poetry Foundation",
-  },
-  editorSettings: poemOpenSettings(),
-  summary: [
-    "The speaker names Chicago through its industrial roles, then acknowledges the city’s reputation for vice, crime, and hunger.",
-    "After conceding those charges, the speaker turns the defense outward. Chicago becomes a powerful worker—shoveling, wrecking, planning, and rebuilding—whose laughter expresses resilient civic pride.",
-  ],
-  meaning: [
-    "The poem’s defense is persuasive because it does not pretend Chicago is innocent. The speaker has seen its harms, but argues that honesty about those harms can coexist with admiration for the city’s energy and people.",
-    "Sandburg makes labor the measure of Chicago’s greatness. The city is imagined as a sweating, bareheaded young man whose strength comes from collective work rather than polished manners or inherited prestige.",
-  ],
-  themes: [
-    {
-      theme: "Industrial labor and dignity",
-      discussion:
-        "The opening catalog identifies Chicago through work: slaughtering, making tools, stacking grain, and moving freight. The closing gathers those jobs into a proud identity, giving labor a central place in the city’s self-image.",
-    },
-    {
-      theme: "Pride with clear eyes",
-      discussion:
-        "The speaker admits prostitution, murder, and hunger before praising Chicago. That double vision keeps the poem from becoming simple civic propaganda: its pride is built on seeing the city’s damage as well as its power.",
-    },
-    {
-      theme: "Youth and resilience",
-      discussion:
-        "The repeated laughter turns hardship into motion and defiance. Chicago is young, rough, and unfinished, but its ability to keep building and rebuilding becomes a form of hope.",
-    },
-  ],
-  formAndMeter: [
-    "“Chicago” is free verse: it has no fixed stanza pattern, end-rhyme scheme, or regular metrical line. Its shape comes from sentence movement, catalogues, punctuation, and dramatic shifts in line length.",
-    "The middle section uses repeated syntax—“And they tell me…”—to create an accusation-and-answer structure. The speaker concedes each charge, then pivots toward a challenge to the cities that sneer at Chicago.",
-    "Short one-word lines such as “Bareheaded,” “Shoveling,” and “Laughing!” interrupt the long rushing sentences. They work like drumbeats or snapshots of physical action, while the final accumulation returns to the poem’s opening occupational titles.",
-  ],
-  literaryDevices: [
-    {
-      device: "Personification",
-      example: "“here is a tall bold slugger”",
-      discussion:
-        "Chicago becomes a single working body: a fighter with a mouth, wrist, ribs, sweat, and laughter. Personification makes the city’s economic activity feel physical and emotionally alive.",
-    },
-    {
-      device: "Catalog and anaphora",
-      example: "“And they tell me you are…”",
-      discussion:
-        "Lists of occupations and repeated sentence openings give the poem an expansive, public voice. The catalogue suggests that no single image can contain the city; its identity is made from many kinds of work and conflict.",
-    },
-    {
-      device: "Simile",
-      example: "“Fierce as a dog with tongue lapping for action”",
-      discussion:
-        "The animal comparison emphasizes appetite, alertness, and readiness. It presents Chicago’s roughness as a source of energy rather than something to be hidden.",
-    },
-    {
-      device: "Repetition and sound",
-      example: "“Laughing… / Laughing… / Laughing!”",
-      discussion:
-        "The repeated word gathers force as the poem closes. Hard consonants in “stormy, husky, brawling” and the recurring occupational names make the ending sound like a chant or public boast.",
-    },
-  ],
-  historicalContext: [
-    "Sandburg moved to Chicago in 1912 and worked as a reporter, where he encountered unsafe working conditions, labor inequities, and the city’s rapidly industrializing life. Those concerns help explain why the poem treats work and social harm as inseparable parts of Chicago’s identity.",
-    "Harriet Monroe published “Chicago” in the March 1914 issue of Poetry magazine and awarded Sandburg the Levinson Prize for the poem. It later appeared in Sandburg’s 1916 collection Chicago Poems.",
-    "The poem’s “Hog Butcher,” grain, railroads, and freight imagery reflects Chicago’s role as a major industrial and transportation center. Sandburg turns that economic reality into a portrait of a city that is powerful precisely because it is active, unfinished, and human.",
-  ],
-  criticalViews: [
-    {
-      source: "Carl Sandburg Home National Historic Site",
-      author: "U.S. National Park Service",
-      quote:
-        "“Chicago” became one of the best known works of 20th century American literature.",
-      url: "https://www.nps.gov/carl/learn/historyculture/chicago.htm",
-    },
-    {
-      source: "Poetry Foundation",
-      quote: "Source: Poetry (March 1914)",
-      url: "https://www.poetryfoundation.org/poetrymagazine/poems/12840/chicago",
-    },
-  ],
-  faqs: [
-    {
-      q: "What is the main meaning of “Chicago”?",
-      plain:
-        "The poem celebrates Chicago’s industrial strength and working people without denying its crime, poverty, and corruption. Sandburg argues that the city’s rough vitality and resilience are part of its truth.",
-    },
-    {
-      q: "Why does Sandburg call Chicago the “City of the Big Shoulders”?",
-      plain:
-        "The phrase personifies Chicago as a strong laborer. Its “big shoulders” suggest the physical work, industrial capacity, and collective burden that support the city.",
-    },
-    {
-      q: "What form does “Chicago” use?",
-      plain:
-        "“Chicago” is a free-verse poem with no fixed meter or rhyme scheme. Its rhythm comes from repetition, occupational catalogues, long sentences, short action lines, and the repeated word “Laughing!”",
-    },
-    {
-      q: "Is the full text of “Chicago” available in the editor?",
-      plain:
-        "Yes. The complete poem is available in lyriic’s local-first editor for reading and analysis; your text stays in the browser rather than being sent to a server.",
-    },
-  ],
-  sources: [
-    {
-      label: "Chicago: poem text and 1914 source",
-      url: "https://www.poetryfoundation.org/poetrymagazine/poems/12840/chicago",
-      publisher: "Poetry Foundation",
-    },
-    {
-      label: "Chicago: biography and historical context",
-      url: "https://www.nps.gov/carl/learn/historyculture/chicago.htm",
-      publisher: "Carl Sandburg Home National Historic Site, National Park Service",
-    },
-  ],
-  cta: "Read the poem in the zen editor",
+Wrecking,`),p("Accumulated occupations make civic identity collective.")]},{device:"Repetition",blocks:[excerpt(`Laughing!
+Laughing the stormy, husky, brawling laughter of Youth,`),p("Repeated laughter gathers force at the close.")]}],
+ historicalContext:[p("Sandburg moved to Chicago in 1912 and worked as a reporter. The National Park Service connects his early writing with labor rights and unsafe working conditions.",["sandburg-nps"]),p("Harriet Monroe published the poem in Poetry in March 1914; it later appeared in Chicago Poems (1916).",["sandburg-history"])],
+ citations:[{id:"poem-text-chicago",source:"Poetry Foundation",url:"https://www.poetryfoundation.org/poetrymagazine/poems/12840/chicago"},{id:"sandburg-nps",source:"National Park Service",quote:"Sandburg’s early writings tackled social justice, human dignity, and labor rights.",url:"https://www.nps.gov/articles/000/carl-sandburg-and-chicago.htm"},{id:"sandburg-history",source:"Carl Sandburg Home National Historic Site",quote:"Chicago became one of the best known works of 20th century American literature.",url:"https://www.nps.gov/carl/learn/historyculture/chicago.htm"},{id:"chicago-analysis",source:"EBSCO Research Starters",url:"https://www.ebsco.com/research-starters/literature-and-writing/chicago-carl-sandburg"}],
+ criticalViews:[{citeId:"sandburg-nps"},{citeId:"sandburg-history"}],faqs:[{q:"What is the meaning?",plain:"Chicago celebrates industrial strength and working people without denying crime, poverty, or corruption."},{q:"Why Big Shoulders?",plain:"The phrase personifies the city as a strong laborer carrying collective work and burden."},{q:"What form is used?",plain:"Free verse shaped by repetition, catalogues, and long and short lines."}],cta:"Read the poem in the zen editor",
 };

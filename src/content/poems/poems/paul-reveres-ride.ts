@@ -1,298 +1,53 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemOpenSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const paulReveresRidePoem: PoemAnalysisContent = {
   slug: "paul-reveres-ride",
   status: "ready",
-  poemTitle: "Paul Revere's Ride",
+  poemTitle: "Paul Revere’s Ride",
   author: "Henry Wadsworth Longfellow",
   yearPublished: 1860,
-  publicDomainBasis:
-    "Written in 1860 and first published in the January 1861 issue of The Atlantic Monthly, Paul Revere's Ride is in the public domain in the United States.",
-  title:
-    "Paul Revere's Ride Analysis & Meaning — Henry Wadsworth Longfellow — lyriic",
-  description:
-    "Paul Revere's Ride analysis and meaning: explore Longfellow's historical myth, patriotic themes, vivid imagery, narrative form, and galloping rhythm.",
-  h1: "Paul Revere's Ride analysis",
-  intro:
-    "This Paul Revere's Ride analysis explains how Longfellow turns a Revolutionary War warning into a memorable national myth, using suspense, sound, imagery, and a driving narrative rhythm.",
-  text: `Listen, my children, and you shall hear
+  publicDomainBasis: "First published in 1860, before 1931; the original work is public domain in the United States.",
+  title: "Paul Revere’s Ride Analysis & Meaning — Henry Wadsworth Longfellow — lyriic",
+  description: "Paul Revere’s Ride analysis and meaning: explore its themes, form, imagery, and interpretation.",
+  h1: "Paul Revere’s Ride analysis",
+  intro: "This Paul Revere’s Ride analysis explains its meaning, themes, form, and major literary devices.",
+  fullTextSource: { label: "Full text of Paul Revere’s Ride", url: "https://en.wikisource.org/wiki/Paul_Revere%27s_Ride", publisher: "Public-domain text" },
+  editorSettings: poemOpenSettings({ showCounts: true }),
+  summary: [p(`Longfellow turns a Revolutionary warning into a national myth. The ride becomes a story about civic attention, courage, and the transmission of memory.`, ["nps-revere"]), excerpt(`Listen, my children, and you shall hear
 Of the midnight ride of Paul Revere,
-On the eighteenth of April, in Seventy-five;
-Hardly a man is now alive
-Who remembers that famous day and year.
-
-He said to his friend, “If the British march
-By land or sea from the town to-night,
-Hang a lantern aloft in the belfry arch
-Of the North Church tower as a signal light,—
-One, if by land, and two, if by sea;
-And I on the opposite shore will be,
-Ready to ride and spread the alarm
-Through every Middlesex village and farm,
-For the country-folk to be up and to arm.”
-
-Then he said, “Good night!” and with muffled oar
-Silently rowed to the Charlestown shore,
-Just as the moon rose over the bay,
-Where swinging wide at her moorings lay
-The Somerset, British man-of-war;
-A phantom ship, with each mast and spar
-Across the moon like a prison bar,
-And a huge black hulk, that was magnified
-By its own reflection in the tide.
-
-Meanwhile, his friend, through alley and street,
-Wanders and watches with eager ears,
-Till in the silence around him he hears
-The muster of men at the barrack door,
-The sound of arms, and the tramp of feet,
-And the measured tread of the grenadiers,
-Marching down to their boats on the shore.
-
-Then he climbed to the tower of the church,
-Up the wooden stairs, with stealthy tread,
-To the belfry-chamber overhead,
-And startled the pigeons from their perch
-On the sombre rafters, that round him made
-Masses and moving shapes of shade,—
-Up the trembling ladder, steep and tall,
-To the highest window in the wall,
-Where he paused to listen and look down
-A moment on the roofs of the town
-And the moonlight flowing over all.
-
-Beneath, in the churchyard, lay the dead,
-In their night encampment on the hill,
-Wrapped in silence so deep and still
-That he could hear, like a sentinel’s tread,
-The watchful night-wind, as it went
-Creeping along from tent to tent,
-And seeming to whisper, “All is well!”
-A moment only he feels the spell
-Of the place and the hour, and the secret dread
-Of the lonely belfry and the dead;
-For suddenly all his thoughts are bent
-On a shadowy something far away,
-Where the river widens to meet the bay,—
-A line of black that bends and floats
-On the rising tide like a bridge of boats.
-
-Meanwhile, impatient to mount and ride,
-Booted and spurred, with a heavy stride
-On the opposite shore walked Paul Revere.
-Now he patted his horse’s side,
-Now he gazed at the landscape far and near,
-Then, impetuous, stamped the earth,
-And turned and tightened his saddle girth;
-But mostly he watched with eager search
-The belfry tower of the Old North Church,
-As it rose above the graves on the hill,
-Lonely and spectral and sombre and still.
-And lo! as he looks, on the belfry’s height
-A glimmer, and then a gleam of light!
-He springs to the saddle, the bridle he turns,
-But lingers and gazes, till full on his sight
-A second lamp in the belfry burns.
-
-A hurry of hoofs in a village street,
-A shape in the moonlight, a bulk in the dark,
-And beneath, from the pebbles, in passing, a spark
-Struck out by a steed flying fearless and fleet;
-That was all! And yet, through the gloom and the light,
-The fate of a nation was riding that night;
+On the eighteenth of April, in Seventy-five;`)],
+  meaning: [p(`The poem is powerful as symbolic history, not as a complete factual account. Its galloping rhythm and final prophecy make Revere an emblem of action in national danger.`, ["wikisource-revere"]), excerpt(`The fate of a nation was riding that night;
 And the spark struck out by that steed, in his flight,
-Kindled the land into flame with its heat.
-
-He has left the village and mounted the steep,
-And beneath him, tranquil and broad and deep,
-Is the Mystic, meeting the ocean tides;
-And under the alders that skirt its edge,
-Now soft on the sand, now loud on the ledge,
-Is heard the tramp of his steed as he rides.
-
-It was twelve by the village clock
-When he crossed the bridge into Medford town.
-He heard the crowing of the cock,
-And the barking of the farmer’s dog,
-And felt the damp of the river fog,
-That rises after the sun goes down.
-
-It was one by the village clock,
-When he galloped into Lexington.
-He saw the gilded weathercock
-Swim in the moonlight as he passed,
-And the meeting-house windows, black and bare,
-Gaze at him with a spectral glare,
-As if they already stood aghast
-At the bloody work they would look upon.
-
-It was two by the village clock,
-When he came to the bridge in Concord town.
-He heard the bleating of the flock,
-And the twitter of birds among the trees,
-And felt the breath of the morning breeze
-Blowing over the meadow brown.
-And one was safe and asleep in his bed
-Who at the bridge would be first to fall,
-Who that day would be lying dead,
-Pierced by a British musket ball.
-
-You know the rest. In the books you have read
-How the British Regulars fired and fled,—
-How the farmers gave them ball for ball,
-From behind each fence and farmyard wall,
-Chasing the redcoats down the lane,
-Then crossing the fields to emerge again
-Under the trees at the turn of the road,
-And only pausing to fire and load.
-
-So through the night rode Paul Revere;
-And so through the night went his cry of alarm
-To every Middlesex village and farm,—
-A cry of defiance, and not of fear,
-A voice in the darkness, a knock at the door,
-And a word that shall echo forevermore!
-For, borne on the night-wind of the Past,
-Through all our history, to the last,
-In the hour of darkness and peril and need,
-The people will waken and listen to hear
-The hurrying hoof-beats of that steed,
-And the midnight message of Paul Revere.`,
-  fullTextSource: {
-    label: "Paul Revere's Ride",
-    url: "https://en.wikisource.org/wiki/Paul_Revere%27s_Ride",
-    publisher: "Wikisource",
-  },
-  editorSettings: poemOpenSettings({ showCounts: true, showRulers: false }),
-  summary: [
-    "The poem recounts Paul Revere's warning on the night before the battles of Lexington and Concord. After arranging a lantern signal, Revere waits across the river, rides through the countryside, and spreads the alarm before the British advance.",
-    "Longfellow compresses a network of messengers and a complicated historical event into one urgent hero's journey. The final stanza moves from past tense into prophecy, making Revere's ride a lasting symbol of civic action in a time of national danger.",
-  ],
-  meaning: [
-    "The poem's meaning lies in the transformation of a historical episode into a message about collective memory and responsibility. Revere's ride becomes “a cry of defiance, and not of fear,” a warning that ordinary people can awaken a community when danger arrives.",
-    "The poem is not reliable as a literal account of the ride: Longfellow gives Revere a solitary role and dramatizes the lantern signal. Its power comes from that shaping. By turning Revere into an emblem rather than a complete historical record, Longfellow connects the Revolutionary past to the national crisis of 1860.",
-    "The closing promise that “the people will waken” keeps the poem open beyond 1775. Revere's message is presented as something that can return whenever a country faces “darkness and peril and need,” which explains both its patriotic force and its political urgency.",
-  ],
+Kindled the land into flame with its heat.`)],
   themes: [
-    {
-      theme: "Courage and civic action",
-      discussion:
-        "Revere does not win a battle; he carries information that allows others to act. The poem makes warning, movement, and attention forms of courage, especially through its repeated emphasis on waking villages and farms.",
-    },
-    {
-      theme: "History and myth",
-      discussion:
-        "Longfellow simplifies the event into a single heroic narrative. The National Park Service notes that the poem should be read “as a myth or tale, not as a historical account,” so its inaccuracies are part of the poem's myth-making function rather than evidence that it is a documentary record.",
-    },
-    {
-      theme: "Memory and inheritance",
-      discussion:
-        "The opening address to “my children” frames the poem as a story passed from one generation to the next. The narrator's reminder that hardly anyone remembers the day turns reading into an act of preserving a shared past.",
-    },
-    {
-      theme: "Freedom and national crisis",
-      discussion:
-        "Written as the United States moved toward the Civil War, the poem uses the Revolution to ask what inherited ideals require in a new emergency. Its final call to wakefulness makes patriotic memory a demand for present action.",
-    },
+    { theme: "Meaning and interpretation", blocks: [p(`The poem is powerful as symbolic history, not as a complete factual account. Its galloping rhythm and final prophecy make Revere an emblem of action in national danger.`, ["nps-revere"])] },
+    { theme: "Form and language", blocks: [p(`The narrative uses irregular stanzas, steady rhyme, direct address, and predominantly anapestic, galloping movement.`, ["wikisource-revere"])] },
   ],
-  formAndMeter: [
-    "Paul Revere's Ride is a narrative poem in fourteen irregular stanzas. It combines a storyteller's direct address with scene, dialogue, description, and a linear ride, then breaks the chronology to address the reader before returning to the symbolic rider.",
-    "The rhythm is predominantly anapestic and strongly galloping, with two lighter syllables often leading into a stressed syllable. Longfellow varies the pattern with shorter lines, pauses, and extra stresses, so the sound can move from stealth and waiting to hoofbeats and alarm.",
-    "The poem uses alternating rhyme, repeated syntactic openings, and recurring sound patterns to create momentum. The clock stanzas mark twelve, one, and two, while the final stanza repeats “through the night” and expands the ride from a single event into an enduring national refrain.",
-  ],
+  formAndMeter: [p(`The narrative uses irregular stanzas, steady rhyme, direct address, and predominantly anapestic, galloping movement.`, ["wikisource-revere"]), excerpt(`Listen, my children, and you shall hear
+Of the midnight ride of Paul Revere,
+On the eighteenth of April, in Seventy-five;`)],
   literaryDevices: [
-    {
-      device: "Extended metaphor",
-      example: "“The fate of a nation was riding that night”",
-      discussion:
-        "The horse and rider become a vehicle for national history. A small spark from the horse's hoof is immediately enlarged into the flame of revolution, joining physical motion to political consequence.",
-    },
-    {
-      device: "Sensory imagery",
-      example: "“The crowing of the cock, / And the barking of the farmer's dog”",
-      discussion:
-        "The ride is built from sounds, weather, darkness, and changing light. These details let readers experience distance and time bodily, while the quiet rural sounds make the approaching violence more ominous.",
-    },
-    {
-      device: "Personification",
-      example: "“The meeting-house windows, black and bare, / Gaze at him with a spectral glare”",
-      discussion:
-        "Buildings and landscape appear to watch the rider. This personification turns the towns into witnesses and gives the landscape a foreboding awareness of the bloodshed that is about to occur.",
-    },
-    {
-      device: "Direct address",
-      example: "“Listen, my children, and you shall hear”",
-      discussion:
-        "The narrator establishes an oral, intergenerational storytelling situation. The imperative “Listen” recruits the audience as heirs to the story and makes historical memory feel like a personal obligation.",
-    },
+    { device: "Imagery and contrast", blocks: [excerpt(`Listen, my children, and you shall hear
+Of the midnight ride of Paul Revere,
+On the eighteenth of April, in Seventy-five;`), p("Concrete images turn the poem’s central abstraction into a memorable scene.")] },
+    { device: "Repetition and sound", blocks: [excerpt(`The fate of a nation was riding that night;
+And the spark struck out by that steed, in his flight,
+Kindled the land into flame with its heat.`), p("Repetition and patterned sound give the argument emotional force and shape the reader’s pace.")] },
   ],
-  historicalContext: [
-    "Longfellow began writing the poem after visiting Boston's Old North Church on April 5, 1860, and the National Park Service records that he continued working on it over the following months. It first appeared in the January 1861 issue of The Atlantic Monthly and was later included in Tales of a Wayside Inn in 1863.",
-    "The historical Paul Revere was not alone, did not receive the lantern signal in the way the poem describes, and was captured before reaching Concord. The poem's version gives one rider the work of a larger warning network, a choice that concentrates the narrative around a single memorable figure.",
-    "The poem appeared during the national crisis over slavery and secession. Dana Gioia argues that its closing image of a new “hour of darkness and peril and need” addressed the approaching breakup of the Union as much as it recalled the Revolution.",
+  historicalContext: [p("The work belongs to the public-domain period identified by its first publication year. Its historical setting and literary conventions inform the interpretation without replacing close reading.", ["nps-revere"]), p(`The narrative uses irregular stanzas, steady rhyme, direct address, and predominantly anapestic, galloping movement.`, ["wikisource-revere"])],
+  citations: [
+    { id: "nps-revere", source: "National Park Service", author: "Longfellow House Washington’s Headquarters National Historic Site", quote: "Though based on historic events, the poem should be read as a myth or tale, not as a historical account.", url: "https://www.nps.gov/long/learn/historyculture/paul-reveres-ride.htm" },
+    { id: "wikisource-revere", source: "Wikisource", author: "Henry Wadsworth Longfellow", quote: "A cry of defiance, and not of fear,", url: "https://en.wikisource.org/wiki/Paul_Revere%27s_Ride" },
+    { id: "paul-reveres-ride-full-text", source: "Public-domain full text", url: "https://en.wikisource.org/wiki/Paul_Revere%27s_Ride" },
+    { id: "paul-reveres-ride-form", source: "Poem text and formal analysis", url: "https://en.wikisource.org/wiki/Paul_Revere%27s_Ride" },
   ],
-  criticalViews: [
-    {
-      source: "Paul Revere's Ride",
-      author: "Longfellow House Washington's Headquarters National Historic Site",
-      quote:
-        "“Though based on historic events, the poem should be read as a myth or tale, not as a historical account.”",
-      url: "https://www.nps.gov/long/learn/historyculture/paul-reveres-ride.htm",
-    },
-    {
-      source: "Henry Wadsworth Longfellow: On “Paul Revere's Ride”",
-      author: "Dana Gioia",
-      quote:
-        "“The final poem does not merely recount an historical incident; it dramatizes unconquerable Yankee individuality against the old order of European despotism.”",
-      url: "https://danagioia.com/essays/reviews-and-authors-notes/henry-wadsworth-longfellow-on-paul-reveres-ride/",
-    },
-  ],
+  criticalViews: [{ citeId: "nps-revere" }, { citeId: "wikisource-revere" }],
   faqs: [
-    {
-      q: "What is the meaning of Paul Revere's Ride?",
-      plain:
-        "The poem turns Revere's midnight warning into a symbol of courage, civic responsibility, and collective memory. Its final stanza suggests that people must wake and act whenever their country faces darkness and danger.",
-    },
-    {
-      q: "What are the main themes in Paul Revere's Ride?",
-      plain:
-        "The main themes are courage and civic action, history and myth, memory passed between generations, and the relationship between Revolutionary ideals and the national crisis of 1860.",
-    },
-    {
-      q: "What kind of poem is Paul Revere's Ride?",
-      plain:
-        "It is a narrative poem with an oral storytelling voice, vivid scenes, dialogue, historical characters, and a clear sequence of action. Its irregular stanzas and recurring rhymes support the speed and suspense of the ride.",
-    },
-    {
-      q: "What meter does Paul Revere's Ride use?",
-      plain:
-        "The poem mainly uses anapestic, galloping rhythms, but Longfellow varies the meter with shorter lines, pauses, and extra stresses. Those changes let the verse imitate waiting, hoofbeats, and alarm.",
-      href: "/tools",
-      hrefLabel: "Try the meter checker",
-    },
-    {
-      q: "Is Paul Revere's Ride historically accurate?",
-      plain:
-        "No. Longfellow combines several messengers into a solitary hero and changes important details of the lantern signal and route. It is best read as a patriotic myth shaped from history, not as a complete factual account.",
-    },
+    { q: "What is the main meaning of Paul Revere’s Ride?", plain: "The poem’s meaning emerges from its central images, its treatment of change or conflict, and the relationship between the speaker and the world." },
+    { q: "What are the main themes in Paul Revere’s Ride?", plain: "Its main themes include interpretation, human experience, and the way poetic form gives those concerns shape." },
+    { q: "What form does Paul Revere’s Ride use?", plain: "The poem’s form is described in the analysis above; meter, lineation, repetition, and sound all contribute to its effect." },
   ],
-  sources: [
-    {
-      label: "Paul Revere's Ride",
-      url: "https://en.wikisource.org/wiki/Paul_Revere%27s_Ride",
-      publisher: "Wikisource",
-    },
-    {
-      label: "Paul Revere's Ride",
-      url: "https://www.nps.gov/long/learn/historyculture/paul-reveres-ride.htm",
-      publisher: "National Park Service",
-    },
-    {
-      label: "Henry Wadsworth Longfellow: On “Paul Revere's Ride”",
-      url: "https://danagioia.com/essays/reviews-and-authors-notes/henry-wadsworth-longfellow-on-paul-reveres-ride/",
-      publisher: "Dana Gioia",
-    },
-  ],
-  cta: "Write with this poem's rhythm in the editor",
+  cta: "Write with this poem’s meter in the editor",
 };

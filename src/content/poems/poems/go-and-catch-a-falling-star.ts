@@ -1,5 +1,6 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemMeterSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const goAndCatchAFallingStarPoem: PoemAnalysisContent = {
   slug: "go-and-catch-a-falling-star",
@@ -7,170 +8,60 @@ export const goAndCatchAFallingStarPoem: PoemAnalysisContent = {
   poemTitle: "Song: Go and catch a falling star",
   author: "John Donne",
   yearPublished: 1633,
-  publicDomainBasis:
-    "First published in the 1633 edition of Donne's collected poems, well before the US public-domain cutoff.",
-  title:
-    "Go and Catch a Falling Star Analysis & Meaning — John Donne — lyriic",
-  description:
-    "Go and Catch a Falling Star analysis and meaning: Donne’s witty poem on impossible quests, fidelity, gender, and cynical love.",
+  publicDomainBasis: "First published in Donne's collected poems in 1633, well before the US public-domain cutoff.",
+  title: "Go and Catch a Falling Star Analysis & Meaning — John Donne — lyriic",
+  description: "Analysis of Donne’s witty song about impossible quests, fidelity, gender, and cynical love.",
   h1: "Go and Catch a Falling Star analysis",
-  intro:
-    "This Go and Catch a Falling Star analysis explains how John Donne turns magical impossibilities and a playful song form into a bitter argument about fidelity.",
-  text: `GO and catch a falling star,
-Get with child a mandrake root,
-Tell me where all past years are,
-Or who cleft the Devil's foot:
-Teach me to hear mermaids singing,
-Or to keep off envy's stinging,
-And find
-What wind
-Serves to advance an honest mind.
-
-If thou be'st born to strange sights,
-Things invisible to see,
-Ride ten thousand days and nights
-Till Age snow white hairs on thee;
-Thou, when thou return'st, wilt tell me
-All strange wonders that befell thee,
-And swear
-No where
-Lives a woman true and fair.
-
-If thou find'st one, let me know;
-Such a pilgrimage were sweet.
-Yet do not; I would not go,
-Though at next door we might meet.
-Though she were true when you met her,
-And last till you write your letter,
-Yet she
-Will be
-False, ere I come, to two or three.`,
-  fullTextSource: {
-    label: "Song — full poem",
-    url: "https://en.wikisource.org/wiki/Song:_Go_and_catch_a_falling_star",
-    publisher: "Wikisource",
-  },
-  editorSettings: poemMeterSettings("trochaic-tetrameter", {
-    showCounts: true,
-    showStress: true,
-    showMeterBreaks: true,
-    showRhymeScheme: true,
-  }),
+  intro: "This analysis explains how Donne turns supernatural commands and a brisk song form into a bitter argument about fidelity.",
+  fullTextSource: { label: "Song — full poem", url: "https://en.wikisource.org/wiki/Song:_Go_and_catch_a_falling_star", publisher: "Wikisource" },
+  editorSettings: poemMeterSettings("trochaic-tetrameter", { showCounts: true, showStress: true, showMeterBreaks: true, showRhymeScheme: true }),
   summary: [
-    "The speaker commands a listener to perform a series of impossible or supernatural tasks, including catching a falling star, finding lost time, and hearing mermaids sing.",
-    "The listener is then asked to travel for ten thousand days in search of a woman who is both true and fair. The final stanza reverses its apparent invitation: even if such a woman were found, the speaker says her fidelity would fail before he could reach her.",
+    p("The speaker orders a listener to perform impossible tasks, then asks him to search for a woman who is both true and fair.", ["donne-song-criticism"]),
+    excerpt(`GO and catch a falling star,
+Get with child a mandrake root,
+Tell me where all past years are,`),
+    p("The final stanza withdraws the apparent invitation: even if such a woman were found, she would be false before the speaker arrived.", ["donne-song-structure"]),
   ],
   meaning: [
-    "The poem makes romantic fidelity seem less attainable than its opening marvels. Donne's speaker uses hyperbole and a fantastical quest to turn a conventional complaint about infidelity into a witty, memorable paradox: magical sights may be discoverable, but a faithful and beautiful woman is not.",
-    "The confident conclusion is also a performance by a speaker whose cynicism may be covering disappointment. The poem invites criticism of its misogynistic generalization while showing how smoothly a song, rhyme, and comic escalation can make that generalization sound persuasive.",
+    p("Donne makes fidelity seem less attainable than catching a star or hearing mermaids. The comic quest turns a conventional complaint about infidelity into a memorable paradox.", ["donne-song-criticism"]),
+    excerpt(`And swear
+No where
+Lives a woman true and fair.`),
+    p("The speaker’s misogynistic generalization is a historical literary posture, not a neutral account of relationships; the song’s musical confidence makes it sound persuasive.", ["donne-song-criticism"]),
   ],
   themes: [
-    {
-      theme: "Fidelity and skepticism",
-      discussion:
-        "The repeated search for a woman who is both true and fair becomes an impossible quest. The poem's final claim that faithfulness would end almost immediately turns skepticism into a totalizing judgment.",
-    },
-    {
-      theme: "Gender and power",
-      discussion:
-        "The speaker treats women's supposed infidelity as a universal fact rather than an individual possibility. That generalization reflects a misogynistic literary convention, and its force depends on the speaker controlling the terms of the argument.",
-    },
-    {
-      theme: "Wonder and disillusionment",
-      discussion:
-        "Stars, mandrakes, mermaids, the devil, and a ten-thousand-day journey create a world of marvels. The poem then uses that imaginative world to make its conclusion more disillusioned: even wonders cannot produce the lover the speaker wants.",
-    },
+    { theme: "Fidelity and skepticism", blocks: [p("The search for a faithful woman becomes an impossible quest, and the ending turns skepticism into a universal judgment.", ["donne-song-criticism"])] },
+    { theme: "Gender and power", blocks: [p("The poem treats women’s supposed inconstancy as a conventionally gendered claim that modern readers can examine critically.", ["donne-song-criticism"])] },
+    { theme: "Wonder and disillusionment", blocks: [p("Stars, mandrakes, mermaids, and a ten-thousand-day journey create marvels against which human constancy is judged.")] },
   ],
   formAndMeter: [
-    "The poem has three nine-line stanzas. Each stanza follows the same ABABCCDDD rhyme scheme, giving the argument a brisk, song-like momentum.",
-    "The predominant rhythm is trochaic tetrameter: many lines move through four stressed-unstressed beats, as in “GO and catch a falling star.” Lines seven and eight contract to short iambic monometers—“And find / What wind”—which sharply emphasize the speaker's punchlines.",
-    "The regular musical form creates tension with the speaker's harsh conclusion. The poem sounds light and controlled even as its argument becomes increasingly absolute.",
+    p("The poem has three nine-line stanzas. Each uses ABABCC followed by a rhyming triplet, giving the argument brisk song-like momentum.", ["donne-song-structure"]),
+    p("Its predominant rhythm is trochaic tetrameter; the short “And find / What wind” lines sharpen each stanza’s punchline.", ["donne-song-structure"]),
   ],
   literaryDevices: [
-    {
-      device: "Hyperbole",
-      example: "Ride ten thousand days and nights",
-      discussion:
-        "The enormous journey makes the search for a faithful woman sound beyond ordinary human effort. Exaggeration lets the speaker compare romantic fidelity with supernatural impossibilities.",
-    },
-    {
-      device: "Apostrophe and imperative",
-      example: "Go and catch a falling star",
-      discussion:
-        "The opening command addresses an unnamed listener directly. Its energetic imperatives make the poem feel like spoken banter while launching the speaker's impossible test.",
-    },
-    {
-      device: "Allusion and folklore",
-      example: "Get with child a mandrake root",
-      discussion:
-        "The mandrake, mermaids, and the devil's cleft foot draw on supernatural and folkloric imagery. These references build a catalogue of strange possibilities against which human constancy is judged.",
-    },
-    {
-      device: "Irony",
-      example: "Such a pilgrimage were sweet. / Yet do not; I would not go",
-      discussion:
-        "The speaker first welcomes news of a faithful woman, then immediately refuses the journey. This reversal exposes the gap between his stated desire and his settled expectation of disappointment.",
-    },
+    { device: "Hyperbole", blocks: [excerpt(`Ride ten thousand days and nights
+Till Age snow white hairs on thee;`), p("The enormous journey makes fidelity sound beyond ordinary human effort.")] },
+    { device: "Imperative", blocks: [excerpt(`GO and catch a falling star`), p("The direct command gives the poem the energy of spoken banter.")] },
+    { device: "Folkloric allusion", blocks: [excerpt(`Teach me to hear mermaids singing,
+Or to keep off envy's stinging,`), p("Supernatural references build a catalogue of strange possibilities.")] },
+    { device: "Irony", blocks: [excerpt(`Such a pilgrimage were sweet.
+Yet do not; I would not go,`), p("The reversal exposes the gap between stated desire and settled disappointment.")] },
   ],
   historicalContext: [
-    "The poem was first published posthumously in 1633, two years after Donne's death, in the first collected edition of his poems. It circulated in manuscript before that publication, as was common for poems shared within literary circles.",
-    "The poem belongs to the early modern tradition of witty complaints about women's inconstancy. Its speaker's claim is not a neutral description of relationships: it is a gendered literary posture that contemporary readers can examine as both clever rhetoric and prejudice.",
+    p("The poem was first published posthumously in 1633 in the first collected edition of Donne’s poems. Its early-modern song form supports a witty complaint about inconstancy.", ["donne-song-structure"]),
+    p("The speaker’s claim belongs to a gendered literary convention and can be read both as clever rhetoric and as prejudice.", ["donne-song-criticism"]),
   ],
-  criticalViews: [
-    {
-      source: "LitCharts",
-      quote:
-        "The poem's rhyme scheme, relatively steady meter, and clear hyperbole make its tone feel light-hearted and satirical, but the speaker also seems to harbor genuine melancholy, bitterness, and cynicism towards women and relationships.",
-      url: "https://www.litcharts.com/poetry/john-donne/song-go-and-catch-a-falling-star",
-    },
-    {
-      source: "Journal of Applied Linguistics",
-      author: "Malik Umer Ajmal and Tayyaba Zainab",
-      quote:
-        "The analysis reveals anti-feministic undertones within the broader context, where societal norms and power dynamics played a crucial role in shaping discourse.",
-      url: "https://journal.eltaorganization.org/index.php/joal/article/view/177",
-    },
+  citations: [
+    { id: "donne-song-text", source: "Wikisource", url: "https://en.wikisource.org/wiki/Song:_Go_and_catch_a_falling_star" },
+    { id: "donne-song-criticism", source: "LitCharts", quote: "The poem's rhyme scheme, relatively steady meter, and clear hyperbole make its tone feel light-hearted and satirical, but the speaker also seems to harbor genuine melancholy, bitterness, and cynicism towards women and relationships.", url: "https://www.litcharts.com/poetry/john-donne/song-go-and-catch-a-falling-star" },
+    { id: "donne-song-structure", source: "Literary Theory and Criticism", quote: "John Donne enforced a tight structure on his song Go and Catch a Falling Star", url: "https://literariness.org/2020/07/08/analysis-of-john-donnes-go-and-catch-a-falling-star/" },
+    { id: "donne-song-analysis", source: "Poem Analysis", url: "https://poemanalysis.com/john-donne/song-go-and-catch-a-falling-star/" },
   ],
+  criticalViews: [{ citeId: "donne-song-criticism" }, { citeId: "donne-song-structure" }],
   faqs: [
-    {
-      q: "What is the main meaning of “Go and Catch a Falling Star”?",
-      plain:
-        "The speaker argues that finding a woman who is both beautiful and faithful is as impossible as completing a supernatural quest. The poem presents that claim as witty, but its cynicism also reveals bitterness and a misogynistic assumption.",
-    },
-    {
-      q: "What are the main themes in the poem?",
-      plain:
-        "The main themes are fidelity, skepticism, gender, wonder, and disillusionment. Donne contrasts magical discoveries with the speaker's belief that romantic constancy cannot last.",
-    },
-    {
-      q: "What form and meter does the poem use?",
-      plain:
-        "It has three nine-line stanzas with an ABABCCDDD rhyme scheme. Most lines use forceful trochaic tetrameter, while the short seventh and eighth lines of each stanza work as emphatic iambic monometers.",
-      href: "/tools/trochaic-tetrameter-checker",
-      hrefLabel: "Open the trochaic tetrameter checker",
-    },
-    {
-      q: "Why does Donne use impossible tasks?",
-      plain:
-        "The impossible tasks create a scale for the speaker's claim: catching a star, finding lost time, or hearing mermaids may be imaginable, but locating a permanently faithful woman is presented as even less likely.",
-    },
+    { q: "What is the poem’s main meaning?", plain: "The speaker claims that a beautiful, faithful woman is as impossible to find as a supernatural wonder, though the claim is deliberately witty and gendered." },
+    { q: "What are its main themes?", plain: "Fidelity, skepticism, wonder, gender, and disillusionment shape the poem’s argument." },
+    { q: "What form does it use?", plain: "It has three nine-line stanzas with ABABCC and a closing triplet, in a brisk, predominantly trochaic song rhythm." },
   ],
-  sources: [
-    {
-      label: "Song — full poem",
-      url: "https://en.wikisource.org/wiki/Song:_Go_and_catch_a_falling_star",
-      publisher: "Wikisource",
-    },
-    {
-      label: "Song: Go and catch a falling star — summary and analysis",
-      url: "https://www.litcharts.com/poetry/john-donne/song-go-and-catch-a-falling-star",
-      publisher: "LitCharts",
-    },
-    {
-      label: "Critical discourse analysis of the poem",
-      url: "https://journal.eltaorganization.org/index.php/joal/article/view/177",
-      publisher: "Journal of Applied Linguistics",
-    },
-  ],
-  cta: "Write with this poem's meter in the editor",
+  cta: "Write with this poem’s meter in the editor",
 };

@@ -2,139 +2,130 @@
 
 Acquainted with the Night — Robert Frost (1928)
 
-This Acquainted with the Night analysis explains how Robert Frost uses a rainy city walk, terza rima, and a circular ending to explore solitude and emotional isolation.
+Frost uses a rainy city walk, interlocking rhyme, and circular repetition to explore solitude.
 
-## The poem
+Full text from [Acquainted with the Night](https://www.poetryfoundation.org/poems/47548/acquainted-with-the-night). Public domain in the US (First published in 1928; public domain under the project’s US screening policy.).
+
+## Summary
+
+A first-person speaker repeatedly walks through a rainy city, passing a watchman and hearing a distant cry. A high clock says the time is neither wrong nor right.
 
 ```
 I have been one acquainted with the night.
 I have walked out in rain—and back in rain.
 I have outwalked the furthest city light.
-
-I have looked down the saddest city lane.
-I have passed by the watchman on his beat
-And dropped my eyes, unwilling to explain.
-
-I have stood still and stopped the sound of feet
-When far away an interrupted cry
-Came over houses from another street,
-
-But not to call me back or say good-bye;
-And further still at an unearthly height,
-One luminary clock against the sky
-
-Proclaimed the time was neither wrong nor right.
-I have been one acquainted with the night.
 ```
 
-Text from [Full poem text: Poetry Foundation](https://www.poetryfoundation.org/poems/47548/acquainted-with-the-night). Public domain in the US (First published in 1928 in the Virginia Quarterly Review and collected that year in West-Running Brook; under the project's US screening policy, the poem is public domain.).
-
-## Summary
-
-A first-person speaker describes repeatedly walking through a rainy city at night. He passes a watchman without explaining himself, hears a distant interrupted cry, and moves beyond the furthest city light.
-
-A high, glowing clock declares that the time is neither wrong nor right. The poem then returns to its opening line, making the speaker’s acquaintance with darkness feel habitual and unresolved.
+The identical opening and closing line makes the journey circular and unresolved.[2]
 
 ## Meaning and interpretation
 
-The night is both a literal setting and a figure for inward loneliness. The speaker is not simply alone in an empty landscape: he is surrounded by houses, a watchman, and other possible voices, yet remains separate from human contact.
+Night is both setting and figure for inward loneliness. The speaker is surrounded by houses and possible voices yet remains separate from human contact.[2]
 
-The phrase “acquainted with” suggests familiarity without intimacy. The speaker knows the night through repeated experience, but the word stops short of claiming friendship, mastery, or complete self-knowledge.
+```
+But not to call me back or say good-bye;
+And further still at an unearthly height,
+```
 
-The clock’s judgment that the time is “neither wrong nor right” refuses a clear moral or emotional resolution. Frost leaves the speaker suspended between ordinary nighttime wandering and a more existential journey into uncertainty.
+“Acquainted” suggests familiarity without intimacy: the speaker knows darkness through repetition but does not master it.
 
 ## Themes
 
-### Solitude and social isolation
+### Solitude
 
-The speaker encounters people and signs of communal life but avoids the watchman and is not summoned by the distant cry. The poem presents loneliness as separation within a populated city, not merely physical distance from others.
+Loneliness occurs within a populated city, not only in an empty landscape.
 
 ### Night and inward experience
 
-Rain, darkness, and the city’s furthest light create an exterior landscape that also reflects the speaker’s interior state. Night becomes a condition the speaker knows through repeated walks and private thought.
+```
+I have looked down the saddest city lane.
+I have passed by the watchman on his beat
+```
+
+The urban route reflects the speaker’s interior state.
 
 ### Time and uncertainty
 
-The “luminary clock” gives the poem an image of time viewed from an unearthly height, but its message is deliberately indeterminate. The speaker receives no assurance that his journey is right or wrong.
+```
+Proclaimed the time was neither wrong nor right.
+```
+
+The clock offers judgment without resolution.
 
 ## Form and meter
 
-The poem is a 14-line sonnet arranged as four tercets followed by a closing couplet. Its interlocking terza-rima rhyme scheme is ABA BCB CDC DED EE, so each middle rhyme carries into the next stanza before the final couplet closes the sequence.
+The 14-line poem is a terza-rima sonnet: four tercets followed by a couplet, with interlocking rhyme and predominantly iambic pentameter.[3]
 
-The lines are predominantly iambic pentameter, though Frost varies the natural speech rhythm with substitutions, pauses, and stresses. The repeated “I have” gives the walk a measured pulse like recurring footsteps.
-
-The opening and closing lines are identical. This circular structure makes the poem feel less like a completed journey than a return to a condition the speaker already knows.
+Repeated “I have” creates a measured pulse like recurring footsteps; the final repetition returns the speaker to his condition.
 
 ## Literary devices
 
 ### Repetition
 
-> I have been one acquainted with the night.
+```
+I have been one acquainted with the night.
+```
 
-The line frames the poem and repeats at its close. Its return makes the speaker’s experience sound continuous, while the repeated “I have” throughout the poem reinforces the sense of a practiced route.
+The framing line makes solitude habitual and circular.
 
 ### Personification
 
-> One luminary clock against the sky / Proclaimed the time was neither wrong nor right.
-
-The clock is given a voice and authority, but its proclamation is not an answer. Personifying time makes the speaker’s uncertainty feel as though it has been judged by the universe and left unsettled.
+The luminary clock proclaims a judgment, but its words preserve ambiguity rather than answering the speaker.
 
 ### Auditory imagery
 
-> When far away an interrupted cry / Came over houses from another street,
+```
+When far away an interrupted cry
+Came over houses from another street,
+```
 
-The cry reaches the speaker without revealing its source or purpose. Sound briefly connects separate lives, then the poem emphasizes that it is not calling him back or saying goodbye.
-
-### Symbolism
-
-> I have outwalked the furthest city light.
-
-The city light can represent social visibility, safety, or ordinary communal life. Outwalking it places the speaker at the edge of both the physical city and the emotional world shared with others.
+Sound briefly connects separate lives, then fails to summon the speaker.
 
 ## Historical context
 
-The poem first appeared in the Autumn 1928 issue of The Virginia Quarterly Review and was collected later that year in Frost’s West-Running Brook. The publication history places this urban night walk within Frost’s mature period, even though his public image often emphasizes rural New England.
+The poem appeared in 1928 in West-Running Brook after publication in the Virginia Quarterly Review. Its urban setting distinguishes it from Frost’s better-known rural lyrics.[4]
 
-The poem’s city setting distinguishes it from Frost’s better-known rural lyrics. Literary Theory and Criticism notes that critics have compared its tercets and interlocking rhymes with Dante’s Inferno, while its urban imagery has also been linked to William Blake’s “London.”
+```
+One luminary clock against the sky
+Proclaimed the time was neither wrong nor right.
+```
 
-A biographical reading should remain cautious: the speaker is a constructed lyric voice, not automatically a transcript of Frost’s private life. The poem’s emotional force comes from its concrete scenes and withheld explanations rather than from a stated diagnosis or confession.
+A constructed lyric voice, rather than a direct autobiography, carries the poem’s uncertainty.
 
 ## What critics say
 
-> “The choice of acquainted is intriguing because it suggests a certain knowledge and familiarity without intimacy. An acquaintance is not a friend.”
+> “Acquainted with the Night is a terza rima sonnet with the traditional 14 lines and ending couplet.”
 >
-> — [Literary Theory and Criticism](https://literariness.org/2021/02/21/analysis-of-robert-frosts-acquainted-with-the-night/)
+> — [LitCharts](https://www.litcharts.com/poetry/robert-frost/acquainted-with-the-night)
 
-> “The repetition of “I have” and of “acquainted with the night” echo footfalls, suggesting that the reader accompanies the speaker into the night.”
+> “Each line is also written using iambic pentameter.”
 >
-> — [Literary Theory and Criticism](https://literariness.org/2021/02/21/analysis-of-robert-frosts-acquainted-with-the-night/)
+> — [LitCharts](https://www.litcharts.com/poetry/robert-frost/acquainted-with-the-night)
 
 ## Common questions
 
-### What is the main meaning of “Acquainted with the Night”?
+### What is the main meaning?
 
-The poem presents a speaker who repeatedly walks alone through a city at night. The night becomes a figure for loneliness, inward reflection, and an uncertain relationship with other people and with time.
+The poem presents repeated night walking as a figure for loneliness, inward reflection, and uncertainty.
 
-### What are the main themes in “Acquainted with the Night”?
+### What are the themes?
 
-The central themes are solitude, social isolation, inward experience, and uncertainty about time and meaning. The city setting shows that loneliness can persist even when other people and houses are nearby.
+Solitude, urban isolation, night, time, and unresolved judgment.
 
-### What is the form and rhyme scheme of the poem?
+### What form does it use?
 
-It is a 14-line sonnet made of four tercets and a final couplet. The interlocking rhyme scheme is ABA BCB CDC DED EE, a terza-rima pattern, and the lines are predominantly iambic pentameter.
-
-### What does the “luminary clock” symbolize?
-
-It is literally a bright clock seen high against the sky, but it can also symbolize distant, impersonal time or judgment. Its message that the time is neither wrong nor right preserves the poem’s ambiguity.
+A terza-rima sonnet with four tercets, a closing couplet, and predominantly iambic pentameter.
 
 ## References
 
-- [Full poem text](https://www.poetryfoundation.org/poems/47548/acquainted-with-the-night) — Poetry Foundation
+- [Poetry Foundation](https://www.poetryfoundation.org/poems/47548/acquainted-with-the-night)
 
-- [Original publication issue](https://www.vqronline.org/autumn-1928/poetry/acquainted-night) — The Virginia Quarterly Review
+- [LitCharts](https://www.litcharts.com/poetry/robert-frost/acquainted-with-the-night)
 
-- [Critical analysis and further reading](https://literariness.org/2021/02/21/analysis-of-robert-frosts-acquainted-with-the-night/) — Literary Theory and Criticism
+- [LitCharts](https://www.litcharts.com/poetry/robert-frost/acquainted-with-the-night)
+
+- [Poetry Foundation](https://www.poetryfoundation.org/poems/47548/acquainted-with-the-night)
 
 ## Open the editor
 
-Write with this poem’s meter in the editor: https://lyriic.com/write
+Write with this poem’s meter in the editor: https://lyriic.com/write/iambic-pentameter

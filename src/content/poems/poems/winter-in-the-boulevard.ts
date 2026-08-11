@@ -1,5 +1,6 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemOpenSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const winterInTheBoulevardPoem: PoemAnalysisContent = {
   slug: "winter-in-the-boulevard",
@@ -7,159 +8,64 @@ export const winterInTheBoulevardPoem: PoemAnalysisContent = {
   poemTitle: "Winter in the Boulevard",
   author: "D. H. Lawrence",
   yearPublished: 1918,
-  publicDomainBasis:
-    "The poem appears in D. H. Lawrence's New Poems, published in 1918; works first published in the United States before 1931 are in the public domain.",
-  title:
-    "Winter in the Boulevard Analysis & Meaning — D. H. Lawrence — lyriic",
-  description:
-    "Winter in the Boulevard analysis and meaning: D. H. Lawrence's frost-bound cityscape explores nature, vulnerability, silence, and judgment.",
+  publicDomainBasis: "The poem appears in New Poems, published in 1916/1918-era editions; it is public domain in the United States.",
+  title: "Winter in the Boulevard Analysis & Meaning — D. H. Lawrence — lyriic",
+  description: "Winter in the Boulevard analysis explores Lawrence’s frost-bound cityscape, nature, vulnerability, silence, and uncertain judgment.",
   h1: "Winter in the Boulevard analysis",
-  intro:
-    "This Winter in the Boulevard analysis explains how D. H. Lawrence turns a frozen city street into a scene of exposure, thought, and uncertain judgment.",
-  text: `THE frost has settled down upon the trees
-And ruthlessly strangled off the fantasies
-Of leaves that have gone unnoticed, swept like old
-Romantic stories now no more to be told.
-
-The trees down the boulevard stand naked in thought,
-Their abundant summery wordage silenced, caught
-In the grim undertow; naked the trees confront
-Implacable winter's long, cross-questioning brunt.
-
-Has some hand balanced more leaves in the depths of the twigs?
-Some dim little efforts placed in the threads of the birch?—
-It is only the sparrows, like dead black leaves on the sprigs,
-Sitting huddled against the cerulean, one flesh with their perch.
-
-The clear, cold sky coldly bethinks itself.
-Like vivid thought the air spins bright, and all
-Trees, birds, and earth, arrested in the after-thought
-Awaiting the sentence out from the welkin brought.`,
-  fullTextSource: {
-    label: "New Poems by D. H. Lawrence",
-    url: "https://www.gutenberg.org/files/22726/22726-h/22726-h.htm",
-    publisher: "Project Gutenberg",
-  },
+  intro: "This analysis explains how Lawrence turns a frozen city street into a scene of exposure, thought, and uncertain judgment.",
+  fullTextSource: { label: "New Poems by D. H. Lawrence", url: "https://www.gutenberg.org/files/22726/22726-h/22726-h.htm", publisher: "Project Gutenberg" },
   editorSettings: poemOpenSettings({ showCounts: true }),
   summary: [
-    "The poem observes frost settling over a boulevard, stripping leaves from trees and turning a familiar urban scene into a stark winter tableau.",
-    "The speaker first sees loss and exposure, then notices sparrows huddled in the branches. In the final stanza, the entire landscape seems to wait beneath a thinking sky for an unexplained sentence.",
+    p("The poem observes frost settling over a boulevard, stripping leaves from trees and turning a familiar urban scene into a stark winter tableau.", ["lawrence-poem-analysis"]),
+    excerpt(`THE frost has settled down upon the trees
+And ruthlessly strangled off the fantasies
+Of leaves that have gone unnoticed, swept like old`),
+    p("The speaker first sees loss and exposure, then notices sparrows huddled in the branches. In the final stanza, the landscape waits beneath a thinking sky for an unexplained sentence.", ["lawrence-bartleby"]),
   ],
   meaning: [
-    "Lawrence makes winter more than a change in weather. Frost becomes a ruthless force that silences the trees' “summery wordage,” while the boulevard becomes a place where nature is exposed and compelled to endure.",
-    "The ending leaves the judgment unresolved. Trees, birds, and earth are “arrested” and waiting, so the poem's meaning lies partly in suspended uncertainty: the world is alive, but its fate appears to depend on a power beyond it.",
+    p("Lawrence makes winter more than a change in weather. Frost silences the trees’ “summery wordage,” while the boulevard becomes a place where nature is exposed and compelled to endure.", ["lawrence-poem-analysis"]),
+    excerpt(`The trees down the boulevard stand naked in thought,
+Their abundant summery wordage silenced, caught
+In the grim undertow;`),
+    p("The ending leaves judgment unresolved. Trees, birds, and earth are “arrested” and waiting, so the poem’s meaning lies partly in suspended uncertainty: the world is alive, but its fate appears beyond it.", ["lawrence-poem-analysis"]),
   ],
   themes: [
-    {
-      theme: "Nature in the city",
-      discussion:
-        "The boulevard is an urban setting, but the poem gives nearly all its attention to trees, birds, earth, air, and sky. The result is a cityscape in which natural life, rather than human activity, controls the scene.",
-    },
-    {
-      theme: "Exposure and vulnerability",
-      discussion:
-        "The trees are “naked” after the leaves have been stripped away, and the sparrows must huddle together for warmth. Winter reveals how little protection the living world has against the season's force.",
-    },
-    {
-      theme: "Silence and thought",
-      discussion:
-        "The trees' former “wordage” is silenced, while the sky and air are repeatedly described through mental language. The quiet landscape becomes a strange theater of thought without speech.",
-    },
-    {
-      theme: "Uncertain judgment",
-      discussion:
-        "Words such as “cross-questioning,” “arrested,” and “sentence” make winter resemble an interrogation or trial. The poem never identifies the judge or explains what verdict will follow.",
-    },
+    { theme: "Nature in the city", blocks: [p("The boulevard is urban, but the poem gives nearly all its attention to trees, birds, earth, air, and sky. Natural life, rather than human activity, controls the scene.", ["lawrence-poem-analysis"])] },
+    { theme: "Exposure and vulnerability", blocks: [excerpt(`naked the trees confront
+Implacable winter's long, cross-questioning brunt.`), p("The trees are exposed after their leaves are stripped away, and the sparrows huddle for warmth. Winter reveals how little protection living things have against the season.", ["lawrence-poem-analysis"])] },
+    { theme: "Silence and thought", blocks: [p("The trees’ former “wordage” is silenced, while the sky and air are described through mental language. The quiet landscape becomes a theater of thought without speech.", ["lawrence-bartleby"])] },
+    { theme: "Uncertain judgment", blocks: [excerpt(`Trees, birds, and earth, arrested in the after-thought
+Awaiting the sentence out from the welkin brought.`), p("Words such as “cross-questioning,” “arrested,” and “sentence” make winter resemble an interrogation or trial. The judge and verdict remain unidentified.", ["lawrence-poem-analysis"])] },
   ],
   formAndMeter: [
-    "“Winter in the Boulevard” is arranged in four quatrains. Its long lines and dense syntax create a measured, observational movement, but the poem does not sustain a fixed metrical pattern.",
-    "The stanza endings use strong paired sounds—“trees”/“fantasies,” “old”/“told,” and “brunt”/“confront”—while the internal sound echoes are often more important than a strict end-rhyme scheme. The irregularity suits the poem's shifting, unsettled perception.",
-    "The poem moves through four stages: frost removes the leaves, the trees confront winter, the speaker discovers the sparrows, and the whole landscape waits beneath the sky. This progression gives the irregular lyric a clear dramatic shape.",
+    p("The poem is arranged in four quatrains. Its long lines and dense syntax create a measured observational movement, but it does not sustain a fixed metrical pattern.", ["lawrence-poem-analysis"]),
+    p("Strong paired sounds and internal echoes matter more than a strict end-rhyme scheme. The loose structure suits the poem’s shifting, unsettled perception.", ["lawrence-bartleby"]),
   ],
   literaryDevices: [
-    {
-      device: "Personification",
-      example: "The frost has settled down upon the trees / And ruthlessly strangled off the fantasies",
-      discussion:
-        "Frost is given the deliberate violence of a person, while leaves are given “fantasies.” This makes seasonal change feel like an act of intention rather than a neutral process.",
-    },
-    {
-      device: "Extended metaphor",
-      example: "naked the trees confront / Implacable winter's long, cross-questioning brunt.",
-      discussion:
-        "Winter is framed as an interrogator, and the stripped trees as subjects forced to face its questions. The legal and inquisitorial language turns weather into a test of endurance.",
-    },
-    {
-      device: "Simile and visual reversal",
-      example: "It is only the sparrows, like dead black leaves on the sprigs",
-      discussion:
-        "The sparrows resemble the leaves that winter has removed, so living birds initially appear as remnants of death. The image captures both their vulnerability and their persistence.",
-    },
-    {
-      device: "Alliteration and semantic echo",
-      example: "The clear, cold sky coldly bethinks itself.",
-      discussion:
-        "The repeated c and cold sounds make the line feel chilled and deliberate. Repeating “cold” also joins physical temperature to the sky's imagined emotional detachment.",
-    },
+    { device: "Personification", blocks: [excerpt(`The frost has settled down upon the trees
+And ruthlessly strangled off the fantasies`), p("Frost is given deliberate violence, while leaves are given “fantasies.” Seasonal change feels like an act of intention rather than a neutral process.", ["lawrence-poem-analysis"])] },
+    { device: "Extended metaphor", blocks: [excerpt(`naked the trees confront
+Implacable winter's long, cross-questioning brunt.`), p("Winter is framed as an interrogator and the stripped trees as subjects forced to face its questions. Legal language turns weather into a test of endurance.", ["lawrence-poem-analysis"])] },
+    { device: "Simile and visual reversal", blocks: [excerpt(`It is only the sparrows, like dead black leaves on the sprigs,
+Sitting huddled against the cerulean, one flesh with their perch.`), p("The sparrows resemble the leaves winter has removed, so living birds initially appear as remnants of death. The image captures vulnerability and persistence.", ["lawrence-poem-analysis"])] },
+    { device: "Alliteration and semantic echo", blocks: [excerpt(`The clear, cold sky coldly bethinks itself.`), p("Repeated c sounds make the line feel chilled and deliberate, joining physical temperature to the sky’s imagined detachment.", ["lawrence-poem-analysis"])] },
   ],
   historicalContext: [
-    "The poem was published in New Poems in 1918, during the First World War. Its boulevard is notably free of human figures, leaving an urban environment to be read through trees, birds, and weather.",
-    "Holly A. Laird's study of Lawrence's urban poetry places these city poems in relation to modernist and late-nineteenth-century urban writing. That context helps explain why Lawrence treats the boulevard as a meeting point between built space and natural force.",
-    "The poem's older word “welkin” means the sky or heavens. Its use gives the final stanza a deliberately elevated register, making an ordinary winter scene feel cosmic and potentially theological.",
+    p("The poem was published in New Poems during Lawrence’s early twentieth-century period. Its boulevard is notably free of human figures, leaving an urban environment to be read through trees, birds, and weather.", ["lawrence-gutenberg"]),
+    p("The older word “welkin” means the sky or heavens. Its elevated register makes an ordinary winter scene feel cosmic and potentially theological.", ["lawrence-poem-analysis"]),
   ],
-  criticalViews: [
-    {
-      source: "Poem Analysis",
-      quote:
-        "One will notice by the end of the poem that Lawrence’s speaker has spent a great deal of time on the scenery, animals, and plants, but has not mentioned any human residents.",
-      url: "https://poemanalysis.com/d-h-lawrence/winter-in-the-boulevard/",
-    },
-    {
-      source: "Holly A. Laird, Journal of D. H. Lawrence Studies",
-      author: "Fabio Macherelli",
-      quote:
-        "Although commonly held by criticism as a minor episode in the bulk of his poetic production, D. H. Lawrence’s city poems … may deserve a place in the English literary scene of the decade of the First World War, particularly in their relation to modernist issues and to late nineteenth century urban poetry.",
-      url: "https://journalofdhlawrencestudies.com/wp-content/uploads/2020/12/jdhls-5.2-2019-holly-laird-new-london-poet.pdf",
-    },
+  citations: [
+    { id: "lawrence-gutenberg", source: "Project Gutenberg", url: "https://www.gutenberg.org/files/22726/22726-h/22726-h.htm" },
+    { id: "lawrence-poem-analysis", source: "Poem Analysis", url: "https://poemanalysis.com/d-h-lawrence/winter-in-the-boulevard/", quote: "The poem concludes with the speaker stating that all life on earth is at the mercy of the “welkin,” or sky and heavens." },
+    { id: "lawrence-bartleby", source: "Bartleby", url: "https://www.bartleby.com/lit-hub/new-poems/27-winter-in-the-boulevard", quote: "THE FROST has settled down upon the trees" },
+    { id: "lawrence-american-literature", source: "American Literature", url: "https://americanliterature.com/author/d-h-lawrence/poem/winter-in-the-boulevard" },
   ],
+  criticalViews: [{ citeId: "lawrence-poem-analysis" }, { citeId: "lawrence-bartleby" }],
   faqs: [
-    {
-      q: "What is the main meaning of “Winter in the Boulevard”?",
-      plain:
-        "The poem presents winter as a force that strips, silences, and tests the living world. Its final image of trees, birds, and earth waiting for a sentence leaves their fate uncertain.",
-    },
-    {
-      q: "What are the main themes in the poem?",
-      plain:
-        "The main themes are nature in an urban setting, vulnerability, silence, and judgment. Lawrence makes the boulevard feel empty of people but full of natural and mental activity.",
-    },
-    {
-      q: "What is the form and meter of “Winter in the Boulevard”?",
-      plain:
-        "It has four quatrains and long, irregular lines. The poem uses recurring sound patterns and loose rhyme, but it does not follow one fixed meter.",
-    },
-    {
-      q: "What does “welkin” mean in the poem?",
-      plain:
-        "“Welkin” is an archaic word for the sky or heavens. Here it makes the winter sky seem like a higher power that may deliver a sentence to the waiting landscape.",
-    },
+    { q: "What is the main meaning of “Winter in the Boulevard”?", plain: "The poem presents winter as a force that strips, silences, and tests the living world. Its final image leaves the landscape waiting for an uncertain verdict." },
+    { q: "What are the main themes?", plain: "The main themes are nature in an urban setting, vulnerability, silence, and judgment." },
+    { q: "What is the form and meter?", plain: "It has four quatrains and long, irregular lines. Recurring sound patterns and loose rhyme replace one fixed meter." },
+    { q: "What does “welkin” mean?", plain: "“Welkin” is an archaic word for the sky or heavens. Here it makes the winter sky seem like a higher power that may deliver a sentence." },
   ],
-  sources: [
-    {
-      label: "Full poem in New Poems",
-      url: "https://www.gutenberg.org/files/22726/22726-h/22726-h.htm",
-      publisher: "Project Gutenberg",
-    },
-    {
-      label: "Close reading and form discussion",
-      url: "https://poemanalysis.com/d-h-lawrence/winter-in-the-boulevard/",
-      publisher: "Poem Analysis",
-    },
-    {
-      label: "Scholarly context on Lawrence's urban poetry",
-      url: "https://journalofdhlawrencestudies.com/wp-content/uploads/2020/12/jdhls-5.2-2019-holly-laird-new-london-poet.pdf",
-      publisher: "Journal of D. H. Lawrence Studies",
-    },
-  ],
-  cta: "Write with this poem's open form in the editor",
+  cta: "Write with this poem’s open form in the editor",
 };

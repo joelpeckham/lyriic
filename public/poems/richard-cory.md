@@ -2,101 +2,85 @@
 
 Richard Cory — Edwin Arlington Robinson (1897)
 
-This Richard Cory analysis explains how Edwin Arlington Robinson uses a collective speaker, polished rhyme, and a shocking final line to challenge assumptions about wealth and happiness.
+This Richard Cory analysis examines how Robinson uses a collective speaker, regular quatrains, and a sudden ending to question the appearance of happiness.
 
-## The poem
+Full text from [Richard Cory](https://poets.org/poem/richard-cory). Public domain in the US (First published in The Children of the Night (1897), before the US public-domain cutoff.).
+
+## Summary
+
+The townspeople describe Richard Cory as polished, wealthy, and enviable, then contrast his apparent completeness with their own hunger and labor.
 
 ```
 Whenever Richard Cory went down town,
 We people on the pavement looked at him:
-He was a gentleman from sole to crown,
-Clean favored, and imperially slim.
-
-And he was always quietly arrayed,
-And he was always human when he talked;
-But still he fluttered pulses when he said,
-"Good-morning," and he glittered when he walked.
-
-And he was rich—yes, richer than a king—
-And admirably schooled in every grace:
-In fine, we thought that he was everything
-To make us wish that we were in his place.
-
-So on we worked, and waited for the light,
-And went without the meat, and cursed the bread;
-And Richard Cory, one calm summer night,
-Went home and put a bullet through his head.
 ```
 
-Text from [Richard Cory](https://poets.org/poem/richard-cory). Public domain in the US (First published in Robinson's 1897 collection The Children of the Night, so the poem is public domain in the United States.).
-
-## Summary
-
-The poem presents Richard Cory through the eyes of people who see him in town. They describe his appearance, manners, wealth, and social polish as if these qualities make him complete.
-
-The townspeople contrast Cory's apparent perfection with their own hard lives. The final line abruptly reveals that Cory dies by suicide, overturning their belief that his outward circumstances explain his inner life.
+The final sentence reveals Cory’s suicide without supplying a cause. The omission makes the community’s confident interpretation of his life look dangerously incomplete.[2]
 
 ## Meaning and interpretation
 
-The poem's central irony is that the community mistakes visible privilege for evidence of happiness. Cory is observed constantly, but he is not understood; the collective speaker turns him into an ideal and therefore cannot imagine private suffering behind the public image.
+The poem’s irony comes from confusing visible privilege with inner contentment. The collective “we” sees Cory repeatedly, but its admiration turns him into an image instead of a person.[3]
 
-The ending does not provide a reason for Cory's suicide. That omission matters: it resists a simple moral explanation and exposes the limits of the townspeople's perspective. Their envy has been built on a story they invented from surfaces.
+```
+In fine, we thought that he was everything
+To make us wish that we were in his place.
+```
+
+Robinson does not offer a simple explanation for the death. Instead, the abrupt ending exposes how little observers can know from manners, wealth, or appearance.
 
 ## Themes
 
 ### Appearance and reality
 
-Descriptions such as “imperially slim,” “quietly arrayed,” and “schooled in every grace” construct Cory as a flawless public figure. The last line separates that performance from whatever emotional reality remains unknowable.
+Cory’s immaculate public image is a projection made by the townspeople. The last line separates that image from the private life they never understood.[3]
 
 ### Class and envy
 
-The townspeople work, wait for light, go without meat, and curse bread. Their material hardship makes Cory's wealth appear to be the answer to every problem, while the poem shows that economic privilege cannot be treated as a complete measure of a life.
+```
+So on we worked, and waited for the light,
+And went without the meat, and cursed the bread;
+```
 
-### Isolation and failed recognition
+The workers’ deprivation makes Cory seem to possess the answer to every problem, even though the poem shows that material status is not a complete measure of happiness.
 
-The speaker uses “we people” to represent a whole community, but the group sees Cory mainly as an object of admiration and envy. Their collective gaze creates distance rather than intimacy.
+### Failed recognition
+
+The communal speaker watches Cory but never speaks with him about fear, loneliness, or desire. The poem is therefore also about the limits of social knowledge.
 
 ## Form and meter
 
-“Richard Cory” is a 16-line narrative poem arranged as four quatrains. It is written in generally regular iambic pentameter, giving the portrait a measured, controlled pace.
+“Richard Cory” is a sixteen-line narrative poem in four quatrains, generally in iambic pentameter. Its regular ABAB pattern makes the town’s assumptions sound orderly.
 
-Each quatrain follows an ABAB rhyme pattern. The recurring pattern makes the town's assumptions sound orderly and settled, which intensifies the disruption of the final line.
-
-The poem moves from public description to economic contrast and then to violent private action. Its calm syntax and conventional form make the closing revelation feel even more abrupt.
+The controlled form intensifies the shock of the final line: the poem’s calm surface cannot contain what it suddenly reports.[2]
 
 ## Literary devices
 
 ### Dramatic irony
 
-> To make us wish that we were in his place.
+```
+And Richard Cory, one calm summer night,
+Went home and put a bullet through his head.
+```
 
-The townspeople believe Cory possesses everything worth wanting, but the reader learns that their conclusion is tragically incomplete. Their confidence becomes the source of the poem's irony.
+The townspeople’s belief that Cory has everything worth wanting becomes tragically ironic when the reader learns how their portrait ends.
 
-### Collective first-person speaker
+### Collective speaker
 
-> We people on the pavement looked at him
+```
+We people on the pavement looked at him:
+```
 
-The repeated “we” makes the poem a portrait of a community as well as of Cory. The group describes its own poverty and its habit of converting another person into an ideal.
+The repeated communal viewpoint makes the poem a study of social perception as much as a character sketch.
 
 ### Juxtaposition
 
-> And he was rich—yes, richer than a king— / And admirably schooled in every grace
-
-Cory's royal wealth and cultivated manners are set beside the workers' hunger and frustration. The contrast explains the community's envy while also revealing its narrow definition of success.
-
-### Anticlimax and shock ending
-
-> Went home and put a bullet through his head.
-
-The quiet phrase “one calm summer night” delays the violent act. The plain final sentence refuses ornament and turns the poem's composed surface into a sudden crisis.
+Cory’s wealth and refinement are placed beside the workers’ hunger. The contrast explains envy while questioning the community’s definition of success.
 
 ## Historical context
 
-Robinson first published “Richard Cory” in The Children of the Night in 1897. The poem belongs to the period when American writing was increasingly attentive to industrial wealth, class division, and the pressures of modern urban life.
+Robinson published the poem in The Children of the Night in 1897. Its public-domain text is preserved by the Academy of American Poets.[1]
 
-The United States had recently experienced the Panic of 1893 and the Panic of 1896. Those economic crises provide useful context for the poem's contrast between people who work and go without food and a wealthy figure who appears to live beyond want.
-
-Cory is one of Robinson's compact character portraits. Like other figures associated with the imagined small-town world of Tilbury Town, he is defined through social observation, frustration, and the gap between public reputation and private experience.
+The poem’s small-town social viewpoint turns class difference into a psychological problem: public admiration and private suffering remain radically separated.
 
 ## What critics say
 
@@ -112,30 +96,26 @@ Cory is one of Robinson's compact character portraits. Like other figures associ
 
 ### What is the main meaning of “Richard Cory”?
 
-The poem warns that wealth, status, and a polished appearance do not reveal a person's inner life. The townspeople mistake Cory's public image for proof that he is happy.
+The poem warns that wealth and a polished public image do not reveal a person’s inner life.
 
-### Why is the ending of “Richard Cory” so shocking?
+### Why is the ending shocking?
 
-The poem spends three and a half stanzas presenting Cory as enviable and complete, then ends with his suicide in one direct sentence. The abrupt change exposes how little the observers actually know about him.
+A measured portrait of an enviable man ends with a blunt account of suicide, overturning the observers’ assumptions.
 
-### What is the rhyme scheme and meter of “Richard Cory”?
+### What is the poem’s form?
 
-The poem has four quatrains in an ABAB rhyme scheme and is generally written in iambic pentameter. Its regular form contrasts with the disturbing final event.
-
-### Who is the speaker in “Richard Cory”?
-
-The speaker is a member of the town community, using “we” to speak for people who watch and envy Cory. That collective viewpoint makes the poem partly about the observers' assumptions.
+It has four quatrains, an ABAB rhyme pattern, and generally iambic-pentameter lines.
 
 ## References
 
-- [Poem text and public-domain status](https://poets.org/poem/richard-cory) — Academy of American Poets
+- [Academy of American Poets](https://poets.org/poem/richard-cory)
 
-- [Poem text in The Children of the Night](https://en.wikisource.org/wiki/The_Children_of_the_Night_(1921)/Richard_Cory) — Wikisource
+- [Encyclopedia.com](https://www.encyclopedia.com/arts/educational-magazines/richard-cory)
 
-- [Critical overview and historical context](https://www.litcharts.com/poetry/edwin-arlington-robinson/richard-cory) — LitCharts
+- [LitCharts](https://www.litcharts.com/poetry/edwin-arlington-robinson/richard-cory)
 
-- [Critical overview and reception](https://www.encyclopedia.com/arts/educational-magazines/richard-cory) — Encyclopedia.com
+- [Wikisource](https://en.wikisource.org/wiki/The_Children_of_the_Night_(1921)/Richard_Cory)
 
 ## Open the editor
 
-Write with this poem's meter in the editor: https://lyriic.com/write
+Write with this poem’s meter in the editor: https://lyriic.com/write/iambic-pentameter

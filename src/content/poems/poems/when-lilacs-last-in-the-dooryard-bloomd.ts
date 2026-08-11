@@ -1,5 +1,6 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemOpenSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const whenLilacsLastInTheDooryardBloomdPoem: PoemAnalysisContent = {
   slug: "when-lilacs-last-in-the-dooryard-bloomd",
@@ -7,179 +8,59 @@ export const whenLilacsLastInTheDooryardBloomdPoem: PoemAnalysisContent = {
   poemTitle: "When Lilacs Last in the Dooryard Bloom'd",
   author: "Walt Whitman",
   yearPublished: 1865,
-  publicDomainBasis:
-    "First published in 1865, Walt Whitman’s elegy is in the public domain in the United States.",
-  title:
-    "When Lilacs Last in the Dooryard Bloom'd Analysis & Meaning — Walt Whitman — lyriic",
-  description:
-    "When Lilacs Last in the Dooryard Bloom'd analysis and meaning: Whitman’s Lincoln elegy explores grief, nature, death, and national healing.",
+  publicDomainBasis: "First published in 1865, Walt Whitman’s elegy is public domain in the United States.",
+  title: "When Lilacs Last in the Dooryard Bloom'd Analysis & Meaning — Walt Whitman — lyriic",
+  description: "Analysis of Whitman’s Lincoln elegy, including its meaning, recurring symbols, free-verse form, grief, and national healing.",
   h1: "When Lilacs Last in the Dooryard Bloom'd analysis",
-  intro:
-    "This analysis of Walt Whitman’s “When Lilacs Last in the Dooryard Bloom’d” explains how its recurring natural images turn private grief for Lincoln into a meditation on death, memory, and national healing.",
-  text: `When lilacs last in the dooryard bloom’d,
-And the great star early droop’d in the western sky in the night,
-I mourn’d, and yet shall mourn with ever-returning spring.
-
-Ever-returning spring, trinity sure to me you bring,
-Lilac blooming perennial and drooping star in the west,
-And thought of him I love.
-
-O powerful western fallen star!
-O shades of night—O moody, tearful night!
-O great star disappear’d—O the black murk that hides the star!
-O cruel hands that hold me powerless—O helpless soul of me!
-O harsh surrounding cloud that will not free my soul.
-
-In the dooryard fronting an old farm-house near the white-wash’d palings,
-Stands the lilac-bush tall-growing with heart-shaped leaves of rich green,
-With many a pointed blossom rising delicate, with the perfume strong I love,
-With every leaf a miracle—and from this bush in the dooryard,
-With delicate-color’d blossoms and heart-shaped leaves of rich green,
-A sprig with its flower I break.
-
-In the swamp in secluded recesses,
-A shy and hidden bird is warbling a song.
-Solitary the thrush,
-The hermit withdrawn to himself, avoiding the settlements,
-Sings by himself a song.
-Song of the bleeding throat,
-Death’s outlet song of life, (for well dear brother I know,
-If thou wast not granted to sing thou would’st surely die.)`,
-  isExcerpt: true,
-  excerptNote:
-    "This excerpt presents the opening four sections and the poem’s central trinity of lilac, fallen star, and hermit thrush. Read the complete sixteen-section elegy at the Poetry Foundation.",
-  fullTextSource: {
-    label: "Full poem text",
-    url: "https://www.poetryfoundation.org/poems/45480/when-lilacs-last-in-the-dooryard-bloomd",
-    publisher: "The Poetry Foundation",
-  },
+  intro: "This analysis explains how Whitman’s recurring lilac, star, and thrush turn private grief for Lincoln into a meditation on death, memory, and national healing.",
+  fullTextSource: { label: "Full poem text", url: "https://www.poetryfoundation.org/poems/45480/when-lilacs-last-in-the-dooryard-bloomd", publisher: "The Poetry Foundation" },
   editorSettings: poemOpenSettings({ showCounts: true }),
   summary: [
-    "Whitman’s long elegy begins with spring returning at the same time as the speaker’s grief. A fallen western star, a lilac sprig, and a solitary hermit thrush become recurring companions as the speaker mourns the unnamed “him I love.”",
-    "The poem was written after Abraham Lincoln’s assassination, but it does not name Lincoln or remain only a political tribute. Its movement from the funeral procession and Civil War dead toward the thrush’s “carol of death” makes mourning both national and universal.",
+    p("Whitman’s long elegy begins with spring returning at the same time as the speaker’s grief. A fallen western star, a lilac sprig, and a solitary hermit thrush become recurring companions as the speaker mourns the unnamed “him I love.”", ["lilacs-loc"]),
+    excerpt(`When lilacs last in the dooryard bloom’d,
+And the great star early droop’d in the western sky in the night,`),
+    p("Written after Abraham Lincoln’s assassination, the poem moves from public mourning toward the thrush’s song of death, making grief both national and universal.", ["lilacs-litcharts"]),
   ],
   meaning: [
-    "The poem’s meaning rests in a tension between recurrence and irreversibility. Lilacs return each spring, but the dead person does not; the returning flower therefore keeps grief alive while also showing that life continues around loss.",
-    "Whitman does not simply replace sorrow with optimism. The speaker must pass through the “thought of death” before reaching the “sacred knowledge of death,” where the star, bird, and lilac are held together as memories that can be carried forward. The ending suggests consolation as changed attention rather than forgetting.",
+    p("The poem’s meaning rests in a tension between recurrence and irreversibility. Lilacs return each spring, but the dead person does not; the flower keeps grief alive while showing that life continues around loss.", ["lilacs-litcharts"]),
+    excerpt(`Ever-returning spring, trinity sure to me you bring,
+Lilac blooming perennial and drooping star in the west,`),
+    p("Whitman does not replace sorrow with optimism. The speaker must pass through the thought of death before reaching a difficult consolation in which star, bird, and lilac become forms of memory.", ["lilacs-loc"]),
   ],
   themes: [
-    {
-      theme: "Grief and memory",
-      discussion:
-        "The annual return of the lilac renews the speaker’s mourning. Memory is painful, but it also gives the dead a continuing presence in the natural and imaginative world.",
-    },
-    {
-      theme: "Death and consolation",
-      discussion:
-        "The poem gradually changes death from a black cloud and public catastrophe into something the hermit thrush can sing as a “carol.” That change does not deny suffering; it gives suffering a form that can be heard and understood.",
-    },
-    {
-      theme: "Nature and renewal",
-      discussion:
-        "Spring, flowers, stars, birds, fields, and forests provide the poem’s emotional setting. Nature does not erase the loss of Lincoln, but its cycles offer a language for endurance and renewed life.",
-    },
-    {
-      theme: "National mourning",
-      discussion:
-        "The coffin’s journey through cities, streets, and states turns one death into a shared American ritual. Whitman joins intimate feeling to public mourning without naming the president directly.",
-    },
+    { theme: "Grief and memory", blocks: [excerpt(`And thought of him I love.`), p("The annual return of the lilac renews the speaker’s mourning. Memory is painful, but it also gives the dead a continuing presence in the natural world.", ["lilacs-litcharts"])] },
+    { theme: "Death and consolation", blocks: [excerpt(`Solitary the thrush,
+The hermit withdrawn to himself,`), p("The hermit thrush gives voice to a song that moves from sorrow toward an acceptance of mortality. Consolation changes the mourner’s attention rather than erasing loss.", ["lilacs-loc"])] },
+    { theme: "Nature and renewal", blocks: [p("Spring, flowers, stars, birds, fields, and forests provide the poem’s emotional setting. Nature does not erase Lincoln’s death, but its cycles offer a language for endurance and renewed life.", ["lilacs-britannica"])] },
+    { theme: "National mourning", blocks: [p("The coffin’s journey through cities and states turns one death into a shared American ritual. Whitman joins intimate feeling to public mourning without naming the president directly.", ["lilacs-loc"])] },
   ],
   formAndMeter: [
-    "The poem is a sixteen-section pastoral elegy written in free verse. Its long, varied lines and irregular stanza lengths resist a fixed metrical pattern while allowing the voice to move between chant, address, narrative, and vision.",
-    "Whitman creates cohesion through anaphora, parallel syntax, recurring images, and repeated invocations such as “O” and “Sing on.” The accumulating lines resemble a chant or processional song more than a closed rhyme scheme.",
-    "The opening sections establish the poem’s central trinity: the lilac, the western star, and the hermit thrush. The full elegy later returns to these images as the speaker moves from shock toward a difficult acceptance of mortality.",
+    p("The poem is a sixteen-section pastoral elegy written in free verse. Its long, varied lines and irregular stanza lengths resist a fixed metrical pattern while allowing the voice to move between chant, address, narrative, and vision.", ["lilacs-britannica"]),
+    p("Whitman creates cohesion through anaphora, parallel syntax, recurring images, and repeated invocations. The accumulating lines resemble a processional song more than a closed rhyme scheme.", ["lilacs-litcharts"]),
   ],
   literaryDevices: [
-    {
-      device: "Symbolism",
-      example: "Ever-returning spring, trinity sure to me you bring",
-      discussion:
-        "The lilac, star, and bird operate as a symbolic trinity. Their recurrence gives the speaker a structure for remembering the dead and thinking about death.",
-    },
-    {
-      device: "Anaphora",
-      example: "O powerful western fallen star! / O shades of night—O moody, tearful night!",
-      discussion:
-        "Repeated openings intensify the speaker’s lament and make the poem sound spoken aloud. The pattern turns personal shock into a ceremonial address.",
-    },
-    {
-      device: "Personification",
-      example: "As I walk’d in silence the transparent shadowy night",
-      discussion:
-        "The star appears to carry a message, and the night becomes a companionable space for wandering. Personification lets the speaker read the natural world as a participant in grief.",
-    },
-    {
-      device: "Repetition and cataloguing",
-      example: "With its heart-shaped leaves of rich green",
-      discussion:
-        "Whitman’s repeated “with” phrases accumulate sensory details. The catalogue slows attention around ordinary objects, showing how grief can make every detail intensely significant.",
-    },
+    { device: "Symbolism", blocks: [excerpt(`Lilac blooming perennial and drooping star in the west,
+And thought of him I love.`), p("The lilac, star, and bird form a recurring symbolic trinity that gives the speaker a structure for remembering the dead and thinking about death.", ["lilacs-loc"])] },
+    { device: "Anaphora", blocks: [excerpt(`O powerful western fallen star!
+O shades of night—O moody, tearful night!`), p("Repeated openings intensify the lament and make the poem sound spoken aloud, turning personal shock into ceremonial address.", ["lilacs-litcharts"])] },
+    { device: "Personification", blocks: [excerpt(`O great star disappear’d—O the black murk that hides the star!`), p("The natural world is treated as an active participant in grief. This pathetic fallacy lets the speaker read the landscape as emotionally responsive.", ["lilacs-britannica"])] },
   ],
   historicalContext: [
-    "Whitman wrote the poem in the weeks after Abraham Lincoln was assassinated on April 14, 1865. It first appeared in the 1865 Sequel to Drum-Taps and was later incorporated into Leaves of Grass.",
-    "The elegy reflects the Civil War’s scale of loss, including the public funeral journey and visions of battle corpses. Whitman’s experience as a volunteer nurse sharpened his attention to bodily suffering and the grief of families.",
-    "The poem’s refusal to name Lincoln broadens its occasion. The historical event remains present through the coffin, flags, cities, and national mourning, while the speaker’s language makes the elegy applicable to death and remembrance more generally.",
+    p("Whitman wrote the elegy after Abraham Lincoln was assassinated on April 14, 1865. It first appeared in the 1865 Sequel to Drum-Taps and was later incorporated into Leaves of Grass.", ["lilacs-loc"]),
+    p("The Library of Congress describes the poem as an elegy on universal death and national healing, using the enduring images of lilac, star, and thrush. Lincoln remains present through the historical occasion even though the poem does not name him.", ["lilacs-loc"]),
   ],
-  criticalViews: [
-    {
-      source: "LitCharts",
-      author: "LitCharts editors",
-      quote:
-        "The poem takes the form of a pastoral elegy, mourning Lincoln’s death while praising the beauty of springtime and the natural world.",
-      url: "https://www.litcharts.com/poetry/walt-whitman/when-lilacs-last-in-the-dooryard-bloom-d",
-    },
-    {
-      source: "Library of Congress",
-      quote:
-        "Whitman’s great elegy on universal death and national healing, using the eternal images of lilac, star and thrush.",
-      url: "https://www.loc.gov/exhibits/whitman/poetofthenation.html",
-    },
-    {
-      source: "LitCharts",
-      author: "LitCharts editors",
-      quote:
-        "The poem thus suggests that these things too are sacred, and that in losing Lincoln, the nation has lost a spiritual leader.",
-      url: "https://www.litcharts.com/poetry/walt-whitman/when-lilacs-last-in-the-dooryard-bloom-d",
-    },
+  citations: [
+    { id: "lilacs-poem", source: "Poetry Foundation", url: "https://www.poetryfoundation.org/poems/45480/when-lilacs-last-in-the-dooryard-bloomd" },
+    { id: "lilacs-loc", source: "Library of Congress", url: "https://www.loc.gov/exhibits/whitman/poetofthenation.html", quote: "Whitman’s great elegy on universal death and national healing, using the eternal images of lilac, star and thrush." },
+    { id: "lilacs-litcharts", source: "LitCharts", url: "https://www.litcharts.com/poetry/walt-whitman/when-lilacs-last-in-the-dooryard-bloom-d", quote: "The poem takes the form of a pastoral elegy, mourning Lincoln’s death while praising the beauty of springtime and the natural world." },
+    { id: "lilacs-britannica", source: "Encyclopaedia Britannica", url: "https://www.britannica.com/topic/When-Lilacs-Last-in-the-Dooryard-Bloomd", quote: "When Lilacs Last in the Dooryard Bloom’d, elegy in free verse by Walt Whitman mourning the death of Pres. Abraham Lincoln." },
   ],
+  criticalViews: [{ citeId: "lilacs-loc" }, { citeId: "lilacs-litcharts" }],
   faqs: [
-    {
-      q: "What is the main meaning of “When Lilacs Last in the Dooryard Bloom’d”?",
-      plain:
-        "Whitman turns grief for Lincoln into a broader meditation on death. The poem suggests that memory and natural renewal can coexist with loss, allowing the mourner to continue without pretending the dead will return.",
-    },
-    {
-      q: "What do the lilac, star, and hermit thrush symbolize?",
-      plain:
-        "The lilac represents recurring spring and memory, the fallen western star represents the lost beloved or leader, and the hermit thrush gives voice to a song that moves from sorrow toward an acceptance of death.",
-    },
-    {
-      q: "What is the form and meter of the poem?",
-      plain:
-        "It is a sixteen-section pastoral elegy in free verse. It has no consistent end-rhyme scheme or fixed meter; Whitman instead uses long lines, repetition, parallel syntax, and chant-like cadence.",
-    },
-    {
-      q: "Why does Whitman not name Abraham Lincoln?",
-      plain:
-        "The historical context identifies Lincoln, but leaving him unnamed lets the poem expand from a national memorial into a meditation on mourning, mortality, and the memory of any beloved dead person.",
-    },
-  ],
-  sources: [
-    {
-      label: "Full poem text",
-      url: "https://www.poetryfoundation.org/poems/45480/when-lilacs-last-in-the-dooryard-bloomd",
-      publisher: "The Poetry Foundation",
-    },
-    {
-      label: "Whitman and the Lincoln elegies",
-      url: "https://www.loc.gov/exhibits/whitman/poetofthenation.html",
-      publisher: "Library of Congress",
-    },
-    {
-      label: "Poem summary and analysis",
-      url: "https://www.litcharts.com/poetry/walt-whitman/when-lilacs-last-in-the-dooryard-bloom-d",
-      publisher: "LitCharts",
-    },
+    { q: "What is the main meaning of the elegy?", plain: "Whitman turns grief for Lincoln into a broader meditation on death. Memory and natural renewal coexist with loss, allowing the mourner to continue without pretending the dead will return." },
+    { q: "What do the lilac, star, and hermit thrush symbolize?", plain: "The lilac represents recurring spring and memory, the fallen star the lost beloved or leader, and the thrush a song that moves from sorrow toward acceptance of death." },
+    { q: "What is the poem’s form and meter?", plain: "It is a sixteen-section pastoral elegy in free verse, using long lines, repetition, parallel syntax, and chant-like cadence rather than fixed meter." },
+    { q: "Why does Whitman not name Lincoln?", plain: "Leaving Lincoln unnamed lets the poem expand from a national memorial into a meditation on mourning, mortality, and the memory of any beloved dead person." },
   ],
   cta: "Write with this poem’s free-verse approach in the editor",
 };

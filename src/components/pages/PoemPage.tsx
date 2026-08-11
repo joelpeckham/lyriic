@@ -3,8 +3,14 @@ import { Link } from "react-router-dom";
 
 import { AboutPoemEditor } from "@/components/pages/AboutPoemEditor";
 import { ContentPageLayout } from "@/components/pages/ContentPageLayout";
+import { ToolEditorPitch } from "@/components/tools/ToolEditorPitch";
 import { ToolFaqList } from "@/components/tools/ToolFaqList";
-import type { ComposedPoemPage } from "@/content/poems";
+import { ZEN_EDITOR_PITCH } from "@/content/formCheckers/zenPitch";
+import type {
+  ComposedPoemPage,
+  PoemBlock,
+  PoemCitation,
+} from "@/content/poems";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { SITE_URL } from "@/lib/seo";
 
@@ -29,6 +35,93 @@ function Section({
       </div>
     </section>
   );
+}
+
+function citationNumber(
+  citations: PoemCitation[],
+  id: string,
+): number | null {
+  const index = citations.findIndex((c) => c.id === id);
+  return index >= 0 ? index + 1 : null;
+}
+
+function CiteSuperscripts({
+  cites,
+  citations,
+}: {
+  cites: string[];
+  citations: PoemCitation[];
+}) {
+  return (
+    <>
+      {cites.map((id) => {
+        const n = citationNumber(citations, id);
+        if (n === null) return null;
+        const cite = citations[n - 1];
+        return (
+          <sup key={id} className="ml-0.5">
+            <a
+              href={`#cite-${id}`}
+              title={cite.source}
+              className="text-foreground underline-offset-2 hover:underline"
+            >
+              [{n}]
+            </a>
+          </sup>
+        );
+      })}
+    </>
+  );
+}
+
+function PoemBlocks({
+  blocks,
+  page,
+  excerptOffset,
+}: {
+  blocks: PoemBlock[];
+  page: ComposedPoemPage;
+  excerptOffset: number;
+}) {
+  let excerptIndex = excerptOffset;
+  return (
+    <>
+      {blocks.map((block, i) => {
+        if (block.type === "excerpt") {
+          const key = `poem-${page.slug}-ex-${excerptIndex}`;
+          const eager = excerptIndex === 0;
+          excerptIndex += 1;
+          return (
+            <div
+              key={key}
+              className="rounded-lg border border-border/60 bg-card/40 px-3 py-3 sm:px-4 sm:py-4"
+            >
+              <AboutPoemEditor
+                text={block.lines}
+                settings={page.editorSettings}
+                documentKey={key}
+                aria-label={`Excerpt from ${page.poemTitle} by ${page.author}`}
+                eager={eager}
+                readOnly
+              />
+            </div>
+          );
+        }
+        return (
+          <p key={`p-${i}-${block.text.slice(0, 32)}`}>
+            {block.text}
+            {block.cites?.length ? (
+              <CiteSuperscripts cites={block.cites} citations={page.citations} />
+            ) : null}
+          </p>
+        );
+      })}
+    </>
+  );
+}
+
+function countExcerpts(blocks: PoemBlock[]): number {
+  return blocks.filter((b) => b.type === "excerpt").length;
 }
 
 export function PoemPage({ page }: PoemPageProps) {
@@ -59,6 +152,18 @@ export function PoemPage({ page }: PoemPageProps) {
       url: `${SITE_URL}/`,
     },
   };
+
+  let excerptCursor = 0;
+
+  const renderBlocks = (blocks: PoemBlock[]) => {
+    const offset = excerptCursor;
+    excerptCursor += countExcerpts(blocks);
+    return (
+      <PoemBlocks blocks={blocks} page={page} excerptOffset={offset} />
+    );
+  };
+
+  const citeById = new Map(page.citations.map((c) => [c.id, c] as const));
 
   return (
     <ContentPageLayout>
@@ -95,69 +200,38 @@ export function PoemPage({ page }: PoemPageProps) {
       <p className="mt-3 font-[family-name:var(--font-ui)] text-base text-muted-foreground">
         {page.intro}
       </p>
-
-      <div className="mt-8 rounded-lg border border-border/60 bg-card/40 px-3 py-4 sm:px-5 sm:py-5">
-        <AboutPoemEditor
-          text={page.text}
-          settings={page.editorSettings}
-          documentKey={`poem-${page.slug}`}
-          aria-label={`${page.poemTitle} by ${page.author}`}
-          eager
-          readOnly
-        />
-      </div>
-      <p className="mt-2 font-[family-name:var(--font-ui)] text-sm text-muted-foreground">
-        {page.isExcerpt && page.excerptNote ? (
-          <>
-            {page.excerptNote}{" "}
-            <a
-              href={page.fullTextSource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline-offset-2 hover:underline"
-            >
-              {page.fullTextSource.label}
-            </a>
-          </>
-        ) : (
-          <>
-            Text from{" "}
-            <a
-              href={page.fullTextSource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground underline-offset-2 hover:underline"
-            >
-              {page.fullTextSource.label}
-            </a>
-            . Public domain in the US ({page.publicDomainBasis}).
-          </>
-        )}
+      <p className="mt-3 font-[family-name:var(--font-ui)] text-sm text-muted-foreground">
+        Full text from{" "}
+        <a
+          href={page.fullTextSource.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-foreground underline-offset-2 hover:underline"
+        >
+          {page.fullTextSource.label}
+        </a>
+        . Public domain in the US ({page.publicDomainBasis}).
       </p>
 
       {page.summary.length > 0 ? (
-        <Section title="Summary">
-          {page.summary.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-          ))}
-        </Section>
+        <Section title="Summary">{renderBlocks(page.summary)}</Section>
       ) : null}
 
       {page.meaning.length > 0 ? (
         <Section title="Meaning and interpretation">
-          {page.meaning.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-          ))}
+          {renderBlocks(page.meaning)}
         </Section>
       ) : null}
 
       {page.themes.length > 0 ? (
         <Section title="Themes">
-          <ul className="space-y-4">
+          <ul className="space-y-6">
             {page.themes.map((item) => (
               <li key={item.theme}>
                 <p className="font-medium text-foreground">{item.theme}</p>
-                <p className="mt-1">{item.discussion}</p>
+                <div className="mt-2 space-y-3">
+                  {renderBlocks(item.blocks)}
+                </div>
               </li>
             ))}
           </ul>
@@ -166,24 +240,19 @@ export function PoemPage({ page }: PoemPageProps) {
 
       {page.formAndMeter.length > 0 ? (
         <Section title="Form and meter">
-          {page.formAndMeter.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-          ))}
+          {renderBlocks(page.formAndMeter)}
         </Section>
       ) : null}
 
       {page.literaryDevices.length > 0 ? (
         <Section title="Literary devices">
-          <ul className="space-y-4">
+          <ul className="space-y-6">
             {page.literaryDevices.map((item) => (
-              <li key={`${item.device}-${item.example?.slice(0, 24) ?? ""}`}>
+              <li key={item.device}>
                 <p className="font-medium text-foreground">{item.device}</p>
-                {item.example ? (
-                  <p className="mt-1 font-[family-name:var(--font-editor)] italic">
-                    {item.example}
-                  </p>
-                ) : null}
-                <p className="mt-1">{item.discussion}</p>
+                <div className="mt-2 space-y-3">
+                  {renderBlocks(item.blocks)}
+                </div>
               </li>
             ))}
           </ul>
@@ -192,74 +261,69 @@ export function PoemPage({ page }: PoemPageProps) {
 
       {page.historicalContext.length > 0 ? (
         <Section title="Historical context">
-          {page.historicalContext.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-          ))}
+          {renderBlocks(page.historicalContext)}
         </Section>
       ) : null}
 
       {page.criticalViews.length > 0 ? (
         <Section title="What critics say">
           <ul className="space-y-6">
-            {page.criticalViews.map((view) => (
-              <li key={`${view.source}-${view.quote.slice(0, 32)}`}>
-                <blockquote className="border-l-2 border-border pl-4">
-                  <p className="font-[family-name:var(--font-editor)] italic text-foreground">
-                    “{view.quote}”
-                  </p>
-                  <footer className="mt-2 text-sm not-italic">
-                    {view.author ? `${view.author}, ` : null}
-                    <a
-                      href={view.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-foreground underline-offset-2 hover:underline"
-                    >
-                      {view.source}
-                    </a>
-                  </footer>
-                </blockquote>
-              </li>
-            ))}
+            {page.criticalViews.map((view) => {
+              const cite = citeById.get(view.citeId);
+              if (!cite?.quote) return null;
+              return (
+                <li key={view.citeId}>
+                  <blockquote className="border-l-2 border-border pl-4">
+                    <p className="font-[family-name:var(--font-editor)] italic text-foreground">
+                      “{cite.quote}”
+                    </p>
+                    <footer className="mt-2 text-sm not-italic">
+                      {cite.author ? `${cite.author}, ` : null}
+                      <a
+                        href={cite.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground underline-offset-2 hover:underline"
+                      >
+                        {cite.source}
+                      </a>
+                    </footer>
+                  </blockquote>
+                </li>
+              );
+            })}
           </ul>
         </Section>
       ) : null}
 
       <ToolFaqList faqs={page.faqs} path={page.path} />
 
-      {page.sources.length > 0 ? (
+      {page.citations.length > 0 ? (
         <Section title="References">
-          <ul className="list-disc space-y-2 pl-5">
-            {page.sources.map((source) => (
-              <li key={source.url}>
+          <ol className="list-decimal space-y-2 pl-5">
+            {page.citations.map((cite) => (
+              <li key={cite.id} id={`cite-${cite.id}`}>
                 <a
-                  href={source.url}
+                  href={cite.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-foreground underline-offset-2 hover:underline"
                 >
-                  {source.label}
+                  {cite.author ? `${cite.author}, ` : null}
+                  {cite.source}
                 </a>
-                {source.publisher ? (
-                  <span className="text-muted-foreground">
-                    {" "}
-                    — {source.publisher}
-                  </span>
-                ) : null}
               </li>
             ))}
-          </ul>
+          </ol>
         </Section>
       ) : null}
 
-      <p className="mt-12 font-[family-name:var(--font-ui)] text-base text-muted-foreground">
-        <Link
-          to="/write"
-          className="font-medium text-foreground underline-offset-2 hover:underline"
-        >
-          {page.cta}
-        </Link>
-      </p>
+      <ToolEditorPitch
+        title={ZEN_EDITOR_PITCH.title}
+        body={ZEN_EDITOR_PITCH.body}
+        cta={page.cta}
+        to={page.writePath}
+      />
     </ContentPageLayout>
   );
 }

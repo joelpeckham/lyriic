@@ -2,132 +2,127 @@
 
 There Will Come Soft Rains — Sara Teasdale (1920)
 
-Sara Teasdale's There Will Come Soft Rains presents a spring landscape that will continue after human beings and their wars are gone. This analysis explains the poem's meaning, themes, imagery, and musical form.
+Teasdale imagines spring continuing after humanity and its wars have disappeared, making nature’s beauty both consolation and rebuke.
 
-## The poem
+Full text from [Flame and Shadow](https://en.m.wikisource.org/wiki/Flame_and_Shadow/%22There_Will_Come_Soft_Rains%22). Public domain in the US (First published in 1918 and public domain in the United States.).
+
+## Summary
+
+Rain, swallows, frogs, plum trees, and robins continue their spring life after the war.[1]
 
 ```
 There will come soft rains and the smell of the ground,
 And swallows circling with their shimmering sound;
 And frogs in the pools singing at night,
-And wild plum-trees in tremulous white;
-Robins will wear their feathery fire
-Whistling their whims on a low fence-wire;
-And not one will know of the war, not one
-Will care at last when it is done.
-
-Not one would mind, neither bird nor tree
-If mankind perished utterly;
-And Spring herself, when she woke at dawn,
-Would scarcely know that we were gone.
 ```
 
-Text from [Flame and Shadow, “There Will Come Soft Rains”](https://en.m.wikisource.org/wiki/Flame_and_Shadow/%22There_Will_Come_Soft_Rains%22). Public domain in the US (First published in Harper's Magazine in 1918 and collected with the subtitle “War Time” in Flame and Shadow in 1920; works first published in the United States by 1930 are public domain.).
-
-## Summary
-
-The speaker imagines a spring after the war: rain will scent the ground, swallows will circle, frogs will sing, plum trees will bloom, and robins will whistle.
-
-The natural world will neither know nor care when the war ends. If humanity disappears, birds, trees, and Spring will continue almost as if nothing happened.
+Nature neither knows nor cares if humanity perishes utterly.[3]
 
 ## Meaning and interpretation
 
-The poem's calm surface carries an anti-war argument. Nature's renewal makes human violence look temporary, while the repeated “not one” turns humanity's extinction into an event with no audience outside humanity itself.
+The calm pastoral surface makes human violence appear temporary, while the repeated “not one” removes every possible witness.[3]
 
-The ending is bleak, but it is not simply a picture of dead nature. Spring still wakes, birds still sing, and rain still falls. The consolation and the rebuke are joined: the world may continue without us, and that possibility exposes how little war changes the larger rhythms of life.
+```
+And not one will know of the war, not one
+Will care at last when it is done.
+```
+
+The ending is bleak but not lifeless: Spring still wakes, joining consolation with a rebuke to human self-importance.[4]
 
 ## Themes
 
-### Nature's indifference
+### Nature’s indifference
 
-Birds, trees, and Spring are given enough human awareness to be imagined as capable of caring, but the poem denies them even that response. Nature continues on its own terms rather than serving as a witness to human history.
+Birds, trees, and Spring continue on their own terms rather than serving as witnesses to history.[3]
 
 ### War and human fragility
 
-The word “war” appears only after six lines of pastoral imagery. That delay makes the conflict feel like an interruption in the natural scene, while “mankind perished utterly” reveals the scale of what war could destroy.
+```
+Not one would mind, neither bird nor tree
+If mankind perished utterly;
+```
+
+The brief mention of war expands into the possibility of total human extinction.
 
 ### Renewal and extinction
 
-Spring's awakening usually suggests rebirth. Here it survives the disappearance of people, so renewal becomes both hopeful and unsettling: life returns, but human beings are not necessary to its return.
+Spring’s renewal survives humanity, making rebirth both hopeful and unsettling.
 
 ## Form and meter
 
-The poem has twelve lines arranged as six rhyming couplets. The end rhymes form AA BB CC DD EE FF, giving the poem a clear, steady structure.
+The twelve-line poem is arranged as six rhyming couplets, with a clear AA BB CC DD EE FF pattern.[4]
 
-Most lines carry four stressed beats, but the rhythm is not strictly regular. The poem moves through a loose mixture of iambic and anapestic tetrameter, with natural speech and changing syllable patterns keeping the music from sounding mechanical.
-
-The couplets make the poem feel orderly even as its subject is human extinction. That formal calm mirrors the natural world, which continues in a steady pattern regardless of the war.
+Loose tetrameter and regular couplets create songlike calm that contrasts with the subject of extinction.
 
 ## Literary devices
 
 ### Sensory imagery
 
-> There will come soft rains and the smell of the ground,
+```
+There will come soft rains and the smell of the ground,
+And swallows circling with their shimmering sound;
+```
 
-The opening appeals to smell, sound, and sight. Rain, birds, frogs, blossoms, and feathers create a vivid spring scene before the poem asks readers to place human war inside it.
+Smell and sound establish a vivid spring before the war is named.
 
 ### Personification
 
-> And Spring herself, when she woke at dawn,
+```
+And Spring herself, when she woke at dawn,
+Would scarcely know that we were gone.
+```
 
-Spring becomes a woman waking from sleep. The personification makes the final indifference sharper: even this seemingly human figure would scarcely notice that people were gone.
+Spring becomes a waking figure whose indifference makes extinction intimate and strange.
 
 ### Repetition
 
-> And not one will know of the war, not one
+```
+Not one would mind, neither bird nor tree
+If mankind perished utterly;
+```
 
-The phrase “not one” returns at the turn from natural description to human disappearance. Its repetition narrows the poem's focus until no creature remains to register the war.
-
-### Juxtaposition
-
-> Robins will wear their feathery fire
-
-The bright natural image of the robins is placed beside the poem's wartime setting. “Fire” can suggest color and liveliness, but it also carries a faint battlefield association, allowing beauty and violence to occupy the same line.
+“Not one” narrows the poem toward absolute absence.
 
 ## Historical context
 
-Teasdale first published the poem in Harper's Magazine in 1918. She added the subtitle “War Time” when she included it in Flame and Shadow in 1920, where it opens a section focused on wartime losses.
+Teasdale first published the poem in Harper’s Magazine in 1918 and added “War Time” for Flame and Shadow in 1920.[4]
 
-The poem appeared during World War I, shortly after the Sedition Act of 1918 limited open criticism of the United States government's involvement in the war. Its indirect approach lets the poem criticize human violence by showing what nature will do after the conflict has passed.
-
-The poem also appeared during the 1918 influenza pandemic, a period of public uncertainty that gives its imagined disappearance of humanity an especially stark setting.
+The subtitle places the peaceful landscape against World War I without depicting a battlefield.[3]
 
 ## What critics say
 
 > “The poem frames humanity’s squabbles as both an affront to nature and totally insignificant in the long run.”
 >
-> — LitCharts editors, [LitCharts](https://www.litcharts.com/poetry/sara-teasdale/there-will-come-soft-rains)
+> — [LitCharts](https://www.litcharts.com/poetry/sara-teasdale/there-will-come-soft-rains)
 
-> “Sara Teasdale has found a philosophy of life and death”
+> “Teasdale writes in six rhymed couplets, in a loose tetrameter that gives the lines a song-like, almost nursery-rhyme simplicity.”
 >
-> — Marguerite Wilkinson, [The Poetry Foundation](https://www.poetryfoundation.org/poets/sara-teasdale)
+> — [Poetry Database](https://poetrydatabase.com/poems/there-will-come-soft-rains/)
 
 ## Common questions
 
-### What is the meaning of There Will Come Soft Rains?
+### What is the poem’s meaning?
 
-The poem suggests that nature will continue after human beings destroy themselves. Its peaceful spring imagery makes war seem temporary and exposes humanity's fragility.
+Nature continues after humanity destroys itself, making war seem temporary and human life fragile.
 
-### What are the main themes in There Will Come Soft Rains?
+### What are its themes?
 
-Its main themes are nature's indifference, the futility of war, human extinction, and renewal. Spring survives without needing people to witness it.
+Nature’s indifference, war, extinction, and renewal.
 
-### What form and meter does the poem use?
+### What form does it use?
 
-It is a twelve-line poem made of six rhyming couplets with an AA BB CC DD EE FF scheme. Most lines have four stresses in a loose mixture of iambic and anapestic tetrameter.
-
-### Why is the poem subtitled “War Time”?
-
-Teasdale added the subtitle for the 1920 collection Flame and Shadow. It makes the otherwise peaceful spring scene a direct meditation on World War I and the human violence behind it.
+Six rhyming couplets in loose tetrameter.
 
 ## References
 
-- [Flame and Shadow, “There Will Come Soft Rains”](https://en.m.wikisource.org/wiki/Flame_and_Shadow/%22There_Will_Come_Soft_Rains%22) — Wikisource
+- [Academy of American Poets](https://poets.org/poem/there-will-come-soft-rains)
 
-- [There Will Come Soft Rains: Summary and Analysis](https://www.litcharts.com/poetry/sara-teasdale/there-will-come-soft-rains) — LitCharts
+- [Wikisource](https://en.m.wikisource.org/wiki/Flame_and_Shadow/%22There_Will_Come_Soft_Rains%22)
 
-- [Sara Teasdale](https://www.poetryfoundation.org/poets/sara-teasdale) — The Poetry Foundation
+- [LitCharts](https://www.litcharts.com/poetry/sara-teasdale/there-will-come-soft-rains)
+
+- [Poetry Database](https://poetrydatabase.com/poems/there-will-come-soft-rains/)
 
 ## Open the editor
 
-Write with this poem’s meter in the editor: https://lyriic.com/write
+Write with this poem’s meter in the editor: https://lyriic.com/write/iambic-tetrameter

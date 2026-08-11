@@ -86,57 +86,76 @@ function formToolMarkdown(page) {
   return sections.join("\n");
 }
 
+function citeNums(page, cites) {
+  if (!cites?.length) return "";
+  return cites
+    .map((id) => {
+      const n = page.citations.findIndex((c) => c.id === id) + 1;
+      return n > 0 ? `[${n}]` : "";
+    })
+    .filter(Boolean)
+    .join("");
+}
+
+function emitPoemBlocks(sections, blocks, page) {
+  for (const block of blocks ?? []) {
+    if (block.type === "excerpt") {
+      sections.push("```\n" + block.lines + "\n```\n");
+    } else if (block.type === "p") {
+      sections.push(`${block.text}${citeNums(page, block.cites)}\n`);
+    }
+  }
+}
+
 function poemMarkdown(page) {
   const sections = [];
+  const citeById = new Map((page.citations ?? []).map((c) => [c.id, c]));
   sections.push(`# ${page.h1}\n`);
   sections.push(
     `${page.poemTitle} — ${page.author}${page.yearPublished ? ` (${page.yearPublished})` : ""}\n`,
   );
   sections.push(`${page.intro}\n`);
-  sections.push(`## The poem\n`);
-  sections.push("```\n" + page.text + "\n```\n");
-  if (page.isExcerpt && page.excerptNote) {
-    sections.push(`${page.excerptNote}\n`);
-  }
   sections.push(
-    `Text from [${page.fullTextSource.label}](${page.fullTextSource.url}). Public domain in the US (${page.publicDomainBasis}).\n`,
+    `Full text from [${page.fullTextSource.label}](${page.fullTextSource.url}). Public domain in the US (${page.publicDomainBasis}).\n`,
   );
   if (page.summary?.length) {
     sections.push(`## Summary\n`);
-    for (const p of page.summary) sections.push(`${p}\n`);
+    emitPoemBlocks(sections, page.summary, page);
   }
   if (page.meaning?.length) {
     sections.push(`## Meaning and interpretation\n`);
-    for (const p of page.meaning) sections.push(`${p}\n`);
+    emitPoemBlocks(sections, page.meaning, page);
   }
   if (page.themes?.length) {
     sections.push(`## Themes\n`);
     for (const theme of page.themes) {
-      sections.push(`### ${theme.theme}\n\n${theme.discussion}\n`);
+      sections.push(`### ${theme.theme}\n`);
+      emitPoemBlocks(sections, theme.blocks, page);
     }
   }
   if (page.formAndMeter?.length) {
     sections.push(`## Form and meter\n`);
-    for (const p of page.formAndMeter) sections.push(`${p}\n`);
+    emitPoemBlocks(sections, page.formAndMeter, page);
   }
   if (page.literaryDevices?.length) {
     sections.push(`## Literary devices\n`);
     for (const device of page.literaryDevices) {
       sections.push(`### ${device.device}\n`);
-      if (device.example) sections.push(`> ${device.example}\n`);
-      sections.push(`${device.discussion}\n`);
+      emitPoemBlocks(sections, device.blocks, page);
     }
   }
   if (page.historicalContext?.length) {
     sections.push(`## Historical context\n`);
-    for (const p of page.historicalContext) sections.push(`${p}\n`);
+    emitPoemBlocks(sections, page.historicalContext, page);
   }
   if (page.criticalViews?.length) {
     sections.push(`## What critics say\n`);
     for (const view of page.criticalViews) {
-      const by = view.author ? `${view.author}, ` : "";
+      const cite = citeById.get(view.citeId);
+      if (!cite?.quote) continue;
+      const by = cite.author ? `${cite.author}, ` : "";
       sections.push(
-        `> “${view.quote}”\n>\n> — ${by}[${view.source}](${view.url})\n`,
+        `> “${cite.quote}”\n>\n> — ${by}[${cite.source}](${cite.url})\n`,
       );
     }
   }
@@ -146,15 +165,15 @@ function poemMarkdown(page) {
       sections.push(`### ${item.q}\n\n${item.plain}\n`);
     }
   }
-  if (page.sources?.length) {
+  if (page.citations?.length) {
     sections.push(`## References\n`);
-    for (const source of page.sources) {
-      const pub = source.publisher ? ` — ${source.publisher}` : "";
-      sections.push(`- [${source.label}](${source.url})${pub}\n`);
+    for (const cite of page.citations) {
+      const by = cite.author ? `${cite.author}, ` : "";
+      sections.push(`- [${by}${cite.source}](${cite.url})\n`);
     }
   }
   sections.push(`## Open the editor\n`);
-  sections.push(`${page.cta}: ${SITE}/write\n`);
+  sections.push(`${page.cta}: ${SITE}${page.writePath ?? "/write"}\n`);
   return sections.join("\n");
 }
 

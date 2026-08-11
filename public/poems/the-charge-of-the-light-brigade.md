@@ -2,184 +2,126 @@
 
 The Charge of the Light Brigade — Alfred, Lord Tennyson (1854)
 
-This analysis explains how Tennyson turns a disastrous Crimean War charge into a public ballad about duty, courage, military error, and remembrance.
+This analysis explains how Tennyson makes a disastrous Crimean War charge into a ballad of courage, obedience, error, and memory.
 
-## The poem
+Full text from [The Charge of the Light Brigade](https://en.wikisource.org/wiki/The_Charge_of_the_Light_Brigade_(Tennyson)). Public domain in the US (First published in The Examiner on December 9, 1854, before the US public-domain cutoff.).
+
+## Summary
+
+The poem narrates the brigade’s advance into artillery fire, its sabre attack, and the reduced group returning through the same danger.
 
 ```
 Half a league, half a league,
 Half a league onward,
 All in the valley of Death
-Rode the six hundred.
-'Forward, the Light Brigade!
-Charge for the guns!' he said:
-Into the valley of Death
-Rode the six hundred.
-
-'Forward, the Light Brigade!'
-Was there a man dismay'd?
-Not tho' the soldier knew
-Some one had blunder'd:
-Their's not to make reply,
-Their's not to reason why,
-Their's but to do and die:
-Into the valley of Death
-Rode the six hundred.
-
-Cannon to right of them,
-Cannon to left of them,
-Cannon in front of them
-Volley'd and thunder'd;
-Storm'd at with shot and shell,
-Boldly they rode and well,
-Into the jaws of Death,
-Into the mouth of Hell
-Rode the six hundred.
-
-Flash'd all their sabres bare,
-Flash'd as they turn'd in air
-Sabring the gunners there,
-Charging an army, while
-All the world wonder'd:
-Plunged in the battery-smoke
-Right thro' the line they broke;
-Cossack and Russian
-Reel'd from the sabre-stroke
-Shatter'd and sunder'd.
-Then they rode back, but not
-Not the six hundred.
-
-Cannon to right of them,
-Cannon to left of them,
-Cannon behind them
-Volley'd and thunder'd;
-Storm'd at with shot and shell,
-While horse and hero fell,
-They that had fought so well
-Came thro' the jaws of Death,
-Back from the mouth of Hell,
-All that was left of them,
-Left of six hundred.
-
-When can their glory fade?
-O the wild charge they made!
-All the world wonder'd.
-Honour the charge they made!
-Honour the Light Brigade,
-Noble six hundred!
 ```
 
-Text from [The Charge of the Light Brigade](https://www.theguardian.com/books/booksblog/2014/jan/20/poem-of-the-week-charge-light-brigade-tennyson). Public domain in the US (First published in The Examiner on 9 December 1854; the poem is in the public domain in the United States.).
-
-## Summary
-
-The poem narrates the Light Brigade’s advance into a valley surrounded by artillery, its sabre attack, and the reduced group of survivors returning through the same danger. The repeated “six hundred” changes from a collective military label into a measure of devastating loss.
-
-Tennyson praises the soldiers’ courage while leaving the command’s mistake visible. The poem does not explain the blunder or turn it into a protest; instead, its compressed ballad form makes the charge and its consequences immediate enough to be remembered.
+Tennyson praises the soldiers while keeping the command’s mistake visible. The final imperative turns the charge into public memory.[2]
 
 ## Meaning and interpretation
 
-The central tension is between obedience and judgment. “Their’s not to make reply, / Their’s not to reason why” presents the soldiers’ duty as immediate action, but “Some one had blunder’d” keeps responsibility for the disaster in the frame. The men are honored without the error being erased.
+The central tension is between obedience and judgment. The soldiers act despite knowing that someone has blundered, while the poem leaves responsibility for the disaster in view.
 
-The valley, jaws, and mouth of Hell turn a military route into an underworld passage. Yet the poem’s language never makes death entirely abstract: “While horse and hero fell” and “All that was left of them” force the reader to register bodies, depletion, and the cost behind the legend.
+```
+Their’s not to make reply,
+Their’s not to reason why,
+Their’s but to do and die:
+```
 
-The ending is an act of public memory. The repeated command to “Honour” does not claim that the charge was strategically wise; it asks readers to preserve the courage of those who carried out an order under impossible conditions.
+The valley, jaws, and mouth of Hell make the route mythic without erasing bodily loss. The ending honors courage, not the wisdom of the order.[2]
 
 ## Themes
 
 ### Duty and obedience
 
-The soldiers know that someone has made a mistake, but the poem says their role is to act rather than debate. That stark division between command and obedience honors their discipline while exposing the dangerous consequences of unexamined authority.
+The poem separates command from action: soldiers obey even when judgment has failed. That division honors discipline while exposing its danger.
 
 ### Courage and sacrifice
 
-The brigade rides into artillery fire, reaches the enemy position, and attempts the return. Tennyson’s praise is directed chiefly at the soldiers’ conduct and endurance, not at the military decision that sent them into the valley.
+```
+While horse and hero fell,
+They that had fought so well
+```
 
-### War and military error
-
-“Some one had blunder’d” is brief but structurally important. The understatement interrupts the heroic momentum and makes the charge morally ambiguous: it is magnificent in courage and disastrous in judgment.
+Praise is directed at the soldiers’ conduct and endurance rather than the decision that sent them into the valley.
 
 ### Remembrance
 
-Refrains, repeated numbers, and the final imperative to honor the brigade turn a single battle into a communal memory. The poem’s memorable sound helps preserve the dead even as the narrative records their reduction from six hundred to “all that was left.”
+Refrains and repeated numbers turn one battle into communal memory, while “Left of six hundred” makes the cost audible.[2]
 
 ## Form and meter
 
-This is a six-stanza narrative ballad built from short, heavily stressed lines, repeated phrases, and a driving sound pattern. The poem alternates between rapid movement into danger and the slower shock of counting the survivors.
+This six-stanza narrative ballad uses short, heavily stressed lines, repeated phrases, and a strongly dactylic, often dactylic-dimeter movement.
 
-The dominant rhythm is strongly dactylic, often described as dactylic dimeter: a stressed syllable followed by two lighter syllables, compressed and varied to fit the action. The opening “Half a league, half a league” sounds like hoofbeats, while clipped lines such as “Shot and shell” imitate bombardment.
-
-Rhyme and repetition bind the stanzas together. The recurring sequence around “hundred,” “blunder’d,” “thunder’d,” “wonder’d,” and “sunder’d” makes the poem feel compulsive, while the return from “Rode the six hundred” to “Left of six hundred” gives repetition a tragic change in meaning.
+The recurring rhymes—hundred, blunder’d, thunder’d, wonder’d, sunder’d—create compulsive motion, while the changed refrain records depletion.[3]
 
 ## Literary devices
 
-### Repetition and refrain
+### Repetition
 
-> Rode the six hundred.
+```
+Rode the six hundred.
+```
 
-The refrain gives the charge a ceremonial, chant-like structure. Its later transformation into “Left of six hundred” repeats the sound while registering the human cost.
+The refrain gives the charge ceremonial momentum; later “Left of six hundred” repeats the sound while changing its meaning.
 
 ### Auditory imagery
 
-> Cannon to right of them, Cannon to left of them
+```
+Cannon to right of them,
+Cannon to left of them,
+Cannon in front of them
+```
 
-The symmetrical cannon pattern surrounds the riders verbally, just as the artillery surrounds them in the valley. Repeated plosives and the verbs “Volley’d” and “thunder’d” make the danger audible.
-
-### Biblical and infernal imagery
-
-> Into the jaws of Death, Into the mouth of Hell
-
-Death and Hell become consuming mouths. This personification enlarges the charge into a mythic descent while retaining the physical direction of the riders’ movement.
+Symmetrical repetition verbally surrounds the riders, while “volley’d” and “thunder’d” make the artillery audible.
 
 ### Understatement
 
-> Some one had blunder’d.
+```
+Some one had blunder’d.
+```
 
-The vague subject and restrained verb conceal the chain of command instead of naming a culprit. That understatement is powerful because it places a small phrase beside an enormous loss.
+The vague subject and restrained verb place a small phrase beside enormous loss, avoiding a simple assignment of blame.
 
 ## Historical context
 
-The poem responds to the Charge of the Light Brigade at the Battle of Balaklava on 25 October 1854 during the Crimean War. A misunderstanding sent lightly armed British cavalry toward Russian artillery; the brigade reached the guns but suffered severe casualties on its advance and return.
+The poem responds to the Charge of the Light Brigade at Balaklava on October 25, 1854. A misunderstanding sent cavalry toward Russian artillery; Tennyson published the poem in The Examiner on December 9.[2]
 
-Tennyson wrote the poem after newspaper reports of the event and published it in The Examiner on 9 December 1854. Seamus Perry notes that it first appeared signed “A.T.” and was revised for the following year’s volume Maud.
-
-The poem’s later versions changed details of the command and ending. The version presented here follows the six-stanza text reproduced by The Guardian, while the analysis focuses on the poem’s recurring tension between admiration for the soldiers and awareness of the blunder.
+Seamus Perry describes the poem as suspended between admiration for the charge’s magnificence and conviction of its idiocy.[2]
 
 ## What critics say
 
 > “Tennyson is suspended between admiration at the reckless magnificence of the charge and a conviction of its idiocy.”
 >
-> — Seamus Perry, [Seamus Perry, “The Charge of the Light Brigade: Making Poetry from War”](https://odp.library.tamu.edu/victorianpoetry/chapter/seamus-perry-the-charge-of-the-light-brigade-making-poetry-from-war/)
+> — Seamus Perry, [Victorian Poetry and Poetics](https://odp.library.tamu.edu/victorianpoetry/chapter/seamus-perry-the-charge-of-the-light-brigade-making-poetry-from-war/)
 
-> “Not a protest, but in no way a celebration of a disastrous historical event, it remains a compelling dramatisation of battle.”
+> “Not a protest, but in no way a celebration of a disastrous historical event, it remains a compelling dramatisation of battle”
 >
-> — The Guardian, [The Guardian, “Poem of the week: The Charge of the Light Brigade”](https://www.theguardian.com/books/booksblog/2014/jan/20/poem-of-the-week-charge-light-brigade-tennyson)
+> — [The Guardian](https://www.theguardian.com/books/booksblog/2014/jan/20/poem-of-the-week-charge-light-brigade-tennyson)
 
 ## Common questions
 
-### What is the meaning of The Charge of the Light Brigade?
+### What is the meaning?
 
-The poem honors the Light Brigade’s courage and obedience during a disastrous Crimean War charge. It celebrates the soldiers without hiding that the order resulted from a military blunder.
+The poem honors courage and obedience during a disastrous charge without hiding the military error.
 
-### What are the main themes in The Charge of the Light Brigade?
+### What are the themes?
 
-The main themes are duty, courage, sacrifice, military error, and remembrance. Tennyson holds heroic action and the foolishness of the command together rather than treating them as opposites.
+Duty, courage, sacrifice, military error, and remembrance.
 
-### What is the form and meter of the poem?
+### What is the meter?
 
-It is a six-stanza narrative ballad with short, repetitive lines and a strongly dactylic, galloping rhythm. Its refrains and recurring rhymes create the sound of movement while making the reduced number of survivors memorable.
-
-### Why does Tennyson repeat “the six hundred”?
-
-The repetition turns the brigade into a memorable collective and imitates the charge’s relentless motion. When the poem changes the phrase to “Left of six hundred,” the same refrain becomes an account of loss.
+It is a short-line ballad with strongly dactylic, galloping rhythm and repeated rhymes.
 
 ## References
 
-- [The Charge of the Light Brigade (full text and versions)](https://en.wikisource.org/wiki/The_Charge_of_the_Light_Brigade_(Tennyson)) — Wikisource
+- [Wikisource](https://en.wikisource.org/wiki/The_Charge_of_the_Light_Brigade_(Tennyson))
 
-- [“The Charge of the Light Brigade”: Making Poetry from War](https://odp.library.tamu.edu/victorianpoetry/chapter/seamus-perry-the-charge-of-the-light-brigade-making-poetry-from-war/) — Victorian Poetry and Poetics, Texas A&M University
+- [Seamus Perry, Victorian Poetry and Poetics](https://odp.library.tamu.edu/victorianpoetry/chapter/seamus-perry-the-charge-of-the-light-brigade-making-poetry-from-war/)
 
-- [Poem of the week: The Charge of the Light Brigade](https://www.theguardian.com/books/booksblog/2014/jan/20/poem-of-the-week-charge-light-brigade-tennyson) — The Guardian
+- [The Guardian](https://www.theguardian.com/books/booksblog/2014/jan/20/poem-of-the-week-charge-light-brigade-tennyson)
+
+- [Victorian Poetry and Poetics](https://odp.library.tamu.edu/victorianpoetry/chapter/the-charge-of-the-light-brigade-1854/)
 
 ## Open the editor
 

@@ -1,5 +1,6 @@
-import type { PoemAnalysisContent } from "../types";
+import { excerpt, p } from "../blocks";
 import { poemMeterSettings } from "../settings";
+import type { PoemAnalysisContent } from "../types";
 
 export const whenYouAreOldPoem: PoemAnalysisContent = {
   slug: "when-you-are-old",
@@ -7,165 +8,62 @@ export const whenYouAreOldPoem: PoemAnalysisContent = {
   poemTitle: "When You Are Old",
   author: "W. B. Yeats",
   yearPublished: 1893,
-  publicDomainBasis:
-    "Published in the United States by 1893, well before the 1931 public-domain cutoff for works first published before January 1, 1931.",
+  publicDomainBasis: "Published in 1893, well before the 1931 US public-domain cutoff.",
   title: "When You Are Old Analysis & Meaning — W. B. Yeats — lyriic",
-  description:
-    "A When You Are Old analysis and meaning guide covering Yeats's themes of aging, regret, unreturned love, form, and literary devices.",
+  description: "When You Are Old analysis covering Yeats’s themes of aging, regret, unreturned love, form, and literary devices.",
   h1: "When You Are Old analysis",
-  intro:
-    "W. B. Yeats's When You Are Old imagines a future of aging and memory to distinguish passing admiration from love that recognizes the whole person. This analysis explains its meaning, themes, form, and melancholy turn.",
-  text: `When you are old and grey and full of sleep,
-And nodding by the fire, take down this book,
-And slowly read, and dream of the soft look
-Your eyes had once, and of their shadows deep;
-
-How many loved your moments of glad grace,
-And loved your beauty with love false or true,
-But one man loved the pilgrim soul in you,
-And loved the sorrows of your changing face;
-
-And bending down beside the glowing bars,
-Murmur, a little sadly, how Love fled
-And paced upon the mountains overhead
-And hid his face amid a crowd of stars.`,
-  fullTextSource: {
-    label: "When You Are Old — Wikisource",
-    url: "https://en.wikisource.org/wiki/When_You_Are_Old",
-    publisher: "Wikisource",
-  },
-  editorSettings: poemMeterSettings("iambic-pentameter", {
-    showCounts: true,
-    showStress: true,
-    showMeterBreaks: true,
-    showRhymeScheme: true,
-  }),
+  intro: "Yeats imagines a future of aging and memory to distinguish passing admiration from love that recognizes the whole person. This analysis explains the poem’s meaning, themes, form, and melancholy turn.",
+  fullTextSource: { label: "When You Are Old — Wikisource", url: "https://en.wikisource.org/wiki/When_You_Are_Old", publisher: "Wikisource" },
+  editorSettings: poemMeterSettings("iambic-pentameter", { showCounts: true, showStress: true, showMeterBreaks: true, showRhymeScheme: true }),
   summary: [
-    "The speaker asks a woman to imagine herself old, tired, and reading his book beside a fire. She will remember the youthful beauty that attracted many admirers, but also the one man who loved her inner life and her changing face.",
-    "In the final stanza, love has become something that has fled into the mountains and stars. The scene is tender but also corrective: the addressee is invited to recognize a love she did not return before it became unreachable.",
+    p("The speaker asks a woman to imagine herself old, tired, and reading his book beside a fire. She will remember youthful beauty that attracted many admirers, but also the one man who loved her inner life and changing face.", ["yeats-bbc"]),
+    excerpt(`When you are old and grey and full of sleep,
+And nodding by the fire, take down this book,`),
+    p("In the final stanza, Love has fled into the mountains and stars. The scene is tender but corrective: the addressee may recognize a love she did not return before it became unreachable.", ["yeats-litcharts"]),
   ],
   meaning: [
-    "The poem contrasts admiration for a person's youthful appearance with a more enduring attention to character and vulnerability. “The pilgrim soul” suggests an inner self still journeying through life, while “the sorrows of your changing face” makes aging part of what the speaker claims to love.",
-    "Its imagined future gives the poem its pressure. The speaker does not ask directly for an answer in the present; instead, he stages the regret that may come when the beloved can only recover his love through the book. The ending leaves that love both human and cosmic: “Love” paces restlessly, then hides among stars.",
+    p("The poem contrasts admiration for youthful appearance with attention to character and vulnerability. “The pilgrim soul” suggests an inner self still journeying through life, while changing sorrow becomes part of what the speaker claims to love.", ["yeats-bbc"]),
+    excerpt(`How many loved your moments of glad grace,
+And loved your beauty with love false or true,`),
+    p("Its imagined future creates pressure. The speaker stages the regret that may come when the beloved can recover his love only through the book; the ending makes that love both human and cosmic.", ["yeats-litcharts"]),
   ],
   themes: [
-    {
-      theme: "Aging and memory",
-      discussion:
-        "The opening moves the addressee into old age and asks her to remember the past. Youth survives as memory, not as a permanent physical state, so the poem measures beauty against time.",
-    },
-    {
-      theme: "Genuine and superficial love",
-      discussion:
-        "The many admirers value “moments of glad grace” and beauty, while the one man claims to love the pilgrim soul and the sorrows of change. The contrast asks what it means to love someone beyond appearance.",
-    },
-    {
-      theme: "Regret and unreturned love",
-      discussion:
-        "The future fireside scene is shaped by missed opportunity. The addressee may regret refusing the one love presented as deep and faithful, while the speaker's restraint keeps the poem from becoming a direct plea.",
-    },
-    {
-      theme: "Love as absence",
-      discussion:
-        "By the close, Love has fled and hidden its face. Personified love becomes an absent figure, suggesting that rejection or time can turn an intimate feeling into something distant and impossible to recover.",
-    },
+    { theme: "Aging and memory", blocks: [p("The opening moves the addressee into old age and asks her to remember the past. Youth survives as memory, not as a permanent physical state.", ["yeats-bbc"])] },
+    { theme: "Genuine and superficial love", blocks: [excerpt(`But one man loved the pilgrim soul in you,
+And loved the sorrows of your changing face;`), p("Many admirers value beauty, while the one man claims to love the inner self and the sorrows of change. The contrast asks what it means to love beyond appearance.", ["yeats-bbc"])] },
+    { theme: "Regret and unreturned love", blocks: [p("The future fireside scene is shaped by missed opportunity. The addressee may regret refusing the one love presented as deep and faithful, while the speaker’s restraint keeps the poem from becoming a direct plea.", ["yeats-litcharts"])] },
+    { theme: "Love as absence", blocks: [excerpt(`Murmur, a little sadly, how Love fled
+And paced upon the mountains overhead`), p("Personified Love becomes an absent figure, suggesting that rejection or time can turn intimacy into something distant and impossible to recover.", ["yeats-bbc"])] },
   ],
   formAndMeter: [
-    "The poem has three quatrains with an enclosed ABBA rhyme scheme in each stanza. Its compact shape echoes the first four lines of a Petrarchan sonnet while stopping short of a full sonnet.",
-    "The lines are predominantly iambic pentameter, giving the address a measured, heartbeat-like movement. The repeated conjunction “and” extends the sentences and creates the slow, reflective pace of the imagined fireside reading.",
-    "The poem turns at line seven, when “But one man” separates the speaker's love from the many admirers. The final stanza shifts from the woman's memories to the personified movement and disappearance of Love.",
+    p("The poem has three quatrains with an enclosed ABBA rhyme scheme in each stanza. Its compact shape echoes the first four lines of a Petrarchan sonnet while stopping short of a full sonnet.", ["yeats-bbc"]),
+    p("The lines are predominantly iambic pentameter, giving the address a measured, fireside movement. The turn at line seven separates the speaker’s love from the many admirers.", ["yeats-bbc", "yeats-litcharts"]),
   ],
   literaryDevices: [
-    {
-      device: "Apostrophe and direct address",
-      example: "When you are old and grey and full of sleep,",
-      discussion:
-        "The speaker addresses “you” throughout without naming the beloved or using “I.” This makes the poem intimate while keeping the speaker's identity partly concealed behind the phrase “one man.”",
-    },
-    {
-      device: "Metaphor",
-      example: "But one man loved the pilgrim soul in you,",
-      discussion:
-        "The “pilgrim soul” turns the beloved's inner life into a traveler. It suggests a restless, searching, or spiritually independent self that cannot be reduced to physical beauty.",
-    },
-    {
-      device: "Personification",
-      example: "Murmur, a little sadly, how Love fled",
-      discussion:
-        "Love is given the ability to flee, pace, and hide its face. This makes an emotional loss visible as a solitary figure moving away from the fireside and into a larger landscape.",
-    },
-    {
-      device: "Imagery and contrast",
-      example: "And hid his face amid a crowd of stars.",
-      discussion:
-        "Warm domestic images of the book, fire, and glowing bars give way to mountains and stars. The movement from room to cosmos enlarges the speaker's loss while making Love seem remote and unreachable.",
-    },
+    { device: "Apostrophe and direct address", blocks: [excerpt(`When you are old and grey and full of sleep,
+And nodding by the fire, take down this book,`), p("The speaker addresses “you” throughout without naming the beloved or using “I.” Direct address makes the poem intimate while keeping the speaker partly concealed.", ["yeats-bbc"])] },
+    { device: "Metaphor", blocks: [excerpt(`But one man loved the pilgrim soul in you,
+And loved the sorrows of your changing face;`), p("The “pilgrim soul” turns the beloved’s inner life into a traveler, suggesting a restless or searching self that cannot be reduced to physical beauty.", ["yeats-bbc"])] },
+    { device: "Personification", blocks: [excerpt(`Murmur, a little sadly, how Love fled
+And paced upon the mountains overhead`), p("Love is given the ability to flee and pace. Emotional loss becomes a visible figure moving away from the fireside.", ["yeats-bbc"])] },
+    { device: "Contrast and imagery", blocks: [excerpt(`And hid his face amid a crowd of stars.`), p("Warm domestic images give way to mountains and stars. The movement from room to cosmos enlarges the speaker’s loss and makes Love seem remote.", ["yeats-bbc"])] },
   ],
   historicalContext: [
-    "Yeats wrote the poem in 1891, and it first appeared in The Countess Kathleen and Various Legends and Lyrics in 1892 before being reprinted in the 1893 collection The Rose. The poem is widely associated with Maud Gonne, the actress and Irish nationalist whom Yeats loved and whose proposals he repeatedly made.",
-    "The poem adapts the premise of Pierre de Ronsard's sixteenth-century poem “Quand vous serez bien vieille” (“When You Are Very Old”). Yeats retains the imagined old age and future regret but reshapes the material into a shorter lyric focused on spiritual devotion, memory, and the loss of returned love.",
+    p("Yeats wrote the poem in 1891 and published it in the 1893 collection The Rose. It is widely associated with Maud Gonne, the actress and Irish nationalist whom Yeats loved.", ["yeats-bbc", "yeats-litcharts"]),
+    p("The lyric adapts Pierre de Ronsard’s sixteenth-century “Quand vous serez bien vieille,” retaining the imagined old age and future regret while reshaping the material into a shorter lyric.", ["yeats-bbc"]),
   ],
-  criticalViews: [
-    {
-      source: "BBC Bitesize",
-      author: "CCEA English Literature",
-      quote:
-        "The poem explores unreturned love, regret, ageing and memory, and the difference between true love and shallow admiration.",
-      url: "https://www.bbc.co.uk/bitesize/articles/zpjtdnb",
-    },
-    {
-      source: "Interesting Literature",
-      author: "Oliver Tearle",
-      quote:
-        "The final lines present more of an interpretative challenge than the rest of the poem, and are what (arguably) saves the poem from mawkish self-pity in the face of (suspected) unrequited love.",
-      url: "https://interestingliterature.com/2020/05/yeats-when-you-are-old-summary-analysis/",
-    },
+  citations: [
+    { id: "yeats-wikisource", source: "Wikisource", url: "https://en.wikisource.org/wiki/When_You_Are_Old" },
+    { id: "yeats-bbc", source: "BBC Bitesize", url: "https://www.bbc.co.uk/bitesize/articles/zpjtdnb", quote: "The poem explores unreturned love, regret, ageing and memory, and the difference between true love and shallow admiration." },
+    { id: "yeats-poetry-foundation", source: "Poetry Foundation", url: "https://www.poetryfoundation.org/poems/43283/when-you-are-old" },
+    { id: "yeats-litcharts", source: "LitCharts", url: "https://www.litcharts.com/poetry/william-butler-yeats/when-you-are-old", quote: "Most critics agree that the poem is about Yeats’s relationship with Maud Gonne." },
   ],
+  criticalViews: [{ citeId: "yeats-bbc" }, { citeId: "yeats-litcharts" }],
   faqs: [
-    {
-      q: "What is the main meaning of When You Are Old?",
-      plain:
-        "The poem contrasts temporary admiration for youth and beauty with a deeper love for a person's inner character, including the changes and sorrows brought by age. It also imagines the regret of recognizing that love too late.",
-    },
-    {
-      q: "Is When You Are Old about Maud Gonne?",
-      plain:
-        "It is widely understood as a poem connected to Maud Gonne, Yeats's longtime muse and unreturned love. The poem can also be read more broadly as a lyric about memory, rejection, and the difference between appearance and character.",
-    },
-    {
-      q: "What themes appear in When You Are Old?",
-      plain:
-        "Its main themes are aging, memory, genuine love versus superficial admiration, regret, and love becoming absent or unreachable.",
-    },
-    {
-      q: "What form and meter does When You Are Old use?",
-      plain:
-        "It has three four-line stanzas with an ABBA rhyme scheme. The lines are predominantly iambic pentameter, with a turn in the seventh line that separates the one man's love from the many admirers.",
-      href: "/tools/iambic-pentameter-checker",
-      hrefLabel: "Open the iambic pentameter checker",
-    },
-  ],
-  sources: [
-    {
-      label: "When You Are Old — full poem",
-      url: "https://en.wikisource.org/wiki/When_You_Are_Old",
-      publisher: "Wikisource",
-    },
-    {
-      label: "When You Are Old — context and form",
-      url: "https://www.bbc.co.uk/bitesize/articles/zpjtdnb",
-      publisher: "BBC Bitesize",
-    },
-    {
-      label: "Yeats's publication history",
-      url: "https://smallnotes.library.virginia.edu/2017/01/11/researching-william-butler-yeats-in-special-collections/",
-      publisher: "University of Virginia Library",
-    },
-    {
-      label: "A summary and analysis of When You Are Old",
-      url: "https://interestingliterature.com/2020/05/yeats-when-you-are-old-summary-analysis/",
-      publisher: "Interesting Literature",
-    },
+    { q: "What is the main meaning of When You Are Old?", plain: "The poem contrasts temporary admiration for youth with deeper love for inner character, while imagining the regret of recognizing that love too late." },
+    { q: "Is When You Are Old about Maud Gonne?", plain: "It is widely understood as a poem connected to Maud Gonne, Yeats’s longtime muse and unreturned love, though it also works as a broader lyric about memory and rejection." },
+    { q: "What themes appear in the poem?", plain: "Its themes include aging, memory, genuine love versus superficial admiration, regret, and love becoming absent or unreachable." },
+    { q: "What form and meter does it use?", plain: "It has three quatrains with ABBA rhyme in predominantly iambic pentameter, and a turn in line seven.", href: "/tools/iambic-pentameter-checker", hrefLabel: "Open the iambic pentameter checker" },
   ],
   cta: "Write with this poem’s meter in the editor",
 };

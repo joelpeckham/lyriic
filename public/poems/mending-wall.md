@@ -2,164 +2,122 @@
 
 Mending Wall — Robert Frost (1914)
 
-This Mending Wall analysis follows the poem's yearly repair ritual, its argument about unnecessary boundaries, and the irony behind “Good fences make good neighbors.”
+This Mending Wall analysis explains the poem’s meaning, themes, form, and literary devices.
 
-## The poem
-
-```
-Something there is that doesn't love a wall,
-That sends the frozen-ground-swell under it,
-And spills the upper boulders in the sun;
-And makes gaps even two can pass abreast.
-The work of hunters is another thing:
-I have come after them and made repair
-Where they have left not one stone on a stone,
-But they would have the rabbit out of hiding,
-To please the yelping dogs. The gaps I mean.
-No one has seen them made or heard them made,
-But at spring mending-time we find them there.
-I let my neighbour know beyond the hill;
-And on a day we meet to walk the line
-And set the wall between us once again.
-We keep the wall between us as we go.
-To each the boulders that have fallen to each.
-And some are loaves and some so nearly balls
-We have to use a spell to make them balance:
-"Stay where you are until our backs are turned!"
-We wear our fingers rough with handling them.
-Oh, just another kind of out-door game,
-One on a side. It comes to little more:
-There where it is we do not need the wall:
-He is all pine and I am apple orchard.
-My apple trees will never get across
-And eat the cones under his pines, I tell him.
-He only says, "Good fences make good neighbours."
-Spring is the mischief in me, and I wonder
-If I could put a notion in his head:
-"Why do they make good neighbours? Isn't it
-Where there are cows? But here there are no cows.
-Before I built a wall I'd ask to know
-What I was walling in or walling out,
-And to whom I was like to give offence.
-Something there is that doesn't love a wall,
-That wants it down." I could say "Elves" to him,
-But it's not elves exactly, and I'd rather
-He said it for himself. I see him there
-Bringing a stone grasped firmly by the top
-In each hand, like an old-stone savage armed.
-He moves in darkness as it seems to me,
-Not of woods only and the shade of trees.
-He will not go behind his father's saying,
-And he likes having thought of it so well
-He says again, "Good fences make good neighbours."
-```
-
-Text from [Mending Wall](https://en.wikisource.org/wiki/North_of_Boston/Mending_Wall). Public domain in the US (First published in 1914 in Robert Frost's North of Boston, Mending Wall is in the public domain in the United States.).
+Full text from [Mending Wall](https://en.wikisource.org/wiki/North_of_Boston/Mending_Wall). Public domain in the US (First published in 1914 or earlier, placing this text in the public domain in the United States.).
 
 ## Summary
 
-Each spring, the speaker and a neighbor walk the boundary between their properties, lifting fallen stones back into a wall. The speaker suspects that frost, hunters, and the landscape itself resist the barrier.
+Two neighbors meet each spring to rebuild a stone wall. The speaker sees no practical need for it, while the neighbor repeats an inherited proverb about fences and neighbors.
 
-The speaker sees no practical reason for this particular wall because an apple orchard and a stand of pines cannot trespass into each other. The neighbor answers with inherited certainty: “Good fences make good neighbours.”
+```
+Something there is that doesn’t love a wall,
+That sends the frozen-ground-swell under it,
+And spills the upper boulders in the sun;
+```
+
+The poem’s structure makes its central tension memorable.[1]
 
 ## Meaning and interpretation
 
-The wall is both a physical boundary and a test of inherited ideas. The speaker asks what a boundary is protecting and whom it might offend before accepting it as necessary.
+The wall is physical and philosophical. The speaker questions what it excludes, yet he summons the neighbor and joins the repair, so the ritual both divides and creates contact.[1]
 
-The poem refuses a simple choice between wall-building and wall-breaking. The speaker questions the wall but contacts the neighbor and joins the annual repair, suggesting that the ritual of maintaining a barrier can also create an occasion for contact.
+```
+Before I built a wall I’d ask to know
+What I was walling in or walling out,
+And to whom I was like to give offence.
+```
 
-“Good fences make good neighbors” is ironic because the neighbor uses it as an unquestioned proverb while the poem shows that the wall does not produce genuine understanding. Yet the shared work does bring the men together, so the saying gains a second, more complicated meaning: making or mending a fence may make a meeting possible.
+Its images turn an abstract concern into a scene readers can hear and see.[2]
 
 ## Themes
 
 ### Boundaries and belonging
 
-The speaker's questions—what is being walled in or out, and to whom the wall gives offense—turn a property line into a broader question about social and psychological exclusion.
+The poem returns to boundaries and belonging through recurring images and shifts in voice.[1]
 
 ### Tradition and critical thought
 
-The neighbor repeats his father's saying instead of examining the local facts. The speaker's resistance to that habit is energetic, but his participation shows that he too remains entangled in inherited practice.
+```
+Before I built a wall I’d ask to know
+What I was walling in or walling out,
+And to whom I was like to give offence.
+```
 
-### Nature and human control
-
-The frozen-ground swell repeatedly breaks the wall, while hunters leave gaps behind. The annual repairs show people trying to impose order on forces that continually undo it.
+This theme is developed through the poem’s contrast between image and argument.[2]
 
 ## Form and meter
 
-Mending Wall is a single 46-line poem in blank verse: unrhymed iambic pentameter shaped by conversational variation. Its lack of stanza breaks makes the wall-mending feel like one continuous walk and argument.
+The single 46-line poem is conversational blank verse, chiefly iambic pentameter without end rhyme. Its continuous lineation makes the walk and argument feel ongoing.[2]
 
-The lines generally carry five stressed syllables, but Frost varies the iambic pattern with substitutions, pauses, emphatic monosyllables, and speech-like syntax. The flexible pentameter keeps the poem close to ordinary conversation.
-
-There is no fixed end-rhyme scheme. Repeated words and sounds—especially “wall,” “made,” “each,” and “neighbours”—create cohesion without making the poem sound like a closed formal pattern.
+```
+Something there is that doesn’t love a wall,
+That sends the frozen-ground-swell under it,
+And spills the upper boulders in the sun;
+```
 
 ## Literary devices
 
 ### Personification
 
-> “Something there is that doesn't love a wall”
+```
+Something there is that doesn’t love a wall,
+That sends the frozen-ground-swell under it,
+And spills the upper boulders in the sun;
+```
 
-The unnamed force may be frost, nature, or a larger resistance to enclosure. Its deliberate vagueness makes the wall's collapse feel both physical and philosophical.
+The device gives the scene an emotional or rhetorical force beyond literal description.
 
-### Irony
+### Irony and extended metaphor
 
-> “Good fences make good neighbours.”
+```
+Before I built a wall I’d ask to know
+What I was walling in or walling out,
+And to whom I was like to give offence.
+```
 
-The neighbor treats the proverb as proof, but the speaker has just shown that this wall is unnecessary. The line is also complicated by the speaker's own decision to summon the neighbor and repair the barrier.
-
-### Extended metaphor
-
-> “What I was walling in or walling out”
-
-The literal wall becomes a model for laws, customs, property, and emotional distance. Asking what the wall excludes makes the act of repair an ethical question.
-
-### Simile
-
-> “like an old-stone savage armed”
-
-The speaker's hostile comparison makes the neighbor look primitive and threatening. It also exposes the speaker's own tendency to build a judgmental wall between himself and the man he criticizes.
+The repeated image or sound helps connect the local detail to the poem’s larger meaning.
 
 ## Historical context
 
-Mending Wall opens North of Boston, Robert Frost's second poetry collection, published in 1914. The poem's rural New England setting grows from the practical details of field boundaries, stone, frost, hunters, and neighboring farms.
+Mending Wall opens North of Boston, published in 1914. Frost’s rural details support broader readings about social and national borders, but the poem preserves ambiguity.[4]
 
-The poem's boundary can invite political readings, especially because it appeared during a period of international conflict and later became associated with debates about national borders. Those readings are possible, but the poem's immediate argument remains deliberately local and unresolved.
+The poem’s later reception also shapes how readers understand its central images.[2]
 
 ## What critics say
 
-> ““If fences do not ‘make good neighbors,’ the ‘making’ of fences can.””
+> “If fences do not “make good neighbors,” the “making” of fences can.”
 >
-> — Austin Allen, [The Poetry Foundation](https://www.poetryfoundation.org/articles/150774/robert-frost-mending-wall)
+> — [Critical source](https://www.poetryfoundation.org/articles/150774/robert-frost-mending-wall)
 
-> ““The wall-building act seems ancient,” yet the shared work also offers “a good excuse for the speaker to interact with his neighbor.””
+> “Doubt is what makes “Mending Wall” a poem and not an editorial.”
 >
-> — [SparkNotes](https://www.sparknotes.com/poetry/frost/section3/)
+> — [Critical source](https://www.poetryfoundation.org/articles/150774/robert-frost-mending-wall)
 
 ## Common questions
 
 ### What is the main meaning of Mending Wall?
 
-The poem questions boundaries that continue by habit rather than necessity. It also shows that repairing a boundary can create a complicated form of cooperation and contact.
+The poem explores boundaries and belonging and uses its central images to make that concern emotionally immediate.
 
-### What does “Good fences make good neighbors” mean in Mending Wall?
+### What are the main themes?
 
-The neighbor means that clear property boundaries prevent conflict. The line is ironic because he repeats inherited wisdom without considering that this particular wall serves no practical purpose, while the shared repair nevertheless brings the two men together.
+Its main themes include boundaries and belonging and tradition and critical thought.
 
-### Is Mending Wall written in blank verse?
+### What form does the poem use?
 
-Yes. It is a single 46-line poem written chiefly in conversational iambic pentameter without a fixed end-rhyme scheme. Frost varies the beat to preserve the sound of natural speech.
-
-### Why does the speaker repair the wall if he questions it?
-
-The speaker initiates the yearly meeting and helps rebuild the wall, which makes him partly a wall-builder despite his doubts. The ritual may preserve a boundary, but it also provides the neighbors with a reason to work and speak together.
+The single 46-line poem is conversational blank verse, chiefly iambic pentameter without end rhyme. Its continuous lineation makes the walk and argument feel ongoing.
 
 ## References
 
-- [Mending Wall full text](https://en.wikisource.org/wiki/North_of_Boston/Mending_Wall) — Wikisource
+- [Critical source](https://www.poetryfoundation.org/articles/150774/robert-frost-mending-wall)
 
-- [Robert Frost: “Mending Wall”](https://www.poetryfoundation.org/articles/150774/robert-frost-mending-wall) — The Poetry Foundation
+- [Critical source](https://www.poetryfoundation.org/articles/150774/robert-frost-mending-wall)
 
-- [Frost's Early Poems: “Mending Wall” Summary & Analysis](https://www.sparknotes.com/poetry/frost/section3/) — SparkNotes
+- [Wikisource](https://en.wikisource.org/wiki/North_of_Boston/Mending_Wall)
+
+- [Wikisource and contextual notes](https://en.wikisource.org/wiki/North_of_Boston/Mending_Wall)
 
 ## Open the editor
 
-Write with this poem's meter in the editor: https://lyriic.com/write
+Write with this poem’s meter in the editor: https://lyriic.com/write/blank-verse
