@@ -22,12 +22,12 @@ export const TOOL_PAGES: ToolPageContent[] = [
   {
     path: "/tools/syllable-counter",
     slug: "syllable-counter",
-    title: "Syllable Counter for Poetry & Lyrics — lyriic",
+    title: "Syllable Counter for Poems & Lyrics — lyriic",
     description:
       "Free syllable counter for poems and song lyrics. Per-line and per-word counts from lyriic’s pronunciation dictionary — private in your browser.",
     h1: "Syllable counter",
     intro:
-      "Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor.",
+      "Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor — a syllable counter built for poems and lyrics.",
     body: [
       "Each line shows a syllable total, with a per-word breakdown so you can spot where a beat runs short or long. Try the haiku, iambic, or lyric samples to get a feel for the readout.",
       "Counts prefer the primary pronunciation from a fused US dictionary (Misaki, CMUdict, WikiPron). Hyphenated compounds are split and summed; words missing from the dictionary fall back to a spelling heuristic (shown in italics).",
@@ -38,6 +38,18 @@ export const TOOL_PAGES: ToolPageContent[] = [
         q: "Is this syllable counter free?",
         plain:
           "Yes. The tool runs in your browser on lyriic.com with no account and no upload of your text to a server for counting.",
+      },
+      {
+        q: "How do I count syllables in a poem?",
+        plain:
+          "Paste or type your lines into the counter. Each line shows a total, with a per-word breakdown so you can see which words stretch or shorten the beat. For fixed forms, open a form checker (haiku, sonnet, limerick) to compare against the target pattern.",
+      },
+      {
+        q: "Can I use this as a syllable counter for haiku?",
+        plain:
+          "Yes for raw line totals. For a 5-7-5 haiku check with live deltas against the teaching form, use the dedicated haiku checker.",
+        href: "/tools/haiku-checker",
+        hrefLabel: "Open the haiku checker",
       },
       {
         q: "How accurate are the counts?",
@@ -62,18 +74,30 @@ export const TOOL_PAGES: ToolPageContent[] = [
   {
     path: "/tools/rhyme-finder",
     slug: "rhyme-finder",
-    title: "Rhyme Finder — lyriic",
+    title: "Rhyme Finder & Rhyme Checker — lyriic",
     description:
-      "Find rhymes grouped by syllable count with lyriic’s local dictionary. Free in your browser — then keep writing with hover-or-tap lookup in the editor.",
+      "Search rhymes grouped by syllable count, or ask what rhymes with a word. Free local dictionary — then keep writing with hover-or-tap lookup in the editor.",
     h1: "Rhyme finder",
     intro:
-      "Browse rhymes by syllable count from a local dictionary. In the lyriic editor, hover or tap a word to open the same index beside your draft.",
+      "Search rhymes by syllable count from a local dictionary. Type a word to see what rhymes with it — perfect rhymes first, with optional end and slant matches. In the lyriic editor, hover or tap a word to open the same index beside your draft.",
     body: [
       "Type a word to see rhyming candidates from the bundled index, grouped by syllables so you can keep meter in mind. Perfect rhymes are always listed; optional toggles add end rhymes (final syllable even when stress differs, e.g. fun ↔ anyone) and slant rhymes (related vowel and coda families such as night ↔ side, plus one-segment coda add/drop such as mind ↔ time or hold ↔ coal). Results stay on-device; there is no cloud rhyme API.",
-      "The page is for browsing. The editor is for drafting: hover or tap a word, pick a rhyme sorted by syllable count—with meter-aware highlighting when a ruler is set.",
+      "The page is for browsing. To check whether two specific words rhyme — “does this rhyme?” — use the rhyme checker. The editor is for drafting: hover or tap a word, pick a rhyme sorted by syllable count—with meter-aware highlighting when a ruler is set.",
       "lyriic pairs rhyme helpers with live syllable counts and synonym lookup so you can shape meter and diction without leaving the line.",
     ],
     faqs: [
+      {
+        q: "Does this rhyme?",
+        plain:
+          "This page lists what rhymes with a single word. To check whether two specific words rhyme (perfect, end, or slant), open the rhyme checker.",
+        href: "/tools/rhyme-checker",
+        hrefLabel: "Open the rhyme checker",
+      },
+      {
+        q: "How do I search rhymes by syllable count?",
+        plain:
+          "Type a word above. Matches load from the local index and group by syllable count so you can keep meter in mind while you browse. Perfect rhymes always show; turn on End or Slant for looser matches.",
+      },
       {
         q: "Is this a full RhymeZone replacement?",
         plain:
@@ -100,6 +124,51 @@ export const TOOL_PAGES: ToolPageContent[] = [
           "This page is for browsing rhymes. The editor keeps rhyme lookup beside your draft while you write, with live syllable counts and optional meter rulers. Your finder query does not carry over — open the editor when you are ready to draft.",
         href: "/write",
         hrefLabel: "Open the editor",
+      },
+    ],
+    cta: "Write with rhyme lookup in the editor",
+  },
+  {
+    path: "/tools/rhyme-checker",
+    slug: "rhyme-checker",
+    title: "Rhyme Checker — Does This Rhyme? — lyriic",
+    description:
+      "Check if two words rhyme — perfect, end, or slant — with lyriic’s local dictionary. Free in your browser; nothing is uploaded.",
+    h1: "Rhyme checker",
+    intro:
+      "Ask “does this rhyme?” with two words. lyriic reports the strongest match — perfect, end, or slant — from the same on-device dictionary used in the editor.",
+    body: [
+      "Enter two words to see whether they rhyme. A perfect rhyme shares the stressed vowel and everything after it (light / night). An end rhyme shares the final syllable even when stress differs (fun / anyone). A slant rhyme shares a related vowel and coda family (night / side), or differs by one coda segment.",
+      "Checks run locally after the rhyme packs load. Unknown words — proper names, rare spellings — may not be in the index; try common English diction, or browse candidates in the rhyme finder.",
+      "For drafting, open the lyriic editor and hover or tap a word for rhymes sorted by syllable count beside your lines.",
+    ],
+    faqs: [
+      {
+        q: "Does X rhyme with Y?",
+        plain:
+          "Type both words above. lyriic checks perfect rhyme first, then end rhyme, then slant rhyme, and reports the strongest match — or that they do not rhyme in the local index.",
+      },
+      {
+        q: "What is a perfect rhyme?",
+        plain:
+          "A perfect rhyme shares the same stressed vowel sound and all sounds that follow it, with a different consonant onset before that vowel — light with night, heart with part. Spelling can differ; the check is pronunciation-based.",
+      },
+      {
+        q: "What is a slant rhyme?",
+        plain:
+          "A slant (near) rhyme shares a related vowel family and coda family from the last stressed nucleus — night with side — or differs by dropping or adding one final coda segment (mind with time). Looser than a perfect rhyme; useful when exact matches feel forced.",
+      },
+      {
+        q: "How is this different from the rhyme finder?",
+        plain:
+          "This page checks whether two words rhyme. The rhyme finder lists many rhymes for one word, grouped by syllable count.",
+        href: "/tools/rhyme-finder",
+        hrefLabel: "Open the rhyme finder",
+      },
+      {
+        q: "Is my text uploaded?",
+        plain:
+          "No. Rhyme checks run locally in your browser. lyriic is local-first and does not require an account.",
       },
     ],
     cta: "Write with rhyme lookup in the editor",

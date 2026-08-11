@@ -8,7 +8,7 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     "Check a draft in trochaic tetrameter: eight syllables per line, stressed–unstressed. Live syllable and stress feedback — private in your browser, then keep writing in lyriic’s zen editor.",
   h1: "Trochaic tetrameter checker",
   intro:
-    "Shape a draft against eight-syllable trochaic lines (DUM-da × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.",
+    "Trochaic tetrameter definition in practice: eight-syllable lines of falling trochees (DUM-da × 4). Shape a draft against that grid with the same syllable and stress engine as the lyriic poetry editor — private in your browser.",
   history: [
     "Trochaic tetrameter is four trochees per line: a falling foot of stressed then unstressed (DUM-da), repeated four times for eight syllables in the full English teaching form. The name comes from Greek trokhaios (“running”); classical “tetrameter” counted metra differently, so Greek and Latin trochaic tetrameter is a longer quantitative line than the English eight-syllable shape.",
     "In English verse the meter often feels chant-like or song-like. Longfellow’s Song of Hiawatha is the best-known sustained English example in full (acatalectic) trochaic tetrameter. Shakespeare’s fairy and witch speeches, and many lyrics such as Blake’s “The Tyger,” commonly drop the final unstressed beat (catalectic tetrameter), ending on a strong syllable. Related traditions include medieval Latin sequences such as the Dies Irae and the Balto-Finnic Kalevala meter, which uses its own long/short syllable rules rather than English stress alone.",
@@ -44,6 +44,11 @@ export const trochaicTetrameterForm: FormCheckerContent = {
     "Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.",
   ],
   faqs: [
+    {
+      q: "What is trochaic meter (or metre)?",
+      plain:
+        "Trochaic meter (British spelling: metre) is verse built from trochees — a falling foot of stressed then unstressed (DUM-da). Trochaic tetrameter is four of those feet per line: eight syllables in the full English teaching form. Poets often drop the last weak syllable (catalexis).",
+    },
     {
       q: "What is trochaic tetrameter?",
       plain:

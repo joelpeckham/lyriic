@@ -13,6 +13,7 @@ export const anapesticTetrameterForm: FormCheckerContent = {
     "An anapest is a three-syllable foot with two light beats then a strong one (da-da-DUM). Anapestic tetrameter stacks four of those feet in a line — twelve syllables with stresses on every third beat. The galloping pace suits comic verse, children’s narrative, and, less often, serious riding or battle scenes.",
     "English teaching examples lean on Clement Clarke Moore’s “A Visit from St. Nicholas,” Byron’s “The Destruction of Sennacherib,” and much of Dr. Seuss. Poets often drop the first light syllable (a headless or “iambic” opening) or mix in other feet, so published lines are rarely a perfect twelve-beat grid throughout.",
   ],
+  famousPoemsHeading: "Examples of anapestic tetrameter in famous poems",
   famousPoems: [
     {
       title: "A Visit from St. Nicholas",
@@ -25,6 +26,11 @@ export const anapesticTetrameterForm: FormCheckerContent = {
       author: "Lord Byron",
       note: "Serious narrative that uses the anapest’s gallop to mimic cavalry; a standard non-comic example.",
       excerpt: "The Assyrian came down like the wolf on the fold",
+    },
+    {
+      title: "If I Ran the Circus",
+      author: "Dr. Seuss (Theodor Geisel)",
+      note: "Children’s narrative often cited for anapestic tetrameter (some readers also hear amphibrachic swing). Seuss frequently mixes full and headless openings.",
     },
     {
       title: "Yertle the Turtle",
@@ -48,6 +54,11 @@ export const anapesticTetrameterForm: FormCheckerContent = {
       q: "What is anapestic tetrameter?",
       plain:
         "In English teaching, it is a line of four anapests — twelve syllables with a rising da-da-DUM beat and strong stresses on positions 3, 6, 9, and 12. The galloping rhythm is common in comic and children’s verse and appears in some serious narrative poems.",
+    },
+    {
+      q: "What are famous examples of anapestic tetrameter?",
+      plain:
+        "Classroom staples include Clement Clarke Moore’s “A Visit from St. Nicholas,” Byron’s “The Destruction of Sennacherib,” and much of Dr. Seuss — including “If I Ran the Circus” and “Yertle the Turtle.” Published lines often omit a leading light beat or mix feet, so they are rarely a perfect twelve-beat grid throughout.",
     },
     {
       q: "Does lyriic check stress as well as syllables?",

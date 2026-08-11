@@ -35,6 +35,8 @@ export type FormCheckerContent = {
   intro: string;
   history: string[];
   famousPoems: FamousPoem[];
+  /** Optional H2 above famous poems (default: "Famous poems"). */
+  famousPoemsHeading?: string;
   formNotes: string[];
   faqs: ToolFaq[];
   sampleLines: string[];
@@ -71,6 +73,7 @@ export type ComposedFormToolPage = {
   intro: string;
   history: string[];
   famousPoems: FamousPoem[];
+  famousPoemsHeading: string;
   formNotes: string[];
   faqs: ToolFaq[];
   sampleLines: string[];

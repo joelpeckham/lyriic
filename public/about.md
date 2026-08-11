@@ -32,6 +32,7 @@ Private-in-browser utilities and form checkers for poetry and lyrics. Nothing le
 - [All tools](https://lyriic.com/tools): Index of utilities and form checkers
 - [Syllable counter](https://lyriic.com/tools/syllable-counter) — [https://lyriic.com/tools/syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
 - [Rhyme finder](https://lyriic.com/tools/rhyme-finder) — [https://lyriic.com/tools/rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
+- [Rhyme checker](https://lyriic.com/tools/rhyme-checker) — [https://lyriic.com/tools/rhyme-checker.md](https://lyriic.com/tools/rhyme-checker.md)
 
 ### Form checkers
 

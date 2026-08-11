@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import { ContentPageLayout } from "@/components/pages/ContentPageLayout";
 import {
+  isFormCheckerSlug,
   listComposedFormToolPages,
   listComposedFormToolsByGroup,
   type ComposedFormToolPage,
@@ -27,7 +28,7 @@ function popularFormPages(): ComposedFormToolPage[] {
 }
 
 function utilityTools() {
-  return TOOL_PAGES.filter((tool) => !tool.slug.endsWith("-checker"));
+  return TOOL_PAGES.filter((tool) => !isFormCheckerSlug(tool.slug));
 }
 
 const linkClass =

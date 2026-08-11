@@ -10,7 +10,7 @@ export const POPULAR_FORM_METER_IDS = [
 export const TOOLS_INDEX_TITLE = "Poetry & lyric tools — lyriic";
 
 export const TOOLS_INDEX_DESCRIPTION =
-  "Free private-in-browser poetry tools: syllable counter, rhyme finder, and form checkers for haiku, sonnet, iambic verse, and more.";
+  "Free private-in-browser poetry tools: syllable counter, rhyme finder, rhyme checker, and form checkers for haiku, sonnet, iambic verse, and more.";
 
 export const TOOLS_INDEX_INTRO =
   "Private-in-browser utilities and form checkers for poetry and lyrics. Nothing leaves your device.";

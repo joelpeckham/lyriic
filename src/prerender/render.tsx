@@ -14,6 +14,7 @@ import { ToolsIndexPage } from "@/components/pages/ToolsIndexPage";
 import { WriteSeoPage } from "@/components/pages/WriteSeoPage";
 import { WriterSeoPage } from "@/components/pages/WriterSeoPage";
 import { FormCheckerTool } from "@/components/tools/FormCheckerTool";
+import { RhymeCheckerTool } from "@/components/tools/RhymeCheckerTool";
 import { RhymeFinderTool } from "@/components/tools/RhymeFinderTool";
 import { SyllableCounterTool } from "@/components/tools/SyllableCounterTool";
 import {
@@ -167,6 +168,8 @@ function UtilityToolBody({ tool }: { tool: ToolPageContent }) {
       return <SyllableCounterTool />;
     case "rhyme-finder":
       return <RhymeFinderTool />;
+    case "rhyme-checker":
+      return <RhymeCheckerTool />;
     default:
       return (
         <div className="mt-8 min-h-40" aria-label={`${tool.h1} tool`}>

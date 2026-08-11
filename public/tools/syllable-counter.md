@@ -1,6 +1,6 @@
 # Syllable counter
 
-Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor.
+Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor — a syllable counter built for poems and lyrics.
 
 Each line shows a syllable total, with a per-word breakdown so you can spot where a beat runs short or long. Try the haiku, iambic, or lyric samples to get a feel for the readout.
 
@@ -13,6 +13,14 @@ For live counts beside the cursor, meter rulers, and per-draft overrides, open t
 ### Is this syllable counter free?
 
 Yes. The tool runs in your browser on lyriic.com with no account and no upload of your text to a server for counting.
+
+### How do I count syllables in a poem?
+
+Paste or type your lines into the counter. Each line shows a total, with a per-word breakdown so you can see which words stretch or shorten the beat. For fixed forms, open a form checker (haiku, sonnet, limerick) to compare against the target pattern.
+
+### Can I use this as a syllable counter for haiku?
+
+Yes for raw line totals. For a 5-7-5 haiku check with live deltas against the teaching form, use the dedicated haiku checker.
 
 ### How accurate are the counts?
 

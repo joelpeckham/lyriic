@@ -29,7 +29,7 @@ export const amphibrachicTetrameterForm: FormCheckerContent = {
     {
       title: "If I Ran the Circus",
       author: "Dr. Seuss (Theodor Geisel)",
-      note: "Children’s verse that often rides a twelve-syllable amphibrachic swing.",
+      note: "Often searched as amphibrachic tetrameter; some readers scan the same Seuss lines as anapestic. Children’s verse that rides a twelve-syllable rocking swing.",
       excerpt: "All ready to put up the tents for my circus",
     },
     {
@@ -48,6 +48,11 @@ export const amphibrachicTetrameterForm: FormCheckerContent = {
       q: "What is amphibrachic tetrameter?",
       plain:
         "In English, a line of four amphibrachs: twelve syllables with a light–strong–light foot repeated four times (da-DUM-da × 4). Expected stresses fall on syllables 2, 5, 8, and 11.",
+    },
+    {
+      q: "Is Dr. Seuss’s “If I Ran the Circus” amphibrachic tetrameter?",
+      plain:
+        "Many readers hear its twelve-beat rocking lines as amphibrachic tetrameter (da-DUM-da × 4). Others scan similar Seuss verse as anapestic. Both feet are three syllables; the difference is where the stress lands. lyriic’s amphibrachic and anapestic checkers let you try either grid.",
     },
     {
       q: "Does lyriic check stress as well as syllables?",

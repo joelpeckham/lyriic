@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
+  isFormCheckerSlug,
   listComposedFormToolPages,
   listComposedFormToolsByGroup,
   type ComposedFormToolPage,
@@ -25,7 +26,7 @@ function popularFormPages(): ComposedFormToolPage[] {
 }
 
 function utilityTools(): ToolPageContent[] {
-  return TOOL_PAGES.filter((tool) => !tool.slug.endsWith("-checker"));
+  return TOOL_PAGES.filter((tool) => !isFormCheckerSlug(tool.slug));
 }
 
 export function MoreToolsNav({ currentPath }: MoreToolsNavProps) {

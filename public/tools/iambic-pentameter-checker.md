@@ -70,6 +70,10 @@ Blank verse, English sonnets, and heroic couplets all use this meter under diffe
 
 A line of five iambs: ten syllables alternating unstressed and stressed (da-DUM × 5). It is the default meter of English blank verse, many sonnets, and heroic couplets.
 
+### How do I check for iambic pentameter?
+
+Paste or type lines above. This iambic pentameter detector compares each line to a ten-syllable iambic (weak–strong) grid and shows syllable and stress feedback. Open the zen editor with Iambic pentameter for the same rulers while you draft.
+
 ### Does lyriic check stress as well as syllables?
 
 Yes. For Iambic pentameter, lyriic targets ten syllables and the iambic weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.

@@ -45,8 +45,9 @@ const HOME_SPEC: OgSpec = {
 
 function utilitySpecs(): OgSpec[] {
   const syllable = getToolBySlug("syllable-counter");
-  const rhyme = getToolBySlug("rhyme-finder");
-  if (!syllable || !rhyme) {
+  const rhymeFinder = getToolBySlug("rhyme-finder");
+  const rhymeChecker = getToolBySlug("rhyme-checker");
+  if (!syllable || !rhymeFinder || !rhymeChecker) {
     throw new Error("Missing utility tool content for OG specs");
   }
 
@@ -58,10 +59,16 @@ function utilitySpecs(): OgSpec[] {
       cta: syllable.cta,
     },
     {
-      id: rhyme.slug,
-      path: rhyme.path,
-      lines: twoLines(rhyme.h1, "find rhymes that keep the meter"),
-      cta: shortenCta(rhyme.cta),
+      id: rhymeFinder.slug,
+      path: rhymeFinder.path,
+      lines: twoLines(rhymeFinder.h1, "find rhymes that keep the meter"),
+      cta: shortenCta(rhymeFinder.cta),
+    },
+    {
+      id: rhymeChecker.slug,
+      path: rhymeChecker.path,
+      lines: twoLines(rhymeChecker.h1, "check if two words rhyme"),
+      cta: shortenCta(rhymeChecker.cta),
     },
   ];
 }

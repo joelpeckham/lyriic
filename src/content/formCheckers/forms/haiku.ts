@@ -4,12 +4,12 @@ import type { FormCheckerContent } from "../types";
 export const haikuForm: FormCheckerContent = {
   meterId: "haiku",
   status: "ready",
-  title: "Haiku Checker (5-7-5) — lyriic",
+  title: "Haiku Checker & 5-7-5 Syllable Counter — lyriic",
   description:
-    "Check a three-line haiku against 5-7-5 with live syllable deltas. Free, private, and dictionary-based — then keep writing with lyriic’s Haiku meter ruler.",
+    "Check if a draft is a 5-7-5 haiku with a live syllable counter. Free haiku detector — private in your browser — then keep writing with lyriic’s Haiku meter ruler.",
   h1: "Haiku checker",
   intro:
-    "Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.",
+    "Ask “is this a haiku?” against the English teaching shape 5 · 7 · 5. Live syllable deltas from the same engine as the lyriic poetry editor — a private haiku syllable counter in your browser.",
   history: [
     "Haiku grew out of earlier Japanese linked-verse traditions, with the opening hokku later standing alone. In English classrooms and workshops, the form is often taught as three lines totaling seventeen syllables in a 5-7-5 pattern.",
     "That English teaching shape is useful for practice, but it is not identical to Japanese counting in on (sound units), and many contemporary English haiku writers prefer a looser, image-first approach.",
@@ -45,6 +45,23 @@ export const haikuForm: FormCheckerContent = {
     "lyriic does not enforce seasonal words (kigo) or a cutting word (kireji).",
   ],
   faqs: [
+    {
+      q: "Is this a haiku?",
+      plain:
+        "Paste three lines above. lyriic compares each line to the English teaching pattern 5 · 7 · 5 and shows syllable deltas. A match means the draft fits that classroom shape — not that it meets every traditional Japanese haiku convention (kigo, kireji, on counting).",
+    },
+    {
+      q: "How many syllables does a haiku have?",
+      plain:
+        "In English teaching contexts, seventeen syllables across three lines: five, then seven, then five. Traditional Japanese haiku is measured in on (sound units), which is not identical to English syllables.",
+    },
+    {
+      q: "Can I use this as a haiku syllable counter?",
+      plain:
+        "Yes. This page is a 5-7-5 syllable counter with live deltas against the haiku form. For open poems without a fixed pattern, use the general syllable counter.",
+      href: "/tools/syllable-counter",
+      hrefLabel: "Open the syllable counter",
+    },
     {
       q: "What is a 5-7-5 haiku?",
       plain:

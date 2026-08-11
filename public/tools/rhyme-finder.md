@@ -1,14 +1,22 @@
 # Rhyme finder
 
-Browse rhymes by syllable count from a local dictionary. In the lyriic editor, hover or tap a word to open the same index beside your draft.
+Search rhymes by syllable count from a local dictionary. Type a word to see what rhymes with it — perfect rhymes first, with optional end and slant matches. In the lyriic editor, hover or tap a word to open the same index beside your draft.
 
 Type a word to see rhyming candidates from the bundled index, grouped by syllables so you can keep meter in mind. Perfect rhymes are always listed; optional toggles add end rhymes (final syllable even when stress differs, e.g. fun ↔ anyone) and slant rhymes (related vowel and coda families such as night ↔ side, plus one-segment coda add/drop such as mind ↔ time or hold ↔ coal). Results stay on-device; there is no cloud rhyme API.
 
-The page is for browsing. The editor is for drafting: hover or tap a word, pick a rhyme sorted by syllable count—with meter-aware highlighting when a ruler is set.
+The page is for browsing. To check whether two specific words rhyme — “does this rhyme?” — use the rhyme checker. The editor is for drafting: hover or tap a word, pick a rhyme sorted by syllable count—with meter-aware highlighting when a ruler is set.
 
 lyriic pairs rhyme helpers with live syllable counts and synonym lookup so you can shape meter and diction without leaving the line.
 
 ## Common questions
+
+### Does this rhyme?
+
+This page lists what rhymes with a single word. To check whether two specific words rhyme (perfect, end, or slant), open the rhyme checker.
+
+### How do I search rhymes by syllable count?
+
+Type a word above. Matches load from the local index and group by syllable count so you can keep meter in mind while you browse. Perfect rhymes always show; turn on End or Slant for looser matches.
 
 ### Is this a full RhymeZone replacement?
 

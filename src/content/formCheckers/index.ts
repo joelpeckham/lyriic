@@ -128,6 +128,7 @@ export function composeFormToolPage(
     intro: form.intro,
     history: form.history,
     famousPoems: form.famousPoems,
+    famousPoemsHeading: form.famousPoemsHeading ?? "Famous poems",
     formNotes: form.formNotes,
     faqs: [
       ...form.faqs,

@@ -47,7 +47,7 @@ function formToolMarkdown(page) {
     for (const p of page.history) sections.push(`${p}\n`);
   }
   if (page.famousPoems?.length) {
-    sections.push(`## Famous poems\n`);
+    sections.push(`## ${page.famousPoemsHeading ?? "Famous poems"}\n`);
     for (const poem of page.famousPoems) {
       const by = poem.author ? ` — ${poem.author}` : "";
       sections.push(`### ${poem.title}${by}\n`);
@@ -117,8 +117,10 @@ Drafts and preferences stay in browser local storage. Poem text is not sent to a
 ${TOOLS_INDEX_INTRO}
 
 - [All tools](${SITE}/tools): Index of utilities and form checkers
-- [Syllable counter](${SITE}/tools/syllable-counter) — [${SITE}/tools/syllable-counter.md](${SITE}/tools/syllable-counter.md)
-- [Rhyme finder](${SITE}/tools/rhyme-finder) — [${SITE}/tools/rhyme-finder.md](${SITE}/tools/rhyme-finder.md)
+${TOOL_PAGES.map(
+  (tool) =>
+    `- [${tool.h1}](${SITE}${tool.path}) — [${SITE}/tools/${tool.slug}.md](${SITE}/tools/${tool.slug}.md)`,
+).join("\n")}
 
 ### Form checkers
 
@@ -194,8 +196,10 @@ lyriic runs entirely in the browser at ${SITE}. Drafts stay on-device; there is 
 ## Tools
 
 - [All tools](${SITE}/tools): Index of utilities and form checkers
-- [Syllable counter](${SITE}/tools/syllable-counter): Per-line syllable counts — [syllable-counter.md](${SITE}/tools/syllable-counter.md)
-- [Rhyme finder](${SITE}/tools/rhyme-finder): Local rhyming dictionary — [rhyme-finder.md](${SITE}/tools/rhyme-finder.md)
+${TOOL_PAGES.map((tool) => {
+  const blurb = tool.intro.split(/(?<=\.)\s/)[0] ?? tool.h1;
+  return `- [${tool.h1}](${SITE}${tool.path}): ${blurb} — [${tool.slug}.md](${SITE}/tools/${tool.slug}.md)`;
+}).join("\n")}
 
 ### Form checkers
 

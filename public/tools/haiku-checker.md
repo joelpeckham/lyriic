@@ -1,6 +1,6 @@
 # Haiku checker
 
-Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.
+Ask “is this a haiku?” against the English teaching shape 5 · 7 · 5. Live syllable deltas from the same engine as the lyriic poetry editor — a private haiku syllable counter in your browser.
 
 ## A short history
 
@@ -49,6 +49,18 @@ Counts use English syllables from the bundled dictionary. Traditional Japanese h
 lyriic does not enforce seasonal words (kigo) or a cutting word (kireji).
 
 ## Common questions
+
+### Is this a haiku?
+
+Paste three lines above. lyriic compares each line to the English teaching pattern 5 · 7 · 5 and shows syllable deltas. A match means the draft fits that classroom shape — not that it meets every traditional Japanese haiku convention (kigo, kireji, on counting).
+
+### How many syllables does a haiku have?
+
+In English teaching contexts, seventeen syllables across three lines: five, then seven, then five. Traditional Japanese haiku is measured in on (sound units), which is not identical to English syllables.
+
+### Can I use this as a haiku syllable counter?
+
+Yes. This page is a 5-7-5 syllable counter with live deltas against the haiku form. For open poems without a fixed pattern, use the general syllable counter.
 
 ### What is a 5-7-5 haiku?
 

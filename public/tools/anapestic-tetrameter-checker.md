@@ -8,7 +8,7 @@ An anapest is a three-syllable foot with two light beats then a strong one (da-d
 
 English teaching examples lean on Clement Clarke Moore’s “A Visit from St. Nicholas,” Byron’s “The Destruction of Sennacherib,” and much of Dr. Seuss. Poets often drop the first light syllable (a headless or “iambic” opening) or mix in other feet, so published lines are rarely a perfect twelve-beat grid throughout.
 
-## Famous poems
+## Examples of anapestic tetrameter in famous poems
 
 ### A Visit from St. Nicholas — Clement Clarke Moore
 
@@ -21,6 +21,10 @@ Holiday classic often taught as regular anapestic tetrameter; openings may omit 
 The Assyrian came down like the wolf on the fold
 
 Serious narrative that uses the anapest’s gallop to mimic cavalry; a standard non-comic example.
+
+### If I Ran the Circus — Dr. Seuss (Theodor Geisel)
+
+Children’s narrative often cited for anapestic tetrameter (some readers also hear amphibrachic swing). Seuss frequently mixes full and headless openings.
 
 ### Yertle the Turtle — Dr. Seuss
 
@@ -67,6 +71,10 @@ lyriic does not enforce rhyme schemes (couplets in Moore, Seuss rhyme, and so on
 ### What is anapestic tetrameter?
 
 In English teaching, it is a line of four anapests — twelve syllables with a rising da-da-DUM beat and strong stresses on positions 3, 6, 9, and 12. The galloping rhythm is common in comic and children’s verse and appears in some serious narrative poems.
+
+### What are famous examples of anapestic tetrameter?
+
+Classroom staples include Clement Clarke Moore’s “A Visit from St. Nicholas,” Byron’s “The Destruction of Sennacherib,” and much of Dr. Seuss — including “If I Ran the Circus” and “Yertle the Turtle.” Published lines often omit a leading light beat or mix feet, so they are rarely a perfect twelve-beat grid throughout.
 
 ### Does lyriic check stress as well as syllables?
 

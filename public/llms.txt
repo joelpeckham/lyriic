@@ -14,8 +14,9 @@ lyriic runs entirely in the browser at https://lyriic.com. Drafts stay on-device
 ## Tools
 
 - [All tools](https://lyriic.com/tools): Index of utilities and form checkers
-- [Syllable counter](https://lyriic.com/tools/syllable-counter): Per-line syllable counts — [syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
-- [Rhyme finder](https://lyriic.com/tools/rhyme-finder): Local rhyming dictionary — [rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
+- [Syllable counter](https://lyriic.com/tools/syllable-counter): Paste a stanza or type line by line. — [syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
+- [Rhyme finder](https://lyriic.com/tools/rhyme-finder): Search rhymes by syllable count from a local dictionary. — [rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
+- [Rhyme checker](https://lyriic.com/tools/rhyme-checker): Ask “does this rhyme?” with two words. — [rhyme-checker.md](https://lyriic.com/tools/rhyme-checker.md)
 
 ### Form checkers
 

@@ -31,6 +31,11 @@ const TOOL_COMPONENTS: Record<string, ToolComponent> = {
       default: m.RhymeFinderTool,
     })),
   ),
+  "rhyme-checker": lazyWithRetry(() =>
+    import("@/components/tools/RhymeCheckerTool").then((m) => ({
+      default: m.RhymeCheckerTool,
+    })),
+  ),
 };
 
 function ToolFallback() {

@@ -88,7 +88,7 @@ export function FormToolPage({ page, children }: FormToolPageProps) {
       {page.famousPoems.length > 0 ? (
         <section className="mt-10">
           <h2 className="font-[family-name:var(--font-brand)] text-xl tracking-tight text-foreground">
-            Famous poems
+            {page.famousPoemsHeading}
           </h2>
           <ul className="mt-3 space-y-4 font-[family-name:var(--font-ui)] text-base leading-relaxed text-muted-foreground">
             {page.famousPoems.map((poem) => (

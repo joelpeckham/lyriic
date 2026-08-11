@@ -1,6 +1,6 @@
 # Trochaic tetrameter checker
 
-Shape a draft against eight-syllable trochaic lines (DUM-da × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+Trochaic tetrameter definition in practice: eight-syllable lines of falling trochees (DUM-da × 4). Shape a draft against that grid with the same syllable and stress engine as the lyriic poetry editor — private in your browser.
 
 ## A short history
 
@@ -63,6 +63,10 @@ lyriic checks an eight-syllable line with a trochaic (strong–weak) stress cont
 Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.
 
 ## Common questions
+
+### What is trochaic meter (or metre)?
+
+Trochaic meter (British spelling: metre) is verse built from trochees — a falling foot of stressed then unstressed (DUM-da). Trochaic tetrameter is four of those feet per line: eight syllables in the full English teaching form. Poets often drop the last weak syllable (catalexis).
 
 ### What is trochaic tetrameter?
 

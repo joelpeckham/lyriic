@@ -161,6 +161,7 @@ async function main() {
       "/tools",
       "/tools/syllable-counter",
       "/tools/rhyme-finder",
+      "/tools/rhyme-checker",
       ...formRoutes,
       ...writerRoutes,
     ];

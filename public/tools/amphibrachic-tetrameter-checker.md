@@ -26,7 +26,7 @@ Early nineteenth-century narrative lyric often cited for English amphibrachic te
 
 All ready to put up the tents for my circus
 
-Children’s verse that often rides a twelve-syllable amphibrachic swing.
+Often searched as amphibrachic tetrameter; some readers scan the same Seuss lines as anapestic. Children’s verse that rides a twelve-syllable rocking swing.
 
 ### Regeneration — John Beaton
 
@@ -67,6 +67,10 @@ Limericks and some comic verse are often scanned as amphibrachic or anapestic; l
 ### What is amphibrachic tetrameter?
 
 In English, a line of four amphibrachs: twelve syllables with a light–strong–light foot repeated four times (da-DUM-da × 4). Expected stresses fall on syllables 2, 5, 8, and 11.
+
+### Is Dr. Seuss’s “If I Ran the Circus” amphibrachic tetrameter?
+
+Many readers hear its twelve-beat rocking lines as amphibrachic tetrameter (da-DUM-da × 4). Others scan similar Seuss verse as anapestic. Both feet are three syllables; the difference is where the stress lands. lyriic’s amphibrachic and anapestic checkers let you try either grid.
 
 ### Does lyriic check stress as well as syllables?
 

@@ -32,6 +32,7 @@ Private-in-browser utilities and form checkers for poetry and lyrics. Nothing le
 - [All tools](https://lyriic.com/tools): Index of utilities and form checkers
 - [Syllable counter](https://lyriic.com/tools/syllable-counter) — [https://lyriic.com/tools/syllable-counter.md](https://lyriic.com/tools/syllable-counter.md)
 - [Rhyme finder](https://lyriic.com/tools/rhyme-finder) — [https://lyriic.com/tools/rhyme-finder.md](https://lyriic.com/tools/rhyme-finder.md)
+- [Rhyme checker](https://lyriic.com/tools/rhyme-checker) — [https://lyriic.com/tools/rhyme-checker.md](https://lyriic.com/tools/rhyme-checker.md)
 
 ### Form checkers
 
@@ -115,7 +116,7 @@ The syllable counter and form checkers can carry a draft you edited into the edi
 
 # Syllable counter
 
-Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor.
+Paste a stanza or type line by line. See totals and per-word beats from the same pronunciation engine that powers the lyriic editor — a syllable counter built for poems and lyrics.
 
 Each line shows a syllable total, with a per-word breakdown so you can spot where a beat runs short or long. Try the haiku, iambic, or lyric samples to get a feel for the readout.
 
@@ -126,6 +127,14 @@ For live counts beside the cursor, meter rulers, and per-draft overrides, open t
 ## Is this syllable counter free?
 
 Yes. The tool runs in your browser on lyriic.com with no account and no upload of your text to a server for counting.
+
+## How do I count syllables in a poem?
+
+Paste or type your lines into the counter. Each line shows a total, with a per-word breakdown so you can see which words stretch or shorten the beat. For fixed forms, open a form checker (haiku, sonnet, limerick) to compare against the target pattern.
+
+## Can I use this as a syllable counter for haiku?
+
+Yes for raw line totals. For a 5-7-5 haiku check with live deltas against the teaching form, use the dedicated haiku checker.
 
 ## How accurate are the counts?
 
@@ -143,13 +152,21 @@ Yes, when you continue with a draft you edited here (not an untouched sample). l
 
 # Rhyme finder
 
-Browse rhymes by syllable count from a local dictionary. In the lyriic editor, hover or tap a word to open the same index beside your draft.
+Search rhymes by syllable count from a local dictionary. Type a word to see what rhymes with it — perfect rhymes first, with optional end and slant matches. In the lyriic editor, hover or tap a word to open the same index beside your draft.
 
 Type a word to see rhyming candidates from the bundled index, grouped by syllables so you can keep meter in mind. Perfect rhymes are always listed; optional toggles add end rhymes (final syllable even when stress differs, e.g. fun ↔ anyone) and slant rhymes (related vowel and coda families such as night ↔ side, plus one-segment coda add/drop such as mind ↔ time or hold ↔ coal). Results stay on-device; there is no cloud rhyme API.
 
-The page is for browsing. The editor is for drafting: hover or tap a word, pick a rhyme sorted by syllable count—with meter-aware highlighting when a ruler is set.
+The page is for browsing. To check whether two specific words rhyme — “does this rhyme?” — use the rhyme checker. The editor is for drafting: hover or tap a word, pick a rhyme sorted by syllable count—with meter-aware highlighting when a ruler is set.
 
 lyriic pairs rhyme helpers with live syllable counts and synonym lookup so you can shape meter and diction without leaving the line.
+
+## Does this rhyme?
+
+This page lists what rhymes with a single word. To check whether two specific words rhyme (perfect, end, or slant), open the rhyme checker.
+
+## How do I search rhymes by syllable count?
+
+Type a word above. Matches load from the local index and group by syllable count so you can keep meter in mind while you browse. Perfect rhymes always show; turn on End or Slant for looser matches.
 
 ## Is this a full RhymeZone replacement?
 
@@ -170,6 +187,38 @@ No. lyriic is a meter-focused editor with dictionary helpers — not a generativ
 ## How is this different from the editor?
 
 This page is for browsing rhymes. The editor keeps rhyme lookup beside your draft while you write, with live syllable counts and optional meter rulers. Your finder query does not carry over — open the editor when you are ready to draft.
+
+---
+
+# Rhyme checker
+
+Ask “does this rhyme?” with two words. lyriic reports the strongest match — perfect, end, or slant — from the same on-device dictionary used in the editor.
+
+Enter two words to see whether they rhyme. A perfect rhyme shares the stressed vowel and everything after it (light / night). An end rhyme shares the final syllable even when stress differs (fun / anyone). A slant rhyme shares a related vowel and coda family (night / side), or differs by one coda segment.
+
+Checks run locally after the rhyme packs load. Unknown words — proper names, rare spellings — may not be in the index; try common English diction, or browse candidates in the rhyme finder.
+
+For drafting, open the lyriic editor and hover or tap a word for rhymes sorted by syllable count beside your lines.
+
+## Does X rhyme with Y?
+
+Type both words above. lyriic checks perfect rhyme first, then end rhyme, then slant rhyme, and reports the strongest match — or that they do not rhyme in the local index.
+
+## What is a perfect rhyme?
+
+A perfect rhyme shares the same stressed vowel sound and all sounds that follow it, with a different consonant onset before that vowel — light with night, heart with part. Spelling can differ; the check is pronunciation-based.
+
+## What is a slant rhyme?
+
+A slant (near) rhyme shares a related vowel family and coda family from the last stressed nucleus — night with side — or differs by dropping or adding one final coda segment (mind with time). Looser than a perfect rhyme; useful when exact matches feel forced.
+
+## How is this different from the rhyme finder?
+
+This page checks whether two words rhyme. The rhyme finder lists many rhymes for one word, grouped by syllable count.
+
+## Is my text uploaded?
+
+No. Rhyme checks run locally in your browser. lyriic is local-first and does not require an account.
 
 ---
 
@@ -426,6 +475,10 @@ Blank verse, English sonnets, and heroic couplets all use this meter under diffe
 ### What is iambic pentameter?
 
 A line of five iambs: ten syllables alternating unstressed and stressed (da-DUM × 5). It is the default meter of English blank verse, many sonnets, and heroic couplets.
+
+### How do I check for iambic pentameter?
+
+Paste or type lines above. This iambic pentameter detector compares each line to a ten-syllable iambic (weak–strong) grid and shows syllable and stress feedback. Open the zen editor with Iambic pentameter for the same rulers while you draft.
 
 ### Does lyriic check stress as well as syllables?
 
@@ -723,7 +776,7 @@ Open with Iambic hexameter meter: https://lyriic.com/write/iambic-hexameter
 
 # Trochaic tetrameter checker
 
-Shape a draft against eight-syllable trochaic lines (DUM-da × 4). Same syllable and stress engine as the lyriic poetry editor — private in your browser.
+Trochaic tetrameter definition in practice: eight-syllable lines of falling trochees (DUM-da × 4). Shape a draft against that grid with the same syllable and stress engine as the lyriic poetry editor — private in your browser.
 
 ## A short history
 
@@ -786,6 +839,10 @@ lyriic checks an eight-syllable line with a trochaic (strong–weak) stress cont
 Classical quantitative trochaic tetrameter and Kalevala meter use different counting rules. lyriic does not enforce rhyme schemes, alliteration, or fixed stanza shapes.
 
 ## Common questions
+
+### What is trochaic meter (or metre)?
+
+Trochaic meter (British spelling: metre) is verse built from trochees — a falling foot of stressed then unstressed (DUM-da). Trochaic tetrameter is four of those feet per line: eight syllables in the full English teaching form. Poets often drop the last weak syllable (catalexis).
 
 ### What is trochaic tetrameter?
 
@@ -997,7 +1054,7 @@ An anapest is a three-syllable foot with two light beats then a strong one (da-d
 
 English teaching examples lean on Clement Clarke Moore’s “A Visit from St. Nicholas,” Byron’s “The Destruction of Sennacherib,” and much of Dr. Seuss. Poets often drop the first light syllable (a headless or “iambic” opening) or mix in other feet, so published lines are rarely a perfect twelve-beat grid throughout.
 
-## Famous poems
+## Examples of anapestic tetrameter in famous poems
 
 ### A Visit from St. Nicholas — Clement Clarke Moore
 
@@ -1010,6 +1067,10 @@ Holiday classic often taught as regular anapestic tetrameter; openings may omit 
 The Assyrian came down like the wolf on the fold
 
 Serious narrative that uses the anapest’s gallop to mimic cavalry; a standard non-comic example.
+
+### If I Ran the Circus — Dr. Seuss (Theodor Geisel)
+
+Children’s narrative often cited for anapestic tetrameter (some readers also hear amphibrachic swing). Seuss frequently mixes full and headless openings.
 
 ### Yertle the Turtle — Dr. Seuss
 
@@ -1056,6 +1117,10 @@ lyriic does not enforce rhyme schemes (couplets in Moore, Seuss rhyme, and so on
 ### What is anapestic tetrameter?
 
 In English teaching, it is a line of four anapests — twelve syllables with a rising da-da-DUM beat and strong stresses on positions 3, 6, 9, and 12. The galloping rhythm is common in comic and children’s verse and appears in some serious narrative poems.
+
+### What are famous examples of anapestic tetrameter?
+
+Classroom staples include Clement Clarke Moore’s “A Visit from St. Nicholas,” Byron’s “The Destruction of Sennacherib,” and much of Dr. Seuss — including “If I Ran the Circus” and “Yertle the Turtle.” Published lines often omit a leading light beat or mix feet, so they are rarely a perfect twelve-beat grid throughout.
 
 ### Does lyriic check stress as well as syllables?
 
@@ -1277,7 +1342,7 @@ Early nineteenth-century narrative lyric often cited for English amphibrachic te
 
 All ready to put up the tents for my circus
 
-Children’s verse that often rides a twelve-syllable amphibrachic swing.
+Often searched as amphibrachic tetrameter; some readers scan the same Seuss lines as anapestic. Children’s verse that rides a twelve-syllable rocking swing.
 
 ### Regeneration — John Beaton
 
@@ -1318,6 +1383,10 @@ Limericks and some comic verse are often scanned as amphibrachic or anapestic; l
 ### What is amphibrachic tetrameter?
 
 In English, a line of four amphibrachs: twelve syllables with a light–strong–light foot repeated four times (da-DUM-da × 4). Expected stresses fall on syllables 2, 5, 8, and 11.
+
+### Is Dr. Seuss’s “If I Ran the Circus” amphibrachic tetrameter?
+
+Many readers hear its twelve-beat rocking lines as amphibrachic tetrameter (da-DUM-da × 4). Others scan similar Seuss verse as anapestic. Both feet are three syllables; the difference is where the stress lands. lyriic’s amphibrachic and anapestic checkers let you try either grid.
 
 ### Does lyriic check stress as well as syllables?
 
@@ -1879,7 +1948,7 @@ Open with Ballad stanza meter: https://lyriic.com/write/ballad-stanza
 
 # Haiku checker
 
-Shape a three-line draft against 5 · 7 · 5. Same syllable engine as the lyriic poetry editor — private in your browser.
+Ask “is this a haiku?” against the English teaching shape 5 · 7 · 5. Live syllable deltas from the same engine as the lyriic poetry editor — a private haiku syllable counter in your browser.
 
 ## A short history
 
@@ -1928,6 +1997,18 @@ Counts use English syllables from the bundled dictionary. Traditional Japanese h
 lyriic does not enforce seasonal words (kigo) or a cutting word (kireji).
 
 ## Common questions
+
+### Is this a haiku?
+
+Paste three lines above. lyriic compares each line to the English teaching pattern 5 · 7 · 5 and shows syllable deltas. A match means the draft fits that classroom shape — not that it meets every traditional Japanese haiku convention (kigo, kireji, on counting).
+
+### How many syllables does a haiku have?
+
+In English teaching contexts, seventeen syllables across three lines: five, then seven, then five. Traditional Japanese haiku is measured in on (sound units), which is not identical to English syllables.
+
+### Can I use this as a haiku syllable counter?
+
+Yes. This page is a 5-7-5 syllable counter with live deltas against the haiku form. For open poems without a fixed pattern, use the general syllable counter.
 
 ### What is a 5-7-5 haiku?
 
@@ -2502,6 +2583,10 @@ Counts use English syllables from the bundled dictionary against an 8 · 8 · 5 
 This checker scores the syllable shape only — not anapestic stress or comic content. For AABBA rhyme dots while you draft, open the zen editor with the Limerick meter.
 
 ## Common questions
+
+### How many lines does a limerick have?
+
+Five. A limerick is a five-line comic form, usually with an AABBA rhyme scheme and a bouncing long–long–short–short–long contour.
 
 ### What syllable pattern does this limerick checker use?
 

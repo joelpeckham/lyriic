@@ -52,6 +52,10 @@ This checker scores the syllable shape only — not anapestic stress or comic co
 
 ## Common questions
 
+### How many lines does a limerick have?
+
+Five. A limerick is a five-line comic form, usually with an AABBA rhyme scheme and a bouncing long–long–short–short–long contour.
+
 ### What syllable pattern does this limerick checker use?
 
 Five lines targeting eight, eight, five, five, and eight syllables. That matches lyriic’s Limerick catalog entry — a fixed teaching shape for the usual long–short–long contour, not a claim that every published limerick hits those exact counts.

@@ -51,6 +51,11 @@ export const iambicPentameterForm: FormCheckerContent = {
         "A line of five iambs: ten syllables alternating unstressed and stressed (da-DUM × 5). It is the default meter of English blank verse, many sonnets, and heroic couplets.",
     },
     {
+      q: "How do I check for iambic pentameter?",
+      plain:
+        "Paste or type lines above. This iambic pentameter detector compares each line to a ten-syllable iambic (weak–strong) grid and shows syllable and stress feedback. Open the zen editor with Iambic pentameter for the same rulers while you draft.",
+    },
+    {
       q: "Does lyriic check stress as well as syllables?",
       plain:
         "Yes. For Iambic pentameter, lyriic targets ten syllables and the iambic weak–strong contour when the stress pack is loaded. Open the zen editor with this meter for live rulers beside each line.",
