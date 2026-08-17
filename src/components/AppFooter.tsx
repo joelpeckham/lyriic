@@ -72,7 +72,7 @@ export function AppFooter({
               <a
                 href="https://jpeckham.com"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="author noopener noreferrer"
                 className={linkClass}
               >
                 jpeckham.com

@@ -43,35 +43,72 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "lyriic",
-        "url": "https://lyriic.com/",
-        "description": "Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser.",
-        "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript",
-        "isAccessibleForFree": true,
-        "featureList": [
-          "Per-line syllable counts from the CMU Pronouncing Dictionary",
-          "Optional meter rulers for haiku, iambic pentameter, and common meter",
-          "Hover or tap a word for rhyme and synonym helpers",
-          "Local-first drafts with no account or cloud sync",
-          "Works offline after assets load"
-        ],
-        "knowsAbout": [
-          "poetry",
-          "lyrics",
-          "meter",
-          "syllables",
-          "haiku",
-          "rhyme",
-          "songwriting"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://jpeckham.com/#person",
+            "name": "Joel Peckham",
+            "url": "https://jpeckham.com/"
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://lyriic.com/#app",
+            "name": "lyriic",
+            "url": "https://lyriic.com/",
+            "description": "Free local-first poetry and lyric editor with per-line syllable counts, meter rulers for haiku and iambic verse, plus quiet rhyme and synonym helpers — all in your browser.",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "isAccessibleForFree": true,
+            "featureList": [
+              "Per-line syllable counts from the CMU Pronouncing Dictionary",
+              "Optional meter rulers for haiku, iambic pentameter, and common meter",
+              "Hover or tap a word for rhyme and synonym helpers",
+              "Local-first drafts with no account or cloud sync",
+              "Works offline after assets load"
+            ],
+            "knowsAbout": [
+              "poetry",
+              "lyrics",
+              "meter",
+              "syllables",
+              "haiku",
+              "rhyme",
+              "songwriting"
+            ],
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "author": { "@id": "https://jpeckham.com/#person" },
+            "creator": { "@id": "https://jpeckham.com/#person" },
+            "sameAs": [
+              "https://jpeckham.com/projects/lyriic/",
+              "https://github.com/joelpeckham/lyriic"
+            ],
+            "isRelatedTo": [
+              {
+                "@type": "SoftwareApplication",
+                "@id": "https://chessgator.com/#app",
+                "name": "chessgator",
+                "url": "https://chessgator.com/"
+              },
+              {
+                "@type": "SoftwareApplication",
+                "@id": "https://uwyoschedule.org/planner#webapp",
+                "name": "uwyoschedule",
+                "url": "https://uwyoschedule.org/"
+              },
+              {
+                "@type": "SoftwareApplication",
+                "@id": "https://qr.jpeckham.com/#app",
+                "name": "No Bullshit QR",
+                "url": "https://qr.jpeckham.com/"
+              }
+            ]
+          }
+        ]
       }
     </script>
     <style>

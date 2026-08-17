@@ -160,3 +160,11 @@ Close readings of poems students often meet in class. Each page sprinkles key li
 ## Pricing
 
 Free. No account required.
+
+## Also by Joel Peckham
+
+- [Joel Peckham](https://jpeckham.com/) — Software portfolio — full-stack and AI developer in Laramie, Wyoming. — [llms.txt](https://jpeckham.com/llms.txt)
+- [chessgator](https://chessgator.com/) — Free browser chess coach. Play Maia; Stockfish explains your moves. — [llms.txt](https://chessgator.com/llms.txt)
+- [uwyoschedule](https://uwyoschedule.org/) — Independent University of Wyoming class schedule planner. — [llms.txt](https://uwyoschedule.org/llms.txt)
+- [No Bullshit QR](https://qr.jpeckham.com/) — Free QR code generator. Export real SVG and PNG. No paywall. — [llms.txt](https://qr.jpeckham.com/llms.txt)
+

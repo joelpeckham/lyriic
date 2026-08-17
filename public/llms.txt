@@ -154,3 +154,11 @@ lyriic runs entirely in the browser at https://lyriic.com. Drafts stay on-device
 - [Sitemap](https://lyriic.com/sitemap.xml): Full URL list for crawlers
 - [robots.txt](https://lyriic.com/robots.txt): Crawl permissions
 - [llms-full.txt](https://lyriic.com/llms-full.txt): Concatenated product brief, FAQ, tools, and privacy
+
+## Also by Joel Peckham
+
+- [Joel Peckham](https://jpeckham.com/) — Software portfolio — full-stack and AI developer in Laramie, Wyoming. — [llms.txt](https://jpeckham.com/llms.txt)
+- [chessgator](https://chessgator.com/) — Free browser chess coach. Play Maia; Stockfish explains your moves. — [llms.txt](https://chessgator.com/llms.txt)
+- [uwyoschedule](https://uwyoschedule.org/) — Independent University of Wyoming class schedule planner. — [llms.txt](https://uwyoschedule.org/llms.txt)
+- [No Bullshit QR](https://qr.jpeckham.com/) — Free QR code generator. Export real SVG and PNG. No paywall. — [llms.txt](https://qr.jpeckham.com/llms.txt)
+

@@ -14,6 +14,7 @@ import { FAQ_ENTRIES, FAQ_INTRO } from "../src/content/faq.ts";
 import { PRIVACY_EFFECTIVE, PRIVACY_INTRO, PRIVACY_SECTIONS } from "../src/content/privacy.ts";
 import { TOOL_PAGES } from "../src/content/tools.ts";
 import { TOOLS_INDEX_INTRO } from "../src/content/toolsIndex.ts";
+import { alsoByJoelMarkdown } from "../src/lib/product-graph.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const publicDir = join(root, "public");
@@ -240,6 +241,8 @@ ${poemPages
 ## Pricing
 
 Free. No account required.
+
+${alsoByJoelMarkdown("lyriic")}
 `;
 
 writeFileSync(join(publicDir, "about.md"), aboutMd);
@@ -360,7 +363,9 @@ ${poemLlmsLinks}
 - [Sitemap](${SITE}/sitemap.xml): Full URL list for crawlers
 - [robots.txt](${SITE}/robots.txt): Crawl permissions
 - [llms-full.txt](${SITE}/llms-full.txt): Concatenated product brief, FAQ, tools, and privacy
-`;
+
+${alsoByJoelMarkdown("lyriic")}
+`
 
 writeFileSync(join(publicDir, "llms.txt"), llmsTxt);
 

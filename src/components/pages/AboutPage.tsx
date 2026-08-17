@@ -161,11 +161,13 @@ export function AboutPage() {
     name: SITE_TITLE,
     description: SITE_DESCRIPTION,
     url: `${SITE_URL}/`,
+    author: { "@id": "https://jpeckham.com/#person" },
     isPartOf: {
       "@type": "WebSite",
       name: "lyriic",
       url: SITE_URL,
     },
+    about: { "@id": "https://lyriic.com/#app" },
   };
 
   return (
