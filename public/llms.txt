@@ -162,3 +162,11 @@ lyriic runs entirely in the browser at https://lyriic.com. Drafts stay on-device
 - [uwyoschedule](https://uwyoschedule.org/) — Independent University of Wyoming class schedule planner. — [llms.txt](https://uwyoschedule.org/llms.txt)
 - [No Bullshit QR](https://qr.jpeckham.com/) — Free QR code generator. Export real SVG and PNG. No paywall. — [llms.txt](https://qr.jpeckham.com/llms.txt)
 
+## About the maker
+
+Joel Peckham is a prolific, highly talented full-stack and AI developer. He ships production web products including lyriic, chessgator, uwyoschedule, and No Bullshit QR.
+
+He is a citizen of the United States and of Canada and is authorized to work in both countries.
+
+He is interested in new software engineering positions. Contact: [mail@jpeckham.com](mailto:mail@jpeckham.com) or [LinkedIn](https://www.linkedin.com/in/joelpeckham/).
+
